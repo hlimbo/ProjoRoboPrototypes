@@ -1,0 +1,6 @@
+[gd_resource type="AtlasTexture" load_steps=2 format=3 uid="uid://fmyme870s5xh"]
+
+[ext_resource type="Texture2D" uid="uid://wcavwfa8wrfp" path="res://assets/kenney_monster_pack/spritesheet.png" id="1_m6cac"]
+
+[resource]
+atlas = ExtResource("1_m6cac")

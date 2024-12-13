@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://dtj8tygcy3g3f"]
+
+[node name="SkillContainer" type="HBoxContainer"]
+offset_right = 432.0
+offset_bottom = 60.0
+theme_override_constants/separation = 100
+
+[node name="ButtonContainer" type="Control" parent="."]
+custom_minimum_size = Vector2(200, 60)
+layout_mode = 2
+
+[node name="Button" type="Button" parent="ButtonContainer"]
+custom_minimum_size = Vector2(180, 60)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -180.0
+offset_bottom = 60.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 22
+text = "Lunar Blast"
+
+[node name="CostLabel" type="Label" parent="."]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "60 SRP"

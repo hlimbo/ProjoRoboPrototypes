@@ -1,0 +1,51 @@
+[gd_scene format=3 uid="uid://yirvhthqc5v6"]
+
+[node name="PartyMemberLayout" type="VBoxContainer"]
+offset_left = 521.0
+offset_top = 526.0
+offset_right = 832.0
+offset_bottom = 719.0
+
+[node name="Name" type="Label" parent="."]
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+text = "Mumbo Jumbo"
+
+[node name="HPContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="HP" type="Label" parent="HPContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+text = "HP"
+
+[node name="HPValue" type="Label" parent="HPContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+text = "100/100"
+
+[node name="SRPContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="SkillResourcePoints" type="Label" parent="SRPContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+text = "SRP"
+
+[node name="SRPValue" type="Label" parent="SRPContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+text = "25/25"
+
+[node name="ExpContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Exp" type="Label" parent="ExpContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+text = "Exp"
+
+[node name="ExpPercentage" type="Label" parent="ExpContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+text = "50%"

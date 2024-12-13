@@ -1,0 +1,63 @@
+[gd_scene load_steps=2 format=3 uid="uid://ck5jcv5kq0fa8"]
+
+[ext_resource type="PackedScene" uid="uid://dtj8tygcy3g3f" path="res://nodes/skill_container.tscn" id="1_ts51o"]
+
+[node name="ActiveSkillMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 440.0
+offset_bottom = 225.0
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+custom_minimum_size = Vector2(200, 150)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 0.5
+grow_horizontal = 2
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer"]
+clip_contents = true
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="SkillContainer" parent="ScrollContainer/VBoxContainer" instance=ExtResource("1_ts51o")]
+layout_mode = 2
+
+[node name="SkillContainer2" parent="ScrollContainer/VBoxContainer" instance=ExtResource("1_ts51o")]
+layout_mode = 2
+
+[node name="SkillContainer3" parent="ScrollContainer/VBoxContainer" instance=ExtResource("1_ts51o")]
+layout_mode = 2
+
+[node name="SkillContainer4" parent="ScrollContainer/VBoxContainer" instance=ExtResource("1_ts51o")]
+layout_mode = 2
+
+[node name="SkillContainer5" parent="ScrollContainer/VBoxContainer" instance=ExtResource("1_ts51o")]
+layout_mode = 2
+
+[node name="SkillContainer6" parent="ScrollContainer/VBoxContainer" instance=ExtResource("1_ts51o")]
+layout_mode = 2
+
+[node name="SkillContainer7" parent="ScrollContainer/VBoxContainer" instance=ExtResource("1_ts51o")]
+layout_mode = 2
+
+[node name="SkillContainer8" parent="ScrollContainer/VBoxContainer" instance=ExtResource("1_ts51o")]
+layout_mode = 2
+
+[node name="SkillContainer9" parent="ScrollContainer/VBoxContainer" instance=ExtResource("1_ts51o")]
+layout_mode = 2
+
+[node name="Cancel" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -53.0
+offset_right = 110.0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 32
+text = "Cancel"

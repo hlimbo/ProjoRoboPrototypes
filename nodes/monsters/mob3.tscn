@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://8jj23aia8ao5"]
+
+[ext_resource type="Texture2D" uid="uid://ddq718q11k4hl" path="res://assets/kenney_monster_pack/monster_default_atlas.tres" id="1_xr28q"]
+
+[node name="mob3" type="Sprite2D"]
+texture = ExtResource("1_xr28q")
+region_enabled = true
+region_rect = Rect2(192, 1073, 78, 38)

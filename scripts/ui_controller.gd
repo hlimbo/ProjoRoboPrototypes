@@ -14,28 +14,56 @@ extends CanvasLayer
 @onready var label: Label = $DescriptionPanel/Label
 @onready var active_placeholder_skill: Button = $ActiveSkillMenu/ScrollContainer/VBoxContainer/SkillContainer/ButtonContainer/Button
 
+# Target Menu
+@onready var target_menu: PanelContainer = $TargetMenu
+@onready var target_label: Label = $TargetMenu/VBoxContainer/TargetLabel
+@onready var target_cancel: Button = $TargetMenu/VBoxContainer/Cancel
+
+
+# Placeholders
+@onready var mob1: Area2D = $"../Mob1/Area2D"
+@onready var mob2: Area2D = $"../mob2/Area2D"
+@onready var mob3: Area2D = $"../mob3/Area2D"
+
+const ON_TARGET_HOVERED: String = "on_target_hovered"
+const ON_TARGET_UNHOVERED: String = "on_target_unhovered"
+const ON_TARGET_CLICKED: String = "on_target_clicked"
+
 func _ready():
 	attack.pressed.connect(_on_attack_button_pressed)
 	defend.pressed.connect(_on_defend_button_pressed)
 	skill.pressed.connect(_on_skills_button_pressed)
 	flee.pressed.connect(_on_flee_button_pressed)
+	
+	# example of reusing code
 	cancel.pressed.connect(_on_cancel_button_pressed)
+	target_cancel.pressed.connect(_on_cancel_button_pressed)
 	
 	active_placeholder_skill.pressed.connect(_on_skill_activated)
-		
+
+	mob1.connect(ON_TARGET_HOVERED, on_target_hovered)
+	mob2.connect(ON_TARGET_HOVERED, on_target_hovered)
+	mob3.connect(ON_TARGET_HOVERED, on_target_hovered)
+	
+	mob1.connect(ON_TARGET_UNHOVERED, on_target_unhovered)
+	mob2.connect(ON_TARGET_UNHOVERED, on_target_unhovered)
+	mob3.connect(ON_TARGET_UNHOVERED, on_target_unhovered)
+	
+	mob1.connect(ON_TARGET_CLICKED, on_target_clicked)
+	mob2.connect(ON_TARGET_CLICKED, on_target_clicked)
+	mob3.connect(ON_TARGET_CLICKED, on_target_clicked)
+	
 func _on_attack_button_pressed():
-	# TODOs
+	action_layout.visible = false
+	
 	# pick target to attack
+	# enable as pickable which accepts mouse pointer events
+	mob1.input_pickable = true
+	mob2.input_pickable = true
+	mob3.input_pickable = true
 	
-	description_panel.visible = true
-	
-	# apply attack damage
-	var player_name := "Mumbo"
-	var enemy_name := "Villainous Gelatin"
-	var dmg := randi_range(1, 20)
-	label.text = "%s attacked for %d damage to %s" % [player_name, dmg, enemy_name]
-	# start timer to hide description panel
-	description_timer.start()
+	# switch to attack selection menu
+	target_menu.visible = true
 
 func _on_skills_button_pressed():
 	active_skill_menu.visible = true
@@ -51,12 +79,23 @@ func _on_defend_button_pressed():
 	description_timer.start()
 	
 func _on_cancel_button_pressed():
+	target_menu.visible = false
 	active_skill_menu.visible = false
 	action_layout.visible = true
+	
+	# disable pickables
+	mob1.input_pickable = false
+	mob2.input_pickable = false
+	mob3.input_pickable = false
 
 func _on_description_timer_timeout():
+	target_menu.visible = false
+	target_label.text = ""
+	
 	description_panel.visible = false
 	label.text = ""
+	
+	action_layout.visible = true
 	
 func _on_skill_activated():
 	# TODOs
@@ -84,4 +123,23 @@ func _on_flee_button_pressed():
 	else:
 		label.text = "Mumbo Party cannot escape!"
 		
+	description_timer.start()
+
+func on_target_hovered(mob_name: String):
+	target_label.text = mob_name
+
+func on_target_unhovered():
+	target_label.text = ""
+
+func on_target_clicked(mob_name: String):
+	# disable pickables
+	mob1.input_pickable = false
+	mob2.input_pickable = false
+	mob3.input_pickable = false
+	
+	description_panel.visible = true
+	var player_name := "Mumbo"
+	var dmg := randi_range(1, 20)
+	label.text = "%s attacked for %d damage to %s" % [player_name, dmg, mob_name]
+	# start timer to hide description panel
 	description_timer.start()

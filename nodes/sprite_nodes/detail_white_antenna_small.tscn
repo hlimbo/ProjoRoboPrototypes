@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://coet718xrvd4e"]
+
+[ext_resource type="Texture2D" uid="uid://cgv4r3bn20in1" path="res://assets/kenney_monster_pack/spritesheet_default.png" id="1_k21uy"]
+
+[node name="detail_white_antenna_small" type="Sprite2D"]
+texture = ExtResource("1_k21uy")
+region_enabled = true
+region_rect = Rect2(1444, 42, 26, 42)

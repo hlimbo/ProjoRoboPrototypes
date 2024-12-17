@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://bfulyxt557s8p"]
+
+[ext_resource type="Texture2D" uid="uid://cgv4r3bn20in1" path="res://assets/kenney_monster_pack/spritesheet_default.png" id="1_6ebwj"]
+
+[node name="detail_white_horn_small" type="Sprite2D"]
+texture = ExtResource("1_6ebwj")
+region_enabled = true
+region_rect = Rect2(664, 442, 31, 27)

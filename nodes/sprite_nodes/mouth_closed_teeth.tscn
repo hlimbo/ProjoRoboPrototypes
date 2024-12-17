@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://bvcylvrfxyo8d"]
+
+[ext_resource type="Texture2D" uid="uid://cgv4r3bn20in1" path="res://assets/kenney_monster_pack/spritesheet_default.png" id="1_0lq0r"]
+
+[node name="mouth_closed_teeth" type="Sprite2D"]
+texture = ExtResource("1_0lq0r")
+region_enabled = true
+region_rect = Rect2(220, 1443, 66, 26)

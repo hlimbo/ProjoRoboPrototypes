@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://bnld2x4mknh5l"]
+
+[ext_resource type="Texture2D" uid="uid://ddq718q11k4hl" path="res://assets/kenney_monster_pack/monster_default_atlas.tres" id="1_ui6mx"]
+
+[node name="Mob4" type="Node2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_ui6mx")

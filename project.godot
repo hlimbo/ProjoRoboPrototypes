@@ -23,7 +23,7 @@ window/stretch/mode="canvas_items"
 
 [editor_plugins]
 
-enabled=PackedStringArray()
+enabled=PackedStringArray("res://addons/kenney_xml_sprite_extractor/plugin.cfg")
 
 [input]
 

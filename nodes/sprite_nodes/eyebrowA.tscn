@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://mq0lw6yqc8p"]
+
+[ext_resource type="Texture2D" uid="uid://cgv4r3bn20in1" path="res://assets/kenney_monster_pack/spritesheet_default.png" id="1_8i0ds"]
+
+[node name="eyebrowA" type="Sprite2D"]
+texture = ExtResource("1_8i0ds")
+region_enabled = true
+region_rect = Rect2(634, 802, 49, 32)

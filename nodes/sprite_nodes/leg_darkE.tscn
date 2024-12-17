@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://c3vhpwpkqt4jn"]
+
+[ext_resource type="Texture2D" uid="uid://cgv4r3bn20in1" path="res://assets/kenney_monster_pack/spritesheet_default.png" id="1_phl47"]
+
+[node name="leg_darkE" type="Sprite2D"]
+texture = ExtResource("1_phl47")
+region_enabled = true
+region_rect = Rect2(532, 802, 102, 109)

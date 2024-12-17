@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://boexel1ac0pcb"]
+
+[ext_resource type="Texture2D" uid="uid://cgv4r3bn20in1" path="res://assets/kenney_monster_pack/spritesheet_default.png" id="1_6kha0"]
+
+[node name="arm_whiteA" type="Sprite2D"]
+texture = ExtResource("1_6kha0")
+region_enabled = true
+region_rect = Rect2(1048, 0, 82, 176)

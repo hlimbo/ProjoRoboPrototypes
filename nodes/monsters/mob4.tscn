@@ -1,8 +1,51 @@
-[gd_scene load_steps=2 format=3 uid="uid://bnld2x4mknh5l"]
+[gd_scene load_steps=7 format=3 uid="uid://bnld2x4mknh5l"]
 
-[ext_resource type="Texture2D" uid="uid://ddq718q11k4hl" path="res://assets/kenney_monster_pack/monster_default_atlas.tres" id="1_ui6mx"]
+[ext_resource type="PackedScene" uid="uid://ndgd4bthnfpg" path="res://nodes/monsters/parts/body_yellowD.tscn" id="1_atgl4"]
+[ext_resource type="PackedScene" uid="uid://b6jorugo4ilds" path="res://nodes/monsters/parts/arm_yellowE.tscn" id="2_m7e6t"]
+[ext_resource type="PackedScene" uid="uid://m8aj8e6g21ni" path="res://nodes/monsters/parts/leg_yellowA.tscn" id="2_yeeim"]
+[ext_resource type="PackedScene" uid="uid://dab73d2lfdlqc" path="res://nodes/monsters/parts/detail_yellow_ear_round.tscn" id="3_cjbd6"]
+[ext_resource type="PackedScene" uid="uid://6feyfqpmlbtg" path="res://nodes/monsters/parts/eye_cute_light.tscn" id="5_7rv7v"]
+[ext_resource type="PackedScene" uid="uid://doiqyey08hhcb" path="res://nodes/monsters/parts/mouthD.tscn" id="6_bqfoh"]
 
 [node name="Mob4" type="Node2D"]
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("1_ui6mx")
+[node name="arm_yellowE_left" parent="." instance=ExtResource("2_m7e6t")]
+position = Vector2(-113.692, -111)
+rotation = 0.392699
+flip_h = true
+
+[node name="arm_yellowE_right" parent="." instance=ExtResource("2_m7e6t")]
+position = Vector2(112.308, -111)
+rotation = -0.392699
+
+[node name="leg_yellowA_right" parent="." instance=ExtResource("2_yeeim")]
+position = Vector2(45.6153, -84)
+
+[node name="leg_yellowA_left" parent="." instance=ExtResource("2_yeeim")]
+position = Vector2(-45.3847, -84)
+flip_h = true
+
+[node name="detail_yellow_ear_round_right" parent="." instance=ExtResource("3_cjbd6")]
+position = Vector2(64.3076, -300)
+
+[node name="detail_yellow_ear_round_left" parent="." instance=ExtResource("3_cjbd6")]
+position = Vector2(-65.6924, -300)
+flip_h = true
+
+[node name="body_yellowD" parent="." instance=ExtResource("1_atgl4")]
+position = Vector2(-3.3847, -219)
+
+[node name="eye_cute_light" parent="." instance=ExtResource("5_7rv7v")]
+position = Vector2(-0.492352, -263.125)
+scale = Vector2(0.75, 0.75)
+
+[node name="eye_cute_light2" parent="." instance=ExtResource("5_7rv7v")]
+position = Vector2(-39.4924, -219.125)
+scale = Vector2(0.6, 0.6)
+
+[node name="eye_cute_light3" parent="." instance=ExtResource("5_7rv7v")]
+position = Vector2(40.5076, -220.125)
+scale = Vector2(0.6, 0.6)
+
+[node name="mouthD" parent="." instance=ExtResource("6_bqfoh")]
+position = Vector2(-0.692352, -188)

@@ -1,8 +1,49 @@
-[gd_scene load_steps=2 format=3 uid="uid://dfjd6j736gx0o"]
+[gd_scene load_steps=8 format=3 uid="uid://dfjd6j736gx0o"]
 
-[ext_resource type="Texture2D" uid="uid://ddq718q11k4hl" path="res://assets/kenney_monster_pack/monster_default_atlas.tres" id="1_nmur2"]
+[ext_resource type="PackedScene" uid="uid://ti26h74qsvmt" path="res://nodes/monsters/parts/detail_blue_eye.tscn" id="1_2xc5g"]
+[ext_resource type="PackedScene" uid="uid://cebp4rjwoqoj8" path="res://nodes/monsters/parts/leg_blueB.tscn" id="2_y0dea"]
+[ext_resource type="PackedScene" uid="uid://1yhl2kdb2xs5" path="res://nodes/monsters/parts/arm_blueA.tscn" id="3_8ffr3"]
+[ext_resource type="PackedScene" uid="uid://svrh534va3ie" path="res://nodes/monsters/parts/body_blueA.tscn" id="4_aw8oc"]
+[ext_resource type="PackedScene" uid="uid://djwavxs5iuasx" path="res://nodes/monsters/parts/eye_yellow.tscn" id="5_fyrha"]
+[ext_resource type="PackedScene" uid="uid://b2j6tefj046j1" path="res://nodes/monsters/parts/nose_brown.tscn" id="6_b4mw8"]
+[ext_resource type="PackedScene" uid="uid://bvcylvrfxyo8d" path="res://nodes/monsters/parts/mouth_closed_teeth.tscn" id="7_iyo6e"]
 
-[node name="mob2" type="Sprite2D"]
-texture = ExtResource("1_nmur2")
-region_enabled = true
-region_rect = Rect2(1199, 292, 72, 167)
+[node name="mob2" type="Node2D"]
+
+[node name="detail_blue_eye_right" parent="." instance=ExtResource("1_2xc5g")]
+position = Vector2(91, -282)
+
+[node name="detail_blue_eye_left" parent="." instance=ExtResource("1_2xc5g")]
+position = Vector2(-88, -282)
+flip_h = true
+
+[node name="leg_blueB_right" parent="." instance=ExtResource("2_y0dea")]
+position = Vector2(50, -77)
+
+[node name="leg_blueB_left" parent="." instance=ExtResource("2_y0dea")]
+position = Vector2(-51, -77)
+flip_h = true
+
+[node name="arm_blueA" parent="." instance=ExtResource("3_8ffr3")]
+position = Vector2(94, -135)
+
+[node name="arm_blueA_left" parent="." instance=ExtResource("3_8ffr3")]
+position = Vector2(-96, -135)
+flip_h = true
+
+[node name="body_blueA" parent="." instance=ExtResource("4_aw8oc")]
+position = Vector2(0, -213)
+
+[node name="eye_yellow_right" parent="." instance=ExtResource("5_fyrha")]
+position = Vector2(97, -297)
+scale = Vector2(0.5, 0.5)
+
+[node name="eye_yellow_left" parent="." instance=ExtResource("5_fyrha")]
+position = Vector2(-93, -297)
+scale = Vector2(0.5, 0.5)
+
+[node name="nose_brown" parent="." instance=ExtResource("6_b4mw8")]
+position = Vector2(0, -252)
+
+[node name="mouth_closed_teeth" parent="." instance=ExtResource("7_iyo6e")]
+position = Vector2(0, -212)

@@ -5,4 +5,4 @@
 [node name="detail_dark_ear" type="Sprite2D"]
 texture = ExtResource("1_i26rb")
 region_enabled = true
-region_rect = Rect2(1405, 0, 38, 44)
+region_rect = Rect2(1406, 0, 36, 44)

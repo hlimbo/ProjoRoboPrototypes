@@ -5,4 +5,4 @@
 [node name="detail_yellow_antenna_large" type="Sprite2D"]
 texture = ExtResource("1_chrd1")
 region_enabled = true
-region_rect = Rect2(1441, 1303, 38, 58)
+region_rect = Rect2(1441, 1304, 38, 56)

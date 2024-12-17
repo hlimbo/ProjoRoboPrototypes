@@ -5,4 +5,4 @@
 [node name="mouthJ" type="Sprite2D"]
 texture = ExtResource("1_tp3xx")
 region_enabled = true
-region_rect = Rect2(366, 637, 72, 48)
+region_rect = Rect2(367, 638, 70, 48)

@@ -1,8 +1,32 @@
-[gd_scene load_steps=2 format=3 uid="uid://3wmra7xlcq2v"]
+[gd_scene load_steps=6 format=3 uid="uid://3wmra7xlcq2v"]
 
-[ext_resource type="Texture2D" uid="uid://ddq718q11k4hl" path="res://assets/kenney_monster_pack/monster_default_atlas.tres" id="1_sgtj1"]
+[ext_resource type="PackedScene" uid="uid://b7cwbxvrd0en7" path="res://nodes/monsters/parts/arm_greenB.tscn" id="1_yntbd"]
+[ext_resource type="PackedScene" uid="uid://b0ao2bu4nka3i" path="res://nodes/monsters/parts/leg_greenC.tscn" id="2_hxo28"]
+[ext_resource type="PackedScene" uid="uid://cmsn42vf5pqrv" path="res://nodes/monsters/parts/body_greenF.tscn" id="3_1s8me"]
+[ext_resource type="PackedScene" uid="uid://bwflxx8tda7ts" path="res://nodes/monsters/parts/eye_human_red.tscn" id="4_nmaf4"]
+[ext_resource type="PackedScene" uid="uid://c0g4pxojf6cdo" path="res://nodes/monsters/parts/mouthB.tscn" id="5_7lkt3"]
 
-[node name="mob1" type="Sprite2D"]
-texture = ExtResource("1_sgtj1")
-region_enabled = true
-region_rect = Rect2(1117, 176, 82, 176)
+[node name="mob1" type="Node2D"]
+
+[node name="arm_greenB_right" parent="." instance=ExtResource("1_yntbd")]
+position = Vector2(81, -135)
+
+[node name="arm_greenB_left" parent="." instance=ExtResource("1_yntbd")]
+position = Vector2(-77, -137)
+flip_h = true
+
+[node name="leg_greenC_right" parent="." instance=ExtResource("2_hxo28")]
+position = Vector2(54, -61)
+
+[node name="leg_greenC_left" parent="." instance=ExtResource("2_hxo28")]
+position = Vector2(-53, -63)
+flip_h = true
+
+[node name="body_greenF" parent="." instance=ExtResource("3_1s8me")]
+position = Vector2(0, -213)
+
+[node name="eye_human_red" parent="." instance=ExtResource("4_nmaf4")]
+position = Vector2(0, -244)
+
+[node name="mouthB" parent="." instance=ExtResource("5_7lkt3")]
+position = Vector2(0, -185)

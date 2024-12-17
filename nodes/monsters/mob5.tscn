@@ -1,0 +1,80 @@
+[gd_scene load_steps=10 format=3 uid="uid://dyl2rj6inetxh"]
+
+[ext_resource type="PackedScene" uid="uid://b7fy13fprf8qq" path="res://nodes/monsters/parts/arm_yellowB.tscn" id="1_ywynj"]
+[ext_resource type="PackedScene" uid="uid://48rgrww5g47q" path="res://nodes/monsters/parts/leg_darkC.tscn" id="2_1qjgg"]
+[ext_resource type="PackedScene" uid="uid://cx5uksxg38qs1" path="res://nodes/monsters/parts/body_darkC.tscn" id="3_5imxl"]
+[ext_resource type="PackedScene" uid="uid://dfuplu02pardj" path="res://nodes/monsters/parts/detail_dark_ear.tscn" id="3_y137f"]
+[ext_resource type="PackedScene" uid="uid://c7owvrtlkvete" path="res://nodes/monsters/parts/detail_yellow_antenna_large.tscn" id="4_k6v8f"]
+[ext_resource type="PackedScene" uid="uid://bimb6js5rx263" path="res://nodes/monsters/parts/eye_red.tscn" id="5_6sc5b"]
+[ext_resource type="PackedScene" uid="uid://cpbc36l6ww48e" path="res://nodes/monsters/parts/eyebrowC.tscn" id="6_avi8h"]
+[ext_resource type="PackedScene" uid="uid://g1d1n3ls0igc" path="res://nodes/monsters/parts/mouthJ.tscn" id="7_fktn5"]
+[ext_resource type="PackedScene" uid="uid://5lccw7c5j6ai" path="res://nodes/monsters/parts/nose_yellow.tscn" id="8_32lli"]
+
+[node name="Mob5" type="Node2D"]
+
+[node name="arm_yellowB_right" parent="." instance=ExtResource("1_ywynj")]
+position = Vector2(123, -155.868)
+rotation = -1.13446
+
+[node name="arm_yellowB_right2" parent="." instance=ExtResource("1_ywynj")]
+position = Vector2(104, -91)
+rotation = -0.628319
+
+[node name="arm_yellowB_left" parent="." instance=ExtResource("1_ywynj")]
+position = Vector2(-123, -155.868)
+rotation = 1.13446
+flip_h = true
+
+[node name="arm_yellowB_left2" parent="." instance=ExtResource("1_ywynj")]
+position = Vector2(-104, -91)
+rotation = 0.628319
+flip_h = true
+
+[node name="leg_darkC_right" parent="." instance=ExtResource("2_1qjgg")]
+position = Vector2(51, -60)
+
+[node name="leg_darkC_left" parent="." instance=ExtResource("2_1qjgg")]
+position = Vector2(-50, -60)
+flip_h = true
+
+[node name="detail_dark_ear_right" parent="." instance=ExtResource("3_y137f")]
+position = Vector2(65, -238)
+
+[node name="detail_dark_ear_left" parent="." instance=ExtResource("3_y137f")]
+position = Vector2(-65, -238)
+flip_h = true
+
+[node name="body_darkC" parent="." instance=ExtResource("3_5imxl")]
+position = Vector2(0, -178)
+
+[node name="detail_yellow_antenna_large_right" parent="." instance=ExtResource("4_k6v8f")]
+position = Vector2(41, -277)
+
+[node name="detail_yellow_antenna_large_left" parent="." instance=ExtResource("4_k6v8f")]
+position = Vector2(-41, -277)
+flip_h = true
+
+[node name="eye_red_right" parent="." instance=ExtResource("5_6sc5b")]
+position = Vector2(27.65, -195.25)
+scale = Vector2(0.5, 0.5)
+
+[node name="eyebrowC_right" parent="." instance=ExtResource("6_avi8h")]
+position = Vector2(31.65, -213)
+scale = Vector2(0.9, 0.9)
+
+[node name="eye_red_left" parent="." instance=ExtResource("5_6sc5b")]
+position = Vector2(-26.35, -195.25)
+scale = Vector2(0.5, 0.5)
+flip_h = true
+
+[node name="eyebrowC_left" parent="." instance=ExtResource("6_avi8h")]
+position = Vector2(-29.35, -213)
+scale = Vector2(0.9, 0.9)
+flip_h = true
+
+[node name="mouthJ" parent="." instance=ExtResource("7_fktn5")]
+position = Vector2(0, -143)
+scale = Vector2(0.8, 0.8)
+
+[node name="nose_yellow" parent="." instance=ExtResource("8_32lli")]
+position = Vector2(0, -173)

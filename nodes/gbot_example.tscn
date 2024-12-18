@@ -1,0 +1,110 @@
+[gd_scene load_steps=14 format=3 uid="uid://1bl1mikh42dn"]
+
+[ext_resource type="Texture2D" uid="uid://c14k4mbks11u2" path="res://assets/cutout_animation_assets/gbot/gBot_forearm_r.png" id="1_xvpqj"]
+[ext_resource type="Texture2D" uid="uid://ycxvfqk1amus" path="res://assets/cutout_animation_assets/gbot/gBot_arm_l.png" id="2_qwda3"]
+[ext_resource type="Texture2D" uid="uid://c5p4emyqj3y7v" path="res://assets/cutout_animation_assets/gbot/gBot_leg_l.png" id="3_mepqy"]
+[ext_resource type="Texture2D" uid="uid://dki8ti3s3mv10" path="res://assets/cutout_animation_assets/gbot/gBot_hip.png" id="3_owcr0"]
+[ext_resource type="Texture2D" uid="uid://b3aairrbqgok5" path="res://assets/cutout_animation_assets/gbot/gBot_shin_l.png" id="4_1x5s8"]
+[ext_resource type="Texture2D" uid="uid://bua7dtmjifxii" path="res://assets/cutout_animation_assets/gbot/gBot_leg_r.png" id="4_bmgjm"]
+[ext_resource type="Texture2D" uid="uid://c3h17wx1pdaho" path="res://assets/cutout_animation_assets/gbot/gBot_shin_r.png" id="5_1hrbs"]
+[ext_resource type="Texture2D" uid="uid://bjmo52p152o0x" path="res://assets/cutout_animation_assets/gbot/gBot_foot_l.png" id="5_c2c3s"]
+[ext_resource type="Texture2D" uid="uid://bfjb08qooyoaj" path="res://assets/cutout_animation_assets/gbot/gBot_foot_r.png" id="6_x7qf5"]
+[ext_resource type="Texture2D" uid="uid://ct42mdjmqgstk" path="res://assets/cutout_animation_assets/gbot/gBot_body.png" id="7_rn7x7"]
+[ext_resource type="Texture2D" uid="uid://yfotyawok1jy" path="res://assets/cutout_animation_assets/gbot/gBot_arm_r.png" id="8_ieuxa"]
+[ext_resource type="Texture2D" uid="uid://bsvwn0lmyr6ap" path="res://assets/cutout_animation_assets/gbot/gBot_head.png" id="9_5dlsh"]
+[ext_resource type="Texture2D" uid="uid://73vb11382nha" path="res://assets/cutout_animation_assets/gbot/gBot_jaw.png" id="10_nja6n"]
+
+[node name="root" type="Node2D"]
+editor_description = "Lets' try following this tutorial since the official docs is outdated....
+
+https://www.youtube.com/watch?v=jOdeI7AeFto"
+
+[node name="hand_l" type="Sprite2D" parent="."]
+position = Vector2(79.0416, -71.0558)
+texture = ExtResource("1_xvpqj")
+offset = Vector2(8, 65)
+
+[node name="arm_l" type="Sprite2D" parent="."]
+position = Vector2(84, -148)
+texture = ExtResource("2_qwda3")
+
+[node name="leg_l" type="Sprite2D" parent="."]
+position = Vector2(49, 0)
+texture = ExtResource("3_mepqy")
+offset = Vector2(-15, 56)
+
+[node name="shin_l" type="Sprite2D" parent="."]
+position = Vector2(24, 112)
+texture = ExtResource("4_1x5s8")
+offset = Vector2(16, 32)
+
+[node name="foot_l" type="Sprite2D" parent="."]
+position = Vector2(24, 192)
+texture = ExtResource("5_c2c3s")
+offset = Vector2(21, 39)
+
+[node name="hip" type="Sprite2D" parent="."]
+texture = ExtResource("3_owcr0")
+
+[node name="leg_r" type="Sprite2D" parent="hip"]
+position = Vector2(-49, 9)
+texture = ExtResource("4_bmgjm")
+offset = Vector2(-6, 52)
+
+[node name="shin_r" type="Sprite2D" parent="hip/leg_r"]
+position = Vector2(-14, 108)
+texture = ExtResource("5_1hrbs")
+offset = Vector2(14, 36)
+
+[node name="foot_r" type="Sprite2D" parent="hip/leg_r/shin_r"]
+position = Vector2(6, 83)
+texture = ExtResource("6_x7qf5")
+offset = Vector2(22, 33)
+
+[node name="torso" type="Sprite2D" parent="hip"]
+position = Vector2(0, -41)
+texture = ExtResource("7_rn7x7")
+offset = Vector2(0, -98)
+
+[node name="arm_r" type="Sprite2D" parent="hip/torso"]
+position = Vector2(-91, -107)
+texture = ExtResource("8_ieuxa")
+offset = Vector2(18, 20)
+
+[node name="hand_r" type="Sprite2D" parent="hip/torso/arm_r"]
+position = Vector2(0, 95)
+texture = ExtResource("1_xvpqj")
+offset = Vector2(14, 72)
+
+[node name="end" type="Marker2D" parent="hip/torso/arm_r/hand_r"]
+position = Vector2(4, 120)
+
+[node name="remote_arm_l" type="RemoteTransform2D" parent="hip/torso"]
+editor_description = "Transforms nodes somwhere else in the hierarchy based on the transformations it inherits from its parents"
+position = Vector2(84, -107)
+remote_path = NodePath("../../../arm_l")
+
+[node name="remote_hand_l" type="RemoteTransform2D" parent="hip/torso/remote_arm_l"]
+editor_description = "Transforms nodes somwhere else in the hierarchy based on the transformations it inherits from its parents"
+position = Vector2(-4.95841, 76.9442)
+remote_path = NodePath("../../../../hand_l")
+
+[node name="head" type="Sprite2D" parent="hip/torso"]
+position = Vector2(-13, -372)
+texture = ExtResource("9_5dlsh")
+
+[node name="jaw" type="Sprite2D" parent="hip/torso/head"]
+position = Vector2(15, 145)
+texture = ExtResource("10_nja6n")
+
+[node name="remote_leg_l" type="RemoteTransform2D" parent="hip"]
+position = Vector2(49, 0)
+remote_path = NodePath("../../leg_l")
+
+[node name="remote_shin_l" type="RemoteTransform2D" parent="hip/remote_leg_l"]
+position = Vector2(-25, 112)
+remote_path = NodePath("../../../shin_l")
+
+[node name="remote_foot_l" type="RemoteTransform2D" parent="hip/remote_leg_l/remote_shin_l"]
+position = Vector2(0, 80)
+remote_path = NodePath("../../../../foot_l")

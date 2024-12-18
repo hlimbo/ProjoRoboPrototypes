@@ -1,12 +1,12 @@
 [gd_scene load_steps=8 format=3 uid="uid://dfjd6j736gx0o"]
 
 [ext_resource type="PackedScene" uid="uid://ti26h74qsvmt" path="res://nodes/monsters/parts/detail_blue_eye.tscn" id="1_2xc5g"]
-[ext_resource type="PackedScene" uid="uid://cebp4rjwoqoj8" path="res://nodes/monsters/parts/leg_blueB.tscn" id="2_y0dea"]
-[ext_resource type="PackedScene" uid="uid://1yhl2kdb2xs5" path="res://nodes/monsters/parts/arm_blueA.tscn" id="3_8ffr3"]
-[ext_resource type="PackedScene" uid="uid://svrh534va3ie" path="res://nodes/monsters/parts/body_blueA.tscn" id="4_aw8oc"]
-[ext_resource type="PackedScene" uid="uid://djwavxs5iuasx" path="res://nodes/monsters/parts/eye_yellow.tscn" id="5_fyrha"]
-[ext_resource type="PackedScene" uid="uid://b2j6tefj046j1" path="res://nodes/monsters/parts/nose_brown.tscn" id="6_b4mw8"]
-[ext_resource type="PackedScene" uid="uid://bvcylvrfxyo8d" path="res://nodes/monsters/parts/mouth_closed_teeth.tscn" id="7_iyo6e"]
+[ext_resource type="PackedScene" uid="uid://cebp4rjwoqoj8" path="res://nodes/monsters/parts/leg_types/leg_blueB.tscn" id="2_y0dea"]
+[ext_resource type="PackedScene" uid="uid://1yhl2kdb2xs5" path="res://nodes/monsters/parts/arm_types/arm_blueA.tscn" id="3_8ffr3"]
+[ext_resource type="PackedScene" uid="uid://svrh534va3ie" path="res://nodes/monsters/parts/body_types/typeA/body_blueA.tscn" id="4_aw8oc"]
+[ext_resource type="PackedScene" uid="uid://djwavxs5iuasx" path="res://nodes/monsters/parts/eye_types/eye_yellow.tscn" id="5_fyrha"]
+[ext_resource type="PackedScene" uid="uid://b2j6tefj046j1" path="res://nodes/monsters/parts/nose_types/nose_brown.tscn" id="6_b4mw8"]
+[ext_resource type="PackedScene" uid="uid://bvcylvrfxyo8d" path="res://nodes/monsters/parts/mouth_types/mouth_closed_teeth.tscn" id="7_iyo6e"]
 
 [node name="mob2" type="Node2D"]
 

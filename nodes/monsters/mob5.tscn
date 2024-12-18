@@ -1,14 +1,14 @@
 [gd_scene load_steps=10 format=3 uid="uid://dyl2rj6inetxh"]
 
-[ext_resource type="PackedScene" uid="uid://b7fy13fprf8qq" path="res://nodes/monsters/parts/arm_yellowB.tscn" id="1_ywynj"]
-[ext_resource type="PackedScene" uid="uid://48rgrww5g47q" path="res://nodes/monsters/parts/leg_darkC.tscn" id="2_1qjgg"]
-[ext_resource type="PackedScene" uid="uid://cx5uksxg38qs1" path="res://nodes/monsters/parts/body_darkC.tscn" id="3_5imxl"]
-[ext_resource type="PackedScene" uid="uid://dfuplu02pardj" path="res://nodes/monsters/parts/detail_dark_ear.tscn" id="3_y137f"]
-[ext_resource type="PackedScene" uid="uid://c7owvrtlkvete" path="res://nodes/monsters/parts/detail_yellow_antenna_large.tscn" id="4_k6v8f"]
-[ext_resource type="PackedScene" uid="uid://bimb6js5rx263" path="res://nodes/monsters/parts/eye_red.tscn" id="5_6sc5b"]
-[ext_resource type="PackedScene" uid="uid://cpbc36l6ww48e" path="res://nodes/monsters/parts/eyebrowC.tscn" id="6_avi8h"]
-[ext_resource type="PackedScene" uid="uid://g1d1n3ls0igc" path="res://nodes/monsters/parts/mouthJ.tscn" id="7_fktn5"]
-[ext_resource type="PackedScene" uid="uid://5lccw7c5j6ai" path="res://nodes/monsters/parts/nose_yellow.tscn" id="8_32lli"]
+[ext_resource type="PackedScene" uid="uid://b7fy13fprf8qq" path="res://nodes/monsters/parts/arm_types/arm_yellowB.tscn" id="1_ywynj"]
+[ext_resource type="PackedScene" uid="uid://48rgrww5g47q" path="res://nodes/monsters/parts/leg_types/leg_darkC.tscn" id="2_1qjgg"]
+[ext_resource type="PackedScene" uid="uid://cx5uksxg38qs1" path="res://nodes/monsters/parts/body_types/typeC/body_darkC.tscn" id="3_5imxl"]
+[ext_resource type="PackedScene" uid="uid://dfuplu02pardj" path="res://nodes/monsters/parts/ear_types/detail_dark_ear.tscn" id="3_y137f"]
+[ext_resource type="PackedScene" uid="uid://c7owvrtlkvete" path="res://nodes/monsters/parts/antenna_types/detail_yellow_antenna_large.tscn" id="4_k6v8f"]
+[ext_resource type="PackedScene" uid="uid://bimb6js5rx263" path="res://nodes/monsters/parts/eye_types/eye_red.tscn" id="5_6sc5b"]
+[ext_resource type="PackedScene" uid="uid://cpbc36l6ww48e" path="res://nodes/monsters/parts/eyebrow_types/eyebrowC.tscn" id="6_avi8h"]
+[ext_resource type="PackedScene" uid="uid://g1d1n3ls0igc" path="res://nodes/monsters/parts/mouth_types/mouthJ.tscn" id="7_fktn5"]
+[ext_resource type="PackedScene" uid="uid://5lccw7c5j6ai" path="res://nodes/monsters/parts/nose_types/nose_yellow.tscn" id="8_32lli"]
 
 [node name="Mob5" type="Node2D"]
 

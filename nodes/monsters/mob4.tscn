@@ -1,11 +1,11 @@
 [gd_scene load_steps=7 format=3 uid="uid://bnld2x4mknh5l"]
 
-[ext_resource type="PackedScene" uid="uid://ndgd4bthnfpg" path="res://nodes/monsters/parts/body_yellowD.tscn" id="1_atgl4"]
-[ext_resource type="PackedScene" uid="uid://b6jorugo4ilds" path="res://nodes/monsters/parts/arm_yellowE.tscn" id="2_m7e6t"]
-[ext_resource type="PackedScene" uid="uid://m8aj8e6g21ni" path="res://nodes/monsters/parts/leg_yellowA.tscn" id="2_yeeim"]
-[ext_resource type="PackedScene" uid="uid://dab73d2lfdlqc" path="res://nodes/monsters/parts/detail_yellow_ear_round.tscn" id="3_cjbd6"]
-[ext_resource type="PackedScene" uid="uid://6feyfqpmlbtg" path="res://nodes/monsters/parts/eye_cute_light.tscn" id="5_7rv7v"]
-[ext_resource type="PackedScene" uid="uid://doiqyey08hhcb" path="res://nodes/monsters/parts/mouthD.tscn" id="6_bqfoh"]
+[ext_resource type="PackedScene" uid="uid://ndgd4bthnfpg" path="res://nodes/monsters/parts/body_types/typeD/body_yellowD.tscn" id="1_atgl4"]
+[ext_resource type="PackedScene" uid="uid://b6jorugo4ilds" path="res://nodes/monsters/parts/arm_types/arm_yellowE.tscn" id="2_m7e6t"]
+[ext_resource type="PackedScene" uid="uid://m8aj8e6g21ni" path="res://nodes/monsters/parts/leg_types/leg_yellowA.tscn" id="2_yeeim"]
+[ext_resource type="PackedScene" uid="uid://dab73d2lfdlqc" path="res://nodes/monsters/parts/ear_types/detail_yellow_ear_round.tscn" id="3_cjbd6"]
+[ext_resource type="PackedScene" uid="uid://6feyfqpmlbtg" path="res://nodes/monsters/parts/eye_types/eye_cute_light.tscn" id="5_7rv7v"]
+[ext_resource type="PackedScene" uid="uid://doiqyey08hhcb" path="res://nodes/monsters/parts/mouth_types/mouthD.tscn" id="6_bqfoh"]
 
 [node name="Mob4" type="Node2D"]
 

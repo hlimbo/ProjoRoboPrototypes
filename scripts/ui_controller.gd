@@ -74,6 +74,7 @@ func _on_defend_button_pressed():
 	# increase player's defense temporarily for a set time
 	# set it back to what it was previously
 	description_panel.visible = true
+	action_layout.visible = false
 	var player_name := "Mumbo"
 	label.text = "%s is defending!" % player_name
 	description_timer.start()
@@ -102,10 +103,13 @@ func _on_skill_activated():
 	# check if enough SRP to cast skill
 	# possibly move to SkillContainer and create a skill container script
 	description_panel.visible = true
+	active_skill_menu.visible = false
+	
 	var player_name := "Mumbo"
 	var enemy_name := "Villainous Gelatin"
 	var skill_name := active_placeholder_skill.text
 	var dmg := randi_range(32, 64)
+	
 	label.text = "%s casts %s to %s. It deals %d damage!" % [player_name, skill_name, enemy_name, dmg]
 	description_timer.start()
 
@@ -137,6 +141,7 @@ func on_target_clicked(mob_name: String):
 	mob2.input_pickable = false
 	mob3.input_pickable = false
 	
+	target_menu.visible = false
 	description_panel.visible = true
 	var player_name := "Mumbo"
 	var dmg := randi_range(1, 20)

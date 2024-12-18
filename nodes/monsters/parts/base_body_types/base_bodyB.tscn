@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://dfrq6pqandut7"]
+
+[ext_resource type="PackedScene" uid="uid://dpxmthjgpay5a" path="res://nodes/monsters/parts/body_types/body_whiteB.tscn" id="1_tywc4"]
+
+[node name="BaseBodyB" type="Node2D"]
+
+[node name="body_whiteB" parent="." instance=ExtResource("1_tywc4")]

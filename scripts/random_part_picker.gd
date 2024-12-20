@@ -41,17 +41,18 @@ func pick_parts():
 	var body_part_to_random_part = {}
 	for path in paths:
 		var filenames: PackedStringArray = get_filenames(path)
-		
-		# 50% chance to not select a random optional part
-		if optional_parts.has(path):
-			if randi() % 2 < 1:
-				body_part_to_random_part[path] = "none"
-			else:
-				body_part_to_random_part[path] = filenames[randi_range(0, len(filenames) - 1)]
-		else:
-			body_part_to_random_part[path] = filenames[randi_range(0, len(filenames) - 1)]
-		
-		print("%s picked: %s" % [path, body_part_to_random_part[path]])
+		body_part_to_random_part[path] = filenames[randi_range(0, len(filenames) - 1)]
+
+		## 50% chance to not select a random optional part
+		#if optional_parts.has(path):
+			#if randi() % 2 < 1:
+				#body_part_to_random_part[path] = "none"
+			#else:
+				#body_part_to_random_part[path] = filenames[randi_range(0, len(filenames) - 1)]
+		#else:
+			#body_part_to_random_part[path] = filenames[randi_range(0, len(filenames) - 1)]
+		#
+		#print("%s picked: %s" % [path, body_part_to_random_part[path]])	
 	
 	# load body parts
 	# key - path to resource containing body part (string)
@@ -70,43 +71,120 @@ func pick_parts():
 	var body_type: Node = res_path_to_body_part[required_parts[0]].instantiate()
 	print("body_type: " + body_type.name)
 	
+	# TODO - use color picker on original art assets and randomly select from the
+	# pre-defined color set using index
+	# randomize color
+	var random_color: Color = Color (randf(), randf(), randf(), float(1))
+	print("random color %f, %f, %f, %f" % [random_color.r, random_color.g, random_color.b, random_color.a])
+	(body_type.get_node("body") as CanvasItem).self_modulate = random_color
+
+	
 	# pick random face config
 	var face_configs: Array[Node] = body_type.get_node("body/face").get_children()
 	var face_config: Node = face_configs[randi_range(0, len(face_configs) - 1)]
 	
-	var eye_nodes: Array[Node] = face_config.get_node("eyes").get_children()
-	var mouth_nodes: Array[Node] = face_config.get_node("mouth").get_children()
+	var eye_config: Array[Node] = face_config.get_node("eyes").get_children()
+	var mouth_config: Array[Node] = face_config.get_node("mouth").get_children()
 	
 	# place eyes and mouth onto body
-	for eye_node in eye_nodes:
+	for eye_node in eye_config:
 		var eye: Node = res_path_to_body_part[required_parts[3]].instantiate()
 		var eyes: Node = face_config.get_node("eyes")
 		eyes.add_child(eye)
 		eye.owner = body_type
 		# me being confident that these nodes are always of type Node2D
 		(eye as Node2D).position = (eye_node as Node2D).position
+		if eye_node.name.contains("_l"):
+			(eye as Sprite2D).flip_h = true
 	
-	for mouth_node in mouth_nodes:
+	for mouth_node in mouth_config:
 		var mouth: Node = res_path_to_body_part[required_parts[4]].instantiate()
-		var mouth_config: Node = face_config.get_node("mouth")
+		var mouth_parent_node: Node = face_config.get_node("mouth")
 		# Important: must set the mouth node's owner to be the root node; otherwise
 		# when packing it into a scene to save, it will not be included
 		# https://docs.godotengine.org/en/stable/classes/class_node.html#class-node-method-add-child
-		mouth_config.add_child(mouth)
+		mouth_parent_node.add_child(mouth)
 		mouth.owner = body_type
 		
 		(mouth as Node2D).position = (mouth_node as Node2D).position
+	
+	# 2 nose
+	if res_path_to_body_part.has(optional_parts[2]):
+		var nose: Node = face_config.get_node("nose/Marker2D")
+		var nose_asset: Node = res_path_to_body_part[optional_parts[2]].instantiate()
+		nose.add_child(nose_asset)
+		nose_asset.owner = body_type
 	
 	print("\n\n\nmob config")
 	print(body_type.get_tree_string_pretty())
 	
 	
 	## pick random limbs config
-	#var arm_configs: Array[Node] = body_type.get_node("body/limbs/arms").get_children()
-	#var leg_configs: Array[Node] = body_type.get_node("body/limbs/legs").get_children()
-	#
+	var arm_configs: Array[Node] = body_type.get_node("body/limbs/arms").get_children()
+	var leg_configs: Array[Node] = body_type.get_node("body/limbs/legs").get_children()
+	
+	var arm_config = arm_configs[randi_range(0, len(arm_configs) - 1)]
+	var leg_config = leg_configs[randi_range(0, len(leg_configs) - 1)]
+	
+	for arm_node in arm_config.get_children():
+		var arm: Node = res_path_to_body_part[required_parts[1]].instantiate()
+		var arms: Node = body_type.get_node("body/limbs/arms")
+		arms.add_child(arm)
+		arm.owner = body_type
+		# me being confident that these nodes are always of type Node2D
+		(arm as Node2D).position = (arm_node as Node2D).position
+		
+		# flip if left facing
+		if arm_node.name.contains("_l"):
+			(arm as Sprite2D).flip_h = true
+	
+	for leg_node in leg_config.get_children():
+		var leg: Node = res_path_to_body_part[required_parts[2]].instantiate()
+		var legs: Node = body_type.get_node("body/limbs/legs")
+		legs.add_child(leg)
+		leg.owner = body_type
+		
+		(leg as Node2D).position = (leg_node as Node2D).position
+		
+		if leg_node.name.contains("_l"):
+			(leg as Sprite2D).flip_h = true
+	
 	## pick random accessories config
 	#var accessories_config_count: int = body_type.get_node("body/accessories").get_child_count()
+	var accessories_configs: Array[Node] = body_type.get_node("body/accessories").get_children()
+	var accessory_config: Node = accessories_configs[randi_range(0, len(accessories_configs) - 1)]
+	
+	# ears
+	if res_path_to_body_part.has(optional_parts[0]):
+		var ears: Array[Node] = accessory_config.get_node("ears").get_children()
+		for ear in ears:
+			var ear_asset: Node = res_path_to_body_part[optional_parts[0]].instantiate()
+			ear.add_child(ear_asset)
+			ear_asset.owner = body_type
+			
+			if ear.name.contains("_l"):
+				(ear_asset as Sprite2D).flip_h = true
+	# 1 horn
+	if res_path_to_body_part.has(optional_parts[1]):
+		var horns: Array[Node] = accessory_config.get_node("horns").get_children()
+		for horn in horns:
+			var horn_asset: Node = res_path_to_body_part[optional_parts[1]].instantiate()
+			horn.add_child(horn_asset)
+			horn_asset.owner = body_type
+			
+			if horn.name.contains("_l"):
+				(horn_asset as Sprite2D).flip_h = true
+	
+	# 3 antenna
+	if res_path_to_body_part.has(optional_parts[3]):
+		var antennaes: Array[Node] = accessory_config.get_node("antennaes").get_children()
+		for antenna in antennaes:
+			var antenna_asset: Node = res_path_to_body_part[optional_parts[3]].instantiate()
+			antenna.add_child(antenna_asset)
+			antenna_asset.owner = body_type
+			
+			if antenna.name.contains("_l"):
+				(antenna_asset as Sprite2D).flip_h = true
 		
 	var robo = PackedScene.new()
 	var err_pack = robo.pack(body_type)

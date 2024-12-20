@@ -1,10 +1,14 @@
-[gd_scene load_steps=2 format=3 uid="uid://ovdl5cwhpay0"]
+[gd_scene load_steps=6 format=3 uid="uid://dn1ewl2ak48pj"]
 
-[ext_resource type="PackedScene" uid="uid://dfsy5atiifnpo" path="res://nodes/monsters/parts/body_types/body_whiteF.tscn" id="1_xu56v"]
+[ext_resource type="PackedScene" uid="uid://cwta2763wqy3y" path="res://nodes/monsters/parts/body_types/body_whiteE.tscn" id="1_eqpiq"]
+[ext_resource type="PackedScene" uid="uid://djwavxs5iuasx" path="res://nodes/monsters/parts/eye_types/eye_yellow.tscn" id="2_xjlf2"]
+[ext_resource type="PackedScene" uid="uid://cf3805j3kp7wd" path="res://nodes/monsters/parts/mouth_types/mouth_closed_sad.tscn" id="3_bev7t"]
+[ext_resource type="PackedScene" uid="uid://codkrcew5c41j" path="res://nodes/monsters/parts/arm_types/arm_darkB.tscn" id="4_4jngw"]
+[ext_resource type="PackedScene" uid="uid://dd260qexiggpy" path="res://nodes/monsters/parts/leg_types/leg_darkB.tscn" id="5_s5l3l"]
 
-[node name="BaseBodyF" type="Node2D"]
+[node name="BaseBodyE" type="Node2D"]
 
-[node name="body" parent="." instance=ExtResource("1_xu56v")]
+[node name="body" parent="." instance=ExtResource("1_eqpiq")]
 
 [node name="face" type="Node2D" parent="body"]
 
@@ -18,11 +22,20 @@ position = Vector2(-40, -40)
 [node name="eyes_r" type="Marker2D" parent="body/face/config_1/eyes"]
 position = Vector2(40, -40)
 
+[node name="eye_yellow" parent="body/face/config_1/eyes" instance=ExtResource("2_xjlf2")]
+position = Vector2(-40, -40)
+
+[node name="@Sprite2D@2" parent="body/face/config_1/eyes" instance=ExtResource("2_xjlf2")]
+position = Vector2(40, -40)
+
 [node name="mouth" type="Node2D" parent="body/face/config_1"]
 
 [node name="Marker2D" type="Marker2D" parent="body/face/config_1/mouth"]
 position = Vector2(0, 40)
 gizmo_extents = 30.0
+
+[node name="mouth_closed_sad" parent="body/face/config_1/mouth" instance=ExtResource("3_bev7t")]
+position = Vector2(0, 40)
 
 [node name="nose" type="Node2D" parent="body/face/config_1"]
 
@@ -41,6 +54,15 @@ gizmo_extents = 25.0
 [node name="arm_r" type="Marker2D" parent="body/limbs/arms/config_1"]
 position = Vector2(80, 0)
 
+[node name="arm_darkB" parent="body/limbs/arms" instance=ExtResource("4_4jngw")]
+position = Vector2(-80, 0)
+offset = Vector2(0, 50)
+flip_h = true
+
+[node name="@Sprite2D@3" parent="body/limbs/arms" instance=ExtResource("4_4jngw")]
+position = Vector2(80, 0)
+offset = Vector2(0, 50)
+
 [node name="legs" type="Node2D" parent="body/limbs"]
 
 [node name="config_1" type="Node2D" parent="body/limbs/legs"]
@@ -52,6 +74,15 @@ gizmo_extents = 30.0
 [node name="leg_r" type="Marker2D" parent="body/limbs/legs/config_1"]
 position = Vector2(34, 78)
 gizmo_extents = 30.0
+
+[node name="leg_darkB" parent="body/limbs/legs" instance=ExtResource("5_s5l3l")]
+position = Vector2(-34, 78)
+offset = Vector2(0, 100)
+flip_h = true
+
+[node name="@Sprite2D@4" parent="body/limbs/legs" instance=ExtResource("5_s5l3l")]
+position = Vector2(34, 78)
+offset = Vector2(0, 100)
 
 [node name="accessories" type="Node2D" parent="body"]
 
@@ -68,12 +99,12 @@ position = Vector2(88, -48)
 [node name="antennaes" type="Node2D" parent="body/accessories/config_1"]
 
 [node name="antenna_l" type="Marker2D" parent="body/accessories/config_1/antennaes"]
-position = Vector2(-48, -88)
+position = Vector2(48, -88)
 
 [node name="antenna_r" type="Marker2D" parent="body/accessories/config_1/antennaes"]
-position = Vector2(48, -88)
+position = Vector2(-48, -88)
 
 [node name="horns" type="Node2D" parent="body/accessories/config_1"]
 
-[node name="horn_r" type="Marker2D" parent="body/accessories/config_1/horns"]
+[node name="horn_l" type="Marker2D" parent="body/accessories/config_1/horns"]
 position = Vector2(0, -67)

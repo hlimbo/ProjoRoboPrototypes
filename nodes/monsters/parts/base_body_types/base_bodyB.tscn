@@ -68,12 +68,12 @@ position = Vector2(88, -48)
 [node name="antennaes" type="Node2D" parent="body/accessories/config_1"]
 
 [node name="antenna_l" type="Marker2D" parent="body/accessories/config_1/antennaes"]
-position = Vector2(48, -88)
+position = Vector2(-48, -88)
 
 [node name="antenna_r" type="Marker2D" parent="body/accessories/config_1/antennaes"]
-position = Vector2(-48, -88)
+position = Vector2(48, -88)
 
 [node name="horns" type="Node2D" parent="body/accessories/config_1"]
 
-[node name="horn_l" type="Marker2D" parent="body/accessories/config_1/horns"]
+[node name="horn_r" type="Marker2D" parent="body/accessories/config_1/horns"]
 position = Vector2(0, -67)

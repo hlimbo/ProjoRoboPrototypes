@@ -1,10 +1,16 @@
-[gd_scene load_steps=2 format=3 uid="uid://c82872y6bkilb"]
+[gd_scene load_steps=5 format=3]
 
-[ext_resource type="PackedScene" uid="uid://4fra6e0si5a4" path="res://nodes/monsters/parts/body_types/body_whiteA.tscn" id="1_llnhc"]
+[ext_resource type="PackedScene" path="res://nodes/monsters/parts/body_types/body_whiteF.tscn" id="1_4dq40"]
+[ext_resource type="Texture2D" path="res://assets/kenney_monster_pack/spritesheet_default.png" id="2_e155u"]
+[ext_resource type="PackedScene" path="res://nodes/monsters/parts/eye_types/eye_psycho_dark.tscn" id="3_7ennw"]
+[ext_resource type="PackedScene" path="res://nodes/monsters/parts/mouth_types/mouth_closed_teeth.tscn" id="4_rvivc"]
 
-[node name="BaseBodyA" type="Node2D"]
+[node name="BaseBodyF" type="Node2D"]
 
-[node name="body" parent="." instance=ExtResource("1_llnhc")]
+[node name="body" type="Sprite2D" parent="." instance=ExtResource("1_4dq40")]
+texture = ExtResource("2_e155u")
+region_enabled = true
+region_rect = Rect2(362, 728, 170, 236)
 
 [node name="face" type="Node2D" parent="body"]
 
@@ -18,57 +24,33 @@ position = Vector2(-40, -40)
 [node name="eyes_r" type="Marker2D" parent="body/face/config_1/eyes"]
 position = Vector2(40, -40)
 
+[node name="eye_psycho_dark" type="Sprite2D" parent="body/face/config_1/eyes" instance=ExtResource("3_7ennw")]
+position = Vector2(-40, -40)
+texture = ExtResource("2_e155u")
+region_enabled = true
+region_rect = Rect2(1283, 462, 64, 69)
+
+[node name="@Sprite2D@2" type="Sprite2D" parent="body/face/config_1/eyes" instance=ExtResource("3_7ennw")]
+position = Vector2(40, -40)
+texture = ExtResource("2_e155u")
+region_enabled = true
+region_rect = Rect2(1283, 462, 64, 69)
+
 [node name="mouth" type="Node2D" parent="body/face/config_1"]
 
 [node name="Marker2D" type="Marker2D" parent="body/face/config_1/mouth"]
 position = Vector2(0, 40)
 gizmo_extents = 30.0
 
+[node name="mouth_closed_teeth" type="Sprite2D" parent="body/face/config_1/mouth" instance=ExtResource("4_rvivc")]
+position = Vector2(0, 40)
+texture = ExtResource("2_e155u")
+region_enabled = true
+region_rect = Rect2(220, 1443, 66, 26)
+
 [node name="nose" type="Node2D" parent="body/face/config_1"]
 
 [node name="Marker2D" type="Marker2D" parent="body/face/config_1/nose"]
-
-[node name="config_2" type="Node2D" parent="body/face"]
-
-[node name="eyes" type="Node2D" parent="body/face/config_2"]
-
-[node name="eyes_l" type="Marker2D" parent="body/face/config_2/eyes"]
-position = Vector2(-40, -17)
-
-[node name="eyes_l2" type="Marker2D" parent="body/face/config_2/eyes"]
-position = Vector2(40, -17)
-
-[node name="eyes_r" type="Marker2D" parent="body/face/config_2/eyes"]
-position = Vector2(0, -40)
-
-[node name="mouth" type="Node2D" parent="body/face/config_2"]
-
-[node name="Marker2D" type="Marker2D" parent="body/face/config_2/mouth"]
-position = Vector2(0, 27)
-gizmo_extents = 30.0
-
-[node name="nose" type="Node2D" parent="body/face/config_2"]
-position = Vector2(0, 8)
-
-[node name="Marker2D" type="Marker2D" parent="body/face/config_2/nose"]
-
-[node name="config_3" type="Node2D" parent="body/face"]
-
-[node name="eyes" type="Node2D" parent="body/face/config_3"]
-
-[node name="eyes_l" type="Marker2D" parent="body/face/config_3/eyes"]
-position = Vector2(0, -35)
-
-[node name="mouth" type="Node2D" parent="body/face/config_3"]
-
-[node name="Marker2D" type="Marker2D" parent="body/face/config_3/mouth"]
-position = Vector2(0, 48)
-gizmo_extents = 30.0
-
-[node name="nose" type="Node2D" parent="body/face/config_3"]
-
-[node name="Marker2D" type="Marker2D" parent="body/face/config_3/nose"]
-position = Vector2(0, 20)
 
 [node name="limbs" type="Node2D" parent="body"]
 

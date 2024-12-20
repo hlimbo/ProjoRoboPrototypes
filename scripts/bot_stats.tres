@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="HelloWoi" load_steps=2 format=3 uid="uid://damm5v126277g"]
+
+[ext_resource type="Script" path="res://scripts/example_resource.gd" id="1_5vx3t"]
+
+[resource]
+script = ExtResource("1_5vx3t")
+health = 20
+strings = PackedStringArray("a", "b", "c", "d")

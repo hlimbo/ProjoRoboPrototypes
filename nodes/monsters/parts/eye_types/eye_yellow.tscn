@@ -5,4 +5,4 @@
 [node name="eye_yellow" type="Sprite2D"]
 texture = ExtResource("1_tlr5c")
 region_enabled = true
-region_rect = Rect2(1216, 1002, 64, 69)
+region_rect = Rect2(1217, 1003, 64, 69)

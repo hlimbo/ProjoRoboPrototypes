@@ -134,8 +134,8 @@ text = "Cancel"
 offset = Vector2(640, 360)
 
 [node name="Mob1" parent="." instance=ExtResource("5_xrbbc")]
-position = Vector2(671, 364)
-scale = Vector2(0.75, 0.75)
+position = Vector2(1140, 347)
+scale = Vector2(0.6, 0.6)
 
 [node name="Area2D" type="Area2D" parent="Mob1" node_paths=PackedStringArray("target_selection")]
 position = Vector2(0, -174)
@@ -150,8 +150,8 @@ position = Vector2(2.66663, 8.66666)
 shape = SubResource("RectangleShape2D_wt40x")
 
 [node name="mob2" parent="." instance=ExtResource("6_m781m")]
-position = Vector2(878, 363)
-scale = Vector2(0.75, 0.75)
+position = Vector2(963, 336)
+scale = Vector2(0.6, 0.6)
 
 [node name="Area2D" type="Area2D" parent="mob2" node_paths=PackedStringArray("target_selection")]
 position = Vector2(0, -212)
@@ -166,8 +166,8 @@ position = Vector2(0, 44)
 shape = SubResource("RectangleShape2D_wt40x")
 
 [node name="mob3" parent="." instance=ExtResource("7_a4xwt")]
-position = Vector2(1117, 373)
-scale = Vector2(0.75, 0.75)
+position = Vector2(762, 340)
+scale = Vector2(0.6, 0.6)
 
 [node name="Area2D" type="Area2D" parent="mob3" node_paths=PackedStringArray("target_selection")]
 position = Vector2(0, -214)
@@ -182,7 +182,7 @@ position = Vector2(0, 42)
 shape = SubResource("RectangleShape2D_wt40x")
 
 [node name="Mob4" parent="." instance=ExtResource("10_cyl6x")]
-position = Vector2(210, 530)
+position = Vector2(216, 403)
 script = ExtResource("11_8bp3r")
 stats = ExtResource("12_5sawv")
 

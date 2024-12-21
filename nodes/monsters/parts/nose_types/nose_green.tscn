@@ -5,4 +5,4 @@
 [node name="nose_green" type="Sprite2D"]
 texture = ExtResource("1_6tl03")
 region_enabled = true
-region_rect = Rect2(1351, 54, 53, 59)
+region_rect = Rect2(1352, 55, 51, 59)

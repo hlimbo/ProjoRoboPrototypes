@@ -5,4 +5,4 @@
 [node name="body_greenF" type="Sprite2D"]
 texture = ExtResource("1_hv4dr")
 region_enabled = true
-region_rect = Rect2(366, 236, 170, 236)
+region_rect = Rect2(367, 237, 168, 234)

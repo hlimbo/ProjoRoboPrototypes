@@ -5,4 +5,4 @@
 [node name="eye_angry_blue" type="Sprite2D"]
 texture = ExtResource("1_sl8lq")
 region_enabled = true
-region_rect = Rect2(438, 637, 64, 58)
+region_rect = Rect2(439.297, 637.76, 62.0027, 53.8633)

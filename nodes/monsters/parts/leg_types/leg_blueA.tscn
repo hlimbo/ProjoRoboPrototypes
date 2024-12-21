@@ -4,5 +4,6 @@
 
 [node name="leg_blueA" type="Sprite2D"]
 texture = ExtResource("1_e0tpg")
+offset = Vector2(10, 59)
 region_enabled = true
-region_rect = Rect2(1199, 124, 72, 167)
+region_rect = Rect2(1199, 124, 71, 166)

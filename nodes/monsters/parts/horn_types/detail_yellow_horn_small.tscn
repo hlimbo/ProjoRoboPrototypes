@@ -4,5 +4,6 @@
 
 [node name="detail_yellow_horn_small" type="Sprite2D"]
 texture = ExtResource("1_7vyrt")
+offset = Vector2(12, -6)
 region_enabled = true
 region_rect = Rect2(484, 1436, 31, 27)

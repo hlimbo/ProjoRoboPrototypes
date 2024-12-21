@@ -4,5 +4,6 @@
 
 [node name="detail_dark_antenna_large" type="Sprite2D"]
 texture = ExtResource("1_npgpa")
+offset = Vector2(11, -26)
 region_enabled = true
-region_rect = Rect2(1352, 1356, 38, 58)
+region_rect = Rect2(1353, 1357, 38, 58)

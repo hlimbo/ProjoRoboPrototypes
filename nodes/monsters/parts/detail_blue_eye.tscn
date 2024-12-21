@@ -5,4 +5,4 @@
 [node name="detail_blue_eye" type="Sprite2D"]
 texture = ExtResource("1_vri2i")
 region_enabled = true
-region_rect = Rect2(1287, 851, 58, 78)
+region_rect = Rect2(1287, 852, 57, 76)

@@ -5,4 +5,4 @@
 [node name="mouthE" type="Sprite2D"]
 texture = ExtResource("1_xhlfi")
 region_enabled = true
-region_rect = Rect2(366, 685, 62, 39)
+region_rect = Rect2(366, 686, 61, 39)

@@ -15,12 +15,20 @@ position = Vector2(81, -135)
 position = Vector2(-77, -137)
 flip_h = true
 
-[node name="leg_greenC_right" parent="." instance=ExtResource("2_hxo28")]
-position = Vector2(54, -61)
+[node name="leg_socket_l" type="Marker2D" parent="."]
+position = Vector2(-39, -109)
 
-[node name="leg_greenC_left" parent="." instance=ExtResource("2_hxo28")]
-position = Vector2(-53, -63)
+[node name="leg_greenC_left" parent="leg_socket_l" instance=ExtResource("2_hxo28")]
+position = Vector2(-14, 48)
+offset = Vector2(0, 0)
 flip_h = true
+
+[node name="leg_socket_r" type="Marker2D" parent="."]
+position = Vector2(39, -109)
+
+[node name="leg_greenC_right" parent="leg_socket_r" instance=ExtResource("2_hxo28")]
+position = Vector2(14, 48)
+offset = Vector2(0, 0)
 
 [node name="body_greenF" parent="." instance=ExtResource("3_1s8me")]
 position = Vector2(0, -213)

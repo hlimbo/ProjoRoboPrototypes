@@ -5,4 +5,4 @@
 [node name="eyebrowC" type="Sprite2D"]
 texture = ExtResource("1_ok37w")
 region_enabled = true
-region_rect = Rect2(428, 695, 57, 33)
+region_rect = Rect2(429, 696, 55, 33)

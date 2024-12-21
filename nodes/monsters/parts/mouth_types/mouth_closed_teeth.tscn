@@ -5,4 +5,4 @@
 [node name="mouth_closed_teeth" type="Sprite2D"]
 texture = ExtResource("1_0lq0r")
 region_enabled = true
-region_rect = Rect2(220, 1443, 66, 26)
+region_rect = Rect2(221, 1444, 65, 26)

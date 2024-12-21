@@ -5,4 +5,4 @@
 [node name="eye_psycho_light" type="Sprite2D"]
 texture = ExtResource("1_aqtaw")
 region_enabled = true
-region_rect = Rect2(1154, 1410, 64, 69)
+region_rect = Rect2(1154.52, 1411.68, 61.6871, 67.3224)

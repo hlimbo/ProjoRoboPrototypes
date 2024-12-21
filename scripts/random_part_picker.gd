@@ -67,17 +67,30 @@ func pick_parts():
 		var part: PackedScene = load("%s/%s" % [path, body_part])
 		res_path_to_body_part[path] = part
 		
+		
+	# temp - hard code body type to base_bodyE
+	var temp_part: PackedScene = load("%s/%s" % [required_parts[0], "base_bodyE.tscn"])
+	res_path_to_body_part[required_parts[0]] = temp_part
 	
 	var body_type: Node = res_path_to_body_part[required_parts[0]].instantiate()
 	print("body_type: " + body_type.name)
 	
 	# TODO - use color picker on original art assets and randomly select from the
 	# pre-defined color set using index
+	var blue = Color("#FF4362")
+	var dark = Color("#4F3F2F")
+	var green = Color("#2ECC71")
+	var red = Color("#FF4362")
+	var white = Color("#EEECEC")
+	var yellow = Color("#FFB600")
+	
+	var colors: Array[Color] = [
+		blue, dark, green, red, white, yellow
+	]
+	
 	# randomize color
-	var random_color: Color = Color (randf(), randf(), randf(), float(1))
-	print("random color %f, %f, %f, %f" % [random_color.r, random_color.g, random_color.b, random_color.a])
+	var random_color: Color = colors[randi_range(0, len(colors) - 1)]
 	(body_type.get_node("body") as CanvasItem).self_modulate = random_color
-
 	
 	# pick random face config
 	var face_configs: Array[Node] = body_type.get_node("body/face").get_children()
@@ -90,35 +103,27 @@ func pick_parts():
 	for eye_node in eye_config:
 		var eye: Node = res_path_to_body_part[required_parts[3]].instantiate()
 		var eyes: Node = face_config.get_node("eyes")
-		eyes.add_child(eye)
+		eye_node.add_child(eye)
 		eye.owner = body_type
-		# me being confident that these nodes are always of type Node2D
-		(eye as Node2D).position = (eye_node as Node2D).position
+
+		# flip horizontally if left side
 		if eye_node.name.contains("_l"):
 			(eye as Sprite2D).flip_h = true
 	
 	for mouth_node in mouth_config:
 		var mouth: Node = res_path_to_body_part[required_parts[4]].instantiate()
-		var mouth_parent_node: Node = face_config.get_node("mouth")
 		# Important: must set the mouth node's owner to be the root node; otherwise
 		# when packing it into a scene to save, it will not be included
 		# https://docs.godotengine.org/en/stable/classes/class_node.html#class-node-method-add-child
-		mouth_parent_node.add_child(mouth)
+		mouth_node.add_child(mouth)
 		mouth.owner = body_type
-		
-		(mouth as Node2D).position = (mouth_node as Node2D).position
 	
-	# 2 nose
 	if res_path_to_body_part.has(optional_parts[2]):
 		var nose: Node = face_config.get_node("nose/Marker2D")
 		var nose_asset: Node = res_path_to_body_part[optional_parts[2]].instantiate()
 		nose.add_child(nose_asset)
 		nose_asset.owner = body_type
-	
-	print("\n\n\nmob config")
-	print(body_type.get_tree_string_pretty())
-	
-	
+		
 	## pick random limbs config
 	var arm_configs: Array[Node] = body_type.get_node("body/limbs/arms").get_children()
 	var leg_configs: Array[Node] = body_type.get_node("body/limbs/legs").get_children()
@@ -129,25 +134,43 @@ func pick_parts():
 	for arm_node in arm_config.get_children():
 		var arm: Node = res_path_to_body_part[required_parts[1]].instantiate()
 		var arms: Node = body_type.get_node("body/limbs/arms")
-		arms.add_child(arm)
-		arm.owner = body_type
-		# me being confident that these nodes are always of type Node2D
-		(arm as Node2D).position = (arm_node as Node2D).position
 		
 		# flip if left facing
+		var arm_sprite: Sprite2D = (arm as Sprite2D)
+		if not arm_sprite:
+			push_error("arm _sprite is null")
+		
+		# keep z-index independent from ancestor node's influence
+		arm_sprite.z_as_relative = false
+		
 		if arm_node.name.contains("_l"):
-			(arm as Sprite2D).flip_h = true
-	
+			arm_sprite.flip_h = true
+			# Note: when you flip horizontally, the offset position needs to be flipped manually
+			# so that when the arm gets parented to the arm Marker2D node, it properly inherits its parent's transform properties
+			arm_sprite.offset.x *= -1
+			print("flipping arm_sprite: %s to %d" % [arm_sprite.name, arm_sprite.offset.x])
+		
+		# attaching the arm to the arm_node will inherit arm_node's transform properties
+		arm_node.add_child(arm)
+		# need to set arm's owner to be the root node in order to save any property changes made; otherwise property changes are not saved
+		arm.owner = body_type
+		
 	for leg_node in leg_config.get_children():
 		var leg: Node = res_path_to_body_part[required_parts[2]].instantiate()
 		var legs: Node = body_type.get_node("body/limbs/legs")
-		legs.add_child(leg)
-		leg.owner = body_type
 		
-		(leg as Node2D).position = (leg_node as Node2D).position
+		var leg_sprite: Sprite2D = leg as Sprite2D
+		if not leg_sprite:
+			push_error("leg is not a Sprite2D node")
+		
+		leg_sprite.z_as_relative = false
 		
 		if leg_node.name.contains("_l"):
-			(leg as Sprite2D).flip_h = true
+			leg_sprite.flip_h = true
+			leg_sprite.offset.x *= -1
+			
+		leg_node.add_child(leg)
+		leg.owner = body_type
 	
 	## pick random accessories config
 	#var accessories_config_count: int = body_type.get_node("body/accessories").get_child_count()
@@ -159,32 +182,51 @@ func pick_parts():
 		var ears: Array[Node] = accessory_config.get_node("ears").get_children()
 		for ear in ears:
 			var ear_asset: Node = res_path_to_body_part[optional_parts[0]].instantiate()
-			ear.add_child(ear_asset)
-			ear_asset.owner = body_type
+			var ear_sprite: Sprite2D = ear_asset as Sprite2D
+			
+			if not ear_sprite:
+				push_error("ear is not a Sprite2D node")
+				
+			ear_sprite.z_as_relative = false
 			
 			if ear.name.contains("_l"):
-				(ear_asset as Sprite2D).flip_h = true
-	# 1 horn
+				ear_sprite.flip_h = true
+				ear_sprite.offset.x *= -1
+				
+			ear.add_child(ear_asset)
+			ear_asset.owner = body_type
+	# horn
 	if res_path_to_body_part.has(optional_parts[1]):
 		var horns: Array[Node] = accessory_config.get_node("horns").get_children()
 		for horn in horns:
 			var horn_asset: Node = res_path_to_body_part[optional_parts[1]].instantiate()
-			horn.add_child(horn_asset)
-			horn_asset.owner = body_type
+			var horn_sprite: Sprite2D = horn_asset as Sprite2D
+			
+			if not horn_sprite:
+				push_error("horn asset is not a Sprite2D node")
 			
 			if horn.name.contains("_l"):
-				(horn_asset as Sprite2D).flip_h = true
+				horn_sprite.flip_h = true
+				horn_sprite.offset.x *= -1
+				
+			horn.add_child(horn_asset)
+			horn_asset.owner = body_type
 	
-	# 3 antenna
+	# antenna
 	if res_path_to_body_part.has(optional_parts[3]):
 		var antennaes: Array[Node] = accessory_config.get_node("antennaes").get_children()
 		for antenna in antennaes:
 			var antenna_asset: Node = res_path_to_body_part[optional_parts[3]].instantiate()
-			antenna.add_child(antenna_asset)
-			antenna_asset.owner = body_type
+			var antenna_sprite: Sprite2D = antenna_asset as Sprite2D
+			if not antenna_sprite:
+				push_error("antenna_asset is not a Sprite2D node")
 			
 			if antenna.name.contains("_l"):
-				(antenna_asset as Sprite2D).flip_h = true
+				antenna_sprite.flip_h = true
+				antenna_sprite.offset.x *= -1
+				
+			antenna.add_child(antenna_asset)
+			antenna_asset.owner = body_type
 		
 	var robo = PackedScene.new()
 	var err_pack = robo.pack(body_type)
@@ -223,25 +265,3 @@ func pick_parts():
 	# - adjust rotation of limbs and accessories
 	# - adjust scale of face parts (eyes, nose, mouth)
 	# - build a plugin tool view
-		
-	#var parts_dir = DirAccess.open("res://nodes/monsters/parts")
-	#if parts_dir != null:
-		#print("parts dir not null")
-		#var dirs: PackedStringArray = parts_dir.get_directories()
-		#for dir in dirs:
-			#print("directory_name " + dir)
-	## load("res://nodes/monsters/parts/base_body_types")
-	##pass
-	
-	# REQUIRED
-	# body
-	# arm
-	# legs
-	# eyes
-	# mouth
-	
-	# OPTIONAL
-	# horns
-	# antenna
-	# nose
-	# ears

@@ -5,4 +5,4 @@
 [node name="detail_red_ear_round" type="Sprite2D"]
 texture = ExtResource("1_rxa62")
 region_enabled = true
-region_rect = Rect2(1287, 929, 54, 54)
+region_rect = Rect2(1288, 930, 54, 54)

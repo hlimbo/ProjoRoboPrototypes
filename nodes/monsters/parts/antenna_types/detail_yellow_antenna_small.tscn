@@ -4,5 +4,6 @@
 
 [node name="detail_yellow_antenna_small" type="Sprite2D"]
 texture = ExtResource("1_qjjxd")
+offset = Vector2(10, -20)
 region_enabled = true
-region_rect = Rect2(1407, 1245, 26, 42)
+region_rect = Rect2(1408, 1246, 26, 42)

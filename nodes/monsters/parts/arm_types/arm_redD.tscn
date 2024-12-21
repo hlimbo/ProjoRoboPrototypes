@@ -4,5 +4,6 @@
 
 [node name="arm_redD" type="Sprite2D"]
 texture = ExtResource("1_xdxa8")
+offset = Vector2(19, 69)
 region_enabled = true
 region_rect = Rect2(1025, 378, 92, 197)

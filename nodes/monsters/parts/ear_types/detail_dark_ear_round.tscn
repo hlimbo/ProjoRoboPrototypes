@@ -4,5 +4,6 @@
 
 [node name="detail_dark_ear_round" type="Sprite2D"]
 texture = ExtResource("1_vapp7")
+offset = Vector2(4, -14)
 region_enabled = true
 region_rect = Rect2(295, 1019, 54, 54)

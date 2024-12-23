@@ -5,7 +5,7 @@
 [node name="BaseBodyE" type="Node2D"]
 
 [node name="body" parent="." instance=ExtResource("1_l8wnn")]
-z_index = 1
+z_index = 2
 z_as_relative = false
 
 [node name="face" type="Node2D" parent="body"]
@@ -33,6 +33,8 @@ gizmo_extents = 30.0
 [node name="limbs" type="Node2D" parent="body"]
 
 [node name="arms" type="Node2D" parent="body/limbs"]
+z_index = 1
+z_as_relative = false
 
 [node name="config_1" type="Node2D" parent="body/limbs/arms"]
 
@@ -85,3 +87,4 @@ rotation = 0.261799
 
 [node name="horn_r" type="Marker2D" parent="body/accessories/config_1/horns"]
 position = Vector2(0, -67)
+rotation = -0.785398

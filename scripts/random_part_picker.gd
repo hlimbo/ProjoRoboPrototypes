@@ -68,15 +68,13 @@ func pick_parts():
 		res_path_to_body_part[path] = part
 		
 		
-	# temp - hard code body type to base_bodyE
-	var temp_part: PackedScene = load("%s/%s" % [required_parts[0], "base_bodyE.tscn"])
-	res_path_to_body_part[required_parts[0]] = temp_part
+	## temp - hard code body type to base_bodyE
+	#var temp_part: PackedScene = load("%s/%s" % [required_parts[0], "base_bodyE.tscn"])
+	#res_path_to_body_part[required_parts[0]] = temp_part
 	
 	var body_type: Node = res_path_to_body_part[required_parts[0]].instantiate()
 	print("body_type: " + body_type.name)
 	
-	# TODO - use color picker on original art assets and randomly select from the
-	# pre-defined color set using index
 	var blue = Color("#FF4362")
 	var dark = Color("#4F3F2F")
 	var green = Color("#2ECC71")

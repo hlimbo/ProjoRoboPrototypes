@@ -5,6 +5,8 @@
 [node name="BaseBodyA" type="Node2D"]
 
 [node name="body" parent="." instance=ExtResource("1_llnhc")]
+z_index = 2
+z_as_relative = false
 
 [node name="face" type="Node2D" parent="body"]
 
@@ -73,6 +75,8 @@ position = Vector2(0, 20)
 [node name="limbs" type="Node2D" parent="body"]
 
 [node name="arms" type="Node2D" parent="body/limbs"]
+z_index = 1
+z_as_relative = false
 
 [node name="config_1" type="Node2D" parent="body/limbs/arms"]
 
@@ -84,6 +88,7 @@ gizmo_extents = 25.0
 position = Vector2(80, 0)
 
 [node name="legs" type="Node2D" parent="body/limbs"]
+z_as_relative = false
 
 [node name="config_1" type="Node2D" parent="body/limbs/legs"]
 
@@ -110,12 +115,13 @@ position = Vector2(88, -48)
 [node name="antennaes" type="Node2D" parent="body/accessories/config_1"]
 
 [node name="antenna_l" type="Marker2D" parent="body/accessories/config_1/antennaes"]
-position = Vector2(-48, -88)
+position = Vector2(-48, -73)
 
 [node name="antenna_r" type="Marker2D" parent="body/accessories/config_1/antennaes"]
-position = Vector2(48, -88)
+position = Vector2(48, -73)
 
 [node name="horns" type="Node2D" parent="body/accessories/config_1"]
 
 [node name="horn_r" type="Marker2D" parent="body/accessories/config_1/horns"]
-position = Vector2(0, -67)
+position = Vector2(0, -69)
+rotation = -0.785398

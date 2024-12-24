@@ -1,0 +1,68 @@
+[gd_scene load_steps=2 format=3 uid="uid://0lbanp2e575o"]
+
+[ext_resource type="Script" path="res://addons/monstergenerator/monster_generator_view.gd" id="1_ts1pp"]
+
+[node name="MonsterGeneratorView" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ts1pp")
+
+[node name="RandomizeButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 438.0
+offset_top = 610.0
+offset_right = 808.0
+offset_bottom = 706.0
+theme_override_font_sizes/font_size = 64
+text = "Randomize!"
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+layout_mode = 0
+offset_left = 372.0
+offset_top = 71.0
+offset_right = 884.0
+offset_bottom = 583.0
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+disable_3d = true
+handle_input_locally = false
+gui_disable_input = true
+render_target_update_mode = 4
+
+[node name="subroot" type="Marker2D" parent="SubViewportContainer/SubViewport"]
+position = Vector2(256, 256)
+gizmo_extents = 250.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 17.0
+offset_top = 12.0
+offset_right = 1014.0
+offset_bottom = 59.0
+
+[node name="FileDialog" type="FileDialog" parent="HBoxContainer"]
+title = "Open a Directory"
+size = Vector2i(303, 300)
+ok_button_text = "Select Current Folder"
+file_mode = 2
+
+[node name="FolderPathText" type="LineEdit" parent="HBoxContainer"]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+placeholder_text = "Press \"Find\" Button to select the folder to save this monster to"
+expand_to_text_length = true
+
+[node name="FindButton" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Find"
+
+[node name="SaveButton" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Save"

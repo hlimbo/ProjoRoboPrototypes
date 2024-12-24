@@ -1,11 +1,36 @@
 extends Node
 
+@onready var find_button: Button = $HBoxContainer/FindButton
+@onready var file_dialog: FileDialog = $HBoxContainer/FileDialog
+@onready var folder_path_text: LineEdit = $HBoxContainer/FolderPathText
+@onready var randomize_button: Button = $RandomizeButton
+@onready var subroot: Node2D = $SubViewportContainer/SubViewport/subroot
+@onready var save_button: Button = $HBoxContainer/SaveButton
+
+# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pick_parts()
-
-
+	find_button.pressed.connect(on_find_button_pressed)
+	file_dialog.dir_selected.connect(on_folder_selected)
+	randomize_button.pressed.connect(on_randomize_pressed)
+	save_button.pressed.connect(on_save_pressed)
+	
+# Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	pass
+	
+func on_find_button_pressed():
+	file_dialog.visible = true
+	file_dialog.popup_centered_ratio()
+
+func on_folder_selected(dir: String):
+	folder_path_text.text = dir
+	
+func on_randomize_pressed():
+	# hack - remove children from subroot... need to breakdown pick_parts() into smaller functions
+	for child in subroot.get_children():
+		child.queue_free()
+		
+	pick_parts()
 	
 func get_filenames(dir_path: String) -> PackedStringArray:	
 	var filenames: PackedStringArray = []
@@ -225,34 +250,35 @@ func pick_parts():
 				
 			antenna.add_child(antenna_asset)
 			antenna_asset.owner = body_type
+	
+	# attach body_type to SubViewport/placeholder
+	subroot.add_child(body_type)
+	
+	#var robo = PackedScene.new()
+	#var err_pack = robo.pack(body_type)
+	#
+	#if err_pack != OK:
+		#print("something went wrong with packing the scene")
+	
+	#var err = ResourceSaver.save(robo, "res://nodes/sprite_nodes/test_file.tscn")
+	#if err != OK:
+		#print("Error!")
+	#else:
+		#print("Save good")
 		
-	var robo = PackedScene.new()
-	var err_pack = robo.pack(body_type)
-	
-	if err_pack != OK:
-		print("something went wrong with packing the scene")
-	
-	var err = ResourceSaver.save(robo, "res://nodes/sprite_nodes/test_file.tscn")
-	if err != OK:
-		print("Error!")
+func on_save_pressed():
+	if folder_path_text.text.is_empty():
+		push_error("Unable to save. Pick a folder path first before saving!")
 	else:
-		print("Save good")
-	
-	# 1. load files from disk per body part and store as array of strings [x]
-	# 2   for every body part [x]
-	#  		randomly select a filename for the body_part to use and output is full path to resource string [x]
-	#     	optional parts: add an option of none in the pool. if picked, store as a pathname
-	# 3 load each selection via load() function [x]
-	# 4  load body first [x]
-	# 5  pick random face config from body
-	# 6  pick random limbs/arm config from body
-			# count number of nodes contain arm substring
-			# if arm is right, flip horizontally  
-	# 7  pick random limbs/leg config from body
-			# count number of nodes contain leg substring
-			# if leg is right, flip horizontally
-	# 8  pick random accessories config from body
-			# count number of ears contain in ears config
-			# ears, antennaes, and horns get flipped horizontally
-	# 9  attach parts to monster body by setting its position to the transform point
-	# 10 save as new packed scene [x]
+		print_rich("[color=yellow][b] saving to.... %s [/b][/color]" % folder_path_text.text)
+		#var packed_robo = PackedScene.new()
+		#var err = robo.pack(body_type)
+		#
+		#if err != OK:
+			#push_error("unable to pack resource. Check error logs for more info")
+		#
+		#err = ResourceSaver.save("%s/test_file.tscn" % folder_path_text.text)
+		#if err != ok:
+			#push_error("Unable to save resource. Check error logs for more info")
+		#else:
+			#print_rich("[color=green][b]Successfully saved file to %s/test_file.tscn[/b][/color]" % folder_path_text.text)

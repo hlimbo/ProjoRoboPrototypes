@@ -79,19 +79,27 @@ func init_nodes():
 func on_save_pressed():
 	if folder_path_text.text.is_empty():
 		push_error("Unable to save. Pick a folder path first before saving!")
+	elif file_name.text.is_empty() or !file_name.text.ends_with(".tscn"):
+		push_error("Unable to save. Set a filename to save as ending in .tscn")
+	elif not subroot or subroot.get_child_count() == 0:
+		push_error("Unable to save. Press Randomize! button to generate a character")
 	else:
 		print_rich("[color=yellow][b] saving to.... %s [/b][/color]" % folder_path_text.text)
-		#var packed_robo = PackedScene.new()
-		#var err = robo.pack(body_type)
-		#
-		#if err != OK:
-			#push_error("unable to pack resource. Check error logs for more info")
-		#
-		#err = ResourceSaver.save("%s/test_file.tscn" % folder_path_text.text)
-		#if err != ok:
-			#push_error("Unable to save resource. Check error logs for more info")
-		#else:
-			#print_rich("[color=green][b]Successfully saved file to %s/test_file.tscn[/b][/color]" % folder_path_text.text)
+		
+		var robo = PackedScene.new()
+		var robo_node = subroot.get_child(0)
+		var err = robo.pack(robo_node)
+		
+		if err != OK:
+			push_error("unable to pack resource. Check error logs for more info")
+			return
+			
+		
+		err = ResourceSaver.save(robo, "%s/%s" % [folder_path_text.text, file_name.text])
+		if err != OK:
+			push_error("Unable to save resource. Check error logs for more info")
+		else:
+			print_rich("[color=green][b]Successfully saved file to %s/%s[/b][/color]" % [folder_path_text.text, file_name.text])
 	
 func on_find_pressed():
 	file_dialog.visible = true
@@ -160,11 +168,6 @@ func pick_parts():
 		
 		var part: PackedScene = load("%s/%s" % [path, body_part])
 		res_path_to_body_part[path] = part
-		
-		
-	## temp - hard code body type to base_bodyE
-	#var temp_part: PackedScene = load("%s/%s" % [required_parts[0], "base_bodyE.tscn"])
-	#res_path_to_body_part[required_parts[0]] = temp_part
 	
 	var body_type: Node = res_path_to_body_part[required_parts[0]].instantiate()
 	print("body_type: " + body_type.name)
@@ -240,7 +243,6 @@ func pick_parts():
 			# Note: when you flip horizontally, the offset position needs to be flipped manually
 			# so that when the arm gets parented to the arm Marker2D node, it properly inherits its parent's transform properties
 			arm_sprite.offset.x *= -1
-			print("flipping arm_sprite: %s to %d" % [arm_sprite.name, arm_sprite.offset.x])
 		
 		# attaching the arm to the arm_node will inherit arm_node's transform properties
 		arm_node.add_child(arm)
@@ -321,7 +323,7 @@ func pick_parts():
 			antenna_asset.owner = body_type
 	
 	# attach body_type to SubViewport/placeholder
-	body_type.print_tree_pretty()
+	body_type.get_node("body").print_tree_pretty()
 	subroot.add_child(body_type)
 	
 	#var robo = PackedScene.new()
@@ -336,7 +338,7 @@ func pick_parts():
 	#else:
 		#print("Save good")
 
-func get_filenames(dir_path: String) -> PackedStringArray:	
+func get_filenames(dir_path: String) -> PackedStringArray:
 	var filenames: PackedStringArray = []
 	var dir = DirAccess.open(dir_path)
 	assert(dir != null and dir.dir_exists(""), "unable to open dir: %s. Ensure folder path exists in FileSystem" % dir_path)

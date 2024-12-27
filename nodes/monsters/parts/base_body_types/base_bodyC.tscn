@@ -7,6 +7,7 @@
 [node name="body" parent="." instance=ExtResource("1_5em2q")]
 z_index = 2
 z_as_relative = false
+region_rect = Rect2(684, 996, 139, 194)
 
 [node name="face" type="Node2D" parent="body"]
 

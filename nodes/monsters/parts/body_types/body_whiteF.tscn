@@ -5,4 +5,4 @@
 [node name="body_whiteF" type="Sprite2D"]
 texture = ExtResource("1_xe225")
 region_enabled = true
-region_rect = Rect2(362, 728, 170, 236)
+region_rect = Rect2(363, 728, 168, 235)

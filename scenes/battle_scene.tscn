@@ -1,0 +1,208 @@
+[gd_scene load_steps=15 format=3 uid="uid://bx67atr86l06a"]
+
+[ext_resource type="Texture2D" uid="uid://bepyyv1ux2xwq" path="res://assets/kenney_ui_pack/Default/arrow_decorative_s_small.png" id="1_bu6oj"]
+[ext_resource type="PackedScene" uid="uid://yirvhthqc5v6" path="res://nodes/party_member_layout.tscn" id="1_jaw4a"]
+[ext_resource type="PackedScene" uid="uid://cmclhu115571j" path="res://nodes/action_layout.tscn" id="1_p0qnp"]
+[ext_resource type="Script" path="res://scripts/ui_controller.gd" id="1_qdx8j"]
+[ext_resource type="PackedScene" uid="uid://ck5jcv5kq0fa8" path="res://nodes/active_skill_menu.tscn" id="3_cah2u"]
+[ext_resource type="PackedScene" uid="uid://4fgdk83suvux" path="res://nodes/one_d_graph.tscn" id="4_rmum5"]
+[ext_resource type="PackedScene" uid="uid://3wmra7xlcq2v" path="res://nodes/monsters/mob1.tscn" id="5_xrbbc"]
+[ext_resource type="PackedScene" uid="uid://dfjd6j736gx0o" path="res://nodes/monsters/mob2.tscn" id="6_m781m"]
+[ext_resource type="PackedScene" uid="uid://8jj23aia8ao5" path="res://nodes/monsters/mob3.tscn" id="7_a4xwt"]
+[ext_resource type="Script" path="res://scripts/mob_selection.gd" id="7_jivv4"]
+[ext_resource type="PackedScene" uid="uid://bnld2x4mknh5l" path="res://nodes/monsters/mob4.tscn" id="10_cyl6x"]
+[ext_resource type="Script" path="res://scripts/bot.gd" id="11_8bp3r"]
+[ext_resource type="Resource" uid="uid://damm5v126277g" path="res://scripts/bot_stats.tres" id="12_5sawv"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wt40x"]
+size = Vector2(210.667, 341.333)
+
+[node name="main" type="Node2D"]
+position = Vector2(11, 0)
+
+[node name="TargetSelection" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(676, 131)
+scale = Vector2(2, 2)
+texture = ExtResource("1_bu6oj")
+
+[node name="UILayout" type="CanvasLayer" parent="."]
+script = ExtResource("1_qdx8j")
+
+[node name="OneDGraph" parent="UILayout" instance=ExtResource("4_rmum5")]
+
+[node name="ActionLayout" parent="UILayout" instance=ExtResource("1_p0qnp")]
+visible = false
+anchors_preset = 2
+anchor_left = 0.0
+anchor_top = 1.0
+anchor_right = 0.0
+anchor_bottom = 1.0
+offset_left = 34.0
+offset_top = -174.0
+offset_right = 434.0
+offset_bottom = -24.0
+grow_horizontal = 1
+grow_vertical = 0
+
+[node name="ActiveSkillMenu" parent="UILayout" instance=ExtResource("3_cah2u")]
+visible = false
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -225.0
+offset_bottom = 0.0
+grow_vertical = 0
+
+[node name="PartyMembers" type="HBoxContainer" parent="UILayout"]
+visible = false
+offset_left = 472.0
+offset_top = 540.0
+offset_right = 1272.0
+offset_bottom = 696.0
+theme_override_constants/separation = 20
+
+[node name="Member1" parent="UILayout/PartyMembers" instance=ExtResource("1_jaw4a")]
+layout_mode = 2
+
+[node name="Member2" parent="UILayout/PartyMembers" instance=ExtResource("1_jaw4a")]
+layout_mode = 2
+
+[node name="Member3" parent="UILayout/PartyMembers" instance=ExtResource("1_jaw4a")]
+layout_mode = 2
+
+[node name="Member4" parent="UILayout/PartyMembers" instance=ExtResource("1_jaw4a")]
+layout_mode = 2
+
+[node name="DescriptionPanel" type="Panel" parent="UILayout"]
+visible = false
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 100.0
+grow_horizontal = 2
+
+[node name="Label" type="Label" parent="UILayout/DescriptionPanel"]
+layout_direction = 2
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -11.5
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 28
+text = "Mumbo Jumbo attacked for X dmg to Enemy 1"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="Timer" type="Timer" parent="UILayout/DescriptionPanel"]
+wait_time = 2.0
+one_shot = true
+
+[node name="TargetMenu" type="PanelContainer" parent="UILayout"]
+visible = false
+layout_direction = 2
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -215.0
+offset_right = 460.0
+grow_vertical = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UILayout/TargetMenu"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UILayout/TargetMenu/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Who to attack?"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TargetLabel" type="Label" parent="UILayout/TargetMenu/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Cancel" type="Button" parent="UILayout/TargetMenu/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Cancel"
+
+[node name="SkillTimer" type="Timer" parent="UILayout"]
+wait_time = 3.0
+one_shot = true
+
+[node name="Mob1" parent="." instance=ExtResource("5_xrbbc")]
+position = Vector2(1244, 1203)
+scale = Vector2(0.5, 0.5)
+
+[node name="Area2D" type="Area2D" parent="Mob1" node_paths=PackedStringArray("target_selection")]
+position = Vector2(0, -174)
+input_pickable = false
+monitoring = false
+monitorable = false
+script = ExtResource("7_jivv4")
+target_selection = NodePath("../../TargetSelection")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Mob1/Area2D"]
+position = Vector2(2.66663, 8.66666)
+shape = SubResource("RectangleShape2D_wt40x")
+
+[node name="mob2" parent="." instance=ExtResource("6_m781m")]
+position = Vector2(1504, 1199)
+scale = Vector2(0.5, 0.5)
+
+[node name="Area2D" type="Area2D" parent="mob2" node_paths=PackedStringArray("target_selection")]
+position = Vector2(0, -212)
+input_pickable = false
+monitoring = false
+monitorable = false
+script = ExtResource("7_jivv4")
+target_selection = NodePath("../../TargetSelection")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="mob2/Area2D"]
+position = Vector2(0, 44)
+shape = SubResource("RectangleShape2D_wt40x")
+
+[node name="mob3" parent="." instance=ExtResource("7_a4xwt")]
+position = Vector2(1723, 1207)
+scale = Vector2(0.5, 0.5)
+
+[node name="Area2D" type="Area2D" parent="mob3" node_paths=PackedStringArray("target_selection")]
+position = Vector2(0, -214)
+input_pickable = false
+monitoring = false
+monitorable = false
+script = ExtResource("7_jivv4")
+target_selection = NodePath("../../TargetSelection")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="mob3/Area2D"]
+position = Vector2(0, 42)
+shape = SubResource("RectangleShape2D_wt40x")
+
+[node name="Mob4" parent="." instance=ExtResource("10_cyl6x")]
+position = Vector2(124, 1256)
+scale = Vector2(0.5, 0.5)
+script = ExtResource("11_8bp3r")
+stats = ExtResource("12_5sawv")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(1276, 1438)
+zoom = Vector2(0.5, 0.5)
+
+[connection signal="timeout" from="UILayout/DescriptionPanel/Timer" to="UILayout" method="_on_description_timer_timeout"]
+[connection signal="timeout" from="UILayout/SkillTimer" to="UILayout" method="_on_skill_timer_timeout"]
+[connection signal="input_event" from="Mob1/Area2D" to="Mob1/Area2D" method="_on_input_event"]
+[connection signal="mouse_entered" from="Mob1/Area2D" to="Mob1/Area2D" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="Mob1/Area2D" to="Mob1/Area2D" method="_on_mouse_exited"]
+[connection signal="input_event" from="mob2/Area2D" to="mob2/Area2D" method="_on_input_event"]
+[connection signal="mouse_entered" from="mob2/Area2D" to="mob2/Area2D" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="mob2/Area2D" to="mob2/Area2D" method="_on_mouse_exited"]
+[connection signal="input_event" from="mob3/Area2D" to="mob3/Area2D" method="_on_input_event"]
+[connection signal="mouse_entered" from="mob3/Area2D" to="mob3/Area2D" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="mob3/Area2D" to="mob3/Area2D" method="_on_mouse_exited"]

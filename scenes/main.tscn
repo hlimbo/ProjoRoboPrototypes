@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://bx67atr86l06a"]
+[gd_scene load_steps=16 format=3 uid="uid://bx67atr86l06a"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_15sju"]
 [ext_resource type="Texture2D" uid="uid://bepyyv1ux2xwq" path="res://assets/kenney_ui_pack/Default/arrow_decorative_s_small.png" id="1_bu6oj"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://cmclhu115571j" path="res://nodes/action_layout.tscn" id="1_p0qnp"]
 [ext_resource type="Script" path="res://scripts/ui_controller.gd" id="1_qdx8j"]
 [ext_resource type="PackedScene" uid="uid://ck5jcv5kq0fa8" path="res://nodes/active_skill_menu.tscn" id="3_cah2u"]
+[ext_resource type="PackedScene" uid="uid://4fgdk83suvux" path="res://nodes/one_d_graph.tscn" id="4_rmum5"]
 [ext_resource type="PackedScene" uid="uid://3wmra7xlcq2v" path="res://nodes/monsters/mob1.tscn" id="5_xrbbc"]
 [ext_resource type="PackedScene" uid="uid://dfjd6j736gx0o" path="res://nodes/monsters/mob2.tscn" id="6_m781m"]
 [ext_resource type="PackedScene" uid="uid://8jj23aia8ao5" path="res://nodes/monsters/mob3.tscn" id="7_a4xwt"]
@@ -30,7 +31,10 @@ texture = ExtResource("1_bu6oj")
 [node name="UILayout" type="CanvasLayer" parent="."]
 script = ExtResource("1_qdx8j")
 
+[node name="OneDGraph" parent="UILayout" instance=ExtResource("4_rmum5")]
+
 [node name="ActionLayout" parent="UILayout" instance=ExtResource("1_p0qnp")]
+visible = false
 anchors_preset = 2
 anchor_left = 0.0
 anchor_top = 1.0
@@ -53,6 +57,7 @@ offset_bottom = 0.0
 grow_vertical = 0
 
 [node name="PartyMembers" type="HBoxContainer" parent="UILayout"]
+visible = false
 offset_left = 472.0
 offset_top = 540.0
 offset_right = 1272.0
@@ -96,7 +101,7 @@ vertical_alignment = 1
 autowrap_mode = 2
 
 [node name="Timer" type="Timer" parent="UILayout/DescriptionPanel"]
-wait_time = 3.0
+wait_time = 2.0
 one_shot = true
 
 [node name="TargetMenu" type="PanelContainer" parent="UILayout"]
@@ -130,12 +135,13 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "Cancel"
 
-[node name="Camera2D" type="Camera2D" parent="."]
-offset = Vector2(640, 360)
+[node name="SkillTimer" type="Timer" parent="UILayout"]
+wait_time = 3.0
+one_shot = true
 
 [node name="Mob1" parent="." instance=ExtResource("5_xrbbc")]
-position = Vector2(1140, 347)
-scale = Vector2(0.6, 0.6)
+position = Vector2(1244, 1203)
+scale = Vector2(0.5, 0.5)
 
 [node name="Area2D" type="Area2D" parent="Mob1" node_paths=PackedStringArray("target_selection")]
 position = Vector2(0, -174)
@@ -150,8 +156,8 @@ position = Vector2(2.66663, 8.66666)
 shape = SubResource("RectangleShape2D_wt40x")
 
 [node name="mob2" parent="." instance=ExtResource("6_m781m")]
-position = Vector2(963, 336)
-scale = Vector2(0.6, 0.6)
+position = Vector2(1504, 1199)
+scale = Vector2(0.5, 0.5)
 
 [node name="Area2D" type="Area2D" parent="mob2" node_paths=PackedStringArray("target_selection")]
 position = Vector2(0, -212)
@@ -166,8 +172,8 @@ position = Vector2(0, 44)
 shape = SubResource("RectangleShape2D_wt40x")
 
 [node name="mob3" parent="." instance=ExtResource("7_a4xwt")]
-position = Vector2(762, 340)
-scale = Vector2(0.6, 0.6)
+position = Vector2(1723, 1207)
+scale = Vector2(0.5, 0.5)
 
 [node name="Area2D" type="Area2D" parent="mob3" node_paths=PackedStringArray("target_selection")]
 position = Vector2(0, -214)
@@ -182,11 +188,17 @@ position = Vector2(0, 42)
 shape = SubResource("RectangleShape2D_wt40x")
 
 [node name="Mob4" parent="." instance=ExtResource("10_cyl6x")]
-position = Vector2(216, 403)
+position = Vector2(124, 1256)
+scale = Vector2(0.5, 0.5)
 script = ExtResource("11_8bp3r")
 stats = ExtResource("12_5sawv")
 
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(1276, 1438)
+zoom = Vector2(0.5, 0.5)
+
 [connection signal="timeout" from="UILayout/DescriptionPanel/Timer" to="UILayout" method="_on_description_timer_timeout"]
+[connection signal="timeout" from="UILayout/SkillTimer" to="UILayout" method="_on_skill_timer_timeout"]
 [connection signal="input_event" from="Mob1/Area2D" to="Mob1/Area2D" method="_on_input_event"]
 [connection signal="mouse_entered" from="Mob1/Area2D" to="Mob1/Area2D" method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="Mob1/Area2D" to="Mob1/Area2D" method="_on_mouse_exited"]

@@ -1,8 +1,8 @@
 [gd_scene load_steps=15 format=3 uid="uid://bx67atr86l06a"]
 
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_15sju"]
 [ext_resource type="Texture2D" uid="uid://bepyyv1ux2xwq" path="res://assets/kenney_ui_pack/Default/arrow_decorative_s_small.png" id="1_bu6oj"]
 [ext_resource type="PackedScene" uid="uid://yirvhthqc5v6" path="res://nodes/party_member_layout.tscn" id="1_jaw4a"]
-[ext_resource type="Script" path="res://scripts/random_part_picker.gd" id="1_nisu4"]
 [ext_resource type="PackedScene" uid="uid://cmclhu115571j" path="res://nodes/action_layout.tscn" id="1_p0qnp"]
 [ext_resource type="Script" path="res://scripts/ui_controller.gd" id="1_qdx8j"]
 [ext_resource type="PackedScene" uid="uid://ck5jcv5kq0fa8" path="res://nodes/active_skill_menu.tscn" id="3_cah2u"]
@@ -19,7 +19,7 @@ size = Vector2(210.667, 341.333)
 
 [node name="main" type="Node2D"]
 position = Vector2(11, 0)
-script = ExtResource("1_nisu4")
+script = ExtResource("1_15sju")
 
 [node name="TargetSelection" type="Sprite2D" parent="."]
 visible = false

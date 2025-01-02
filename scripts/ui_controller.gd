@@ -20,10 +20,10 @@ extends CanvasLayer
 @onready var target_cancel: Button = $TargetMenu/VBoxContainer/Cancel
 
 
-# Placeholders
-@onready var mob1: Area2D = $"../Mob1/Area2D"
-@onready var mob2: Area2D = $"../mob2/Area2D"
-@onready var mob3: Area2D = $"../mob3/Area2D"
+# Placeholders -- bad code as this pathing is dependent on battle_manager.gd on spawning these mobs in the scene
+@onready var mob1: Area2D = $"../blue_mob/Area2D"
+@onready var mob2: Area2D = $"../green_mob/Area2D"
+@onready var mob3: Area2D = $"../red_mob/Area2D"
 
 const ON_TARGET_HOVERED: String = "on_target_hovered"
 const ON_TARGET_UNHOVERED: String = "on_target_unhovered"
@@ -31,13 +31,14 @@ const ON_TARGET_CLICKED: String = "on_target_clicked"
 
 ## 1-D Graph variables
 @onready var one_d_graph: Control = $OneDGraph
-@onready var avatar: Avatar = one_d_graph.get_node("PartyPath2D/Avatar")
+@onready var avatar: Avatar = one_d_graph.get_node("PartyPath2D").get_child(0)
 const ORDER_STEP: float = 0.858
 var did_avatar_skill_start: bool = false
 
 @onready var skill_timer: Timer = $SkillTimer
 
 func _ready():
+	print("ui controller ready called")
 	attack.pressed.connect(_on_attack_button_pressed)
 	defend.pressed.connect(_on_defend_button_pressed)
 	skill.pressed.connect(_on_skills_button_pressed)
@@ -114,6 +115,8 @@ func _on_description_timer_timeout():
 	# reset the avatar that made the move back to the beginning of timeline
 	avatar.progress_ratio = 0
 	avatar._curr_speed = avatar.move_speed
+	
+	resume_avatars_motion()
 
 func _on_skill_activated():
 	# TODOs
@@ -185,12 +188,36 @@ func on_target_clicked(mob_name: String):
 	description_timer.start()
 
 
+func pause_avatars_motion():
+	# pause every avatar motion
+	var one_d_graph: Control = $OneDGraph
+	var party_line: Path2D = one_d_graph.get_node("PartyPath2D")
+	var enemy_line: Path2D = one_d_graph.get_node("EnemyPath2D")
+	
+	for child in party_line.get_children():
+		(child as Avatar)._curr_speed = 0
+	for child in enemy_line.get_children():
+		(child as Avatar)._curr_speed = 0
+
+func resume_avatars_motion():
+	var one_d_graph: Control = $OneDGraph
+	var party_line: Path2D = one_d_graph.get_node("PartyPath2D")
+	var enemy_line: Path2D = one_d_graph.get_node("EnemyPath2D")
+	
+	for child in party_line.get_children():
+		var avatar = (child as Avatar)
+		avatar._curr_speed = avatar.move_speed
+	for child in enemy_line.get_children():
+		var avatar = (child as Avatar)
+		avatar._curr_speed = avatar.move_speed
+
 func on_start_order_step(body: Node) -> void:
 	print("entering order step")
 	avatar._curr_speed = 0
 	avatar.progress_ratio = ORDER_STEP
 	
-	# pause every avatar motion
+	pause_avatars_motion()
+	
 	
 	# entry point for enemies to pick a move
 	

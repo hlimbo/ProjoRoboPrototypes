@@ -1,0 +1,62 @@
+[gd_scene load_steps=9 format=3 uid="uid://dx4mxgvlir7xh"]
+
+[ext_resource type="PackedScene" uid="uid://db40v3vl0mg3f" path="res://nodes/monsters/parts/arm_types/arm_whiteD.tscn" id="1_8mvto"]
+[ext_resource type="PackedScene" uid="uid://dufl31v1fytcj" path="res://nodes/monsters/parts/leg_types/leg_redD.tscn" id="2_r0mqo"]
+[ext_resource type="PackedScene" uid="uid://4et0y711whwe" path="res://nodes/monsters/parts/horn_types/detail_red_horn_small.tscn" id="3_nkv8m"]
+[ext_resource type="PackedScene" uid="uid://dbkv3lbny26p5" path="res://nodes/monsters/parts/body_types/typeE/body_redE.tscn" id="4_nqidm"]
+[ext_resource type="PackedScene" uid="uid://dau5ljlwfj3km" path="res://nodes/monsters/parts/eye_types/eye_psycho_dark.tscn" id="5_6xbwx"]
+[ext_resource type="PackedScene" uid="uid://c7mbux0kqq7as" path="res://nodes/monsters/parts/mouth_types/mouth_closed_fangs.tscn" id="6_63o0m"]
+[ext_resource type="Script" path="res://scripts/mob_selection.gd" id="7_wharc"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wt40x"]
+size = Vector2(210.667, 341.333)
+
+[node name="red_mob" type="Node2D"]
+scale = Vector2(0.5, 0.5)
+
+[node name="arm_whiteD_right" parent="." instance=ExtResource("1_8mvto")]
+position = Vector2(58, -204)
+rotation = -0.261799
+
+[node name="arm_whiteD_left" parent="." instance=ExtResource("1_8mvto")]
+position = Vector2(-90, -212)
+rotation = 0.261799
+flip_h = true
+
+[node name="leg_redD_right" parent="." instance=ExtResource("2_r0mqo")]
+position = Vector2(34, -104)
+
+[node name="leg_redD_left" parent="." instance=ExtResource("2_r0mqo")]
+position = Vector2(-62, -102)
+flip_h = true
+
+[node name="detail_red_horn_small_right" parent="." instance=ExtResource("3_nkv8m")]
+position = Vector2(34, -314)
+
+[node name="body_redE" parent="." instance=ExtResource("4_nqidm")]
+position = Vector2(0, -211)
+
+[node name="detail_red_horn_small_left" parent="." instance=ExtResource("3_nkv8m")]
+position = Vector2(-45, -317)
+flip_h = true
+
+[node name="eye_psycho_dark" parent="." instance=ExtResource("5_6xbwx")]
+position = Vector2(0, -261)
+
+[node name="mouth_closed_fangs" parent="." instance=ExtResource("6_63o0m")]
+position = Vector2(0, -211)
+
+[node name="Area2D" type="Area2D" parent="."]
+position = Vector2(0, -214)
+input_pickable = false
+monitoring = false
+monitorable = false
+script = ExtResource("7_wharc")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(0, 42)
+shape = SubResource("RectangleShape2D_wt40x")
+
+[connection signal="input_event" from="Area2D" to="Area2D" method="_on_input_event"]
+[connection signal="mouse_entered" from="Area2D" to="Area2D" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="Area2D" to="Area2D" method="_on_mouse_exited"]

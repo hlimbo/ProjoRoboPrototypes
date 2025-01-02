@@ -39,17 +39,17 @@ theme_override_constants/separation = 16
 [node name="BattleButton" type="Button" parent="CanvasLayer/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 28
-text = "Go to Battle Scene"
+text = "Turn Based Demo"
 
 [node name="ButtonB" type="Button" parent="CanvasLayer/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 28
-text = "Button B"
+text = "Overworld Demo"
 
 [node name="ButtonC" type="Button" parent="CanvasLayer/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 28
-text = "Button C"
+text = "Action Based Demo"
 
 [node name="TransitionRect" type="ColorRect" parent="CanvasLayer"]
 modulate = Color(0, 0, 0, 0)

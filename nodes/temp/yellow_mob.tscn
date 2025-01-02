@@ -1,0 +1,56 @@
+[gd_scene load_steps=9 format=3 uid="uid://by7ldgcy2up74"]
+
+[ext_resource type="Script" path="res://scripts/bot.gd" id="1_st3bo"]
+[ext_resource type="Resource" uid="uid://damm5v126277g" path="res://scripts/bot_stats.tres" id="2_d6iuc"]
+[ext_resource type="PackedScene" uid="uid://b6jorugo4ilds" path="res://nodes/monsters/parts/arm_types/arm_yellowE.tscn" id="3_hbqtk"]
+[ext_resource type="PackedScene" uid="uid://m8aj8e6g21ni" path="res://nodes/monsters/parts/leg_types/leg_yellowA.tscn" id="4_2jwx1"]
+[ext_resource type="PackedScene" uid="uid://dab73d2lfdlqc" path="res://nodes/monsters/parts/ear_types/detail_yellow_ear_round.tscn" id="5_mc4t3"]
+[ext_resource type="PackedScene" uid="uid://ndgd4bthnfpg" path="res://nodes/monsters/parts/body_types/typeD/body_yellowD.tscn" id="6_ubl30"]
+[ext_resource type="PackedScene" uid="uid://6feyfqpmlbtg" path="res://nodes/monsters/parts/eye_types/eye_cute_light.tscn" id="7_dacni"]
+[ext_resource type="PackedScene" uid="uid://doiqyey08hhcb" path="res://nodes/monsters/parts/mouth_types/mouthD.tscn" id="8_186ge"]
+
+[node name="yellow_mob" type="Node2D"]
+scale = Vector2(0.5, 0.5)
+script = ExtResource("1_st3bo")
+stats = ExtResource("2_d6iuc")
+
+[node name="arm_yellowE_left" parent="." instance=ExtResource("3_hbqtk")]
+position = Vector2(-90, -218)
+rotation = 0.392699
+flip_h = true
+
+[node name="arm_yellowE_right" parent="." instance=ExtResource("3_hbqtk")]
+position = Vector2(68, -218)
+rotation = -0.392699
+
+[node name="leg_yellowA_right" parent="." instance=ExtResource("4_2jwx1")]
+position = Vector2(36, -141.5)
+
+[node name="leg_yellowA_left" parent="." instance=ExtResource("4_2jwx1")]
+position = Vector2(-55, -141.5)
+flip_h = true
+
+[node name="detail_yellow_ear_round_right" parent="." instance=ExtResource("5_mc4t3")]
+position = Vector2(55, -273)
+
+[node name="detail_yellow_ear_round_left" parent="." instance=ExtResource("5_mc4t3")]
+position = Vector2(-75, -273)
+flip_h = true
+
+[node name="body_yellowD" parent="." instance=ExtResource("6_ubl30")]
+position = Vector2(-3.3847, -219)
+
+[node name="eye_cute_light" parent="." instance=ExtResource("7_dacni")]
+position = Vector2(-0.492352, -263.125)
+scale = Vector2(0.75, 0.75)
+
+[node name="eye_cute_light2" parent="." instance=ExtResource("7_dacni")]
+position = Vector2(-39.4924, -219.125)
+scale = Vector2(0.6, 0.6)
+
+[node name="eye_cute_light3" parent="." instance=ExtResource("7_dacni")]
+position = Vector2(40.5076, -220.125)
+scale = Vector2(0.6, 0.6)
+
+[node name="mouthD" parent="." instance=ExtResource("8_186ge")]
+position = Vector2(-0.692352, -188)

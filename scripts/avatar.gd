@@ -10,8 +10,13 @@ var _curr_speed: float
 @onready var area_2d: Area2D = $Sprite2D/Area2D
 @onready var sprite_2d: Sprite2D = $Sprite2D
 
-signal on_start_order_step(body: Node2D)
+var stats: BaseStats
+
+signal on_start_order_step(avatar: Avatar)
 signal on_start_exe_step(body: Node2D)
+
+func _init() -> void:
+	stats = BaseStats.new()
 
 func _ready() -> void:
 	_curr_speed = move_speed
@@ -23,7 +28,7 @@ func _physics_process(delta: float) -> void:
 	path_follow_2d.progress_ratio += delta * _curr_speed
 
 func on_area_entered(body: Node2D) -> void:
-	on_start_order_step.emit(body)
+	on_start_order_step.emit(self)
 
 func on_area_exited(body: Node2D) -> void:
 	on_start_exe_step.emit(body)

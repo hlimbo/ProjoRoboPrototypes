@@ -77,6 +77,8 @@ var enemy_stats: Array[BaseStats] = []
 var party_member_avatars: Array[Avatar] = []
 var enemy_avatars: Array[Avatar] = []
 
+var battle_participants: Array[Node] = []
+
 func generate_random_stats(actor_type: Actor_Type) -> BaseStats:
 	var stats = BaseStats.new()
 	
@@ -100,16 +102,11 @@ func get_starting_timeline_positions() -> Array:
 func _init() -> void:
 	print("init called")
 
-
-	
-
 func _enter_tree() -> void:
-	print("enter tree called")
-	
-	var max_battle_speed: int = 0
-	
+	print("enter tree called")	
 	
 	# initialize party member and enemy base stats
+	var max_battle_speed: int = 0
 	for i in range(0, party_member_spawn_count):
 		var stats = generate_random_stats(Actor_Type.PARTY_MEMBER)
 		party_member_stats.append(stats)
@@ -130,6 +127,8 @@ func _enter_tree() -> void:
 		var avatar: Avatar = avatar_res.instantiate()
 		avatar.texture = party_member_textures[i]
 		avatar.move_speed = (party_member_stats[i].speed / float(max_battle_speed)) * 0.25		
+		avatar.stats.set_stats(party_member_stats[i])
+		
 		party_line.add_child(avatar)
 		party_member_avatars.append(avatar)
 		avatar.name = party_member_stats[i].name
@@ -145,6 +144,8 @@ func _enter_tree() -> void:
 	# spawn party members and enemies
 	var starting_positions = [
 		$PartyMember1.position,
+		$PartyMember2.position,
+		$PartyMember3.position,
 		$Enemy1.position,
 		$Enemy2.position,
 		$Enemy3.position,
@@ -152,6 +153,8 @@ func _enter_tree() -> void:
 	
 	var mobs = [
 		preload("res://nodes/temp/yellow_mob.tscn"),
+		preload("res://nodes/temp/freddy.tscn"),
+		preload("res://nodes/temp/green_pill.tscn"),
 		preload("res://nodes/temp/blue_mob.tscn"),
 		preload("res://nodes/temp/green_mob.tscn"),
 		preload("res://nodes/temp/red_mob.tscn"),
@@ -164,6 +167,11 @@ func _enter_tree() -> void:
 		var m = mob.instantiate()
 		add_child(m)
 		m.position = start_pos
+		battle_participants.append(m)
+		
+	# set names - party members
+	for i in range(0, len(party_member_stats)):
+		battle_participants[i].name = party_member_stats[i].name
 
 func _ready() -> void:
 	print("battle scene ready called")

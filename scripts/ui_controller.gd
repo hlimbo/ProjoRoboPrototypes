@@ -1,14 +1,15 @@
 extends CanvasLayer
 
 @onready var active_skill_menu: Control = $ActiveSkillMenu
-@onready var action_layout: GridContainer = $ActionLayout
+@onready var action_layout: Control = $ActionLayout
 @onready var description_panel: Panel = $DescriptionPanel
 
-@onready var attack: Button = $ActionLayout/Attack
-@onready var defend: Button = $ActionLayout/Defend
-@onready var skill: Button = $ActionLayout/Skills
-@onready var flee: Button = $ActionLayout/Flee
+@onready var attack: Button = $ActionLayout/ActionLayout/Attack
+@onready var defend: Button = $ActionLayout/ActionLayout/Defend
+@onready var skill: Button = $ActionLayout/ActionLayout/Skills
+@onready var flee: Button = $ActionLayout/ActionLayout/Flee
 @onready var cancel: Button = $ActiveSkillMenu/Cancel
+@onready var party_member_name: Label = $ActionLayout/PartyMemberName
 
 @onready var description_timer: Timer = $DescriptionPanel/Timer
 @onready var label: Label = $DescriptionPanel/Label
@@ -31,14 +32,18 @@ const ON_TARGET_CLICKED: String = "on_target_clicked"
 
 ## 1-D Graph variables
 @onready var one_d_graph: Control = $OneDGraph
-@onready var avatar: Avatar = one_d_graph.get_node("PartyPath2D").get_child(0)
+@onready var avatar_nodes: Array[Node] = one_d_graph.get_node("PartyPath2D").get_children()
+var avatars: Array[Avatar] = []
 const ORDER_STEP: float = 0.858
 var did_avatar_skill_start: bool = false
+# avatar reference that will make a move
+var active_avatar: Avatar = null
 
 @onready var skill_timer: Timer = $SkillTimer
 
 func _ready():
 	print("ui controller ready called")
+	# need to know which avatar is executing the move
 	attack.pressed.connect(_on_attack_button_pressed)
 	defend.pressed.connect(_on_defend_button_pressed)
 	skill.pressed.connect(_on_skills_button_pressed)
@@ -62,9 +67,13 @@ func _ready():
 	mob2.connect(ON_TARGET_CLICKED, on_target_clicked)
 	mob3.connect(ON_TARGET_CLICKED, on_target_clicked)
 	
+	for node in avatar_nodes:
+		avatars.append(node as Avatar)
+	
 	# 1-d graph
-	avatar.on_start_order_step.connect(on_start_order_step)
-	avatar.on_start_exe_step.connect(on_start_exe_step)
+	for avatar in avatars:
+		avatar.on_start_order_step.connect(on_start_order_step)
+		avatar.on_start_exe_step.connect(on_start_exe_step)
 	
 func _on_attack_button_pressed():
 	action_layout.visible = false
@@ -86,7 +95,8 @@ func _on_defend_button_pressed():
 	# TODOS
 	# increase player's defense temporarily for a set time
 	# set it back to what it was previously
-	avatar.progress_ratio = 1
+	if active_avatar:
+		active_avatar.progress_ratio = 1
 	description_panel.visible = true
 	action_layout.visible = false
 	var player_name := "Mumbo"
@@ -113,8 +123,9 @@ func _on_description_timer_timeout():
 	# once party member moves up to do their attack or complete their ability
 	# complete means end of animation and attack damage is dealt
 	# reset the avatar that made the move back to the beginning of timeline
-	avatar.progress_ratio = 0
-	avatar._curr_speed = avatar.move_speed
+	if active_avatar:
+		active_avatar.progress_ratio = 0
+		active_avatar._curr_speed = active_avatar.move_speed
 	
 	resume_avatars_motion()
 
@@ -133,7 +144,8 @@ func _physics_process(delta: float) -> void:
 		# delay skill until avatar progress ratio reaches 1
 		var diff: float = 1 - ORDER_STEP
 		var d: float = diff / skill_timer.wait_time
-		avatar.progress_ratio += d * delta
+		if active_avatar:
+			active_avatar.progress_ratio += d * delta
 
 
 func _on_skill_timer_timeout() -> void:
@@ -161,7 +173,8 @@ func _on_flee_button_pressed():
 	else:
 		label.text = "Mumbo Party cannot escape!"
 	
-	avatar.progress_ratio = 1
+	if active_avatar:
+		active_avatar.progress_ratio = 1
 	description_timer.start()
 
 func on_target_hovered(mob_name: String):
@@ -177,7 +190,8 @@ func on_target_clicked(mob_name: String):
 	mob3.input_pickable = false
 	
 	# basic attack - move avatar immediately towards end of exe
-	avatar.progress_ratio = 1
+	if active_avatar:
+		active_avatar.progress_ratio = 1
 	
 	target_menu.visible = false
 	description_panel.visible = true
@@ -189,7 +203,6 @@ func on_target_clicked(mob_name: String):
 
 
 func pause_avatars_motion():
-	# pause every avatar motion
 	var one_d_graph: Control = $OneDGraph
 	var party_line: Path2D = one_d_graph.get_node("PartyPath2D")
 	var enemy_line: Path2D = one_d_graph.get_node("EnemyPath2D")
@@ -211,17 +224,18 @@ func resume_avatars_motion():
 		var avatar = (child as Avatar)
 		avatar._curr_speed = avatar.move_speed
 
-func on_start_order_step(body: Node) -> void:
-	print("entering order step")
+func on_start_order_step(avatar: Avatar) -> void:
+	print("entering order step: " + avatar.name)
 	avatar._curr_speed = 0
 	avatar.progress_ratio = ORDER_STEP
 	
 	pause_avatars_motion()
-	
+	party_member_name.text = avatar.name
 	
 	# entry point for enemies to pick a move
-	
 	# entry point for party member to pick a move
+	
+	active_avatar = avatar
 	action_layout.visible = true
 
 func on_start_exe_step(body: Node) -> void:

@@ -33,13 +33,30 @@ const ON_TARGET_CLICKED: String = "on_target_clicked"
 ## 1-D Graph variables
 @onready var one_d_graph: Control = $OneDGraph
 @onready var avatar_nodes: Array[Node] = one_d_graph.get_node("PartyPath2D").get_children()
-var avatars: Array[Avatar] = []
+var party_members: Array[Avatar] = []
+@onready var enemy_nodes: Array[Node] = one_d_graph.get_node("EnemyPath2D").get_children()
+var enemy_avatars: Array[Avatar] = []
+
 const ORDER_STEP: float = 0.858
 var did_avatar_skill_start: bool = false
 # avatar reference that will make a move
 var active_avatar: Avatar = null
 
 @onready var skill_timer: Timer = $SkillTimer
+
+var did_tween_start: bool = false
+
+enum Party_Battle_States {
+	IN_PROGRESS,
+	FLEE,
+	WIN,
+	DEFEAT,
+}
+
+var party_battle_state: Party_Battle_States = Party_Battle_States.IN_PROGRESS
+
+@onready var transition_rect: ColorRect = $TransitionRect
+@onready var transition_label: Label = $TransitionRect/Label
 
 func _ready():
 	print("ui controller ready called")
@@ -68,12 +85,16 @@ func _ready():
 	mob3.connect(ON_TARGET_CLICKED, on_target_clicked)
 	
 	for node in avatar_nodes:
-		avatars.append(node as Avatar)
+		party_members.append(node as Avatar)
+	
+	for node in enemy_nodes:
+		enemy_avatars.append(node as Avatar)
 	
 	# 1-d graph
-	for avatar in avatars:
+	for avatar in party_members:
 		avatar.on_start_order_step.connect(on_start_order_step)
 		avatar.on_start_exe_step.connect(on_start_exe_step)
+		 
 	
 func _on_attack_button_pressed():
 	action_layout.visible = false
@@ -97,10 +118,10 @@ func _on_defend_button_pressed():
 	# set it back to what it was previously
 	if active_avatar:
 		active_avatar.progress_ratio = 1
+		label.text = "%s is defending!" % active_avatar.name
+	
 	description_panel.visible = true
 	action_layout.visible = false
-	var player_name := "Mumbo"
-	label.text = "%s is defending!" % player_name
 	description_timer.start()
 	
 func _on_cancel_button_pressed():
@@ -147,15 +168,39 @@ func _physics_process(delta: float) -> void:
 		if active_avatar:
 			active_avatar.progress_ratio += d * delta
 
+func _process(delta: float) -> void:
+	# check Party Battle Status
+	var pending_battle_state: Party_Battle_States = Party_Battle_States.DEFEAT
+	for avatar in party_members:
+		if avatar.stats.hp > 0:
+			pending_battle_state = Party_Battle_States.IN_PROGRESS
+			break
+			
+	# all enemies are defeated
+	if len(enemy_avatars) == 0:
+		pending_battle_state = Party_Battle_States.WIN
+	
+	# hacky - setting the flee state happens in another callable function
+	# need to either handle state changes in callable functions or have it all happen in process
+	if party_battle_state != Party_Battle_States.FLEE:
+		party_battle_state = pending_battle_state
+	
+	if did_tween_start == false and party_battle_state != Party_Battle_States.IN_PROGRESS:
+		transition_to_main_scene(party_battle_state)
+		did_tween_start = true
+
 
 func _on_skill_timer_timeout() -> void:
+	# TODO may need to hold which avatar skill started in an array
 	did_avatar_skill_start = false
 	description_panel.visible = true
-	var player_name := "Mumbo"
-	var enemy_name := "Villainous Gelatin"
-	var skill_name := active_placeholder_skill.text
-	var dmg := randi_range(32, 64)
-	label.text = "%s casts %s to %s. It deals %d damage!" % [player_name, skill_name, enemy_name, dmg]
+	
+	if active_avatar:
+		var enemy_name := "Villainous Gelatin"
+		var skill_name := active_placeholder_skill.text
+		var dmg := randi_range(32, 64)
+		label.text = "%s casts %s to %s. It deals %d damage!" % [active_avatar.name, skill_name, enemy_name, dmg]
+	
 	description_timer.start()
 
 func _on_flee_button_pressed():
@@ -169,9 +214,10 @@ func _on_flee_button_pressed():
 	description_panel.visible = true
 	action_layout.visible = false
 	if roll < flee_rate:
-		label.text = "Mumbo Party fled!"
+		label.text = "Party fled!"
+		party_battle_state = Party_Battle_States.FLEE
 	else:
-		label.text = "Mumbo Party cannot escape!"
+		label.text = "Party cannot escape!"
 	
 	if active_avatar:
 		active_avatar.progress_ratio = 1
@@ -192,12 +238,11 @@ func on_target_clicked(mob_name: String):
 	# basic attack - move avatar immediately towards end of exe
 	if active_avatar:
 		active_avatar.progress_ratio = 1
+		var dmg := randi_range(1, 20)
+		label.text = "%s attacked for %d damage to %s" % [active_avatar.name, dmg, mob_name]
 	
 	target_menu.visible = false
 	description_panel.visible = true
-	var player_name := "Mumbo"
-	var dmg := randi_range(1, 20)
-	label.text = "%s attacked for %d damage to %s" % [player_name, dmg, mob_name]
 	# start timer to hide description panel
 	description_timer.start()
 
@@ -242,3 +287,35 @@ func on_start_exe_step(body: Node) -> void:
 	print("entering exe step")
 	# where an action can get emitted depending on which one the player picked
 	# for enemies, this is their entry point to do their action
+
+func transition_to_main_scene(status: Party_Battle_States):
+	var exit_scene = func():
+		var exit_timer = Timer.new()
+		exit_timer.autostart = true
+		exit_timer.one_shot = true
+		exit_timer.wait_time = 3 # seconds
+		add_child(exit_timer)
+		exit_timer.timeout.connect(func():
+			var err = get_tree().change_scene_to_file("res://scenes/main.tscn")
+			if err != OK:
+				print_rich("[color=red]changing scene failed. Error code: %d [/color]" % err)
+		)
+
+	
+	match status:
+		Party_Battle_States.FLEE:
+			transition_label.text = "Party Fled"
+		Party_Battle_States.WIN:
+			transition_label.text = "Party Won"
+		Party_Battle_States.DEFEAT:
+			transition_label.text = "Game Over"
+	
+	
+	transition_rect.visible = true
+	# need to set z-level to a higher value to hide the PartyPath2D avatar nodes
+	transition_rect.z_index = 1
+	var tween: Tween = get_tree().create_tween()
+	# set tween alpha from 0 alpha to 1 alpha on the modulate property's alpha component
+	tween.parallel().tween_property(transition_rect, "modulate:a", 1, 1).from(0)
+	tween.parallel().tween_property(transition_rect,"self_modulate:a", 1, 1).from(0)
+	tween.finished.connect(exit_scene)

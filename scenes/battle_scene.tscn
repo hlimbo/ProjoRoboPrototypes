@@ -132,6 +132,37 @@ text = "Cancel"
 wait_time = 3.0
 one_shot = true
 
+[node name="PartyBattleState" type="Label" parent="UILayout"]
+offset_right = 218.0
+offset_bottom = 59.0
+theme_override_font_sizes/font_size = 32
+
+[node name="TransitionRect" type="ColorRect" parent="UILayout"]
+visible = false
+modulate = Color(1, 1, 1, 0)
+self_modulate = Color(0, 0, 0, 0)
+offset_right = 1273.0
+offset_bottom = 718.0
+
+[node name="Label" type="Label" parent="UILayout/TransitionRect"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 36
+text = "Party Battle Status Here"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(1276, 1438)
 zoom = Vector2(0.5, 0.5)

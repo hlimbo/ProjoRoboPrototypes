@@ -15,16 +15,29 @@ var _curr_speed: float
 @onready var area_2d: Area2D = $Sprite2D/Area2D
 @onready var sprite_2d: Sprite2D = $Sprite2D
 
-var stats: BaseStats
+var initial_stats: BaseStats
+var curr_stats: BaseStats
 var avatar_type: Avatar_Type
 var is_alive: bool
 
-signal on_start_order_step(avatar: Avatar)
+## Timers
+var defense_timer: Timer
+
+signal on_start_order_step(avatar: Avatar, defense_timer: Timer)
 signal on_start_exe_step(body: Node2D)
 
 func _init() -> void:
-	stats = BaseStats.new()
+	initial_stats = BaseStats.new()
+	curr_stats = BaseStats.new()
 	is_alive = true
+	
+	defense_timer = Timer.new()
+	# godot engine will generate a unique name as nodes that are
+	# siblings of each other must have unique names
+	defense_timer.name = "DefenseTimer"
+	defense_timer.autostart = false
+	defense_timer.one_shot = true
+	defense_timer.wait_time = 1 # seconds
 
 func _ready() -> void:
 	_curr_speed = move_speed

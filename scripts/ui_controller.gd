@@ -43,6 +43,7 @@ var did_avatar_skill_start: bool = false
 var active_avatar: Avatar = null
 
 @onready var skill_timer: Timer = $SkillTimer
+var defense_timers: Array[Timer] = []
 
 var did_tween_start: bool = false
 
@@ -95,9 +96,18 @@ func _ready():
 		avatar.on_start_order_step.connect(on_start_order_step)
 		avatar.on_start_exe_step.connect(on_start_exe_step)
 		
+	var enemy_index = 0
 	for avatar in enemy_avatars:
 		avatar.on_start_order_step.connect(on_start_order_step)
-		 
+		
+		# binds the avatar value to on_defense_timeout function
+		# it copies the callable on_defense_end and binds the
+		# avatar reference for it to be later executed once the
+		# timer timesout
+		avatar.defense_timer.timeout.connect(on_defense_timeout.bind(avatar))
+		
+		# add timer to scene tree to start ticking
+		add_child(avatar.defense_timer)
 	
 func _on_attack_button_pressed():
 	action_layout.visible = false
@@ -126,6 +136,7 @@ func _on_defend_button_pressed():
 	description_panel.visible = true
 	action_layout.visible = false
 	description_timer.start()
+	resume_avatars_motion()
 	
 func _on_cancel_button_pressed():
 	target_menu.visible = false
@@ -148,8 +159,7 @@ func _on_description_timer_timeout():
 	if active_avatar:
 		active_avatar.progress_ratio = 0
 		active_avatar._curr_speed = active_avatar.move_speed
-	
-	resume_avatars_motion()
+		active_avatar = null
 
 func _on_skill_activated():
 	# TODOs
@@ -173,7 +183,7 @@ func _process(delta: float) -> void:
 	# check Party Battle Status
 	var pending_battle_state: Party_Battle_States = Party_Battle_States.DEFEAT
 	for avatar in party_members:
-		if avatar.stats.hp > 0:
+		if avatar.curr_stats.hp > 0:
 			pending_battle_state = Party_Battle_States.IN_PROGRESS
 			break
 			
@@ -203,6 +213,7 @@ func _on_skill_timer_timeout() -> void:
 		label.text = "%s casts %s to %s. It deals %d damage!" % [active_avatar.name, skill_name, enemy_name, dmg]
 	
 	description_timer.start()
+	resume_avatars_motion()
 
 func _on_flee_button_pressed():
 	# TODOs
@@ -223,6 +234,7 @@ func _on_flee_button_pressed():
 	if active_avatar:
 		active_avatar.progress_ratio = 1
 	description_timer.start()
+	
 
 func on_target_hovered(mob_name: String):
 	target_label.text = mob_name
@@ -246,6 +258,8 @@ func on_target_clicked(mob_name: String):
 	description_panel.visible = true
 	# start timer to hide description panel
 	description_timer.start()
+	
+	resume_avatars_motion()
 
 
 func pause_avatars_motion():
@@ -280,27 +294,7 @@ func on_start_order_step(avatar: Avatar) -> void:
 		action_layout.visible = true
 	# entry point for enemies to pick a move
 	elif avatar.avatar_type == Avatar.Avatar_Type.ENEMY:
-		avatar.progress_ratio = 1
-		# pick a random party member
-		var live_party_members: Array[Avatar] = party_members.filter(func(p: Avatar): return p.is_alive)
-		var i = randi_range(0, len(live_party_members) - 1)
-		var target: Avatar = live_party_members[i]
-		# compute random dmg to deal - TODO: add damage calculator
-		var dmg = randi_range(1,20)
-		target.stats.hp -= dmg
-		# target downed...
-		if target.stats.hp <= 0:
-			target.stats.hp = 0
-			# reset their timeline back to 0
-			target.progress_ratio = 0
-			target._curr_speed = 0
-			target.is_alive = false
-			
-		
-		# display damage dealt to target
-		description_panel.visible = true
-		label.text = "%s dealt %d damage to %s" % [avatar.name, dmg, target.name]
-		description_timer.start()
+		ai_defend(avatar)
 	
 
 func on_start_exe_step(body: Node) -> void:
@@ -339,3 +333,56 @@ func transition_to_main_scene(status: Party_Battle_States):
 	tween.parallel().tween_property(transition_rect, "modulate:a", 1, 1).from(0)
 	tween.parallel().tween_property(transition_rect,"self_modulate:a", 1, 1).from(0)
 	tween.finished.connect(exit_scene)
+
+
+#region AI Commands
+func ai_determine_move(avatar: Avatar) -> void:
+	var possible_actions: Array[Callable] = [ai_attack, ai_defend, ai_use_random_skill]
+	var random_move_index = randi_range(0, len(possible_actions) - 1)
+	possible_actions[random_move_index].call(avatar)
+
+func ai_attack(avatar: Avatar) -> void:
+		avatar.progress_ratio = 1
+		# pick a random party member
+		var live_party_members: Array[Avatar] = party_members.filter(func(p: Avatar): return p.is_alive)
+		
+		# no more party members to attack
+		if len(live_party_members) == 0:
+			return
+		
+		var i = randi_range(0, len(live_party_members) - 1)
+		var target: Avatar = live_party_members[i]
+		# compute random dmg to deal - TODO: add damage calculator
+		var dmg = randi_range(1,20)
+		target.curr_stats.hp -= dmg
+		# target downed...
+		if target.curr_stats.hp <= 0:
+			target.curr_stats.hp = 0
+			# reset their timeline back to 0
+			target.progress_ratio = 0
+			target._curr_speed = 0
+			target.is_alive = false
+			
+		
+		# display damage dealt to target
+		description_panel.visible = true
+		label.text = "%s dealt %d damage to %s" % [avatar.name, dmg, target.name]
+		description_timer.start()
+
+func ai_defend(avatar: Avatar) -> void:
+	# TODO - determine a formula for defending against an attack
+	avatar.curr_stats.defense += avatar.curr_stats.defense * .25
+	avatar.progress_ratio = 1
+	description_panel.visible = true
+	label.text = "%s is defending" % [avatar.name]
+	avatar.defense_timer.start()
+	
+func ai_use_random_skill(avatar: Avatar) -> void:
+	pass
+
+func on_defense_timeout(avatar: Avatar) -> void:
+	print("avatar defense ending: %s" % avatar.name)
+	resume_avatars_motion()
+	description_timer.start()
+
+#endregion

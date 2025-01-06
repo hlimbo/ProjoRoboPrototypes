@@ -126,8 +126,9 @@ func _enter_tree() -> void:
 	for i in range(0, party_member_spawn_count):
 		var avatar: Avatar = avatar_res.instantiate()
 		avatar.texture = party_member_textures[i]
-		avatar.move_speed = (party_member_stats[i].speed / float(max_battle_speed)) * 0.25		
-		avatar.stats.set_stats(party_member_stats[i])
+		avatar.move_speed = (party_member_stats[i].speed / float(max_battle_speed)) * 0.25
+		avatar.initial_stats.set_stats(party_member_stats[i])
+		avatar.curr_stats.set_stats(party_member_stats[i])
 		avatar.avatar_type = Avatar.Avatar_Type.PARTY_MEMBER
 		
 		party_line.add_child(avatar)
@@ -141,7 +142,10 @@ func _enter_tree() -> void:
 		enemy_line.add_child(avatar)
 		enemy_avatars.append(avatar)
 		avatar.name = enemy_stats[i].name
+		avatar.initial_stats.set_stats(enemy_stats[i])
+		avatar.curr_stats.set_stats(enemy_stats[i])
 		avatar.avatar_type = Avatar.Avatar_Type.ENEMY
+		
 
 	# spawn party members and enemies
 	var starting_positions = [
@@ -179,11 +183,14 @@ func _ready() -> void:
 	print("battle scene ready called")
 	var ranges = get_starting_timeline_positions()
 	print ("encounter type: %d" % encounter_type)
+	
+	# give random starting locations based on a range
 	for party_member in party_member_avatars:
 		var start_position = randf_range(ranges[0][0], ranges[0][1])
 		print_rich("[color=yellow]progress ratio picked for party avatar is %f[/color]" % start_position)
 		party_member.progress_ratio = start_position
-		
+	
+	# give random starting locations based on a range
 	for enemy in enemy_avatars:
 		var start_position = randf_range(ranges[1][0], ranges[1][1])
 		enemy.progress_ratio = start_position

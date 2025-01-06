@@ -42,9 +42,9 @@ var did_avatar_skill_start: bool = false
 # avatar reference that will make a move
 var active_avatar: Avatar = null
 
+# TODO - cleanup
+# player skill timer.. hardcoded in to prototype only
 @onready var skill_timer: Timer = $SkillTimer
-var defense_timers: Array[Timer] = []
-
 var did_tween_start: bool = false
 
 enum Party_Battle_States {
@@ -103,11 +103,15 @@ func _ready():
 		# binds the avatar value to on_defense_timeout function
 		# it copies the callable on_defense_end and binds the
 		# avatar reference for it to be later executed once the
-		# timer timesout
+		# timer times out
 		avatar.defense_timer.timeout.connect(on_defense_timeout.bind(avatar))
+		avatar.skill_timer.timeout.connect(on_skill_timeout.bind(avatar))
+		avatar.resume_delay_timer.timeout.connect(on_resume_delay)
 		
 		# add timer to scene tree to start ticking
 		add_child(avatar.defense_timer)
+		add_child(avatar.skill_timer)
+		add_child(avatar.resume_delay_timer)
 	
 func _on_attack_button_pressed():
 	action_layout.visible = false
@@ -281,7 +285,7 @@ func resume_avatars_motion():
 		enemy._curr_speed = enemy.move_speed
 
 func on_start_order_step(avatar: Avatar) -> void:
-	print("entering order step: " + avatar.name)
+	print("entering order step %s at time: %d" % [avatar.name, Time.get_ticks_msec()])
 	avatar._curr_speed = 0
 	active_avatar = avatar
 	avatar.progress_ratio = ORDER_STEP
@@ -294,7 +298,7 @@ func on_start_order_step(avatar: Avatar) -> void:
 		action_layout.visible = true
 	# entry point for enemies to pick a move
 	elif avatar.avatar_type == Avatar.Avatar_Type.ENEMY:
-		ai_flee(avatar)
+		ai_use_random_skill(avatar)
 	
 
 func on_start_exe_step(body: Node) -> void:
@@ -401,11 +405,72 @@ func ai_flee(avatar: Avatar) -> void:
 	resume_avatars_motion()
 
 func ai_use_random_skill(avatar: Avatar) -> void:
-	pass
+	# compute skill exec speed 
+	# numerator is the difference b/w the progress_ratios ranging between 0 and 1 inclusive
+	# denominator is the time period that the skill will take to execute measured in seconds
+	var diff: float = 1 - ORDER_STEP
+	var skill_exec_speed: float = diff / skill_timer.wait_time
+	avatar._curr_speed = skill_exec_speed
+	avatar.skill_timer.start()
 
 func on_defense_timeout(avatar: Avatar) -> void:
 	print("avatar defense ending: %s" % avatar.name)
 	resume_avatars_motion()
 	description_timer.start()
+
+func on_skill_timeout(avatar: Avatar) -> void:	
+	# pick random skill
+	var skill1 = Skill.new()
+	var skill2 = Skill.new()
+	var skill3 = Skill.new()
+	
+	skill1.name ="Special Atk1"
+	skill2.name = "Special Atk2"
+	skill3.name = "Special Atk3"
+	skill1.attack = 5
+	skill2.attack = 10
+	skill3.attack = 20
+	skill1.cost = 1
+	skill2.cost = 2
+	skill3.cost = 3
+	
+	# TODO: check ahead of time if enemy can cast a skill, if not, don't do this action
+	var skills: Array[Skill] = [skill1, skill2, skill3]
+	var castable_skills: Array[Skill] = skills.filter(func(s: Skill): return s.cost <= avatar.curr_stats.skill_points)
+	
+	# pick random target to cast skill on
+	var members: Array[Avatar] = party_members.filter(func(p: Avatar): return p.is_alive)
+	
+	description_panel.visible = true
+	
+	# no party members alive...
+	if len(members) == 0:
+		label.text = "%s no target to cast..." % avatar.name
+		return
+		
+	if len(castable_skills) == 0:
+		label.text = "%s cannot execute any skills!" % avatar.name
+		return
+	
+	var skill_index: int = randi_range(0, len(castable_skills) - 1)
+	var target_index: int = randi_range(0, len(members) - 1)
+	var target: Avatar = members[target_index]
+	var skill: Skill = skills[skill_index]
+	label.text = "%s used %s on %s!" % [avatar.name, skill.name, target.name]
+	
+	target.curr_stats.hp -= skill.attack
+	avatar.curr_stats.skill_points = maxi(avatar.curr_stats.skill_points - skill.cost, 0)
+
+	# move progress ratio to 1 and pause movement momentarily
+	avatar.progress_ratio = 1
+	avatar._curr_speed = 0
+
+	# TODO - motion should be resumed when skill animation finishes
+	avatar.resume_delay_timer.start()
+	description_timer.start()
+
+# used to delay resuming timeline to simulate animation time
+func on_resume_delay() -> void:
+	resume_avatars_motion()
 
 #endregion

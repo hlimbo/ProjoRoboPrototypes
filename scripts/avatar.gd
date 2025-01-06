@@ -22,6 +22,9 @@ var is_alive: bool
 
 ## Timers
 var defense_timer: Timer
+# TODO: move to a skill manager class
+var skill_timer: Timer
+var resume_delay_timer: Timer
 
 signal on_start_order_step(avatar: Avatar)
 signal on_start_exe_step(body: Node2D)
@@ -40,6 +43,18 @@ func _init() -> void:
 	defense_timer.autostart = false
 	defense_timer.one_shot = true
 	defense_timer.wait_time = 1 # seconds
+	
+	skill_timer = Timer.new()
+	skill_timer.name = "SkillTimer"
+	skill_timer.autostart = false
+	skill_timer.one_shot = true
+	skill_timer.wait_time = 3 # seconds
+	
+	resume_delay_timer = Timer.new()
+	resume_delay_timer.name = "resume_delay_timer"
+	resume_delay_timer.autostart = false
+	resume_delay_timer.one_shot = true
+	resume_delay_timer.wait_time = 2 # seconds
 
 func _ready() -> void:
 	_curr_speed = move_speed

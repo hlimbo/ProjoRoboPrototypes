@@ -91,6 +91,7 @@ func generate_random_stats(actor_type: Actor_Type) -> BaseStats:
 	stats.defense = randi_range(10, 20)
 	stats.hp = randi_range(40, 80)
 	stats.speed = randi_range(10, 20)
+	stats.skill_points = 100
 
 	return stats
 
@@ -103,7 +104,7 @@ func _init() -> void:
 	print("init called")
 
 func _enter_tree() -> void:
-	print("enter tree called")	
+	print("enter tree called")
 	
 	# initialize party member and enemy base stats
 	var max_battle_speed: int = 0

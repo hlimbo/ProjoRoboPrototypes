@@ -23,8 +23,10 @@ var is_alive: bool
 ## Timers
 var defense_timer: Timer
 
-signal on_start_order_step(avatar: Avatar, defense_timer: Timer)
+signal on_start_order_step(avatar: Avatar)
 signal on_start_exe_step(body: Node2D)
+
+signal on_avatar_flee(avatar: Avatar)
 
 func _init() -> void:
 	initial_stats = BaseStats.new()

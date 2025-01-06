@@ -294,7 +294,7 @@ func on_start_order_step(avatar: Avatar) -> void:
 		action_layout.visible = true
 	# entry point for enemies to pick a move
 	elif avatar.avatar_type == Avatar.Avatar_Type.ENEMY:
-		ai_defend(avatar)
+		ai_flee(avatar)
 	
 
 func on_start_exe_step(body: Node) -> void:
@@ -376,7 +376,28 @@ func ai_defend(avatar: Avatar) -> void:
 	description_panel.visible = true
 	label.text = "%s is defending" % [avatar.name]
 	avatar.defense_timer.start()
+
+func ai_flee(avatar: Avatar) -> void:
+	description_panel.visible = true
+	label.text = "%s fled from battle" % avatar.name
+	description_timer.start()
 	
+	var i = 0
+	while i < len(enemy_avatars):
+		if enemy_avatars[i] == avatar:
+			break
+		i += 1
+		
+	# remove avatar from scene if found
+	if i < len(enemy_avatars):
+		# invalidate active_avatar as it will be removed
+		active_avatar = null
+		enemy_avatars.remove_at(i)
+		remove_child(avatar)
+		avatar.queue_free()
+		
+	resume_avatars_motion()
+
 func ai_use_random_skill(avatar: Avatar) -> void:
 	pass
 

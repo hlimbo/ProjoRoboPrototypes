@@ -1,6 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://dx4mxgvlir7xh"]
+[gd_scene load_steps=10 format=3 uid="uid://dx4mxgvlir7xh"]
 
 [ext_resource type="PackedScene" uid="uid://db40v3vl0mg3f" path="res://nodes/monsters/parts/arm_types/arm_whiteD.tscn" id="1_8mvto"]
+[ext_resource type="Script" path="res://scripts/battle_participant.gd" id="1_ssov7"]
 [ext_resource type="PackedScene" uid="uid://dufl31v1fytcj" path="res://nodes/monsters/parts/leg_types/leg_redD.tscn" id="2_r0mqo"]
 [ext_resource type="PackedScene" uid="uid://4et0y711whwe" path="res://nodes/monsters/parts/horn_types/detail_red_horn_small.tscn" id="3_nkv8m"]
 [ext_resource type="PackedScene" uid="uid://dbkv3lbny26p5" path="res://nodes/monsters/parts/body_types/typeE/body_redE.tscn" id="4_nqidm"]
@@ -13,6 +14,7 @@ size = Vector2(210.667, 341.333)
 
 [node name="red_mob" type="Node2D"]
 scale = Vector2(0.5, 0.5)
+script = ExtResource("1_ssov7")
 
 [node name="arm_whiteD_right" parent="." instance=ExtResource("1_8mvto")]
 position = Vector2(58, -204)

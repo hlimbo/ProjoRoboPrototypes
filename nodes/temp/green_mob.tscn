@@ -1,5 +1,6 @@
-[gd_scene load_steps=8 format=3 uid="uid://1ow6pmgdpc8k"]
+[gd_scene load_steps=9 format=3 uid="uid://1ow6pmgdpc8k"]
 
+[ext_resource type="Script" path="res://scripts/battle_participant.gd" id="1_clnbm"]
 [ext_resource type="PackedScene" uid="uid://b7cwbxvrd0en7" path="res://nodes/monsters/parts/arm_types/arm_greenB.tscn" id="1_msosb"]
 [ext_resource type="PackedScene" uid="uid://b0ao2bu4nka3i" path="res://nodes/monsters/parts/leg_types/leg_greenC.tscn" id="2_4nbk3"]
 [ext_resource type="PackedScene" uid="uid://cmsn42vf5pqrv" path="res://nodes/monsters/parts/body_types/typeF/body_greenF.tscn" id="3_4n811"]
@@ -12,6 +13,7 @@ size = Vector2(210.667, 341.333)
 
 [node name="green_mob" type="Node2D"]
 scale = Vector2(0.5, 0.5)
+script = ExtResource("1_clnbm")
 
 [node name="arm_greenB_right" parent="." instance=ExtResource("1_msosb")]
 position = Vector2(66, -198)

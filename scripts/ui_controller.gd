@@ -382,6 +382,8 @@ func ai_flee(avatar: Avatar) -> void:
 	label.text = "%s fled from battle" % avatar.name
 	description_timer.start()
 	
+	avatar.on_avatar_flee.emit()
+	
 	var i = 0
 	while i < len(enemy_avatars):
 		if enemy_avatars[i] == avatar:

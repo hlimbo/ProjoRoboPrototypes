@@ -174,6 +174,12 @@ func _enter_tree() -> void:
 		add_child(m)
 		m.position = start_pos
 		battle_participants.append(m)
+	
+	var enemy_mobs: Array[Node] = battle_participants.filter(
+			func(b: Node): return (b as BattleParticipant) != null)
+		
+	for i in range(0, len(enemy_mobs)):
+		(enemy_mobs[i] as BattleParticipant).avatar = enemy_avatars[i]
 		
 	# set names - party members
 	for i in range(0, len(party_member_stats)):

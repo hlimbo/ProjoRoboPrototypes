@@ -1,11 +1,13 @@
 extends Node
+class_name BattleParticipant
 
+var avatar: Avatar
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass # Replace with function body.
+	avatar.on_avatar_flee.connect(on_flee)
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
+func on_flee():
+	# remove from scene
+	queue_free()

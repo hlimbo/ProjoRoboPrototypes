@@ -1,0 +1,146 @@
+[gd_scene load_steps=7 format=3 uid="uid://dtax6jkhjx44p"]
+
+[ext_resource type="PackedScene" uid="uid://cqywvxx5tdrkj" path="res://nodes/monsters/parts/body_types/body_whiteC.tscn" id="1_mrsf8"]
+[ext_resource type="Texture2D" uid="uid://cgv4r3bn20in1" path="res://assets/kenney_monster_pack/spritesheet_default.png" id="2_j4aqf"]
+[ext_resource type="PackedScene" uid="uid://dfbiqxnjd5hx5" path="res://nodes/monsters/parts/eye_types/eye_angry_green.tscn" id="3_ydycx"]
+[ext_resource type="PackedScene" uid="uid://b2upjau44iwbj" path="res://nodes/monsters/parts/mouth_types/mouthG.tscn" id="4_7qa8l"]
+[ext_resource type="PackedScene" uid="uid://c307nvfw42y56" path="res://nodes/monsters/parts/arm_types/arm_whiteB.tscn" id="5_lpca1"]
+[ext_resource type="PackedScene" uid="uid://b0ao2bu4nka3i" path="res://nodes/monsters/parts/leg_types/leg_greenC.tscn" id="6_uq73k"]
+
+[node name="BaseBodyC" type="Node2D"]
+
+[node name="body" type="Sprite2D" parent="." instance=ExtResource("1_mrsf8")]
+self_modulate = Color(1, 0.713726, 0, 1)
+z_index = 2
+z_as_relative = false
+texture = ExtResource("2_j4aqf")
+region_enabled = true
+region_rect = Rect2(684, 996, 139, 194)
+
+[node name="face" type="Node2D" parent="body"]
+
+[node name="config_1" type="Node2D" parent="body/face"]
+
+[node name="eyes" type="Node2D" parent="body/face/config_1"]
+
+[node name="eyes_l" type="Marker2D" parent="body/face/config_1/eyes"]
+position = Vector2(-35, -40)
+scale = Vector2(0.75, 0.75)
+
+[node name="eye_angry_green" type="Sprite2D" parent="body/face/config_1/eyes/eyes_l" instance=ExtResource("3_ydycx")]
+texture = ExtResource("2_j4aqf")
+flip_h = true
+region_enabled = true
+region_rect = Rect2(698, 748, 58, 49)
+
+[node name="eyes_r" type="Marker2D" parent="body/face/config_1/eyes"]
+position = Vector2(35, -40)
+scale = Vector2(0.75, 0.75)
+
+[node name="eye_angry_green" type="Sprite2D" parent="body/face/config_1/eyes/eyes_r" instance=ExtResource("3_ydycx")]
+texture = ExtResource("2_j4aqf")
+region_enabled = true
+region_rect = Rect2(698, 748, 58, 49)
+
+[node name="mouth" type="Node2D" parent="body/face/config_1"]
+
+[node name="Marker2D" type="Marker2D" parent="body/face/config_1/mouth"]
+position = Vector2(0, 40)
+gizmo_extents = 30.0
+
+[node name="mouthG" type="Sprite2D" parent="body/face/config_1/mouth/Marker2D" instance=ExtResource("4_7qa8l")]
+texture = ExtResource("2_j4aqf")
+region_enabled = true
+region_rect = Rect2(586, 911, 50, 44)
+
+[node name="nose" type="Node2D" parent="body/face/config_1"]
+
+[node name="Marker2D" type="Marker2D" parent="body/face/config_1/nose"]
+
+[node name="limbs" type="Node2D" parent="body"]
+
+[node name="arms" type="Node2D" parent="body/limbs"]
+z_index = 1
+z_as_relative = false
+
+[node name="config_1" type="Node2D" parent="body/limbs/arms"]
+
+[node name="arm_l" type="Marker2D" parent="body/limbs/arms/config_1"]
+position = Vector2(-65, 0)
+gizmo_extents = 25.0
+
+[node name="arm_whiteB" type="Sprite2D" parent="body/limbs/arms/config_1/arm_l" instance=ExtResource("5_lpca1")]
+z_as_relative = false
+texture = ExtResource("2_j4aqf")
+offset = Vector2(-8, 64)
+flip_h = true
+region_enabled = true
+region_rect = Rect2(1391, 1298, 49, 161)
+
+[node name="arm_r" type="Marker2D" parent="body/limbs/arms/config_1"]
+position = Vector2(65, 0)
+
+[node name="arm_whiteB" type="Sprite2D" parent="body/limbs/arms/config_1/arm_r" instance=ExtResource("5_lpca1")]
+z_as_relative = false
+texture = ExtResource("2_j4aqf")
+offset = Vector2(8, 64)
+region_enabled = true
+region_rect = Rect2(1391, 1298, 49, 161)
+
+[node name="legs" type="Node2D" parent="body/limbs"]
+z_as_relative = false
+
+[node name="config_1" type="Node2D" parent="body/limbs/legs"]
+
+[node name="leg_l" type="Marker2D" parent="body/limbs/legs/config_1"]
+z_as_relative = false
+position = Vector2(-34, 78)
+gizmo_extents = 30.0
+
+[node name="leg_greenC" type="Sprite2D" parent="body/limbs/legs/config_1/leg_l" instance=ExtResource("6_uq73k")]
+z_as_relative = false
+texture = ExtResource("2_j4aqf")
+offset = Vector2(-19, 44)
+flip_h = true
+region_enabled = true
+region_rect = Rect2(1131, 0, 77, 123)
+
+[node name="leg_r" type="Marker2D" parent="body/limbs/legs/config_1"]
+z_as_relative = false
+position = Vector2(34, 78)
+gizmo_extents = 30.0
+
+[node name="leg_greenC" type="Sprite2D" parent="body/limbs/legs/config_1/leg_r" instance=ExtResource("6_uq73k")]
+z_as_relative = false
+texture = ExtResource("2_j4aqf")
+offset = Vector2(19, 44)
+region_enabled = true
+region_rect = Rect2(1131, 0, 77, 123)
+
+[node name="accessories" type="Node2D" parent="body"]
+
+[node name="config_1" type="Node2D" parent="body/accessories"]
+
+[node name="ears" type="Node2D" parent="body/accessories/config_1"]
+
+[node name="ear_l" type="Marker2D" parent="body/accessories/config_1/ears"]
+z_as_relative = false
+position = Vector2(-55, -48)
+
+[node name="ear_r" type="Marker2D" parent="body/accessories/config_1/ears"]
+z_as_relative = false
+position = Vector2(55, -48)
+
+[node name="antennaes" type="Node2D" parent="body/accessories/config_1"]
+
+[node name="antenna_l" type="Marker2D" parent="body/accessories/config_1/antennaes"]
+position = Vector2(-36, -70)
+
+[node name="antenna_r" type="Marker2D" parent="body/accessories/config_1/antennaes"]
+position = Vector2(36, -70)
+
+[node name="horns" type="Node2D" parent="body/accessories/config_1"]
+
+[node name="horn_r" type="Marker2D" parent="body/accessories/config_1/horns"]
+position = Vector2(0, -67)
+rotation = -0.785398

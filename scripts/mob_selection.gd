@@ -22,7 +22,6 @@ func _ready() -> void:
 	print("ready target selection")
 
 func _on_mouse_entered() -> void:		
-	print("I hovered over: " + mob_name)
 	# instantiate or make arrow visible above enemy
 	# take enemy position and make it same as arrow asset
 	if target_selection:
@@ -40,5 +39,4 @@ func _on_mouse_exited() -> void:
 
 func _on_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
 	if event.is_action_pressed("left_mouse_click"):
-		print("clicked " + mob_name)
 		on_target_clicked.emit(mob_name)

@@ -128,6 +128,7 @@ func _enter_tree() -> void:
 		avatar.texture = party_member_textures[i]
 		avatar.move_speed = (party_member_stats[i].speed / float(max_battle_speed)) * 0.25		
 		avatar.stats.set_stats(party_member_stats[i])
+		avatar.avatar_type = Avatar.Avatar_Type.PARTY_MEMBER
 		
 		party_line.add_child(avatar)
 		party_member_avatars.append(avatar)
@@ -140,6 +141,7 @@ func _enter_tree() -> void:
 		enemy_line.add_child(avatar)
 		enemy_avatars.append(avatar)
 		avatar.name = enemy_stats[i].name
+		avatar.avatar_type = Avatar.Avatar_Type.ENEMY
 
 	# spawn party members and enemies
 	var starting_positions = [

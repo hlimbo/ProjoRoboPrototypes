@@ -94,6 +94,9 @@ func _ready():
 	for avatar in party_members:
 		avatar.on_start_order_step.connect(on_start_order_step)
 		avatar.on_start_exe_step.connect(on_start_exe_step)
+		
+	for avatar in enemy_avatars:
+		avatar.on_start_order_step.connect(on_start_order_step)
 		 
 	
 func _on_attack_button_pressed():
@@ -141,8 +144,6 @@ func _on_description_timer_timeout():
 	description_panel.visible = false
 	label.text = ""
 	
-	# once party member moves up to do their attack or complete their ability
-	# complete means end of animation and attack damage is dealt
 	# reset the avatar that made the move back to the beginning of timeline
 	if active_avatar:
 		active_avatar.progress_ratio = 0
@@ -248,40 +249,59 @@ func on_target_clicked(mob_name: String):
 
 
 func pause_avatars_motion():
-	var one_d_graph: Control = $OneDGraph
-	var party_line: Path2D = one_d_graph.get_node("PartyPath2D")
-	var enemy_line: Path2D = one_d_graph.get_node("EnemyPath2D")
+	var live_party_members = party_members.filter(func(a: Avatar): return a.is_alive)
+	var live_enemies = enemy_avatars.filter(func(a: Avatar): return a.is_alive)
 	
-	for child in party_line.get_children():
-		(child as Avatar)._curr_speed = 0
-	for child in enemy_line.get_children():
-		(child as Avatar)._curr_speed = 0
+	for member in live_party_members:
+		member._curr_speed = 0
+	for enemy in live_enemies:
+		enemy._curr_speed = 0
 
 func resume_avatars_motion():
-	var one_d_graph: Control = $OneDGraph
-	var party_line: Path2D = one_d_graph.get_node("PartyPath2D")
-	var enemy_line: Path2D = one_d_graph.get_node("EnemyPath2D")
+	var live_party_members = party_members.filter(func(a: Avatar): return a.is_alive)
+	var live_enemies = enemy_avatars.filter(func(a: Avatar): return a.is_alive)
 	
-	for child in party_line.get_children():
-		var avatar = (child as Avatar)
-		avatar._curr_speed = avatar.move_speed
-	for child in enemy_line.get_children():
-		var avatar = (child as Avatar)
-		avatar._curr_speed = avatar.move_speed
+	for member in live_party_members:
+		member._curr_speed = member.move_speed
+	for enemy in live_enemies:
+		enemy._curr_speed = enemy.move_speed
 
 func on_start_order_step(avatar: Avatar) -> void:
 	print("entering order step: " + avatar.name)
 	avatar._curr_speed = 0
+	active_avatar = avatar
 	avatar.progress_ratio = ORDER_STEP
 	
 	pause_avatars_motion()
-	party_member_name.text = avatar.name
 	
-	# entry point for enemies to pick a move
 	# entry point for party member to pick a move
+	if avatar.avatar_type == Avatar.Avatar_Type.PARTY_MEMBER:
+		party_member_name.text = avatar.name
+		action_layout.visible = true
+	# entry point for enemies to pick a move
+	elif avatar.avatar_type == Avatar.Avatar_Type.ENEMY:
+		avatar.progress_ratio = 1
+		# pick a random party member
+		var live_party_members: Array[Avatar] = party_members.filter(func(p: Avatar): return p.is_alive)
+		var i = randi_range(0, len(live_party_members) - 1)
+		var target: Avatar = live_party_members[i]
+		# compute random dmg to deal - TODO: add damage calculator
+		var dmg = randi_range(1,20)
+		target.stats.hp -= dmg
+		# target downed...
+		if target.stats.hp <= 0:
+			target.stats.hp = 0
+			# reset their timeline back to 0
+			target.progress_ratio = 0
+			target._curr_speed = 0
+			target.is_alive = false
+			
+		
+		# display damage dealt to target
+		description_panel.visible = true
+		label.text = "%s dealt %d damage to %s" % [avatar.name, dmg, target.name]
+		description_timer.start()
 	
-	active_avatar = avatar
-	action_layout.visible = true
 
 func on_start_exe_step(body: Node) -> void:
 	print("entering exe step")

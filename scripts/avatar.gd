@@ -1,6 +1,11 @@
 extends PathFollow2D
 class_name Avatar
 
+enum Avatar_Type {
+	PARTY_MEMBER,
+	ENEMY
+}
+
 @export var move_speed: float = 0.1
 var _curr_speed: float
 
@@ -11,12 +16,15 @@ var _curr_speed: float
 @onready var sprite_2d: Sprite2D = $Sprite2D
 
 var stats: BaseStats
+var avatar_type: Avatar_Type
+var is_alive: bool
 
 signal on_start_order_step(avatar: Avatar)
 signal on_start_exe_step(body: Node2D)
 
 func _init() -> void:
 	stats = BaseStats.new()
+	is_alive = true
 
 func _ready() -> void:
 	_curr_speed = move_speed

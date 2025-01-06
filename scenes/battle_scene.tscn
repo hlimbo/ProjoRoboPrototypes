@@ -28,6 +28,7 @@ script = ExtResource("1_qdx8j")
 [node name="OneDGraph" parent="UILayout" instance=ExtResource("4_rmum5")]
 
 [node name="ActionLayout" parent="UILayout" instance=ExtResource("1_p0qnp")]
+visible = false
 anchors_preset = 2
 anchor_left = 0.0
 anchor_top = 1.0

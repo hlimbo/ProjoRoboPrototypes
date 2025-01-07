@@ -25,7 +25,7 @@ extends CanvasLayer
 # Placeholders -- bad code as this pathing is dependent on battle_manager.gd on spawning these mobs in the scene
 @onready var mobs: Array[MobSelection] = [
 	$"../blue_mob/Area2D",
-	$"../green_mob/Area2D",
+	#$"../green_mob/Area2D",
 	#$"../red_mob/Area2D"
 ]
 
@@ -82,9 +82,10 @@ func _ready():
 	
 	# 1-d graph
 	for avatar in party_members:
-		# temp
-		avatar.resume_motion = false
 		avatar.on_start_order_step.connect(on_start_order_step)
+		
+		# add timer to scene tree to start ticking
+		add_child(avatar.player_defense_timer)
 		
 	var enemy_index = 0
 	for avatar in enemy_avatars:
@@ -108,7 +109,10 @@ func _ready():
 		timers.append(avatar.skill_timer)
 		timers.append(avatar.defense_timer)
 		timers.append(avatar.skill_timer)
-		
+	
+	for avatar in party_members:
+		timers.append(avatar.player_defense_timer)
+	
 	timers.append(skill_timer)
 	timers.append(description_timer)
 	timers.append(target_timer)
@@ -136,17 +140,15 @@ func _on_skills_button_pressed():
 	active_skill_menu.visible = true
 	action_layout.visible = false
 
-func _on_defend_button_pressed():
-	# TODOS
-	# increase player's defense temporarily for a set time
-	# set it back to what it was previously
-	if active_avatar:
-		active_avatar.progress_ratio = 1
-		label.text = "%s is defending!" % active_avatar.name
+func _on_defend_button_pressed(avatar: Avatar):
+	avatar.progress_ratio = 1
+	avatar.curr_stats.defense += avatar.curr_stats.defense * 0.25
+	label.text = "%s is defending!" % avatar.name
 	
 	description_panel.visible = true
 	action_layout.visible = false
 	description_timer.start()
+	avatar.player_defense_timer.start()
 	resume_avatars_motion()
 	toggle_timer_tick(false)
 	
@@ -307,8 +309,8 @@ func resume_avatars_motion():
 	var live_party_members = party_members.filter(func(a: Avatar): return a.is_alive)
 	var live_enemies = enemy_avatars.filter(func(a: Avatar): return a.is_alive and a.battle_state == a.Battle_State.WAITING)
 	
-	#for member in live_party_members:
-		#member.resume_motion = true
+	for member in live_party_members:
+		member.resume_motion = true
 	for enemy in live_enemies:
 		enemy.resume_motion = true
 
@@ -352,7 +354,7 @@ func on_start_order_step(avatar: Avatar) -> void:
 			mobs[i].on_target_clicked.connect(callable)
 			
 		attack.pressed.connect(_on_attack_button_pressed.bind(avatar))
-		defend.pressed.connect(_on_defend_button_pressed)
+		defend.pressed.connect(_on_defend_button_pressed.bind(avatar))
 		skill.pressed.connect(_on_skills_button_pressed)
 		
 	# entry point for enemies to pick a move

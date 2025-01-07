@@ -37,11 +37,13 @@ var is_alive: bool
 var resume_motion: bool = true
 var battle_state: Battle_State = Battle_State.WAITING
 
-## Timers
+## AI Timers
 var defense_timer: Timer
-# TODO: move to a skill manager class
 var skill_timer: Timer
 var resume_delay_timer: Timer
+
+## Party Member Timers
+var player_defense_timer: Timer
 
 signal on_start_order_step(avatar: Avatar)
 signal on_start_exe_step(body: Node2D)
@@ -78,6 +80,13 @@ func _init() -> void:
 	resume_delay_timer.one_shot = true
 	resume_delay_timer.wait_time = 2 # seconds
 	resume_delay_timer.process_callback = Timer.TIMER_PROCESS_PHYSICS
+	
+	player_defense_timer = Timer.new()
+	player_defense_timer.name = "player_defense_timer"
+	player_defense_timer.autostart = false
+	player_defense_timer.one_shot = true
+	player_defense_timer.wait_time = 2 # seconds
+	player_defense_timer.process_callback = Timer.TIMER_PROCESS_PHYSICS
 
 func _ready() -> void:
 	_curr_speed = move_speed
@@ -88,8 +97,14 @@ func _ready() -> void:
 	
 	area_2d.body_entered.connect(on_area_entered)
 	area_2d.body_exited.connect(on_area_exited)
+	
+	# AI timers
 	skill_timer.timeout.connect(on_skill_timeout)
 	resume_delay_timer.timeout.connect(on_resume_timeout)
+
+	# Party Member timers
+	player_defense_timer.timeout.connect(on_defend_end)
+
 
 func _physics_process(delta: float) -> void:
 	path_follow_2d.progress_ratio += delta * _curr_speed * float(resume_motion)
@@ -101,11 +116,8 @@ func on_area_entered(body: Node2D) -> void:
 
 func on_area_exited(body: Node2D) -> void:
 	on_start_exe_step.emit(body)
-	
-func on_test_press(avatar: Avatar):
-	print("test press avatar param: %s" % avatar.name)
-	print("test press self param: %s" % self.name)
-	
+
+#region AI functions
 func on_skill_timeout():
 	print("on skill timeout called on: %s" % self.name)
 	battle_state = Battle_State.EXECUTING_MOVE
@@ -118,6 +130,12 @@ func on_resume_timeout():
 	update_battle_state_text()
 	self.progress_ratio = 0 # reset back to beginning of timeline
 	on_resume_play.emit(self)
+#endregion
+
+#region Player functions
+func on_defend_end():
+	curr_stats.defense = initial_stats.defense
+#endregion
 
 func update_battle_state_text():
 	match battle_state:

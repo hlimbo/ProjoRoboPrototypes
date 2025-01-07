@@ -12,8 +12,8 @@
 [node name="main" type="Node2D"]
 position = Vector2(11, 0)
 script = ExtResource("1_rrotr")
-enemy_spawn_count = 2
-party_member_spawn_count = 3
+enemy_spawn_count = 1
+party_member_spawn_count = 1
 enemy_texture = ExtResource("2_yphs6")
 
 [node name="TargetSelection" type="Sprite2D" parent="."]

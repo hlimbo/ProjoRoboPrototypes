@@ -151,20 +151,20 @@ func _enter_tree() -> void:
 	# spawn party members and enemies
 	var starting_positions = [
 		$PartyMember1.position,
-		$PartyMember2.position,
-		$PartyMember3.position,
+		#$PartyMember2.position,
+		#$PartyMember3.position,
 		$Enemy1.position,
-		$Enemy2.position,
+		#$Enemy2.position,
 		#$Enemy3.position,
 	]
 	
 	var mobs = [
 		preload("res://nodes/temp/yellow_mob.tscn"),
-		preload("res://nodes/temp/freddy.tscn"),
-		preload("res://nodes/temp/green_pill.tscn"),
+		#preload("res://nodes/temp/freddy.tscn"),
+		#preload("res://nodes/temp/green_pill.tscn"),
 		preload("res://nodes/temp/blue_mob.tscn"),
-		preload("res://nodes/temp/green_mob.tscn"),
-		preload("res://nodes/temp/red_mob.tscn"),
+		#preload("res://nodes/temp/green_mob.tscn"),
+		#preload("res://nodes/temp/red_mob.tscn"),
 	]
 	
 	for i in range(0, len(starting_positions)):

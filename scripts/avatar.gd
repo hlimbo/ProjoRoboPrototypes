@@ -116,6 +116,7 @@ func on_resume_timeout():
 	print("on resume timeout %s at time %d " % [self.name, Time.get_ticks_msec()])
 	battle_state = Battle_State.WAITING
 	update_battle_state_text()
+	self.progress_ratio = 0 # reset back to beginning of timeline
 	on_resume_play.emit(self)
 
 func update_battle_state_text():

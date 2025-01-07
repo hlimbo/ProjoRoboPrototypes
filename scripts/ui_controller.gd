@@ -314,11 +314,11 @@ func resume_avatars_motion():
 
 func on_start_order_step(avatar: Avatar) -> void:
 	print("entering order step %s at time: %d" % [avatar.name, Time.get_ticks_msec()])
-	active_avatar = avatar
 	avatar.progress_ratio = ORDER_STEP
 	
 	# entry point for party member to pick a move
 	if avatar.avatar_type == Avatar.Avatar_Type.PARTY_MEMBER:
+		active_avatar = avatar
 		# pause all timers to prevent them going off when party member is picking a move
 		toggle_timer_tick(true)
 		pause_avatars_motion()
@@ -525,8 +525,7 @@ func on_skill_end(avatar: Avatar) -> void:
 	target.curr_stats.hp -= skill.attack
 	avatar.curr_stats.skill_points = maxi(avatar.curr_stats.skill_points - skill.cost, 0)
 
-	# move progress ratio to 1 and pause movement momentarily
-	avatar.progress_ratio = 1
+	# pause movement momentarily
 	avatar.resume_motion = false
 	avatar._curr_speed = avatar.move_speed
 

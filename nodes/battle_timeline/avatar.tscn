@@ -9,6 +9,7 @@ size = Vector2(8, 50)
 [node name="Avatar" type="PathFollow2D"]
 position = Vector2(40, 60)
 cubic_interp = false
+loop = false
 script = ExtResource("1_1acpc")
 move_speed = 0.6
 

@@ -155,7 +155,7 @@ func _enter_tree() -> void:
 		$PartyMember3.position,
 		$Enemy1.position,
 		$Enemy2.position,
-		$Enemy3.position,
+		#$Enemy3.position,
 	]
 	
 	var mobs = [

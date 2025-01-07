@@ -26,7 +26,7 @@ extends CanvasLayer
 @onready var mobs: Array[MobSelection] = [
 	$"../blue_mob/Area2D",
 	$"../green_mob/Area2D",
-	$"../red_mob/Area2D"
+	#$"../red_mob/Area2D"
 ]
 
 ## 1-D Graph variables
@@ -82,6 +82,8 @@ func _ready():
 	
 	# 1-d graph
 	for avatar in party_members:
+		# temp
+		avatar.resume_motion = false
 		avatar.on_start_order_step.connect(on_start_order_step)
 		
 	var enemy_index = 0
@@ -93,8 +95,8 @@ func _ready():
 		# avatar reference for it to be later executed once the
 		# timer times out
 		avatar.defense_timer.timeout.connect(on_defense_timeout.bind(avatar))
-		avatar.skill_timer.timeout.connect(on_skill_timeout.bind(avatar))
-		avatar.resume_delay_timer.timeout.connect(on_resume_delay)
+		avatar.on_skill_end.connect(on_skill_end)
+		avatar.on_resume_play.connect(on_resume_play)
 		
 		# add timer to scene tree to start ticking
 		add_child(avatar.defense_timer)
@@ -303,10 +305,10 @@ func pause_avatars_motion():
 
 func resume_avatars_motion():
 	var live_party_members = party_members.filter(func(a: Avatar): return a.is_alive)
-	var live_enemies = enemy_avatars.filter(func(a: Avatar): return a.is_alive)
+	var live_enemies = enemy_avatars.filter(func(a: Avatar): return a.is_alive and a.battle_state == a.Battle_State.WAITING)
 	
-	for member in live_party_members:
-		member.resume_motion = true
+	#for member in live_party_members:
+		#member.resume_motion = true
 	for enemy in live_enemies:
 		enemy.resume_motion = true
 
@@ -355,8 +357,8 @@ func on_start_order_step(avatar: Avatar) -> void:
 		
 	# entry point for enemies to pick a move
 	elif avatar.avatar_type == Avatar.Avatar_Type.ENEMY:
-		# ai_use_random_skill(avatar)
-		ai_defend(avatar)
+		ai_use_random_skill(avatar)
+		#ai_defend(avatar)
 		#ai_flee(avatar)
 		#ai_attack(avatar)
 
@@ -463,9 +465,14 @@ func ai_use_random_skill(avatar: Avatar) -> void:
 	# compute skill exec speed 
 	# numerator is the difference b/w the progress_ratios ranging between 0 and 1 inclusive
 	# denominator is the time period that the skill will take to execute measured in seconds
-	var diff: float = 1 - ORDER_STEP
-	var skill_exec_speed: float = diff / skill_timer.wait_time
+	var diff: float = 1 - avatar.progress_ratio
+	var skill_exec_speed: float = diff / avatar.skill_timer.wait_time
+	
+	print("avatar %s start skill at time %d" % [avatar.name, Time.get_ticks_msec()])
+	
 	avatar._curr_speed = skill_exec_speed
+	avatar.battle_state = avatar.Battle_State.PENDING_MOVE
+	avatar.update_battle_state_text()
 	avatar.skill_timer.start()
 
 func on_defense_timeout(avatar: Avatar) -> void:
@@ -473,13 +480,14 @@ func on_defense_timeout(avatar: Avatar) -> void:
 	avatar.curr_stats.defense = avatar.initial_stats.defense
 	description_timer.start()
 
-func on_skill_timeout(avatar: Avatar) -> void:	
+func on_skill_end(avatar: Avatar) -> void:
+	print("avatar %s skill end at time %d" % [avatar.name, Time.get_ticks_msec()])
 	# pick random skill
 	var skill1 = Skill.new()
 	var skill2 = Skill.new()
 	var skill3 = Skill.new()
 	
-	skill1.name ="Special Atk1"
+	skill1.name = "Special Atk1"
 	skill2.name = "Special Atk2"
 	skill3.name = "Special Atk3"
 	skill1.attack = 5
@@ -527,7 +535,8 @@ func on_skill_timeout(avatar: Avatar) -> void:
 	description_timer.start()
 
 # used to delay resuming timeline to simulate animation time
-func on_resume_delay() -> void:
+func on_resume_play(avatar: Avatar) -> void:
+	print("resuming play at time %d" % Time.get_ticks_msec())
 	resume_avatars_motion()
 
 #endregion

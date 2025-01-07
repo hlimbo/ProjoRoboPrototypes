@@ -6,6 +6,17 @@ enum Avatar_Type {
 	ENEMY
 }
 
+enum Battle_State {
+	WAITING,
+	MOVE_SELECTION,
+	PENDING_MOVE,
+	EXECUTING_MOVE,
+	MOVE_CANCELLED,
+	# used when receiving damage
+	PAUSED,
+	KNOCKBACK
+}
+
 @export var move_speed: float = 0.1
 var _curr_speed: float
 
@@ -19,6 +30,8 @@ var initial_stats: BaseStats
 var curr_stats: BaseStats
 var avatar_type: Avatar_Type
 var is_alive: bool
+# controls whether or not movement along timeline continues on
+var resume_motion: bool = true
 
 ## Timers
 var defense_timer: Timer
@@ -43,18 +56,22 @@ func _init() -> void:
 	defense_timer.autostart = false
 	defense_timer.one_shot = true
 	defense_timer.wait_time = 1 # seconds
+	defense_timer.process_callback = Timer.TIMER_PROCESS_PHYSICS
 	
 	skill_timer = Timer.new()
 	skill_timer.name = "SkillTimer"
 	skill_timer.autostart = false
 	skill_timer.one_shot = true
 	skill_timer.wait_time = 3 # seconds
-	
+	skill_timer.process_callback = Timer.TIMER_PROCESS_PHYSICS
+
 	resume_delay_timer = Timer.new()
 	resume_delay_timer.name = "resume_delay_timer"
 	resume_delay_timer.autostart = false
 	resume_delay_timer.one_shot = true
 	resume_delay_timer.wait_time = 2 # seconds
+	resume_delay_timer.process_callback = Timer.TIMER_PROCESS_PHYSICS
+
 
 func _ready() -> void:
 	_curr_speed = move_speed
@@ -63,7 +80,7 @@ func _ready() -> void:
 	area_2d.body_exited.connect(on_area_exited)
 
 func _physics_process(delta: float) -> void:
-	path_follow_2d.progress_ratio += delta * _curr_speed
+	path_follow_2d.progress_ratio += delta * _curr_speed * float(resume_motion)
 
 func on_area_entered(body: Node2D) -> void:
 	on_start_order_step.emit(self)

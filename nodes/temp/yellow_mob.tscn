@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://by7ldgcy2up74"]
+[gd_scene load_steps=10 format=3 uid="uid://by7ldgcy2up74"]
 
 [ext_resource type="Script" path="res://scripts/bot.gd" id="1_st3bo"]
 [ext_resource type="Resource" uid="uid://damm5v126277g" path="res://scripts/bot_stats.tres" id="2_d6iuc"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://ndgd4bthnfpg" path="res://nodes/monsters/parts/body_types/typeD/body_yellowD.tscn" id="6_ubl30"]
 [ext_resource type="PackedScene" uid="uid://6feyfqpmlbtg" path="res://nodes/monsters/parts/eye_types/eye_cute_light.tscn" id="7_dacni"]
 [ext_resource type="PackedScene" uid="uid://doiqyey08hhcb" path="res://nodes/monsters/parts/mouth_types/mouthD.tscn" id="8_186ge"]
+[ext_resource type="Script" path="res://scripts/info_display.gd" id="9_s8few"]
 
 [node name="yellow_mob" type="Node2D"]
 scale = Vector2(0.5, 0.5)
@@ -54,3 +55,20 @@ scale = Vector2(0.6, 0.6)
 
 [node name="mouthD" parent="." instance=ExtResource("8_186ge")]
 position = Vector2(-0.692352, -188)
+
+[node name="InfoNode" type="VBoxContainer" parent="."]
+offset_left = -102.0
+offset_top = -524.0
+offset_right = 110.0
+offset_bottom = -344.0
+script = ExtResource("9_s8few")
+
+[node name="NameLabel" type="Label" parent="InfoNode"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "Name"
+
+[node name="HPLabel" type="Label" parent="InfoNode"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "HP"

@@ -272,22 +272,20 @@ func on_target_hovered(mob_name: String):
 func on_target_unhovered():
 	target_label.text = ""
 
-# damage receiver - enemy mob
-# damage dealer - party member
+
 func on_target_clicked(damage_receiver: Avatar, damage_dealer: Avatar):
 	# disable pickables
 	for mob in mobs:
 		mob.input_pickable = false
-		
-	print("active avatar: %s" % active_avatar.name)
-	print("damage dealer: %s" % damage_dealer.name)
 	
 	# basic attack - move avatar immediately towards end of exe
 	damage_dealer.progress_ratio = 1
-	var dmg := randi_range(1, 20)
+	var dmg := damage_dealer.curr_stats.attack
 	label.text = "%s attacked for %d damage to %s" % [damage_dealer.name, dmg, damage_receiver.name]
 	damage_receiver.curr_stats.hp = maxi(damage_receiver.curr_stats.hp - dmg, 0)
 	
+	damage_receiver.on_damage_received.emit(damage_receiver, damage_dealer)
+		
 	target_menu.visible = false
 	description_panel.visible = true
 	toggle_timer_tick(false)
@@ -523,10 +521,11 @@ func on_skill_end(avatar: Avatar) -> void:
 	var skill: Skill = skills[skill_index]
 	var text = "%s used %s on %s!" % [avatar.name, skill.name, target.name]
 	label.text = text 
-	print(text)
+	
 	target.curr_stats.hp -= skill.attack
 	avatar.curr_stats.skill_points = maxi(avatar.curr_stats.skill_points - skill.cost, 0)
-
+	target.on_damage_received.emit(target, avatar)
+	
 	# pause movement momentarily
 	avatar.resume_motion = false
 	avatar._curr_speed = avatar.move_speed

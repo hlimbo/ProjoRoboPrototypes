@@ -180,13 +180,22 @@ func _enter_tree() -> void:
 			func(b: Node): return (b as BattleParticipant) != null)
 
 	# TODO - looks super hacky... need to possibly consolidate the script into 1 later on...
+	# set avatar references from other scripts here
 	for i in range(0, len(enemy_mobs)):
 		(enemy_mobs[i] as BattleParticipant).avatar = enemy_avatars[i]
 		(enemy_mobs[i].get_node("Area2D") as MobSelection).avatar = enemy_avatars[i]
-		
+		(enemy_mobs[i].get_node("InfoNode") as InfoDisplay).avatar = enemy_avatars[i]
+	
+	var party_members: Array[Node] = battle_participants.filter(
+		func(b: Node): return (b as BattleParticipant) == null
+	)
+	
 	# set names - party members
 	for i in range(0, len(party_member_stats)):
 		battle_participants[i].name = party_member_stats[i].name
+		
+	for i in range(len(party_members)):
+		(party_members[i].get_node("InfoNode") as InfoDisplay).avatar = party_member_avatars[i]
 
 func _ready() -> void:
 	print("battle scene ready called")

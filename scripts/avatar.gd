@@ -47,6 +47,7 @@ var player_defense_timer: Timer
 
 signal on_start_order_step(avatar: Avatar)
 signal on_start_exe_step(body: Node2D)
+signal on_damage_received(damage_receiver: Avatar, damage_dealer: Avatar)
 
 # AI signals
 signal on_avatar_flee()

@@ -130,7 +130,12 @@ theme_override_font_sizes/font_size = 32
 text = "Cancel"
 
 [node name="SkillTimer" type="Timer" parent="UILayout"]
+process_callback = 0
 wait_time = 3.0
+one_shot = true
+
+[node name="TargetTimer" type="Timer" parent="UILayout"]
+process_callback = 0
 one_shot = true
 
 [node name="PartyBattleState" type="Label" parent="UILayout"]

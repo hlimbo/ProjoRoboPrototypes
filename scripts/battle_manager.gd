@@ -178,9 +178,11 @@ func _enter_tree() -> void:
 	
 	var enemy_mobs: Array[Node] = battle_participants.filter(
 			func(b: Node): return (b as BattleParticipant) != null)
-		
+
+	# TODO - looks super hacky... need to possibly consolidate the script into 1 later on...
 	for i in range(0, len(enemy_mobs)):
 		(enemy_mobs[i] as BattleParticipant).avatar = enemy_avatars[i]
+		(enemy_mobs[i].get_node("Area2D") as MobSelection).avatar = enemy_avatars[i]
 		
 	# set names - party members
 	for i in range(0, len(party_member_stats)):

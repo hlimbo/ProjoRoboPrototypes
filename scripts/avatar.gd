@@ -87,3 +87,7 @@ func on_area_entered(body: Node2D) -> void:
 
 func on_area_exited(body: Node2D) -> void:
 	on_start_exe_step.emit(body)
+	
+func on_test_press(avatar: Avatar):
+	print("test press avatar param: %s" % avatar.name)
+	print("test press self param: %s" % self.name)

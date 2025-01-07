@@ -19,16 +19,15 @@ extends CanvasLayer
 @onready var target_menu: PanelContainer = $TargetMenu
 @onready var target_label: Label = $TargetMenu/VBoxContainer/TargetLabel
 @onready var target_cancel: Button = $TargetMenu/VBoxContainer/Cancel
+@onready var target_timer: Timer = $TargetTimer
 
 
 # Placeholders -- bad code as this pathing is dependent on battle_manager.gd on spawning these mobs in the scene
-@onready var mob1: Area2D = $"../blue_mob/Area2D"
-@onready var mob2: Area2D = $"../green_mob/Area2D"
-@onready var mob3: Area2D = $"../red_mob/Area2D"
-
-const ON_TARGET_HOVERED: String = "on_target_hovered"
-const ON_TARGET_UNHOVERED: String = "on_target_unhovered"
-const ON_TARGET_CLICKED: String = "on_target_clicked"
+@onready var mobs: Array[MobSelection] = [
+	$"../blue_mob/Area2D",
+	$"../green_mob/Area2D",
+	$"../red_mob/Area2D"
+]
 
 ## 1-D Graph variables
 @onready var one_d_graph: Control = $OneDGraph
@@ -62,35 +61,24 @@ var timers: Array[Timer] = []
 
 func _ready():
 	print("ui controller ready called")
-	# need to know which avatar is executing the move
-	attack.pressed.connect(_on_attack_button_pressed)
-	defend.pressed.connect(_on_defend_button_pressed)
-	skill.pressed.connect(_on_skills_button_pressed)
-	flee.pressed.connect(_on_flee_button_pressed)
 	
 	# example of reusing code
 	cancel.pressed.connect(_on_cancel_button_pressed)
 	target_cancel.pressed.connect(_on_cancel_button_pressed)
 	
 	active_placeholder_skill.pressed.connect(_on_skill_activated)
-
-	mob1.connect(ON_TARGET_HOVERED, on_target_hovered)
-	mob2.connect(ON_TARGET_HOVERED, on_target_hovered)
-	mob3.connect(ON_TARGET_HOVERED, on_target_hovered)
 	
-	mob1.connect(ON_TARGET_UNHOVERED, on_target_unhovered)
-	mob2.connect(ON_TARGET_UNHOVERED, on_target_unhovered)
-	mob3.connect(ON_TARGET_UNHOVERED, on_target_unhovered)
-	
-	mob1.connect(ON_TARGET_CLICKED, on_target_clicked)
-	mob2.connect(ON_TARGET_CLICKED, on_target_clicked)
-	mob3.connect(ON_TARGET_CLICKED, on_target_clicked)
+	flee.pressed.connect(_on_flee_button_pressed)
 	
 	for node in avatar_nodes:
 		party_members.append(node as Avatar)
 	
 	for node in enemy_nodes:
 		enemy_avatars.append(node as Avatar)
+		
+	for mob in mobs:
+		mob.on_target_hovered.connect(on_target_hovered)
+		mob.on_target_unhovered.connect(on_target_unhovered)
 	
 	# 1-d graph
 	for avatar in party_members:
@@ -121,19 +109,23 @@ func _ready():
 		
 	timers.append(skill_timer)
 	timers.append(description_timer)
+	timers.append(target_timer)
+	
+	target_timer.timeout.connect(func():
+		resume_avatars_motion()
+	)
 
 func toggle_timer_tick(paused: bool):
 	for timer in timers:
 		timer.paused = paused
 
-func _on_attack_button_pressed():
+func _on_attack_button_pressed(avatar: Avatar):
 	action_layout.visible = false
-	
+		
 	# pick target to attack
 	# enable as pickable which accepts mouse pointer events
-	mob1.input_pickable = true
-	mob2.input_pickable = true
-	mob3.input_pickable = true
+	for mob in mobs:
+		mob.input_pickable = true
 	
 	# switch to attack selection menu
 	target_menu.visible = true
@@ -162,9 +154,8 @@ func _on_cancel_button_pressed():
 	action_layout.visible = true
 	
 	# disable pickables
-	mob1.input_pickable = false
-	mob2.input_pickable = false
-	mob3.input_pickable = false
+	for mob in mobs:
+		mob.input_pickable = false
 
 func _on_description_timer_timeout():
 	target_menu.visible = false
@@ -195,6 +186,24 @@ func _on_skill_activated():
 	skill_timer.start()
 
 func _process(delta: float) -> void:
+	# check if enemies are defeated
+	var i = 0
+	var limit = len(enemy_avatars)
+	while i < limit:
+		if enemy_avatars[i].curr_stats.hp <= 0:
+			enemy_avatars[i].queue_free()
+			# TODO - don't do this... find a better solution to remove (prefer to remove rootmost node)
+			mobs[i].get_parent().queue_free()
+			enemy_avatars.remove_at(i)
+			mobs.remove_at(i)
+			
+			# shift index to left and update limit as item is removed
+			# and maybe skipped...
+			i -= 1
+			limit = len(enemy_avatars)
+			
+		i += 1
+	
 	# check Party Battle Status
 	var pending_battle_state: Party_Battle_States = Party_Battle_States.DEFEAT
 	for avatar in party_members:
@@ -259,25 +268,28 @@ func on_target_hovered(mob_name: String):
 func on_target_unhovered():
 	target_label.text = ""
 
-func on_target_clicked(mob_name: String):
+# damage receiver - enemy mob
+# damage dealer - party member
+func on_target_clicked(damage_receiver: Avatar, damage_dealer: Avatar):
 	# disable pickables
-	mob1.input_pickable = false
-	mob2.input_pickable = false
-	mob3.input_pickable = false
+	for mob in mobs:
+		mob.input_pickable = false
+		
+	print("active avatar: %s" % active_avatar.name)
+	print("damage dealer: %s" % damage_dealer.name)
 	
 	# basic attack - move avatar immediately towards end of exe
-	if active_avatar:
-		active_avatar.progress_ratio = 1
-		var dmg := randi_range(1, 20)
-		label.text = "%s attacked for %d damage to %s" % [active_avatar.name, dmg, mob_name]
+	damage_dealer.progress_ratio = 1
+	var dmg := randi_range(1, 20)
+	label.text = "%s attacked for %d damage to %s" % [damage_dealer.name, dmg, damage_receiver.name]
+	damage_receiver.curr_stats.hp = maxi(damage_receiver.curr_stats.hp - dmg, 0)
 	
 	target_menu.visible = false
 	description_panel.visible = true
+	toggle_timer_tick(false)
 	# start timer to hide description panel
 	description_timer.start()
-	
-	resume_avatars_motion()
-	toggle_timer_tick(false)
+	target_timer.start()
 
 
 func pause_avatars_motion():
@@ -310,6 +322,37 @@ func on_start_order_step(avatar: Avatar) -> void:
 		pause_avatars_motion()
 		party_member_name.text = avatar.name
 		action_layout.visible = true
+		
+		# remove previous atk connections
+		var atk_connections = attack.pressed.get_connections()
+		for i in range(0, len(atk_connections)):
+			attack.pressed.disconnect(atk_connections[i].callable)
+			
+		# remove previous skill connections
+		for conn in skill.pressed.get_connections():
+			skill.pressed.disconnect(conn.callable)
+			
+		# remove previous target clicked connections
+		for i in range(0, len(enemy_avatars)):
+			for conn in mobs[i].on_target_clicked.get_connections():
+				mobs[i].on_target_clicked.disconnect(conn.callable)
+				
+		# remove previous defend connections
+		for conn in defend.pressed.get_connections():
+			defend.pressed.disconnect(conn.callable)
+	
+		# dynamically wire buttons to the party member whose turn is starting
+		# bind all possible attack combinations where
+		# damage dealer = party member
+		# damage receiver = enemy
+		for i in range(0, len(enemy_avatars)):
+			var callable = on_target_clicked.bind(enemy_avatars[i], avatar)
+			mobs[i].on_target_clicked.connect(callable)
+			
+		attack.pressed.connect(_on_attack_button_pressed.bind(avatar))
+		defend.pressed.connect(_on_defend_button_pressed)
+		skill.pressed.connect(_on_skills_button_pressed)
+		
 	# entry point for enemies to pick a move
 	elif avatar.avatar_type == Avatar.Avatar_Type.ENEMY:
 		# ai_use_random_skill(avatar)

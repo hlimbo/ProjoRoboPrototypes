@@ -1,5 +1,8 @@
 extends CanvasLayer
 
+# owner is the root node of the scene that this node belongs to e.g. main
+@onready var battle_manager: BattleManager = owner
+
 @onready var active_skill_menu: Control = $ActiveSkillMenu
 @onready var action_layout: Control = $ActionLayout
 @onready var description_panel: Panel = $DescriptionPanel
@@ -59,6 +62,14 @@ var party_battle_state: Party_Battle_States = Party_Battle_States.IN_PROGRESS
 
 var timers: Array[Timer] = []
 
+func on_party_member_turn_end(avatar: Avatar):
+	description_timer.start()
+	# which party member will resume play?
+	
+func on_ai_turn_end(avatar: Avatar):
+	description_timer.start()
+	avatar.resume_delay_timer.start()
+
 func _ready():
 	print("ui controller ready called")
 	
@@ -83,21 +94,18 @@ func _ready():
 	# 1-d graph
 	for avatar in party_members:
 		avatar.on_start_order_step.connect(on_start_order_step)
+		avatar.on_turn_end = on_party_member_turn_end
 		
 		# add timer to scene tree to start ticking
-		add_child(avatar.player_defense_timer)
+		add_child(avatar.defense_timer)
 		
 	var enemy_index = 0
 	for avatar in enemy_avatars:
 		avatar.on_start_order_step.connect(on_start_order_step)
 		
-		# binds the avatar value to on_defense_timeout function
-		# it copies the callable on_defense_end and binds the
-		# avatar reference for it to be later executed once the
-		# timer times out
-		avatar.defense_timer.timeout.connect(on_defense_timeout.bind(avatar))
 		avatar.on_skill_end.connect(on_skill_end)
 		avatar.on_resume_play.connect(on_resume_play)
+		avatar.on_turn_end = on_ai_turn_end
 		
 		# add timer to scene tree to start ticking
 		add_child(avatar.defense_timer)
@@ -111,7 +119,7 @@ func _ready():
 		timers.append(avatar.skill_timer)
 	
 	for avatar in party_members:
-		timers.append(avatar.player_defense_timer)
+		timers.append(avatar.defense_timer)
 	
 	timers.append(skill_timer)
 	timers.append(description_timer)
@@ -147,8 +155,13 @@ func _on_defend_button_pressed(avatar: Avatar):
 	
 	description_panel.visible = true
 	action_layout.visible = false
+	
+	avatar.battle_state = avatar.Battle_State.EXECUTING_MOVE
+	avatar.update_battle_state_text()
+	
 	description_timer.start()
-	avatar.player_defense_timer.start()
+	avatar.defense_timer.start()
+	
 	resume_avatars_motion()
 	toggle_timer_tick(false)
 	
@@ -280,11 +293,11 @@ func on_target_clicked(damage_receiver: Avatar, damage_dealer: Avatar):
 	
 	# basic attack - move avatar immediately towards end of exe
 	damage_dealer.progress_ratio = 1
-	var dmg := damage_dealer.curr_stats.attack
+	var dmg := battle_manager.damage_calculator.calculate_damage(damage_receiver, damage_dealer)
 	label.text = "%s attacked for %d damage to %s" % [damage_dealer.name, dmg, damage_receiver.name]
 	damage_receiver.curr_stats.hp = maxi(damage_receiver.curr_stats.hp - dmg, 0)
 	
-	damage_receiver.on_damage_received.emit(damage_receiver, damage_dealer)
+	battle_manager.damage_calculator.on_damage_received.emit(damage_receiver, damage_dealer)
 		
 	target_menu.visible = false
 	description_panel.visible = true
@@ -357,10 +370,10 @@ func on_start_order_step(avatar: Avatar) -> void:
 		
 	# entry point for enemies to pick a move
 	elif avatar.avatar_type == Avatar.Avatar_Type.ENEMY:
-		ai_use_random_skill(avatar)
+		#ai_use_random_skill(avatar)
 		#ai_defend(avatar)
 		#ai_flee(avatar)
-		#ai_attack(avatar)
+		ai_attack(avatar)
 
 func transition_to_main_scene(status: Party_Battle_States):
 	var exit_scene = func():
@@ -410,11 +423,16 @@ func ai_attack(avatar: Avatar) -> void:
 		if len(live_party_members) == 0:
 			return
 		
+		avatar.battle_state = avatar.Battle_State.EXECUTING_MOVE
+		avatar.update_battle_state_text()
+		
 		var i = randi_range(0, len(live_party_members) - 1)
 		var target: Avatar = live_party_members[i]
-		# compute random dmg to deal - TODO: add damage calculator
-		var dmg = randi_range(1,20)
-		target.curr_stats.hp -= dmg
+		var dmg = battle_manager.damage_calculator.calculate_damage(target, avatar)
+		target.curr_stats.hp = maxi(target.curr_stats.hp - dmg, 0)
+		
+		battle_manager.damage_calculator.on_damage_received.emit(target, avatar)
+		
 		# target downed...
 		if target.curr_stats.hp <= 0:
 			target.curr_stats.hp = 0
@@ -427,15 +445,19 @@ func ai_attack(avatar: Avatar) -> void:
 		# display damage dealt to target
 		description_panel.visible = true
 		label.text = "%s dealt %d damage to %s" % [avatar.name, dmg, target.name]
-		description_timer.start()
+		
+		on_ai_turn_end(avatar)
 
 func ai_defend(avatar: Avatar) -> void:
-	# TODO - determine a formula for defending against an attack
 	avatar.curr_stats.defense += avatar.curr_stats.defense * .25
 	avatar.progress_ratio = 1
 	avatar.resume_motion = false
 	description_panel.visible = true
 	label.text = "%s is defending" % [avatar.name]
+	
+	avatar.battle_state = avatar.Battle_State.EXECUTING_MOVE
+	avatar.update_battle_state_text()
+	
 	avatar.defense_timer.start()
 
 func ai_flee(avatar: Avatar) -> void:
@@ -474,11 +496,6 @@ func ai_use_random_skill(avatar: Avatar) -> void:
 	avatar.battle_state = avatar.Battle_State.PENDING_MOVE
 	avatar.update_battle_state_text()
 	avatar.skill_timer.start()
-
-func on_defense_timeout(avatar: Avatar) -> void:
-	print("avatar defense ending: %s" % avatar.name)
-	avatar.curr_stats.defense = avatar.initial_stats.defense
-	description_timer.start()
 
 func on_skill_end(avatar: Avatar) -> void:
 	print("avatar %s skill end at time %d" % [avatar.name, Time.get_ticks_msec()])
@@ -519,20 +536,22 @@ func on_skill_end(avatar: Avatar) -> void:
 	var target_index: int = randi_range(0, len(members) - 1)
 	var target: Avatar = members[target_index]
 	var skill: Skill = skills[skill_index]
-	var text = "%s used %s on %s!" % [avatar.name, skill.name, target.name]
+	
+	var dmg = battle_manager.damage_calculator.calculate_damage(target, avatar)
+	
+	var text = "%s used %s on %s! It dealt %d damage" % [avatar.name, skill.name, target.name, dmg]
 	label.text = text 
 	
-	target.curr_stats.hp -= skill.attack
+	target.curr_stats.hp = maxi(target.curr_stats.hp - dmg, 0)
 	avatar.curr_stats.skill_points = maxi(avatar.curr_stats.skill_points - skill.cost, 0)
-	target.on_damage_received.emit(target, avatar)
+	
+	battle_manager.damage_calculator.on_damage_received.emit(target, avatar)
 	
 	# pause movement momentarily
 	avatar.resume_motion = false
 	avatar._curr_speed = avatar.move_speed
 
-	# TODO - motion should be resumed when skill animation finishes
-	avatar.resume_delay_timer.start()
-	description_timer.start()
+	on_ai_turn_end(avatar)
 
 # used to delay resuming timeline to simulate animation time
 func on_resume_play(avatar: Avatar) -> void:

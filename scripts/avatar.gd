@@ -38,21 +38,26 @@ var resume_motion: bool = true
 var battle_state: Battle_State = Battle_State.WAITING
 
 ## AI Timers
-var defense_timer: Timer
 var skill_timer: Timer
 var resume_delay_timer: Timer
 
 ## Party Member Timers
-var player_defense_timer: Timer
+
+## Shared Timers
+var defense_timer: Timer
 
 signal on_start_order_step(avatar: Avatar)
 signal on_start_exe_step(body: Node2D)
-signal on_damage_received(damage_receiver: Avatar, damage_dealer: Avatar)
 
 # AI signals
 signal on_avatar_flee()
 signal on_skill_end(avatar: Avatar)
 signal on_resume_play(avatar: Avatar)
+
+var battle_manager: BattleManager
+
+# parameter takes in an Avatar ref
+var on_turn_end: Callable
 
 func _init() -> void:
 	initial_stats = BaseStats.new()
@@ -65,7 +70,7 @@ func _init() -> void:
 	defense_timer.name = "DefenseTimer"
 	defense_timer.autostart = false
 	defense_timer.one_shot = true
-	defense_timer.wait_time = 1 # seconds
+	defense_timer.wait_time = 2 # seconds
 	defense_timer.process_callback = Timer.TIMER_PROCESS_PHYSICS
 	
 	skill_timer = Timer.new()
@@ -81,13 +86,6 @@ func _init() -> void:
 	resume_delay_timer.one_shot = true
 	resume_delay_timer.wait_time = 2 # seconds
 	resume_delay_timer.process_callback = Timer.TIMER_PROCESS_PHYSICS
-	
-	player_defense_timer = Timer.new()
-	player_defense_timer.name = "player_defense_timer"
-	player_defense_timer.autostart = false
-	player_defense_timer.one_shot = true
-	player_defense_timer.wait_time = 2 # seconds
-	player_defense_timer.process_callback = Timer.TIMER_PROCESS_PHYSICS
 
 func _ready() -> void:
 	_curr_speed = move_speed
@@ -102,9 +100,9 @@ func _ready() -> void:
 	# AI timers
 	skill_timer.timeout.connect(on_skill_timeout)
 	resume_delay_timer.timeout.connect(on_resume_timeout)
-
-	# Party Member timers
-	player_defense_timer.timeout.connect(on_defend_end)
+	
+	# shared timers
+	defense_timer.timeout.connect(on_defend_end)
 
 
 func _physics_process(delta: float) -> void:
@@ -133,10 +131,14 @@ func on_resume_timeout():
 	on_resume_play.emit(self)
 #endregion
 
-#region Player functions
 func on_defend_end():
 	curr_stats.defense = initial_stats.defense
-#endregion
+	
+	battle_state = Battle_State.WAITING
+	update_battle_state_text()
+	
+	if on_turn_end:
+		on_turn_end.call(self)
 
 func update_battle_state_text():
 	match battle_state:

@@ -1,4 +1,5 @@
 extends Node
+class_name BattleManager
 
 const avatar_res_path: String = "res://nodes/battle_timeline/avatar.tscn"
 const avatar_res: Resource = preload(avatar_res_path)
@@ -79,6 +80,8 @@ var enemy_avatars: Array[Avatar] = []
 
 var battle_participants: Array[Node] = []
 
+var damage_calculator: IDamageCalculator
+
 func generate_random_stats(actor_type: Actor_Type) -> BaseStats:
 	var stats = BaseStats.new()
 	
@@ -87,8 +90,8 @@ func generate_random_stats(actor_type: Actor_Type) -> BaseStats:
 	else:
 		stats.name = enemy_names[randi_range(0, len(enemy_names) - 1)]
 	
-	stats.attack = randi_range(10, 20)
-	stats.defense = randi_range(10, 20)
+	stats.attack = randi_range(20,25)
+	stats.defense = randi_range(10,15)
 	stats.hp = randi_range(40, 80)
 	stats.speed = randi_range(10, 20)
 	stats.skill_points = 100
@@ -102,6 +105,7 @@ func get_starting_timeline_positions() -> Array:
 
 func _init() -> void:
 	print("init called")
+	damage_calculator = SimpleDamageCalculator.new()
 
 func _enter_tree() -> void:
 	print("enter tree called")
@@ -132,7 +136,14 @@ func _enter_tree() -> void:
 		avatar.curr_stats.set_stats(party_member_stats[i])
 		avatar.avatar_type = Avatar.Avatar_Type.PARTY_MEMBER
 		
+		
 		party_line.add_child(avatar)
+		
+		
+		# set owner of this node to be the root node of the scene it is spawned in
+		# if not set, godot scene tree won't recognize its existence
+		avatar.owner = self
+		
 		party_member_avatars.append(avatar)
 		avatar.name = party_member_stats[i].name
 
@@ -140,13 +151,16 @@ func _enter_tree() -> void:
 		var avatar: Avatar = avatar_res.instantiate()
 		avatar.texture = enemy_texture
 		avatar.move_speed = (enemy_stats[i].speed / float(max_battle_speed)) * 0.25
-		enemy_line.add_child(avatar)
-		enemy_avatars.append(avatar)
 		avatar.name = enemy_stats[i].name
 		avatar.initial_stats.set_stats(enemy_stats[i])
 		avatar.curr_stats.set_stats(enemy_stats[i])
 		avatar.avatar_type = Avatar.Avatar_Type.ENEMY
 		
+		enemy_line.add_child(avatar)
+		enemy_avatars.append(avatar)
+		# set owner of this node to be the root node of the scene it is spawned in
+		# if not set, godot scene tree won't recognize its existence
+		avatar.owner = self
 
 	# spawn party members and enemies
 	var starting_positions = [
@@ -184,7 +198,9 @@ func _enter_tree() -> void:
 	for i in range(0, len(enemy_mobs)):
 		(enemy_mobs[i] as BattleParticipant).avatar = enemy_avatars[i]
 		(enemy_mobs[i].get_node("Area2D") as MobSelection).avatar = enemy_avatars[i]
-		(enemy_mobs[i].get_node("InfoNode") as InfoDisplay).avatar = enemy_avatars[i]
+		var info_display = enemy_mobs[i].get_node("InfoNode") as InfoDisplay
+		info_display.avatar = enemy_avatars[i]
+		info_display.battle_manager = self
 	
 	var party_members: Array[Node] = battle_participants.filter(
 		func(b: Node): return (b as BattleParticipant) == null
@@ -195,7 +211,9 @@ func _enter_tree() -> void:
 		battle_participants[i].name = party_member_stats[i].name
 		
 	for i in range(len(party_members)):
-		(party_members[i].get_node("InfoNode") as InfoDisplay).avatar = party_member_avatars[i]
+		var info_display = party_members[i].get_node("InfoNode") as InfoDisplay
+		info_display.avatar = party_member_avatars[i]
+		info_display.battle_manager = self
 
 func _ready() -> void:
 	print("battle scene ready called")

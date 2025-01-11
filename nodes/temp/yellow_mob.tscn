@@ -1,7 +1,7 @@
 [gd_scene load_steps=10 format=3 uid="uid://by7ldgcy2up74"]
 
 [ext_resource type="Script" path="res://scripts/bot.gd" id="1_st3bo"]
-[ext_resource type="Resource" uid="uid://damm5v126277g" path="res://scripts/bot_stats.tres" id="2_d6iuc"]
+[ext_resource type="Resource" uid="uid://damm5v126277g" path="res://resources/bot_stats.tres" id="2_d6iuc"]
 [ext_resource type="PackedScene" uid="uid://b6jorugo4ilds" path="res://nodes/monsters/parts/arm_types/arm_yellowE.tscn" id="3_hbqtk"]
 [ext_resource type="PackedScene" uid="uid://m8aj8e6g21ni" path="res://nodes/monsters/parts/leg_types/leg_yellowA.tscn" id="4_2jwx1"]
 [ext_resource type="PackedScene" uid="uid://dab73d2lfdlqc" path="res://nodes/monsters/parts/ear_types/detail_yellow_ear_round.tscn" id="5_mc4t3"]

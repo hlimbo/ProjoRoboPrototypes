@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="Skill" load_steps=2 format=3 uid="uid://cvlxo8s3jaft2"]
+
+[ext_resource type="Script" path="res://scripts/resources/skill.gd" id="1_be1uw"]
+
+[resource]
+script = ExtResource("1_be1uw")
+cost = 5
+attack = 20
+name = "Aqua Blast"

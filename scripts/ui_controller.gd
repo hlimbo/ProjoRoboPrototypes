@@ -16,7 +16,7 @@ extends CanvasLayer
 
 @onready var description_timer: Timer = $DescriptionPanel/Timer
 @onready var label: Label = $DescriptionPanel/Label
-@onready var active_placeholder_skill: Button = $ActiveSkillMenu/ScrollContainer/VBoxContainer/SkillContainer/ButtonContainer/Button
+# @onready var active_placeholder_skill: Button = $ActiveSkillMenu/ScrollContainer/VBoxContainer/SkillContainer/ButtonContainer/Button
 
 # TODO: need to reorganize nodes to make things cleaner and easier to understand
 @onready var camera_2d: Camera2D = $"../Camera2D"
@@ -77,7 +77,7 @@ func _ready():
 	print("ui controller ready called")
 	cancel.pressed.connect(_on_cancel_button_pressed)
 	target_cancel.pressed.connect(_on_cancel_button_pressed)
-	active_placeholder_skill.pressed.connect(_on_skill_start)
+	# active_placeholder_skill.pressed.connect(_on_skill_start)
 	flee.pressed.connect(_on_flee_button_pressed)
 	
 	for node in avatar_nodes:
@@ -242,7 +242,7 @@ func _on_skill_timer_timeout() -> void:
 	
 	if active_avatar:
 		var enemy_name := "Villainous Gelatin"
-		var skill_name := active_placeholder_skill.text
+		var skill_name := "Dummy Skill" # active_placeholder_skill.text
 		var dmg := randi_range(32, 64)
 		label.text = "%s casts %s to %s. It deals %d damage!" % [active_avatar.name, skill_name, enemy_name, dmg]
 	
@@ -517,19 +517,9 @@ func ai_use_random_skill(avatar: Avatar) -> void:
 func on_skill_end(avatar: Avatar) -> void:
 	print("avatar %s skill end at time %d" % [avatar.name, Time.get_ticks_msec()])
 	# pick random skill
-	var skill1 = Skill.new()
-	var skill2 = Skill.new()
-	var skill3 = Skill.new()
-	
-	skill1.name = "Special Atk1"
-	skill2.name = "Special Atk2"
-	skill3.name = "Special Atk3"
-	skill1.attack = 5
-	skill2.attack = 10
-	skill3.attack = 20
-	skill1.cost = 1
-	skill2.cost = 2
-	skill3.cost = 3
+	var skill1 = Skill.new(1, 5, "Sizzle")
+	var skill2 = Skill.new(4, 10, "Spitfire")
+	var skill3 = Skill.new(8, 20, "Oven Overload")
 	
 	# TODO: check ahead of time if enemy can cast a skill, if not, don't do this action
 	var skills: Array[Skill] = [skill1, skill2, skill3]

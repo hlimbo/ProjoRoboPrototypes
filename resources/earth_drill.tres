@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="Skill" load_steps=2 format=3 uid="uid://bgbuqgqyx0rc6"]
+
+[ext_resource type="Script" path="res://scripts/resources/skill.gd" id="1_2486x"]
+
+[resource]
+script = ExtResource("1_2486x")
+cost = 12
+attack = 28
+name = "Earth Drill"

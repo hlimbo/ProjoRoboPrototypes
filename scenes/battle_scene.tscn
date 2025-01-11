@@ -134,10 +134,6 @@ process_callback = 0
 wait_time = 3.0
 one_shot = true
 
-[node name="TargetTimer" type="Timer" parent="UILayout"]
-process_callback = 0
-one_shot = true
-
 [node name="PartyBattleState" type="Label" parent="UILayout"]
 offset_right = 218.0
 offset_bottom = 59.0

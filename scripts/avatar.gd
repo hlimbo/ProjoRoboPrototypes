@@ -27,6 +27,7 @@ var _curr_speed: float
 @onready var sprite_2d: Sprite2D = $Sprite2D
 @onready var battle_state_label: Label = $BattleStateLabel
 @onready var avatar_label: Label = $AvatarLabel
+@onready var battle_timers: BattleTimers = $BattleTimers
 
 
 var initial_stats: BaseStats
@@ -36,15 +37,6 @@ var is_alive: bool
 # controls whether or not movement along timeline continues on
 var resume_motion: bool = true
 var battle_state: Battle_State = Battle_State.WAITING
-
-## AI Timers
-var skill_timer: Timer
-var resume_delay_timer: Timer
-
-## Party Member Timers
-
-## Shared Timers
-var defense_timer: Timer
 
 signal on_start_order_step(avatar: Avatar)
 signal on_start_exe_step(body: Node2D)
@@ -64,28 +56,6 @@ func _init() -> void:
 	curr_stats = BaseStats.new()
 	is_alive = true
 	
-	defense_timer = Timer.new()
-	# godot engine will generate a unique name as nodes that are
-	# siblings of each other must have unique names
-	defense_timer.name = "DefenseTimer"
-	defense_timer.autostart = false
-	defense_timer.one_shot = true
-	defense_timer.wait_time = 2 # seconds
-	defense_timer.process_callback = Timer.TIMER_PROCESS_PHYSICS
-	
-	skill_timer = Timer.new()
-	skill_timer.name = "SkillTimer"
-	skill_timer.autostart = false
-	skill_timer.one_shot = true
-	skill_timer.wait_time = 3 # seconds
-	skill_timer.process_callback = Timer.TIMER_PROCESS_PHYSICS
-
-	resume_delay_timer = Timer.new()
-	resume_delay_timer.name = "resume_delay_timer"
-	resume_delay_timer.autostart = false
-	resume_delay_timer.one_shot = true
-	resume_delay_timer.wait_time = 2 # seconds
-	resume_delay_timer.process_callback = Timer.TIMER_PROCESS_PHYSICS
 
 func _ready() -> void:
 	_curr_speed = move_speed
@@ -98,11 +68,11 @@ func _ready() -> void:
 	area_2d.body_exited.connect(on_area_exited)
 	
 	# AI timers
-	skill_timer.timeout.connect(on_skill_timeout)
-	resume_delay_timer.timeout.connect(on_resume_timeout)
+	battle_timers.skill_timer.timeout.connect(on_skill_timeout)
+	battle_timers.resume_delay_timer.timeout.connect(on_resume_timeout)
 	
 	# shared timers
-	defense_timer.timeout.connect(on_defend_end)
+	battle_timers.defense_timer.timeout.connect(on_defend_end)
 
 
 func _physics_process(delta: float) -> void:

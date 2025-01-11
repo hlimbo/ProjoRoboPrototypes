@@ -22,8 +22,6 @@ extends CanvasLayer
 @onready var target_menu: PanelContainer = $TargetMenu
 @onready var target_label: Label = $TargetMenu/VBoxContainer/TargetLabel
 @onready var target_cancel: Button = $TargetMenu/VBoxContainer/Cancel
-@onready var target_timer: Timer = $TargetTimer
-
 
 # Placeholders -- bad code as this pathing is dependent on battle_manager.gd on spawning these mobs in the scene
 @onready var mobs: Array[MobSelection] = [
@@ -64,21 +62,18 @@ var timers: Array[Timer] = []
 
 func on_party_member_turn_end(avatar: Avatar):
 	description_timer.start()
-	# which party member will resume play?
+	resume_avatars_motion()
 	
 func on_ai_turn_end(avatar: Avatar):
 	description_timer.start()
-	avatar.resume_delay_timer.start()
+	avatar.battle_timers.resume_delay_timer.start()
+	resume_avatars_motion()
 
 func _ready():
 	print("ui controller ready called")
-	
-	# example of reusing code
 	cancel.pressed.connect(_on_cancel_button_pressed)
 	target_cancel.pressed.connect(_on_cancel_button_pressed)
-	
-	active_placeholder_skill.pressed.connect(_on_skill_activated)
-	
+	active_placeholder_skill.pressed.connect(_on_skill_start)
 	flee.pressed.connect(_on_flee_button_pressed)
 	
 	for node in avatar_nodes:
@@ -96,38 +91,24 @@ func _ready():
 		avatar.on_start_order_step.connect(on_start_order_step)
 		avatar.on_turn_end = on_party_member_turn_end
 		
-		# add timer to scene tree to start ticking
-		add_child(avatar.defense_timer)
-		
 	var enemy_index = 0
 	for avatar in enemy_avatars:
 		avatar.on_start_order_step.connect(on_start_order_step)
 		
 		avatar.on_skill_end.connect(on_skill_end)
-		avatar.on_resume_play.connect(on_resume_play)
 		avatar.on_turn_end = on_ai_turn_end
-		
-		# add timer to scene tree to start ticking
-		add_child(avatar.defense_timer)
-		add_child(avatar.skill_timer)
-		add_child(avatar.resume_delay_timer)
 		
 	# Fetch all timers in battle scene
 	for avatar in enemy_avatars:
-		timers.append(avatar.skill_timer)
-		timers.append(avatar.defense_timer)
-		timers.append(avatar.skill_timer)
+		timers.append(avatar.battle_timers.skill_timer)
+		timers.append(avatar.battle_timers.defense_timer)
+		timers.append(avatar.battle_timers.skill_timer)
 	
 	for avatar in party_members:
-		timers.append(avatar.defense_timer)
+		timers.append(avatar.battle_timers.defense_timer)
 	
 	timers.append(skill_timer)
 	timers.append(description_timer)
-	timers.append(target_timer)
-	
-	target_timer.timeout.connect(func():
-		resume_avatars_motion()
-	)
 
 func toggle_timer_tick(paused: bool):
 	for timer in timers:
@@ -160,7 +141,7 @@ func _on_defend_button_pressed(avatar: Avatar):
 	avatar.update_battle_state_text()
 	
 	description_timer.start()
-	avatar.defense_timer.start()
+	avatar.battle_timers.defense_timer.start()
 	
 	resume_avatars_motion()
 	toggle_timer_tick(false)
@@ -181,21 +162,28 @@ func _on_description_timer_timeout():
 	description_panel.visible = false
 	label.text = ""
 	
+	# TODO remove all instances of active_avatar and prefer passing down as param
 	# reset the avatar that made the move back to the beginning of timeline
 	if active_avatar:
 		active_avatar.progress_ratio = 0
 		active_avatar._curr_speed = active_avatar.move_speed
+		active_avatar.battle_state = active_avatar.Battle_State.WAITING
+		active_avatar.update_battle_state_text()
+		on_party_member_turn_end(active_avatar)
 		active_avatar = null
 
-func _on_skill_activated():
+func _on_skill_start():
 	# TODOs
 	# check if enough SRP to cast skill
 	# possibly move to SkillContainer and create a skill container script
 	active_skill_menu.visible = false
-	# delay skill until avatar progress ratio reaches 1
-	var diff: float = 1 - ORDER_STEP
-	var skill_exec_time: float = diff / skill_timer.wait_time
+
 	if active_avatar:
+		active_avatar.battle_state = active_avatar.Battle_State.PENDING_MOVE
+		active_avatar.update_battle_state_text()
+		# delay skill until avatar progress ratio reaches 1
+		var diff: float = 1 - active_avatar.progress_ratio
+		var skill_exec_time: float = diff / skill_timer.wait_time
 		active_avatar._curr_speed = skill_exec_time
 
 	toggle_timer_tick(false)
@@ -245,8 +233,6 @@ func _process(delta: float) -> void:
 func _on_skill_timer_timeout() -> void:
 	# TODO may need to hold which avatar skill started in an array
 	description_panel.visible = true
-	
-	toggle_timer_tick(false)
 	
 	if active_avatar:
 		var enemy_name := "Villainous Gelatin"
@@ -304,7 +290,10 @@ func on_target_clicked(damage_receiver: Avatar, damage_dealer: Avatar):
 	toggle_timer_tick(false)
 	# start timer to hide description panel
 	description_timer.start()
-	target_timer.start()
+	
+	damage_dealer.battle_state = damage_dealer.Battle_State.EXECUTING_MOVE
+	damage_dealer.update_battle_state_text()
+	
 
 
 func pause_avatars_motion():
@@ -315,6 +304,21 @@ func pause_avatars_motion():
 		member.resume_motion = false
 	for enemy in live_enemies:
 		enemy.resume_motion = false
+
+func can_resume_avatars_motion() -> bool:
+	var live_party_members = party_members.filter(func(a: Avatar): return a.is_alive)
+	var live_enemies = enemy_avatars.filter(func(a: Avatar): return a.is_alive)
+	# Don't resume avatar motion if any party members are 
+	# executing a move or picking a move
+	var is_any_party_member_acting: bool = live_party_members.any(
+			func(a: Avatar): return a.battle_state == a.Battle_State.EXECUTING_MOVE or a.battle_state == a.Battle_State.MOVE_SELECTION
+		)
+		
+	# Don't resume avatar motion if any enemies are
+	# executing a move
+	var is_any_enemy_executing: bool = live_enemies.any(func(a: Avatar): return a.battle_state == a.Battle_State.EXECUTING_MOVE)
+		
+	return not (is_any_party_member_acting or is_any_enemy_executing)
 
 func resume_avatars_motion():
 	var live_party_members = party_members.filter(func(a: Avatar): return a.is_alive)
@@ -370,10 +374,11 @@ func on_start_order_step(avatar: Avatar) -> void:
 		
 	# entry point for enemies to pick a move
 	elif avatar.avatar_type == Avatar.Avatar_Type.ENEMY:
+		ai_determine_move(avatar)
 		#ai_use_random_skill(avatar)
 		#ai_defend(avatar)
 		#ai_flee(avatar)
-		ai_attack(avatar)
+		#ai_attack(avatar)
 
 func transition_to_main_scene(status: Party_Battle_States):
 	var exit_scene = func():
@@ -382,6 +387,7 @@ func transition_to_main_scene(status: Party_Battle_States):
 		exit_timer.one_shot = true
 		exit_timer.wait_time = 3 # seconds
 		add_child(exit_timer)
+		
 		exit_timer.timeout.connect(func():
 			var err = get_tree().change_scene_to_file("res://scenes/main.tscn")
 			if err != OK:
@@ -458,7 +464,7 @@ func ai_defend(avatar: Avatar) -> void:
 	avatar.battle_state = avatar.Battle_State.EXECUTING_MOVE
 	avatar.update_battle_state_text()
 	
-	avatar.defense_timer.start()
+	avatar.battle_timers.defense_timer.start()
 
 func ai_flee(avatar: Avatar) -> void:
 	description_panel.visible = true
@@ -480,22 +486,20 @@ func ai_flee(avatar: Avatar) -> void:
 		enemy_avatars.remove_at(i)
 		remove_child(avatar)
 		avatar.queue_free()
-		
-	# resume_avatars_motion()
 
 func ai_use_random_skill(avatar: Avatar) -> void:
 	# compute skill exec speed 
 	# numerator is the difference b/w the progress_ratios ranging between 0 and 1 inclusive
 	# denominator is the time period that the skill will take to execute measured in seconds
 	var diff: float = 1 - avatar.progress_ratio
-	var skill_exec_speed: float = diff / avatar.skill_timer.wait_time
+	var skill_exec_speed: float = diff / avatar.battle_timers.skill_timer.wait_time
 	
 	print("avatar %s start skill at time %d" % [avatar.name, Time.get_ticks_msec()])
 	
 	avatar._curr_speed = skill_exec_speed
 	avatar.battle_state = avatar.Battle_State.PENDING_MOVE
 	avatar.update_battle_state_text()
-	avatar.skill_timer.start()
+	avatar.battle_timers.skill_timer.start()
 
 func on_skill_end(avatar: Avatar) -> void:
 	print("avatar %s skill end at time %d" % [avatar.name, Time.get_ticks_msec()])
@@ -552,10 +556,5 @@ func on_skill_end(avatar: Avatar) -> void:
 	avatar._curr_speed = avatar.move_speed
 
 	on_ai_turn_end(avatar)
-
-# used to delay resuming timeline to simulate animation time
-func on_resume_play(avatar: Avatar) -> void:
-	print("resuming play at time %d" % Time.get_ticks_msec())
-	resume_avatars_motion()
 
 #endregion

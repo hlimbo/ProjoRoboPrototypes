@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://wlrgdq8ncg46"]
+[gd_scene load_steps=5 format=3 uid="uid://wlrgdq8ncg46"]
 
 [ext_resource type="Script" path="res://scripts/avatar.gd" id="1_1acpc"]
+[ext_resource type="PackedScene" uid="uid://cuuog2qqvlbs1" path="res://nodes/battle_timeline/battle_timers.tscn" id="3_a0ltq"]
 [ext_resource type="Texture2D" uid="uid://chyh1qqhpjlot" path="res://assets/kenney_emotes-pack/PNG/Vector/Style 1/emote_alert.png" id="3_cd5xc"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_21ghm"]
@@ -37,3 +38,5 @@ offset_right = 4.0
 offset_bottom = -39.0
 theme_override_font_sizes/font_size = 12
 text = "Name"
+
+[node name="BattleTimers" parent="." instance=ExtResource("3_a0ltq")]

@@ -5,20 +5,15 @@ class_name MobSelection
 var target_selection: Sprite2D
 @onready var col_shape: CollisionShape2D = $CollisionShape2D
 
-var mob_name: String
 var avatar: Avatar
+@onready var root_node: Node2D = owner
 
-signal on_target_hovered(mob_name: String)
+signal on_target_hovered(avatar: Avatar, mob: MobSelection)
 signal on_target_unhovered
 signal on_target_clicked(damage_receiver: Avatar, damage_dealer: Avatar)
 
 
-func _ready() -> void:
-	var parent: Node = get_parent()
-	mob_name = name
-	if avatar:
-		mob_name = avatar.name
-		
+func _ready() -> void:		
 	# hacky code - set in code the target_selection sprite2d graphic
 	target_selection = get_node("../../TargetSelection")
 
@@ -30,7 +25,7 @@ func _on_mouse_entered() -> void:
 		target_selection.position.x = global_position.x
 		target_selection.position.y = global_position.y - (col_shape.shape.get_rect().size.y / 2)
 	
-	on_target_hovered.emit(mob_name)
+	on_target_hovered.emit(avatar, self)
 
 func _on_mouse_exited() -> void:
 	if target_selection:

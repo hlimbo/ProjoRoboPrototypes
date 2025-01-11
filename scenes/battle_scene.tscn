@@ -10,7 +10,6 @@
 [ext_resource type="PackedScene" uid="uid://4fgdk83suvux" path="res://nodes/battle_timeline/one_d_graph.tscn" id="4_rmum5"]
 
 [node name="main" type="Node2D"]
-position = Vector2(11, 0)
 script = ExtResource("1_rrotr")
 enemy_spawn_count = 1
 party_member_spawn_count = 1
@@ -166,8 +165,10 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(1276, 1438)
+position = Vector2(1280, 1438)
 zoom = Vector2(0.5, 0.5)
+limit_smoothed = true
+position_smoothing_enabled = true
 
 [node name="PartyMember1" type="Marker2D" parent="."]
 position = Vector2(234, 1556)

@@ -18,6 +18,10 @@ extends CanvasLayer
 @onready var label: Label = $DescriptionPanel/Label
 @onready var active_placeholder_skill: Button = $ActiveSkillMenu/ScrollContainer/VBoxContainer/SkillContainer/ButtonContainer/Button
 
+# TODO: need to reorganize nodes to make things cleaner and easier to understand
+@onready var camera_2d: Camera2D = $"../Camera2D"
+var original_cam_pos: Vector2
+
 # Target Menu
 @onready var target_menu: PanelContainer = $TargetMenu
 @onready var target_label: Label = $TargetMenu/VBoxContainer/TargetLabel
@@ -109,6 +113,8 @@ func _ready():
 	
 	timers.append(skill_timer)
 	timers.append(description_timer)
+	
+	original_cam_pos = camera_2d.position
 
 func toggle_timer_tick(paused: bool):
 	for timer in timers:
@@ -265,11 +271,18 @@ func _on_flee_button_pressed():
 	
 	description_timer.start()
 
-func on_target_hovered(mob_name: String):
-	target_label.text = mob_name
+func on_target_hovered(avatar: Avatar, mob: MobSelection):
+	target_label.text = avatar.name
+	
+	print("mob position: %s" % str(mob.root_node.position))
+	print("cam position: %s" % str(camera_2d.position))
+	
+	camera_2d.position = mob.root_node.position
+	
 
 func on_target_unhovered():
 	target_label.text = ""
+	camera_2d.position = original_cam_pos
 
 
 func on_target_clicked(damage_receiver: Avatar, damage_dealer: Avatar):

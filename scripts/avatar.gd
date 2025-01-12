@@ -29,6 +29,8 @@ var _curr_speed: float
 @onready var avatar_label: Label = $AvatarLabel
 @onready var battle_timers: BattleTimers = $BattleTimers
 
+@onready var ui_layout: UIController = %UILayout
+
 
 var initial_stats: BaseStats
 var curr_stats: BaseStats
@@ -43,7 +45,6 @@ signal on_start_exe_step(body: Node2D)
 
 # AI signals
 signal on_avatar_flee()
-signal on_skill_end(avatar: Avatar)
 signal on_resume_play(avatar: Avatar)
 
 var battle_manager: BattleManager
@@ -68,10 +69,10 @@ func _ready() -> void:
 	area_2d.body_exited.connect(on_area_exited)
 	
 	# AI timers
-	battle_timers.skill_timer.timeout.connect(on_skill_timeout)
 	battle_timers.resume_delay_timer.timeout.connect(on_resume_timeout)
 	
 	# shared timers
+	battle_timers.skill_timer.timeout.connect(on_skill_timeout)
 	battle_timers.defense_timer.timeout.connect(on_defend_end)
 
 
@@ -87,12 +88,6 @@ func on_area_exited(body: Node2D) -> void:
 	on_start_exe_step.emit(body)
 
 #region AI functions
-func on_skill_timeout():
-	print("on skill timeout called on: %s" % self.name)
-	battle_state = Battle_State.EXECUTING_MOVE
-	update_battle_state_text()
-	on_skill_end.emit(self)
-	
 func on_resume_timeout():
 	print("on resume timeout %s at time %d " % [self.name, Time.get_ticks_msec()])
 	battle_state = Battle_State.WAITING
@@ -100,6 +95,17 @@ func on_resume_timeout():
 	self.progress_ratio = 0 # reset back to beginning of timeline
 	on_resume_play.emit(self)
 #endregion
+
+func on_skill_timeout():
+	print("on skill timeout called on: %s" % self.name)
+	battle_state = Battle_State.WAITING
+	update_battle_state_text()
+	_curr_speed = move_speed
+	progress_ratio = 0
+	
+	# ai ONLY
+	#battle_state = Battle_State.EXECUTING_MOVE
+	#update_battle_state_text()
 
 func on_defend_end():
 	curr_stats.defense = initial_stats.defense

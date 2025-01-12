@@ -1,4 +1,5 @@
 extends CanvasLayer
+class_name UIController
 
 # owner is the root node of the scene that this node belongs to e.g. main
 @onready var battle_manager: BattleManager = owner
@@ -17,6 +18,9 @@ extends CanvasLayer
 @onready var description_timer: Timer = $DescriptionPanel/Timer
 @onready var label: Label = $DescriptionPanel/Label
 # @onready var active_placeholder_skill: Button = $ActiveSkillMenu/ScrollContainer/VBoxContainer/SkillContainer/ButtonContainer/Button
+@onready var skill_controller: SkillController = $ActiveSkillMenu
+@onready var skill_containers: Array[Node] = $ActiveSkillMenu/ScrollContainer/MarginContainer/VBoxContainer.get_children()
+var skills: Array[SkillView] = []
 
 # TODO: need to reorganize nodes to make things cleaner and easier to understand
 @onready var camera_2d: Camera2D = $"../Camera2D"
@@ -44,10 +48,6 @@ var enemy_avatars: Array[Avatar] = []
 const ORDER_STEP: float = 0.858
 # avatar reference that will make a move
 var active_avatar: Avatar = null
-
-# TODO - cleanup
-# player skill timer.. hardcoded in to prototype only
-@onready var skill_timer: Timer = $SkillTimer
 var did_tween_start: bool = false
 
 enum Party_Battle_States {
@@ -57,12 +57,22 @@ enum Party_Battle_States {
 	DEFEAT,
 }
 
+enum Attack_Type {
+	BASIC,
+	SKILL,
+}
+
 var party_battle_state: Party_Battle_States = Party_Battle_States.IN_PROGRESS
 
 @onready var transition_rect: ColorRect = $TransitionRect
 @onready var transition_label: Label = $TransitionRect/Label
 
 var timers: Array[Timer] = []
+var attack_type: Attack_Type
+var pending_skill: Skill
+
+# Shared Signals
+signal on_skill_end(damage_receiver: Avatar, damage_dealer: Avatar)
 
 func on_party_member_turn_end(avatar: Avatar):
 	description_timer.start()
@@ -77,7 +87,6 @@ func _ready():
 	print("ui controller ready called")
 	cancel.pressed.connect(_on_cancel_button_pressed)
 	target_cancel.pressed.connect(_on_cancel_button_pressed)
-	# active_placeholder_skill.pressed.connect(_on_skill_start)
 	flee.pressed.connect(_on_flee_button_pressed)
 	
 	for node in avatar_nodes:
@@ -95,23 +104,22 @@ func _ready():
 		avatar.on_start_order_step.connect(on_start_order_step)
 		avatar.on_turn_end = on_party_member_turn_end
 		
-	var enemy_index = 0
+		
 	for avatar in enemy_avatars:
 		avatar.on_start_order_step.connect(on_start_order_step)
-		
-		avatar.on_skill_end.connect(on_skill_end)
+		# avatar.on_skill_end.connect(on_ai_skill_end)
 		avatar.on_turn_end = on_ai_turn_end
 		
 	# Fetch all timers in battle scene
 	for avatar in enemy_avatars:
 		timers.append(avatar.battle_timers.skill_timer)
 		timers.append(avatar.battle_timers.defense_timer)
-		timers.append(avatar.battle_timers.skill_timer)
+		timers.append(avatar.battle_timers.resume_delay_timer)
 	
 	for avatar in party_members:
 		timers.append(avatar.battle_timers.defense_timer)
+		timers.append(avatar.battle_timers.skill_timer)
 	
-	timers.append(skill_timer)
 	timers.append(description_timer)
 	
 	original_cam_pos = camera_2d.position
@@ -120,20 +128,26 @@ func toggle_timer_tick(paused: bool):
 	for timer in timers:
 		timer.paused = paused
 
-func _on_attack_button_pressed(avatar: Avatar):
-	action_layout.visible = false
-		
+func toggle_pickable_mobs(input_pickable: bool):
 	# pick target to attack
 	# enable as pickable which accepts mouse pointer events
 	for mob in mobs:
-		mob.input_pickable = true
-	
+		mob.input_pickable = input_pickable
+
+func _on_attack_button_pressed(avatar: Avatar):
+	action_layout.visible = false
+	toggle_pickable_mobs(true)
 	# switch to attack selection menu
 	target_menu.visible = true
+	attack_type = Attack_Type.BASIC
 
-func _on_skills_button_pressed():
+func _on_skills_button_pressed(avatar: Avatar):
 	active_skill_menu.visible = true
 	action_layout.visible = false
+	
+	# set the correct avatar that will be executing their own skills
+	skill_controller.avatar = avatar
+	attack_type = Attack_Type.SKILL
 
 func _on_defend_button_pressed(avatar: Avatar):
 	avatar.progress_ratio = 1
@@ -170,31 +184,13 @@ func _on_description_timer_timeout():
 	
 	# TODO remove all instances of active_avatar and prefer passing down as param
 	# reset the avatar that made the move back to the beginning of timeline
-	if active_avatar:
-		active_avatar.progress_ratio = 0
-		active_avatar._curr_speed = active_avatar.move_speed
-		active_avatar.battle_state = active_avatar.Battle_State.WAITING
-		active_avatar.update_battle_state_text()
-		on_party_member_turn_end(active_avatar)
-		active_avatar = null
-
-func _on_skill_start():
-	# TODOs
-	# check if enough SRP to cast skill
-	# possibly move to SkillContainer and create a skill container script
-	active_skill_menu.visible = false
-
-	if active_avatar:
-		active_avatar.battle_state = active_avatar.Battle_State.PENDING_MOVE
-		active_avatar.update_battle_state_text()
-		# delay skill until avatar progress ratio reaches 1
-		var diff: float = 1 - active_avatar.progress_ratio
-		var skill_exec_time: float = diff / skill_timer.wait_time
-		active_avatar._curr_speed = skill_exec_time
-
-	toggle_timer_tick(false)
-	resume_avatars_motion()
-	skill_timer.start()
+	#if active_avatar:
+		#active_avatar.progress_ratio = 0
+		#active_avatar._curr_speed = active_avatar.move_speed
+		#active_avatar.battle_state = active_avatar.Battle_State.WAITING
+		#active_avatar.update_battle_state_text()
+		#on_party_member_turn_end(active_avatar)
+		#active_avatar = null
 
 func _process(delta: float) -> void:
 	# check if enemies are defeated
@@ -235,19 +231,6 @@ func _process(delta: float) -> void:
 		transition_to_main_scene(party_battle_state)
 		did_tween_start = true
 
-
-func _on_skill_timer_timeout() -> void:
-	# TODO may need to hold which avatar skill started in an array
-	description_panel.visible = true
-	
-	if active_avatar:
-		var enemy_name := "Villainous Gelatin"
-		var skill_name := "Dummy Skill" # active_placeholder_skill.text
-		var dmg := randi_range(32, 64)
-		label.text = "%s casts %s to %s. It deals %d damage!" % [active_avatar.name, skill_name, enemy_name, dmg]
-	
-	description_timer.start()
-
 func _on_flee_button_pressed():
 	# TODOs
 	# - change scene to the overworld scene when successfully fled from battle
@@ -286,27 +269,43 @@ func on_target_unhovered():
 
 
 func on_target_clicked(damage_receiver: Avatar, damage_dealer: Avatar):
-	# disable pickables
-	for mob in mobs:
-		mob.input_pickable = false
+	toggle_pickable_mobs(false)
 	
-	# basic attack - move avatar immediately towards end of exe
-	damage_dealer.progress_ratio = 1
-	var dmg := battle_manager.damage_calculator.calculate_damage(damage_receiver, damage_dealer)
-	label.text = "%s attacked for %d damage to %s" % [damage_dealer.name, dmg, damage_receiver.name]
-	damage_receiver.curr_stats.hp = maxi(damage_receiver.curr_stats.hp - dmg, 0)
-	
-	battle_manager.damage_calculator.on_damage_received.emit(damage_receiver, damage_dealer)
+	if attack_type == Attack_Type.BASIC:
+		# move avatar immediately towards end of exe
+		damage_dealer.progress_ratio = 1
+		var dmg := battle_manager.damage_calculator.calculate_damage(damage_receiver, damage_dealer)
+		label.text = "%s attacked for %d damage to %s" % [damage_dealer.name, dmg, damage_receiver.name]
+		damage_receiver.curr_stats.hp = maxi(damage_receiver.curr_stats.hp - dmg, 0)
 		
-	target_menu.visible = false
-	description_panel.visible = true
-	toggle_timer_tick(false)
-	# start timer to hide description panel
-	description_timer.start()
-	
-	damage_dealer.battle_state = damage_dealer.Battle_State.EXECUTING_MOVE
-	damage_dealer.update_battle_state_text()
-	
+		battle_manager.damage_calculator.on_damage_received.emit(damage_receiver, damage_dealer)
+			
+		target_menu.visible = false
+		description_panel.visible = true
+		toggle_timer_tick(false)
+		# start timer to hide description panel
+		description_timer.start()
+		
+		damage_dealer.battle_state = damage_dealer.Battle_State.EXECUTING_MOVE
+		damage_dealer.update_battle_state_text()
+	elif attack_type == Attack_Type.SKILL:
+		# set skill execution speed
+		damage_dealer.battle_state = damage_dealer.Battle_State.PENDING_MOVE
+		damage_dealer.update_battle_state_text()
+		# delay skill until avatar progress ratio reaches 1
+		var diff: float = 1 - damage_dealer.progress_ratio
+		var skill_exec_time: float = diff / damage_dealer.battle_timers.skill_timer.wait_time
+		damage_dealer._curr_speed = skill_exec_time
+		
+		damage_dealer.battle_timers.skill_timer.start()
+		
+		var on_timeout = func(): on_party_member_skill_end(damage_receiver, damage_dealer)
+		damage_dealer.battle_timers.skill_timer.timeout.connect(on_timeout, ConnectFlags.CONNECT_ONE_SHOT)
+		
+		target_menu.visible = false
+		active_skill_menu.visible = false
+		toggle_timer_tick(false)
+		resume_avatars_motion()
 
 
 func pause_avatars_motion():
@@ -348,7 +347,7 @@ func on_start_order_step(avatar: Avatar) -> void:
 	
 	# entry point for party member to pick a move
 	if avatar.avatar_type == Avatar.Avatar_Type.PARTY_MEMBER:
-		active_avatar = avatar
+		# active_avatar = avatar
 		# pause all timers to prevent them going off when party member is picking a move
 		toggle_timer_tick(true)
 		pause_avatars_motion()
@@ -383,7 +382,7 @@ func on_start_order_step(avatar: Avatar) -> void:
 			
 		attack.pressed.connect(_on_attack_button_pressed.bind(avatar))
 		defend.pressed.connect(_on_defend_button_pressed.bind(avatar))
-		skill.pressed.connect(_on_skills_button_pressed)
+		skill.pressed.connect(_on_skills_button_pressed.bind(avatar))
 		
 	# entry point for enemies to pick a move
 	elif avatar.avatar_type == Avatar.Avatar_Type.ENEMY:
@@ -429,7 +428,7 @@ func transition_to_main_scene(status: Party_Battle_States):
 
 #region AI Commands
 func ai_determine_move(avatar: Avatar) -> void:
-	var possible_actions: Array[Callable] = [ai_attack, ai_defend, ai_use_random_skill]
+	var possible_actions: Array[Callable] = [ai_attack, ai_defend] # ai_use_random_skill]
 	var random_move_index = randi_range(0, len(possible_actions) - 1)
 	possible_actions[random_move_index].call(avatar)
 
@@ -494,8 +493,6 @@ func ai_flee(avatar: Avatar) -> void:
 		
 	# remove avatar from scene if found
 	if i < len(enemy_avatars):
-		# invalidate active_avatar as it will be removed
-		active_avatar = null
 		enemy_avatars.remove_at(i)
 		remove_child(avatar)
 		avatar.queue_free()
@@ -514,7 +511,7 @@ func ai_use_random_skill(avatar: Avatar) -> void:
 	avatar.update_battle_state_text()
 	avatar.battle_timers.skill_timer.start()
 
-func on_skill_end(avatar: Avatar) -> void:
+func on_ai_skill_end(avatar: Avatar) -> void:
 	print("avatar %s skill end at time %d" % [avatar.name, Time.get_ticks_msec()])
 	# pick random skill
 	var skill1 = Skill.new(1, 5, "Sizzle")
@@ -561,3 +558,25 @@ func on_skill_end(avatar: Avatar) -> void:
 	on_ai_turn_end(avatar)
 
 #endregion
+
+func on_party_member_skill_end(damage_receiver: Avatar, damage_dealer: Avatar) -> void:
+	# TODO may need to hold which avatar skill started in an array
+	description_panel.visible = true
+	var skill: Skill = pending_skill
+	
+	print("on party member skill end %s" % damage_dealer.name)
+	# pass in damage dealer and damage receiver and skill used to compute damage taken
+	var enemy_name := damage_receiver.name
+	var skill_name := skill.name
+	var dmg := skill.attack
+	
+	# TODO: Add damage calculations for skills
+	damage_receiver.curr_stats.hp = maxi(damage_receiver.curr_stats.hp - dmg, 0)
+	battle_manager.damage_calculator.on_damage_received.emit(damage_receiver, damage_dealer)
+	label.text = "%s casts %s to %s. It deals %d damage!" % [damage_dealer.name, skill_name, enemy_name, dmg]
+	
+	# display damage description
+	description_timer.start()
+	
+	toggle_timer_tick(false)
+	resume_avatars_motion()

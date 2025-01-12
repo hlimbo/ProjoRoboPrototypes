@@ -22,6 +22,7 @@ scale = Vector2(2, 2)
 texture = ExtResource("1_bu6oj")
 
 [node name="UILayout" type="CanvasLayer" parent="."]
+unique_name_in_owner = true
 script = ExtResource("1_qdx8j")
 
 [node name="OneDGraph" parent="UILayout" instance=ExtResource("4_rmum5")]
@@ -128,11 +129,6 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "Cancel"
 
-[node name="SkillTimer" type="Timer" parent="UILayout"]
-process_callback = 0
-wait_time = 3.0
-one_shot = true
-
 [node name="PartyBattleState" type="Label" parent="UILayout"]
 offset_right = 218.0
 offset_bottom = 59.0
@@ -189,4 +185,3 @@ position = Vector2(1487, 1262)
 position = Vector2(1671, 1262)
 
 [connection signal="timeout" from="UILayout/DescriptionPanel/Timer" to="UILayout" method="_on_description_timer_timeout"]
-[connection signal="timeout" from="UILayout/SkillTimer" to="UILayout" method="_on_skill_timer_timeout"]

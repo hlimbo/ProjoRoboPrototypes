@@ -17,5 +17,5 @@ one_shot = true
 
 [node name="SkillTimer" type="Timer" parent="."]
 process_callback = 0
-wait_time = 3.0
+wait_time = 0.25
 one_shot = true

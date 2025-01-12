@@ -33,7 +33,7 @@ func _on_mouse_exited() -> void:
 	on_target_unhovered.emit()
 	
 
-func _on_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
+func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
 	if event.is_action_pressed("left_mouse_click"):
 		target_selection.visible = false
 		on_target_clicked.emit()

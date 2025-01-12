@@ -10,7 +10,7 @@ class_name UIController
 
 @onready var attack: Button = $ActionLayout/ActionLayout/Attack
 @onready var defend: Button = $ActionLayout/ActionLayout/Defend
-@onready var skill: Button = $ActionLayout/ActionLayout/Skills
+@onready var skill_btn: Button = $ActionLayout/ActionLayout/Skills
 @onready var flee: Button = $ActionLayout/ActionLayout/Flee
 @onready var cancel: Button = $ActiveSkillMenu/Cancel
 @onready var party_member_name: Label = $ActionLayout/PartyMemberName
@@ -71,16 +71,11 @@ var timers: Array[Timer] = []
 var attack_type: Attack_Type
 var pending_skill: Skill
 
-# Shared Signals
-signal on_skill_end(damage_receiver: Avatar, damage_dealer: Avatar)
-
-func on_party_member_turn_end(avatar: Avatar):
-	description_timer.start()
-	resume_avatars_motion()
-	
-func on_ai_turn_end(avatar: Avatar):
+func on_turn_end(avatar: Avatar):
 	description_timer.start()
 	avatar.battle_timers.resume_delay_timer.start()
+
+func on_resume_play(_avatar: Avatar):
 	resume_avatars_motion()
 
 func _ready():
@@ -102,13 +97,14 @@ func _ready():
 	# 1-d graph
 	for avatar in party_members:
 		avatar.on_start_order_step.connect(on_start_order_step)
-		avatar.on_turn_end = on_party_member_turn_end
-		
-		
+		avatar.on_resume_play.connect(on_resume_play)
+		avatar.on_turn_end.connect(on_turn_end)
+	
 	for avatar in enemy_avatars:
 		avatar.on_start_order_step.connect(on_start_order_step)
-		# avatar.on_skill_end.connect(on_ai_skill_end)
-		avatar.on_turn_end = on_ai_turn_end
+		avatar.battle_timers.skill_timer.timeout.connect(on_ai_skill_end.bind(avatar))
+		avatar.on_resume_play.connect(on_resume_play)
+		avatar.on_turn_end.connect(on_turn_end)
 		
 	# Fetch all timers in battle scene
 	for avatar in enemy_avatars:
@@ -117,8 +113,9 @@ func _ready():
 		timers.append(avatar.battle_timers.resume_delay_timer)
 	
 	for avatar in party_members:
-		timers.append(avatar.battle_timers.defense_timer)
 		timers.append(avatar.battle_timers.skill_timer)
+		timers.append(avatar.battle_timers.defense_timer)
+		timers.append(avatar.battle_timers.resume_delay_timer)
 	
 	timers.append(description_timer)
 	
@@ -126,7 +123,8 @@ func _ready():
 
 func toggle_timer_tick(paused: bool):
 	for timer in timers:
-		timer.paused = paused
+		if timer and not timer.is_queued_for_deletion():
+			timer.paused = paused
 
 func toggle_pickable_mobs(input_pickable: bool):
 	# pick target to attack
@@ -134,7 +132,7 @@ func toggle_pickable_mobs(input_pickable: bool):
 	for mob in mobs:
 		mob.input_pickable = input_pickable
 
-func _on_attack_button_pressed(avatar: Avatar):
+func _on_attack_button_pressed(_avatar: Avatar):
 	action_layout.visible = false
 	toggle_pickable_mobs(true)
 	# switch to attack selection menu
@@ -181,18 +179,8 @@ func _on_description_timer_timeout():
 	
 	description_panel.visible = false
 	label.text = ""
-	
-	# TODO remove all instances of active_avatar and prefer passing down as param
-	# reset the avatar that made the move back to the beginning of timeline
-	#if active_avatar:
-		#active_avatar.progress_ratio = 0
-		#active_avatar._curr_speed = active_avatar.move_speed
-		#active_avatar.battle_state = active_avatar.Battle_State.WAITING
-		#active_avatar.update_battle_state_text()
-		#on_party_member_turn_end(active_avatar)
-		#active_avatar = null
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	# check if enemies are defeated
 	var i = 0
 	var limit = len(enemy_avatars)
@@ -288,6 +276,8 @@ func on_target_clicked(damage_receiver: Avatar, damage_dealer: Avatar):
 		
 		damage_dealer.battle_state = damage_dealer.Battle_State.EXECUTING_MOVE
 		damage_dealer.update_battle_state_text()
+		damage_dealer.on_turn_end.emit(damage_dealer)
+		
 	elif attack_type == Attack_Type.SKILL:
 		# set skill execution speed
 		damage_dealer.battle_state = damage_dealer.Battle_State.PENDING_MOVE
@@ -360,8 +350,8 @@ func on_start_order_step(avatar: Avatar) -> void:
 			attack.pressed.disconnect(atk_connections[i].callable)
 			
 		# remove previous skill connections
-		for conn in skill.pressed.get_connections():
-			skill.pressed.disconnect(conn.callable)
+		for conn in skill_btn.pressed.get_connections():
+			skill_btn.pressed.disconnect(conn.callable)
 			
 		# remove previous target clicked connections
 		for i in range(0, len(enemy_avatars)):
@@ -382,7 +372,7 @@ func on_start_order_step(avatar: Avatar) -> void:
 			
 		attack.pressed.connect(_on_attack_button_pressed.bind(avatar))
 		defend.pressed.connect(_on_defend_button_pressed.bind(avatar))
-		skill.pressed.connect(_on_skills_button_pressed.bind(avatar))
+		skill_btn.pressed.connect(_on_skills_button_pressed.bind(avatar))
 		
 	# entry point for enemies to pick a move
 	elif avatar.avatar_type == Avatar.Avatar_Type.ENEMY:
@@ -428,7 +418,7 @@ func transition_to_main_scene(status: Party_Battle_States):
 
 #region AI Commands
 func ai_determine_move(avatar: Avatar) -> void:
-	var possible_actions: Array[Callable] = [ai_attack, ai_defend] # ai_use_random_skill]
+	var possible_actions: Array[Callable] = [ai_attack, ai_defend, ai_use_random_skill]
 	var random_move_index = randi_range(0, len(possible_actions) - 1)
 	possible_actions[random_move_index].call(avatar)
 
@@ -464,7 +454,7 @@ func ai_attack(avatar: Avatar) -> void:
 		description_panel.visible = true
 		label.text = "%s dealt %d damage to %s" % [avatar.name, dmg, target.name]
 		
-		on_ai_turn_end(avatar)
+		avatar.on_turn_end.emit(avatar)
 
 func ai_defend(avatar: Avatar) -> void:
 	avatar.curr_stats.defense += avatar.curr_stats.defense * .25
@@ -555,7 +545,7 @@ func on_ai_skill_end(avatar: Avatar) -> void:
 	avatar.resume_motion = false
 	avatar._curr_speed = avatar.move_speed
 
-	on_ai_turn_end(avatar)
+	avatar.on_turn_end.emit(avatar)
 
 #endregion
 
@@ -577,6 +567,4 @@ func on_party_member_skill_end(damage_receiver: Avatar, damage_dealer: Avatar) -
 	
 	# display damage description
 	description_timer.start()
-	
-	toggle_timer_tick(false)
-	resume_avatars_motion()
+	damage_dealer.on_turn_end.emit(damage_dealer)

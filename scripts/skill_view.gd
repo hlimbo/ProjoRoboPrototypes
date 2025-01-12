@@ -8,10 +8,10 @@ class_name SkillView
 var on_button_pressed: Callable
 var skill: Skill
 
-func init(skill: Skill):
-	button.text = skill.name
-	cost_label.text = str(skill.cost) + " SRP"
-	self.skill = skill
+func init(new_skill: Skill):
+	button.text = new_skill.name
+	cost_label.text = str(new_skill.cost) + " SRP"
+	self.skill = new_skill
 
 func connect_button(btn_pressed: Callable):
 	on_button_pressed = btn_pressed

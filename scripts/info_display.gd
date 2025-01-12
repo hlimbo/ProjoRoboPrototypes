@@ -18,7 +18,7 @@ func _ready() -> void:
 		print_rich("[color=red]no battle manager ref found[/color]")
 
 
-func _on_damage_received(damage_receiver: Avatar, damage_dealer: Avatar) -> void:
+func _on_damage_received(damage_receiver: Avatar, _damage_dealer: Avatar) -> void:
 	# if the receiver matches the curr avatar, then update its hp
 	if damage_receiver == avatar:
 		hp_label.text = "HP %d/%d" % [damage_receiver.curr_stats.hp, damage_receiver.initial_stats.hp]

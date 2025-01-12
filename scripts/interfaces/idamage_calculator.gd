@@ -5,6 +5,6 @@ class_name IDamageCalculator
 
 signal on_damage_received(damage_receiver: Avatar, damage_dealer: Avatar)
 
-func calculate_damage(damage_receiver: Avatar, damage_dealer: Avatar) -> int:
+func calculate_damage(_damage_receiver: Avatar, _damage_dealer: Avatar) -> int:
 	print("Base Class IDamageCalculator")
 	return 0

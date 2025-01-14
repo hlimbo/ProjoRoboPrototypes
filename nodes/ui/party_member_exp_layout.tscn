@@ -15,8 +15,9 @@ script = ExtResource("1_a1vp6")
 avatar_image = ExtResource("1_rn86l")
 avatar_name = "Ovenman"
 level = 5
-max_exp_per_level = 100.0
-exp_earned = 1000.0
+curr_exp = 8.0
+max_exp_per_level = 314.0
+total_exp_earned = 312.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2

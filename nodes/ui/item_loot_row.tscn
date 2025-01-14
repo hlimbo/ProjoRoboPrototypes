@@ -1,0 +1,45 @@
+[gd_scene load_steps=3 format=3 uid="uid://cb5d26j71y0nk"]
+
+[ext_resource type="Texture2D" uid="uid://dfo2n8moyyo11" path="res://assets/kenney_emotes-pack/PNG/Vector/Style 7/emote_music.png" id="1_e55gf"]
+[ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="2_uqh6s"]
+
+[node name="ItemLootRow" type="MarginContainer"]
+offset_right = 291.0
+offset_bottom = 40.0
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 100
+
+[node name="ItemGraphic" type="TextureRect" parent="HBoxContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 3
+texture = ExtResource("1_e55gf")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_constants/separation = 10
+
+[node name="ItemName" type="Label" parent="HBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_uqh6s")
+theme_override_font_sizes/font_size = 18
+text = "lightbulb"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Quantity" type="Label" parent="HBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_uqh6s")
+theme_override_font_sizes/font_size = 18
+text = "x2"
+horizontal_alignment = 1
+vertical_alignment = 1

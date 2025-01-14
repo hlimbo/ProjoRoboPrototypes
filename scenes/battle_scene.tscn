@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://bx67atr86l06a"]
+[gd_scene load_steps=10 format=3 uid="uid://bx67atr86l06a"]
 
 [ext_resource type="Texture2D" uid="uid://bepyyv1ux2xwq" path="res://assets/kenney_ui_pack/Default/arrow_decorative_s_small.png" id="1_bu6oj"]
 [ext_resource type="PackedScene" uid="uid://yirvhthqc5v6" path="res://nodes/party_member_layout.tscn" id="1_jaw4a"]
@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://co3n8i4nqecul" path="res://assets/kenney_emotes-pack/PNG/Vector/Style 2/emote_faceAngry.png" id="2_yphs6"]
 [ext_resource type="PackedScene" uid="uid://ck5jcv5kq0fa8" path="res://nodes/active_skill_menu.tscn" id="3_cah2u"]
 [ext_resource type="PackedScene" uid="uid://4fgdk83suvux" path="res://nodes/battle_timeline/one_d_graph.tscn" id="4_rmum5"]
+[ext_resource type="PackedScene" uid="uid://by8g0yvkqnaa2" path="res://nodes/ui/party_member_exp_layout.tscn" id="9_qoye3"]
 
 [node name="main" type="Node2D"]
 script = ExtResource("1_rrotr")
@@ -159,6 +160,16 @@ theme_override_font_sizes/font_size = 36
 text = "Party Battle Status Here"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="PartyMemberExpLayout" parent="UILayout" instance=ExtResource("9_qoye3")]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = -708.0
+offset_right = 405.0
+offset_bottom = -568.0
+grow_vertical = 0
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(1280, 1438)

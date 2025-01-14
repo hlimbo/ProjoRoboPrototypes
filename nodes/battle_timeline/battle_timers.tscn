@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://scripts/battle_timers.gd" id="1_h2rrs"]
 
 [node name="BattleTimers" type="Node2D"]
+position = Vector2(1, 0)
 script = ExtResource("1_h2rrs")
 
 [node name="DefenseTimer" type="Timer" parent="."]

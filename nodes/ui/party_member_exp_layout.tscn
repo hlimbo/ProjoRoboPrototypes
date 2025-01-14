@@ -1,0 +1,92 @@
+[gd_scene load_steps=3 format=3 uid="uid://by8g0yvkqnaa2"]
+
+[ext_resource type="Texture2D" uid="uid://l5nje6fpe8f3" path="res://icon.svg" id="1_rn86l"]
+[ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="2_4teqp"]
+
+[node name="PartyMemberExpLayout" type="MarginContainer"]
+offset_right = 1280.0
+offset_bottom = 168.0
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 32
+
+[node name="PartyMemberPortrait" type="TextureRect" parent="HBoxContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+texture = ExtResource("1_rn86l")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="StatContainer" type="VBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+
+[node name="NameLevelContainer" type="HBoxContainer" parent="HBoxContainer/StatContainer"]
+layout_mode = 2
+theme_override_constants/separation = 32
+
+[node name="NameLabel" type="Label" parent="HBoxContainer/StatContainer/NameLevelContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_4teqp")
+theme_override_font_sizes/font_size = 24
+text = "Ovenman"
+
+[node name="LevelLabel" type="Label" parent="HBoxContainer/StatContainer/NameLevelContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme = ExtResource("2_4teqp")
+theme_override_font_sizes/font_size = 24
+text = "Lvl 1"
+horizontal_alignment = 2
+
+[node name="ExpContainer" type="VBoxContainer" parent="HBoxContainer/StatContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="ExpText" type="HBoxContainer" parent="HBoxContainer/StatContainer/ExpContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HBoxContainer/StatContainer/ExpContainer/ExpText"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_4teqp")
+theme_override_font_sizes/font_size = 18
+text = "Exp"
+
+[node name="ExpNumbers" type="HBoxContainer" parent="HBoxContainer/StatContainer/ExpContainer/ExpText"]
+layout_mode = 2
+size_flags_horizontal = 10
+
+[node name="CurrExp" type="Label" parent="HBoxContainer/StatContainer/ExpContainer/ExpText/ExpNumbers"]
+layout_mode = 2
+theme = ExtResource("2_4teqp")
+theme_override_font_sizes/font_size = 18
+text = "30"
+
+[node name="Divider" type="Label" parent="HBoxContainer/StatContainer/ExpContainer/ExpText/ExpNumbers"]
+layout_mode = 2
+theme = ExtResource("2_4teqp")
+theme_override_font_sizes/font_size = 18
+text = "/"
+
+[node name="MaxExp" type="Label" parent="HBoxContainer/StatContainer/ExpContainer/ExpText/ExpNumbers"]
+layout_mode = 2
+theme = ExtResource("2_4teqp")
+theme_override_font_sizes/font_size = 18
+text = "100"
+
+[node name="ExpBar" type="ProgressBar" parent="HBoxContainer/StatContainer/ExpContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+theme = ExtResource("2_4teqp")
+value = 30.0
+show_percentage = false

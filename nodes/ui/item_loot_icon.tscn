@@ -1,0 +1,78 @@
+[gd_scene load_steps=9 format=3 uid="uid://tmt61ye5ah2m"]
+
+[ext_resource type="Texture2D" uid="uid://c3o8ti2r6ce62" path="res://assets/kenney_emotes-pack/PNG/Vector/Style 7/emote_idea.png" id="1_evpqd"]
+[ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="2_cyq0k"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1r3ub"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_v8dny"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xtu17"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sv83n"]
+bg_color = Color(0, 0, 0, 0.25098)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_oua6c"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_68wc4"]
+
+[node name="ItemLootIcon" type="Button"]
+custom_minimum_size = Vector2(96, 96)
+theme_override_constants/icon_max_width = 128
+theme_override_styles/focus = SubResource("StyleBoxFlat_1r3ub")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_v8dny")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_xtu17")
+theme_override_styles/hover = SubResource("StyleBoxFlat_sv83n")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_oua6c")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_68wc4")
+icon_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="."]
+show_behind_parent = true
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_evpqd")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="QuantityLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -40.0
+offset_top = -23.0
+grow_horizontal = 0
+grow_vertical = 0
+theme = ExtResource("2_cyq0k")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+text = "x9999"
+horizontal_alignment = 2

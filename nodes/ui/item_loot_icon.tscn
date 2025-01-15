@@ -1,19 +1,11 @@
-[gd_scene load_steps=9 format=3 uid="uid://tmt61ye5ah2m"]
+[gd_scene load_steps=11 format=3 uid="uid://tmt61ye5ah2m"]
 
+[ext_resource type="Script" path="res://scripts/ui/item_loot_view.gd" id="1_4hewu"]
 [ext_resource type="Texture2D" uid="uid://c3o8ti2r6ce62" path="res://assets/kenney_emotes-pack/PNG/Vector/Style 7/emote_idea.png" id="1_evpqd"]
+[ext_resource type="Texture2D" uid="uid://cmkdaknrbr82g" path="res://assets/kenney_emotes-pack/PNG/Vector/Style 2/emote_swirl.png" id="1_mspn1"]
 [ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="2_cyq0k"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1r3ub"]
-bg_color = Color(0, 0, 0, 0)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(1, 1, 1, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_i475n"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_v8dny"]
 
@@ -38,13 +30,18 @@ corner_radius_bottom_left = 4
 [node name="ItemLootIcon" type="Button"]
 custom_minimum_size = Vector2(96, 96)
 theme_override_constants/icon_max_width = 128
-theme_override_styles/focus = SubResource("StyleBoxFlat_1r3ub")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_i475n")
 theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_v8dny")
 theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_xtu17")
 theme_override_styles/hover = SubResource("StyleBoxFlat_sv83n")
 theme_override_styles/pressed = SubResource("StyleBoxEmpty_oua6c")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_68wc4")
 icon_alignment = 1
+script = ExtResource("1_4hewu")
+loot_icon = ExtResource("1_mspn1")
+loot_name = "dizzy naruto"
+quantity = 1
+description = "He will become Hokage!"
 
 [node name="TextureRect" type="TextureRect" parent="."]
 show_behind_parent = true

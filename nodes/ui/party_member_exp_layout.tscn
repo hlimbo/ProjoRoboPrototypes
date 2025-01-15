@@ -7,10 +7,10 @@
 [node name="PartyMemberExpLayout" type="MarginContainer"]
 offset_right = 1280.0
 offset_bottom = 168.0
-theme_override_constants/margin_left = 20
+theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 5
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
 script = ExtResource("1_a1vp6")
 avatar_image = ExtResource("1_rn86l")
 avatar_name = "Ovenman"
@@ -100,5 +100,6 @@ value = 30.0
 show_percentage = false
 
 [node name="Button" type="Button" parent="HBoxContainer/StatContainer/ExpContainer"]
+visible = false
 layout_mode = 2
 text = "Click me to start"

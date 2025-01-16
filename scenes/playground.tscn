@@ -1,0 +1,153 @@
+[gd_scene load_steps=20 format=3 uid="uid://eo8tlkixiwhf"]
+
+[ext_resource type="Texture2D" uid="uid://l5nje6fpe8f3" path="res://icon.svg" id="1_sghae"]
+[ext_resource type="AnimationLibrary" uid="uid://csius7k8khfc5" path="res://resources/animation_libraries/playground_library.res" id="2_t7aap"]
+[ext_resource type="Texture2D" uid="uid://c14k4mbks11u2" path="res://assets/cutout_animation_assets/gbot/gBot_forearm_r.png" id="3_jkfri"]
+[ext_resource type="Texture2D" uid="uid://ycxvfqk1amus" path="res://assets/cutout_animation_assets/gbot/gBot_arm_l.png" id="4_tk1n4"]
+[ext_resource type="Texture2D" uid="uid://c5p4emyqj3y7v" path="res://assets/cutout_animation_assets/gbot/gBot_leg_l.png" id="5_gle7y"]
+[ext_resource type="Texture2D" uid="uid://b3aairrbqgok5" path="res://assets/cutout_animation_assets/gbot/gBot_shin_l.png" id="6_gki4o"]
+[ext_resource type="Texture2D" uid="uid://bjmo52p152o0x" path="res://assets/cutout_animation_assets/gbot/gBot_foot_l.png" id="7_sj7na"]
+[ext_resource type="Texture2D" uid="uid://dki8ti3s3mv10" path="res://assets/cutout_animation_assets/gbot/gBot_hip.png" id="8_bejkk"]
+[ext_resource type="Texture2D" uid="uid://bua7dtmjifxii" path="res://assets/cutout_animation_assets/gbot/gBot_leg_r.png" id="9_y16q3"]
+[ext_resource type="Texture2D" uid="uid://c3h17wx1pdaho" path="res://assets/cutout_animation_assets/gbot/gBot_shin_r.png" id="10_htehn"]
+[ext_resource type="Texture2D" uid="uid://bfjb08qooyoaj" path="res://assets/cutout_animation_assets/gbot/gBot_foot_r.png" id="11_gq602"]
+[ext_resource type="Texture2D" uid="uid://ct42mdjmqgstk" path="res://assets/cutout_animation_assets/gbot/gBot_body.png" id="12_g0hrm"]
+[ext_resource type="Texture2D" uid="uid://yfotyawok1jy" path="res://assets/cutout_animation_assets/gbot/gBot_arm_r.png" id="13_qt6d5"]
+[ext_resource type="Texture2D" uid="uid://bsvwn0lmyr6ap" path="res://assets/cutout_animation_assets/gbot/gBot_head.png" id="14_l03yu"]
+[ext_resource type="Texture2D" uid="uid://73vb11382nha" path="res://assets/cutout_animation_assets/gbot/gBot_jaw.png" id="15_eynwh"]
+[ext_resource type="PackedScene" uid="uid://by7ldgcy2up74" path="res://nodes/temp/yellow_mob.tscn" id="16_6cr57"]
+[ext_resource type="PackedScene" uid="uid://p0b8s21d83re" path="res://nodes/temp/green_pill.tscn" id="17_u14nh"]
+
+[sub_resource type="Animation" id="Animation_g13a0"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_2rcdu"]
+_data = {
+"RESET": SubResource("Animation_g13a0")
+}
+
+[node name="Playground" type="Node2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_sghae")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Sprite2D"]
+root_node = NodePath("../..")
+libraries = {
+"": SubResource("AnimationLibrary_2rcdu"),
+"playground_library": ExtResource("2_t7aap")
+}
+
+[node name="gbot_example" type="Node2D" parent="."]
+editor_description = "Lets' try following this tutorial since the official docs is outdated....
+
+https://www.youtube.com/watch?v=jOdeI7AeFto"
+position = Vector2(216, 1302)
+
+[node name="hand_l" type="Sprite2D" parent="gbot_example"]
+position = Vector2(79.0416, -71.0558)
+texture = ExtResource("3_jkfri")
+offset = Vector2(8, 65)
+
+[node name="arm_l" type="Sprite2D" parent="gbot_example"]
+position = Vector2(84, -148)
+texture = ExtResource("4_tk1n4")
+
+[node name="leg_l" type="Sprite2D" parent="gbot_example"]
+position = Vector2(49, 0)
+texture = ExtResource("5_gle7y")
+offset = Vector2(-15, 56)
+
+[node name="shin_l" type="Sprite2D" parent="gbot_example"]
+position = Vector2(24, 112)
+texture = ExtResource("6_gki4o")
+offset = Vector2(16, 32)
+
+[node name="foot_l" type="Sprite2D" parent="gbot_example"]
+position = Vector2(24, 192)
+texture = ExtResource("7_sj7na")
+offset = Vector2(21, 39)
+
+[node name="hip" type="Sprite2D" parent="gbot_example"]
+texture = ExtResource("8_bejkk")
+
+[node name="leg_r" type="Sprite2D" parent="gbot_example/hip"]
+position = Vector2(-49, 9)
+texture = ExtResource("9_y16q3")
+offset = Vector2(-6, 52)
+
+[node name="shin_r" type="Sprite2D" parent="gbot_example/hip/leg_r"]
+position = Vector2(-14, 108)
+texture = ExtResource("10_htehn")
+offset = Vector2(14, 36)
+
+[node name="foot_r" type="Sprite2D" parent="gbot_example/hip/leg_r/shin_r"]
+position = Vector2(6, 83)
+texture = ExtResource("11_gq602")
+offset = Vector2(22, 33)
+
+[node name="torso" type="Sprite2D" parent="gbot_example/hip"]
+position = Vector2(0, -41)
+texture = ExtResource("12_g0hrm")
+offset = Vector2(0, -98)
+
+[node name="arm_r" type="Sprite2D" parent="gbot_example/hip/torso"]
+position = Vector2(-91, -107)
+texture = ExtResource("13_qt6d5")
+offset = Vector2(18, 20)
+
+[node name="hand_r" type="Sprite2D" parent="gbot_example/hip/torso/arm_r"]
+position = Vector2(0, 95)
+texture = ExtResource("3_jkfri")
+offset = Vector2(14, 72)
+
+[node name="end" type="Marker2D" parent="gbot_example/hip/torso/arm_r/hand_r"]
+position = Vector2(4, 120)
+
+[node name="remote_arm_l" type="RemoteTransform2D" parent="gbot_example/hip/torso"]
+editor_description = "Transforms nodes somwhere else in the hierarchy based on the transformations it inherits from its parents"
+position = Vector2(84, -107)
+remote_path = NodePath("../../../arm_l")
+
+[node name="remote_hand_l" type="RemoteTransform2D" parent="gbot_example/hip/torso/remote_arm_l"]
+editor_description = "Transforms nodes somwhere else in the hierarchy based on the transformations it inherits from its parents"
+position = Vector2(-4.95841, 76.9442)
+remote_path = NodePath("../../../../hand_l")
+
+[node name="head" type="Sprite2D" parent="gbot_example/hip/torso"]
+position = Vector2(-13, -372)
+texture = ExtResource("14_l03yu")
+
+[node name="jaw" type="Sprite2D" parent="gbot_example/hip/torso/head"]
+position = Vector2(15, 145)
+texture = ExtResource("15_eynwh")
+
+[node name="remote_leg_l" type="RemoteTransform2D" parent="gbot_example/hip"]
+position = Vector2(49, 0)
+remote_path = NodePath("../../leg_l")
+
+[node name="remote_shin_l" type="RemoteTransform2D" parent="gbot_example/hip/remote_leg_l"]
+position = Vector2(-25, 112)
+remote_path = NodePath("../../../shin_l")
+
+[node name="remote_foot_l" type="RemoteTransform2D" parent="gbot_example/hip/remote_leg_l/remote_shin_l"]
+position = Vector2(0, 80)
+remote_path = NodePath("../../../../foot_l")
+
+[node name="yellow_mob" parent="." instance=ExtResource("16_6cr57")]
+position = Vector2(290, 565)
+
+[node name="BaseBodyE" parent="." instance=ExtResource("17_u14nh")]
+position = Vector2(799, 413)

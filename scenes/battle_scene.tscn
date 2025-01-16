@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://bx67atr86l06a"]
+[gd_scene load_steps=10 format=3 uid="uid://bx67atr86l06a"]
 
 [ext_resource type="Texture2D" uid="uid://bepyyv1ux2xwq" path="res://assets/kenney_ui_pack/Default/arrow_decorative_s_small.png" id="1_bu6oj"]
 [ext_resource type="PackedScene" uid="uid://yirvhthqc5v6" path="res://nodes/party_member_layout.tscn" id="1_jaw4a"]
@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://co3n8i4nqecul" path="res://assets/kenney_emotes-pack/PNG/Vector/Style 2/emote_faceAngry.png" id="2_yphs6"]
 [ext_resource type="PackedScene" uid="uid://ck5jcv5kq0fa8" path="res://nodes/active_skill_menu.tscn" id="3_cah2u"]
 [ext_resource type="PackedScene" uid="uid://4fgdk83suvux" path="res://nodes/battle_timeline/one_d_graph.tscn" id="4_rmum5"]
+[ext_resource type="PackedScene" uid="uid://dobxqawvevo1c" path="res://nodes/ui/battle_results_screen.tscn" id="5_f3g4b"]
 
 [node name="main" type="Node2D"]
 script = ExtResource("1_rrotr")
@@ -24,6 +25,9 @@ texture = ExtResource("1_bu6oj")
 [node name="UILayout" type="CanvasLayer" parent="."]
 unique_name_in_owner = true
 script = ExtResource("1_qdx8j")
+
+[node name="BattleResultsScreen" parent="UILayout" instance=ExtResource("5_f3g4b")]
+visible = false
 
 [node name="OneDGraph" parent="UILayout" instance=ExtResource("4_rmum5")]
 

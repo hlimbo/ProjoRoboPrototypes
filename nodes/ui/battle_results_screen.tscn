@@ -12,8 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://dghaiiot0hgjp" path="res://assets/kenney_ui_pack/Extra/icon_play_light.svg" id="10_tt4au"]
 [ext_resource type="Script" path="res://scripts/ui/transition_fade.gd" id="11_s2imn"]
 
-[node name="BattleResultsScreen" type="Control"]
-layout_mode = 3
+[node name="BattleResultsScreen" type="ColorRect"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -21,11 +20,15 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+color = Color(0.270588, 0.266667, 0.309804, 1)
 
 [node name="RootContainer" type="MarginContainer" parent="."]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_constants/margin_left = 50
 theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 50

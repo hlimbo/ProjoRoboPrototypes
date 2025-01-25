@@ -16,3 +16,8 @@ enum Motion_State {
 	NEUTRAL,
 	MOVING
 }
+
+enum Avatar_Type {
+	PARTY_MEMBER,
+	ENEMY
+}

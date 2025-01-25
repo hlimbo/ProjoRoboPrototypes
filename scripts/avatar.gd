@@ -1,22 +1,6 @@
 extends PathFollow2D
 class_name Avatar
 
-enum Avatar_Type {
-	PARTY_MEMBER,
-	ENEMY
-}
-
-enum Battle_State {
-	WAITING,
-	MOVE_SELECTION,
-	PENDING_MOVE,
-	EXECUTING_MOVE,
-	MOVE_CANCELLED,
-	# used when receiving damage
-	PAUSED,
-	KNOCKBACK
-}
-
 @export var move_speed: float = 0.1
 var _curr_speed: float
 
@@ -31,6 +15,9 @@ var _curr_speed: float
 
 # @onready var ui_layout: UIController = %UILayout
 
+# type aliasing for convenience
+const Avatar_Type = Constants.Avatar_Type
+const Battle_State = Constants.Battle_State
 
 var initial_stats: BaseStats
 var curr_stats: BaseStats
@@ -41,7 +28,6 @@ var resume_motion: bool = true
 var battle_state: Battle_State = Battle_State.WAITING
 
 signal on_start_order_step(avatar: Avatar)
-signal on_start_exe_step(body: Node2D)
 signal on_resume_play(avatar: Avatar)
 signal on_turn_end(avatar: Avatar)
 
@@ -94,11 +80,7 @@ func on_area_entered(_body: Node2D) -> void:
 	battle_state = Battle_State.MOVE_SELECTION
 	update_battle_state_text()
 	on_start_order_step.emit(self)
-
-func on_area_exited(body: Node2D) -> void:
-	on_start_exe_step.emit(body)
-
-
+	
 #region Timer Timeout functions
 
 func on_skill_timeout():

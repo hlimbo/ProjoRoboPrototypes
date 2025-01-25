@@ -46,6 +46,7 @@ func _on_damage_received(damage_recv: Avatar, _damage_dealer: Avatar) -> void:
 		print("%s attacks: %s " % [_damage_dealer.curr_stats.name, damage_recv.curr_stats.name])
 		hp_label.text = "HP %d/%d" % [damage_recv.curr_stats.hp, damage_recv.initial_stats.hp]
 
+#region Test Functions
 func update_labels(avatar_: Avatar):
 	hp_label.text = "HP %d/%d" % [avatar_.curr_stats.hp, avatar_.initial_stats.hp]
 	name_label.text = avatar_.curr_stats.name
@@ -56,5 +57,11 @@ func _on_init_fake_stats():
 		update_labels(damage_dealer)
 
 func _on_damage_emit():
-	# deal damage to self test
-	damage_calculator.on_damage_received.emit(damage_receiver, damage_dealer)
+	if damage_receiver and damage_dealer:
+		var dmg = damage_calculator.calculate_damage(damage_receiver, damage_dealer)
+		# apply damage
+		damage_receiver.curr_stats.hp = maxi(damage_receiver.curr_stats.hp - dmg, 0)
+		damage_calculator.on_damage_received.emit(damage_receiver, damage_dealer)
+	else:
+		print_rich("[color=red]info_display debug: damage_receiver and damage_dealer null[/color]")
+#endregion

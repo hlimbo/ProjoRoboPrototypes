@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://eo8tlkixiwhf"]
+[gd_scene load_steps=32 format=3 uid="uid://eo8tlkixiwhf"]
 
 [ext_resource type="Texture2D" uid="uid://l5nje6fpe8f3" path="res://icon.svg" id="1_sghae"]
 [ext_resource type="AnimationLibrary" uid="uid://csius7k8khfc5" path="res://resources/animation_libraries/playground_library.res" id="2_t7aap"]
@@ -15,8 +15,16 @@
 [ext_resource type="Texture2D" uid="uid://yfotyawok1jy" path="res://assets/cutout_animation_assets/gbot/gBot_arm_r.png" id="13_qt6d5"]
 [ext_resource type="Texture2D" uid="uid://bsvwn0lmyr6ap" path="res://assets/cutout_animation_assets/gbot/gBot_head.png" id="14_l03yu"]
 [ext_resource type="Texture2D" uid="uid://73vb11382nha" path="res://assets/cutout_animation_assets/gbot/gBot_jaw.png" id="15_eynwh"]
-[ext_resource type="PackedScene" uid="uid://by7ldgcy2up74" path="res://nodes/temp/yellow_mob.tscn" id="16_6cr57"]
+[ext_resource type="Script" path="res://scripts/actor.gd" id="16_qnwcl"]
+[ext_resource type="PackedScene" uid="uid://b6jorugo4ilds" path="res://nodes/monsters/parts/arm_types/arm_yellowE.tscn" id="17_rqj1e"]
 [ext_resource type="PackedScene" uid="uid://p0b8s21d83re" path="res://nodes/temp/green_pill.tscn" id="17_u14nh"]
+[ext_resource type="PackedScene" uid="uid://m8aj8e6g21ni" path="res://nodes/monsters/parts/leg_types/leg_yellowA.tscn" id="18_fx0y6"]
+[ext_resource type="PackedScene" uid="uid://wlrgdq8ncg46" path="res://nodes/battle_timeline/avatar.tscn" id="18_hrobm"]
+[ext_resource type="PackedScene" uid="uid://dab73d2lfdlqc" path="res://nodes/monsters/parts/ear_types/detail_yellow_ear_round.tscn" id="19_vhoxy"]
+[ext_resource type="PackedScene" uid="uid://ndgd4bthnfpg" path="res://nodes/monsters/parts/body_types/typeD/body_yellowD.tscn" id="20_a4dno"]
+[ext_resource type="PackedScene" uid="uid://6feyfqpmlbtg" path="res://nodes/monsters/parts/eye_types/eye_cute_light.tscn" id="21_s16b1"]
+[ext_resource type="PackedScene" uid="uid://doiqyey08hhcb" path="res://nodes/monsters/parts/mouth_types/mouthD.tscn" id="22_q0qsx"]
+[ext_resource type="PackedScene" uid="uid://cx3vhulcggapg" path="res://nodes/info_node.tscn" id="23_yanyr"]
 
 [sub_resource type="Animation" id="Animation_g13a0"]
 length = 0.001
@@ -37,6 +45,22 @@ tracks/0/keys = {
 _data = {
 "RESET": SubResource("Animation_g13a0")
 }
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_fpomk"]
+radius = 324.222
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_nv8vh"]
+radius = 266.608
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_qta2k"]
+radius = 172.0
+height = 400.0
+
+[sub_resource type="Curve2D" id="Curve2D_uete5"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 331, -3)
+}
+point_count = 2
 
 [node name="Playground" type="Node2D"]
 
@@ -146,8 +170,147 @@ remote_path = NodePath("../../../shin_l")
 position = Vector2(0, 80)
 remote_path = NodePath("../../../../foot_l")
 
-[node name="yellow_mob" parent="." instance=ExtResource("16_6cr57")]
+[node name="yellow_mob" type="Node2D" parent="." node_paths=PackedStringArray("target")]
 position = Vector2(290, 565)
+scale = Vector2(0.5, 0.5)
+script = ExtResource("16_qnwcl")
+move_speed = 1000.0
+target = NodePath("../BaseBodyE")
+enable_debug_menu = true
+
+[node name="arm_yellowE_left" parent="yellow_mob" instance=ExtResource("17_rqj1e")]
+position = Vector2(-90, -218)
+rotation = 0.392699
+flip_h = true
+
+[node name="arm_yellowE_right" parent="yellow_mob" instance=ExtResource("17_rqj1e")]
+position = Vector2(68, -218)
+rotation = -0.392699
+
+[node name="leg_yellowA_right" parent="yellow_mob" instance=ExtResource("18_fx0y6")]
+position = Vector2(36, -141.5)
+
+[node name="leg_yellowA_left" parent="yellow_mob" instance=ExtResource("18_fx0y6")]
+position = Vector2(-55, -141.5)
+flip_h = true
+
+[node name="detail_yellow_ear_round_right" parent="yellow_mob" instance=ExtResource("19_vhoxy")]
+position = Vector2(55, -273)
+
+[node name="detail_yellow_ear_round_left" parent="yellow_mob" instance=ExtResource("19_vhoxy")]
+position = Vector2(-75, -273)
+flip_h = true
+
+[node name="body_yellowD" parent="yellow_mob" instance=ExtResource("20_a4dno")]
+position = Vector2(-3.3847, -219)
+
+[node name="eye_cute_light" parent="yellow_mob" instance=ExtResource("21_s16b1")]
+position = Vector2(-0.492352, -263.125)
+scale = Vector2(0.75, 0.75)
+
+[node name="eye_cute_light2" parent="yellow_mob" instance=ExtResource("21_s16b1")]
+position = Vector2(-39.4924, -219.125)
+scale = Vector2(0.6, 0.6)
+
+[node name="eye_cute_light3" parent="yellow_mob" instance=ExtResource("21_s16b1")]
+position = Vector2(40.5076, -220.125)
+scale = Vector2(0.6, 0.6)
+
+[node name="mouthD" parent="yellow_mob" instance=ExtResource("22_q0qsx")]
+position = Vector2(-0.692352, -188)
+
+[node name="InfoNode" parent="yellow_mob" node_paths=PackedStringArray("avatar", "damage_dealer", "damage_receiver") instance=ExtResource("23_yanyr")]
+offset_top = -664.0
+offset_bottom = -378.0
+avatar = NodePath("../../UI/Control/Path2D/PlayerAvatar")
+damage_dealer = NodePath("../../UI/Control/Path2D/PlayerAvatar")
+damage_receiver = NodePath("../../UI/Control/Path2D/EnemyAvatar")
+
+[node name="PlayerInteractArea" type="Area2D" parent="yellow_mob"]
+collision_layer = 8
+collision_mask = 0
+
+[node name="OverlapDetection2D" type="CollisionShape2D" parent="yellow_mob/PlayerInteractArea"]
+position = Vector2(-2, -198)
+shape = SubResource("CircleShape2D_fpomk")
+
+[node name="AttackTimer" type="Timer" parent="yellow_mob"]
+one_shot = true
+
+[node name="EnableAttackTimer" type="Timer" parent="yellow_mob"]
+wait_time = 0.5
+one_shot = true
+
+[node name="HitArea2D" type="Area2D" parent="yellow_mob"]
+collision_layer = 8
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="yellow_mob/HitArea2D"]
+position = Vector2(354, -238)
+shape = SubResource("CircleShape2D_nv8vh")
+disabled = true
+
+[node name="PlayerArea2D" type="Area2D" parent="yellow_mob"]
+collision_layer = 2
+collision_mask = 81
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="yellow_mob/PlayerArea2D"]
+position = Vector2(-2, -180)
+shape = SubResource("CapsuleShape2D_qta2k")
 
 [node name="BaseBodyE" parent="." instance=ExtResource("17_u14nh")]
-position = Vector2(799, 413)
+position = Vector2(1019, 551)
+
+[node name="InfoNode" parent="BaseBodyE" index="0" node_paths=PackedStringArray("avatar", "damage_dealer", "damage_receiver")]
+offset_left = -95.0
+offset_top = -358.0
+offset_right = 99.0
+offset_bottom = -150.0
+avatar = NodePath("../../UI/Control/Path2D/EnemyAvatar")
+damage_dealer = NodePath("../../UI/Control/Path2D/EnemyAvatar")
+damage_receiver = NodePath("../../UI/Control/Path2D/PlayerAvatar")
+
+[node name="Label" parent="BaseBodyE/InfoNode/ScrollContainer/DebugMenu" index="0"]
+theme_override_font_sizes/font_size = 16
+
+[node name="InitStatsBtn" parent="BaseBodyE/InfoNode/ScrollContainer/DebugMenu" index="1"]
+theme_override_font_sizes/font_size = 16
+
+[node name="ToggleDmgBtn" parent="BaseBodyE/InfoNode/ScrollContainer/DebugMenu" index="2"]
+theme_override_font_sizes/font_size = 16
+
+[node name="NameLabel" parent="BaseBodyE/InfoNode" index="1"]
+theme_override_font_sizes/font_size = 24
+
+[node name="HPLabel" parent="BaseBodyE/InfoNode" index="2"]
+theme_override_font_sizes/font_size = 24
+
+[node name="UI" type="CanvasLayer" parent="."]
+visible = false
+
+[node name="Control" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Path2D" type="Path2D" parent="UI/Control"]
+position = Vector2(927, 635)
+curve = SubResource("Curve2D_uete5")
+
+[node name="PlayerAvatar" parent="UI/Control/Path2D" instance=ExtResource("18_hrobm")]
+position = Vector2(165.5, -1.5)
+rotation = -0.0090632
+progress = 165.507
+move_speed = 0.0
+
+[node name="EnemyAvatar" parent="UI/Control/Path2D" instance=ExtResource("18_hrobm")]
+position = Vector2(0, 0)
+rotation = -0.0090632
+move_speed = 0.0
+
+[editable path="yellow_mob/InfoNode"]
+[editable path="BaseBodyE"]
+[editable path="BaseBodyE/InfoNode"]

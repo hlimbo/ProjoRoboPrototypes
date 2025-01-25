@@ -1,4 +1,4 @@
-extends RefCounted
+extends Resource
 # since gdscript is duck-typed and doesn't support interfaces as of 4.3
 # all classes that need to calculate damage will extend from this class
 class_name IDamageCalculator

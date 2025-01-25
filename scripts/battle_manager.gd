@@ -104,12 +104,9 @@ func get_starting_timeline_positions() -> Array:
 	return [party_range, enemy_range]
 
 func _init() -> void:
-	print("init called")
 	damage_calculator = SimpleDamageCalculator.new()
 
 func _enter_tree() -> void:
-	print("enter tree called")
-	
 	# initialize party member and enemy base stats
 	var max_battle_speed: int = 0
 	for i in range(0, party_member_spawn_count):
@@ -216,7 +213,6 @@ func _enter_tree() -> void:
 		info_display.battle_manager = self
 
 func _ready() -> void:
-	print("battle scene ready called")
 	var ranges = get_starting_timeline_positions()
 	print ("encounter type: %d" % encounter_type)
 	

@@ -1,7 +1,6 @@
-[gd_scene load_steps=10 format=3 uid="uid://by7ldgcy2up74"]
+[gd_scene load_steps=14 format=3 uid="uid://by7ldgcy2up74"]
 
-[ext_resource type="Script" path="res://scripts/bot.gd" id="1_st3bo"]
-[ext_resource type="Resource" uid="uid://damm5v126277g" path="res://resources/bot_stats.tres" id="2_d6iuc"]
+[ext_resource type="Script" path="res://scripts/actor.gd" id="1_st3bo"]
 [ext_resource type="PackedScene" uid="uid://b6jorugo4ilds" path="res://nodes/monsters/parts/arm_types/arm_yellowE.tscn" id="3_hbqtk"]
 [ext_resource type="PackedScene" uid="uid://m8aj8e6g21ni" path="res://nodes/monsters/parts/leg_types/leg_yellowA.tscn" id="4_2jwx1"]
 [ext_resource type="PackedScene" uid="uid://dab73d2lfdlqc" path="res://nodes/monsters/parts/ear_types/detail_yellow_ear_round.tscn" id="5_mc4t3"]
@@ -9,11 +8,24 @@
 [ext_resource type="PackedScene" uid="uid://6feyfqpmlbtg" path="res://nodes/monsters/parts/eye_types/eye_cute_light.tscn" id="7_dacni"]
 [ext_resource type="PackedScene" uid="uid://doiqyey08hhcb" path="res://nodes/monsters/parts/mouth_types/mouthD.tscn" id="8_186ge"]
 [ext_resource type="Script" path="res://scripts/info_display.gd" id="9_s8few"]
+[ext_resource type="Script" path="res://simple_damage_calculator.gd" id="9_seyl1"]
+
+[sub_resource type="Resource" id="Resource_nlwmm"]
+script = ExtResource("9_seyl1")
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_fpomk"]
+radius = 324.222
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_nv8vh"]
+radius = 266.608
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_qta2k"]
+radius = 172.0
+height = 400.0
 
 [node name="yellow_mob" type="Node2D"]
 scale = Vector2(0.5, 0.5)
 script = ExtResource("1_st3bo")
-stats = ExtResource("2_d6iuc")
 
 [node name="arm_yellowE_left" parent="." instance=ExtResource("3_hbqtk")]
 position = Vector2(-90, -218)
@@ -58,10 +70,25 @@ position = Vector2(-0.692352, -188)
 
 [node name="InfoNode" type="VBoxContainer" parent="."]
 offset_left = -102.0
-offset_top = -524.0
+offset_top = -636.0
 offset_right = 110.0
-offset_bottom = -344.0
+offset_bottom = -452.0
 script = ExtResource("9_s8few")
+damage_calculator = SubResource("Resource_nlwmm")
+
+[node name="DebugMenu" type="VBoxContainer" parent="InfoNode"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="InfoNode/DebugMenu"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Debug Menu"
+
+[node name="ToggleDmgBtn" type="Button" parent="InfoNode/DebugMenu"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Toggle Damage"
 
 [node name="NameLabel" type="Label" parent="InfoNode"]
 layout_mode = 2
@@ -72,3 +99,35 @@ text = "Name"
 layout_mode = 2
 theme_override_font_sizes/font_size = 64
 text = "HP"
+
+[node name="PlayerInteractArea" type="Area2D" parent="."]
+collision_layer = 8
+collision_mask = 0
+
+[node name="OverlapDetection2D" type="CollisionShape2D" parent="PlayerInteractArea"]
+position = Vector2(-2, -198)
+shape = SubResource("CircleShape2D_fpomk")
+
+[node name="AttackTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="EnableAttackTimer" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
+
+[node name="HitArea2D" type="Area2D" parent="."]
+collision_layer = 8
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitArea2D"]
+position = Vector2(354, -238)
+shape = SubResource("CircleShape2D_nv8vh")
+disabled = true
+
+[node name="PlayerArea2D" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 81
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerArea2D"]
+position = Vector2(-2, -180)
+shape = SubResource("CapsuleShape2D_qta2k")

@@ -29,7 +29,7 @@ var _curr_speed: float
 @onready var avatar_label: Label = $AvatarLabel
 @onready var battle_timers: BattleTimers = $BattleTimers
 
-@onready var ui_layout: UIController = %UILayout
+# @onready var ui_layout: UIController = %UILayout
 
 
 var initial_stats: BaseStats
@@ -50,6 +50,21 @@ signal on_avatar_flee()
 
 var battle_manager: BattleManager
 
+# names generated from https://www.fantasynamegenerators.com/bleach-shinigami-names.php
+const random_names: PackedStringArray = [
+	"Konuragi Tenji",
+	"Iekibe Katane",
+	"Kiba Baishiro",
+	"Ikkahoshi Daimane",
+	"Takazawa Watsugu",
+	"Umeshita Jomiho",
+	"Ozumi Saiyuko",
+	"Hitsuka Ezami",
+	"Kuroyashi Naokira",
+	"Narise Hora",
+]
+
+
 func _init() -> void:
 	initial_stats = BaseStats.new()
 	curr_stats = BaseStats.new()
@@ -58,7 +73,8 @@ func _init() -> void:
 
 func _ready() -> void:
 	_curr_speed = move_speed
-	sprite_2d.texture = texture
+	if sprite_2d:
+		sprite_2d.texture = texture
 	
 	avatar_label.text = self.name
 	update_battle_state_text()
@@ -102,6 +118,8 @@ func on_resume_timeout():
 
 #endregion
 
+#region Debug functions
+
 func update_battle_state_text():
 	match battle_state:
 		Battle_State.WAITING:
@@ -118,3 +136,15 @@ func update_battle_state_text():
 			battle_state_label.text = "PAUSED"
 		Battle_State.KNOCKBACK:
 			battle_state_label.text = "KNOCKBACK"
+			
+func generate_random_stats() -> void:
+	initial_stats.name = random_names[randi_range(0, len(random_names) - 1)]
+	initial_stats.attack = randi_range(20,25)
+	initial_stats.defense = randi_range(10,15)
+	initial_stats.hp = randi_range(40, 80)
+	initial_stats.speed = randi_range(10, 20)
+	initial_stats.skill_points = 100
+	
+	curr_stats.set_stats(initial_stats)
+
+#endregion

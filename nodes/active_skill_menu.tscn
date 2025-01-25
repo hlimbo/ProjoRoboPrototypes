@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" path="res://scripts/skill_controller.gd" id="1_d8ok3"]
 [ext_resource type="Script" path="res://scripts/resources/skill.gd" id="2_dfiqy"]
-[ext_resource type="Resource" uid="uid://cvlxo8s3jaft2" path="res://resources/aqua_blast.tres" id="3_0li13"]
-[ext_resource type="Resource" uid="uid://bgbuqgqyx0rc6" path="res://resources/earth_drill.tres" id="4_xs1hr"]
-[ext_resource type="Resource" uid="uid://b7aut3ebra4j3" path="res://resources/thunder_blast.tres" id="5_wbrnw"]
+[ext_resource type="Resource" uid="uid://cvlxo8s3jaft2" path="res://resources/skills/aqua_blast.tres" id="3_0li13"]
+[ext_resource type="Resource" uid="uid://bgbuqgqyx0rc6" path="res://resources/skills/earth_drill.tres" id="4_xs1hr"]
+[ext_resource type="Resource" uid="uid://b7aut3ebra4j3" path="res://resources/skills/thunder_blast.tres" id="5_wbrnw"]
 
 [node name="ActiveSkillMenu" type="VBoxContainer"]
 offset_right = 440.0

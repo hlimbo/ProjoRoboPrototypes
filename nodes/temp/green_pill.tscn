@@ -1,5 +1,6 @@
-[gd_scene load_steps=8 format=3 uid="uid://p0b8s21d83re"]
+[gd_scene load_steps=12 format=3 uid="uid://p0b8s21d83re"]
 
+[ext_resource type="PackedScene" uid="uid://cx3vhulcggapg" path="res://nodes/info_node.tscn" id="1_cfay4"]
 [ext_resource type="PackedScene" uid="uid://cwta2763wqy3y" path="res://nodes/monsters/parts/body_types/body_whiteE.tscn" id="1_uai6l"]
 [ext_resource type="PackedScene" uid="uid://dau5ljlwfj3km" path="res://nodes/monsters/parts/eye_types/eye_psycho_dark.tscn" id="3_lwr4o"]
 [ext_resource type="PackedScene" uid="uid://bglnbhk5i6221" path="res://nodes/monsters/parts/mouth_types/mouthH.tscn" id="4_hxf43"]
@@ -8,7 +9,23 @@
 [ext_resource type="PackedScene" uid="uid://4j6hujkvddhm" path="res://nodes/monsters/parts/ear_types/detail_blue_ear.tscn" id="7_pbthx"]
 [ext_resource type="PackedScene" uid="uid://dpot30rtha5yi" path="res://nodes/monsters/parts/horn_types/detail_dark_horn_small.tscn" id="8_skjan"]
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_wlbfe"]
+radius = 198.124
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ie1ax"]
+radius = 90.0
+height = 270.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_tmwpw"]
+radius = 93.0484
+
 [node name="BaseBodyE" type="Node2D"]
+
+[node name="InfoNode" parent="." instance=ExtResource("1_cfay4")]
+offset_left = -115.0
+offset_top = -524.0
+offset_right = 129.0
+offset_bottom = -238.0
 
 [node name="body" parent="." instance=ExtResource("1_uai6l")]
 self_modulate = Color(0.180392, 0.8, 0.443137, 1)
@@ -130,3 +147,28 @@ position = Vector2(0, -67)
 rotation = -0.785398
 
 [node name="detail_dark_horn_small" parent="body/accessories/config_1/horns/horn_r" instance=ExtResource("8_skjan")]
+
+[node name="EnemyAreaRange" type="Area2D" parent="."]
+collision_layer = 16
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyAreaRange"]
+position = Vector2(0, -100)
+shape = SubResource("CircleShape2D_wlbfe")
+
+[node name="EnemyHitbox" type="Area2D" parent="."]
+collision_layer = 4
+collision_mask = 41
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyHitbox"]
+position = Vector2(0, -87)
+shape = SubResource("CapsuleShape2D_ie1ax")
+
+[node name="EnemyAttackRange" type="Area2D" parent="."]
+collision_layer = 16
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyAttackRange"]
+position = Vector2(124, -89)
+shape = SubResource("CircleShape2D_tmwpw")
+disabled = true

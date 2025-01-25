@@ -17,7 +17,8 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-Constants="*res://scripts/constants.gd"
+Constants="*res://scripts/singletons/constants.gd"
+BattleSceneManager="*res://nodes/singletons/battle_scene_manager.tscn"
 
 [display]
 

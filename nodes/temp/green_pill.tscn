@@ -10,14 +10,14 @@
 [ext_resource type="PackedScene" uid="uid://dpot30rtha5yi" path="res://nodes/monsters/parts/horn_types/detail_dark_horn_small.tscn" id="8_skjan"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_wlbfe"]
-radius = 198.124
+radius = 202.062
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ie1ax"]
-radius = 90.0
+radius = 79.0
 height = 270.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_tmwpw"]
-radius = 93.0484
+radius = 97.0052
 
 [node name="BaseBodyE" type="Node2D"]
 

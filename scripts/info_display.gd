@@ -9,10 +9,12 @@ class_name InfoDisplay
 @export var avatar: Avatar
 @onready var battle_manager: BattleManager
 
+@onready var damage_calculator: IDamageCalculator = BattleSceneManager.damage_calculator
+
+
 #region Debug Settings
 # set as export in order to test in isolation
 @export_group("Debug Settings")
-@export var damage_calculator: IDamageCalculator
 @export var damage_dealer: Avatar
 @export var damage_receiver: Avatar
 

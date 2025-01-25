@@ -65,8 +65,8 @@ func _ready() -> void:
 	avatar_label.text = self.name
 	update_battle_state_text()
 	
-	area_2d.body_entered.connect(on_area_entered)
-	area_2d.body_exited.connect(on_area_exited)
+	if area_2d:
+		area_2d.body_entered.connect(on_area_entered)
 	
 	battle_timers.skill_timer.timeout.connect(on_skill_timeout)
 	battle_timers.defense_timer.timeout.connect(on_defend_end)

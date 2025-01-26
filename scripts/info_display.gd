@@ -5,7 +5,6 @@ class_name InfoDisplay
 @onready var hp_label: Label = $HPLabel
 
 
-# @onready var avatar: Avatar
 @export var avatar: Avatar
 @onready var battle_manager: BattleManager
 

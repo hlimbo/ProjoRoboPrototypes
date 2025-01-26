@@ -2,7 +2,7 @@ extends CanvasLayer
 class_name UIController
 
 # owner is the root node of the scene that this node belongs to e.g. main
-@onready var battle_manager: BattleManager = owner
+@onready var battle_manager: BattleManager = owner.get_node("BattleManager")
 
 @onready var active_skill_menu: Control = $ActiveSkillMenu
 @onready var action_layout: Control = $ActionLayout
@@ -31,12 +31,13 @@ var original_cam_pos: Vector2
 @onready var target_label: Label = $TargetMenu/VBoxContainer/TargetLabel
 @onready var target_cancel: Button = $TargetMenu/VBoxContainer/Cancel
 
+# TODO - add back once command pattern implemented for actors
 # Placeholders -- bad code as this pathing is dependent on battle_manager.gd on spawning these mobs in the scene
-@onready var mobs: Array[MobSelection] = [
-	$"../blue_mob/Area2D",
-	#$"../green_mob/Area2D",
-	#$"../red_mob/Area2D"
-]
+#@onready var mobs: Array[MobSelection] = [
+	#$"../blue_mob/Area2D",
+	##$"../green_mob/Area2D",
+	##$"../red_mob/Area2D"
+#]
 
 ## 1-D Graph variables
 @onready var one_d_graph: Control = $OneDGraph
@@ -83,13 +84,13 @@ func on_resume_play(_avatar: Avatar):
 
 func _ready():
 	print("ui controller ready called")
-	cancel.pressed.connect(_on_cancel_button_pressed)
-	target_cancel.pressed.connect(_on_cancel_button_pressed)
-	flee.pressed.connect(_on_flee_button_pressed)
-	
 	battle_controller = BattleController.new()
 	action_buttons = BattleController.ActionButtons.new()
 	action_buttons.init(attack, skill_btn, defend, flee, cancel)
+	
+	action_buttons.flee_button.pressed.connect(_on_flee_button_pressed)
+	cancel.pressed.connect(_on_cancel_button_pressed)
+	target_cancel.pressed.connect(_on_cancel_button_pressed)
 	
 	for node in avatar_nodes:
 		party_members.append(node as Avatar)
@@ -97,9 +98,9 @@ func _ready():
 	for node in enemy_nodes:
 		enemy_avatars.append(node as Avatar)
 		
-	for mob in mobs:
-		mob.on_target_hovered.connect(on_target_hovered)
-		mob.on_target_unhovered.connect(on_target_unhovered)
+	#for mob in mobs:
+		#mob.on_target_hovered.connect(on_target_hovered)
+		#mob.on_target_unhovered.connect(on_target_unhovered)
 	
 	# 1-d graph
 	for avatar in party_members:
@@ -136,8 +137,9 @@ func toggle_timer_tick(paused: bool):
 func toggle_pickable_mobs(input_pickable: bool):
 	# pick target to attack
 	# enable as pickable which accepts mouse pointer events
-	for mob in mobs:
-		mob.input_pickable = input_pickable
+	#for mob in mobs:
+		#mob.input_pickable = input_pickable
+	pass
 
 func _on_attack_button_pressed(_avatar: Avatar):
 	action_layout.visible = false
@@ -176,9 +178,9 @@ func _on_cancel_button_pressed():
 	active_skill_menu.visible = false
 	action_layout.visible = true
 	
-	# disable pickables
-	for mob in mobs:
-		mob.input_pickable = false
+	## disable pickables
+	#for mob in mobs:
+		#mob.input_pickable = false
 
 func _on_description_timer_timeout():
 	target_menu.visible = false
@@ -188,23 +190,24 @@ func _on_description_timer_timeout():
 	label.text = ""
 
 func _process(_delta: float) -> void:
-	# check if enemies are defeated
-	var i = 0
-	var limit = len(enemy_avatars)
-	while i < limit:
-		if enemy_avatars[i].curr_stats.hp <= 0:
-			enemy_avatars[i].queue_free()
-			# TODO - don't do this... find a better solution to remove (prefer to remove rootmost node)
-			mobs[i].get_parent().queue_free()
-			enemy_avatars.remove_at(i)
-			mobs.remove_at(i)
-			
-			# shift index to left and update limit as item is removed
-			# and maybe skipped...
-			i -= 1
-			limit = len(enemy_avatars)
-			
-		i += 1
+	# TODO - add back once command pattern implemented for Actors
+	## check if enemies are defeated
+	#var i = 0
+	#var limit = len(enemy_avatars)
+	#while i < limit:
+		#if enemy_avatars[i].curr_stats.hp <= 0:
+			#enemy_avatars[i].queue_free()
+			## TODO - don't do this... find a better solution to remove (prefer to remove rootmost node)
+			#mobs[i].get_parent().queue_free()
+			#enemy_avatars.remove_at(i)
+			#mobs.remove_at(i)
+			#
+			## shift index to left and update limit as item is removed
+			## and maybe skipped...
+			#i -= 1
+			#limit = len(enemy_avatars)
+			#
+		#i += 1
 	
 	# check Party Battle Status
 	var pending_battle_state: Party_Battle_States = Party_Battle_States.DEFEAT
@@ -356,15 +359,14 @@ func on_start_order_step(avatar: Avatar) -> void:
 		Utility.disconnect_all_signal_connections(action_buttons.attack_button.pressed)
 		Utility.disconnect_all_signal_connections(action_buttons.defend_button.pressed)
 		Utility.disconnect_all_signal_connections(action_buttons.pick_skills_button.pressed)
-		# Utility.disconnect_all_signal_connections(action_buttons.flee_button.pressed)
-		
-		
-		for i in range(len(enemy_avatars)):
-			# Disconnect mob target selection and previous avatar relationship
-			Utility.disconnect_all_signal_connections(mobs[i].on_target_clicked)
-			# Connect all possible enemy targets that can be clicked on when doing target selection
-			var lambda = func(enemy_avatar: Avatar, party_member: Avatar): on_target_clicked(enemy_avatar, party_member)
-			mobs[i].on_target_clicked.connect(lambda.bind(enemy_avatars[i], avatar))
+
+		# TODO - add back once command pattern for actors is implemented
+		#for i in range(len(enemy_avatars)):
+			## Disconnect mob target selection and previous avatar relationship
+			#Utility.disconnect_all_signal_connections(mobs[i].on_target_clicked)
+			## Connect all possible enemy targets that can be clicked on when doing target selection
+			#var lambda = func(enemy_avatar: Avatar, party_member: Avatar): on_target_clicked(enemy_avatar, party_member)
+			#mobs[i].on_target_clicked.connect(lambda.bind(enemy_avatars[i], avatar))
 	
 		
 		action_buttons.attack_button.pressed.connect(_on_attack_button_pressed.bind(avatar))

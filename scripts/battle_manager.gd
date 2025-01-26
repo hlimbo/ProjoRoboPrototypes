@@ -4,6 +4,14 @@ class_name BattleManager
 const avatar_res_path: String = "res://nodes/battle_timeline/avatar.tscn"
 const avatar_res: Resource = preload(avatar_res_path)
 
+const party_member_resources: Array[Resource] = [
+	preload("res://nodes/actors/yellow_mob_2.tscn")
+]
+
+const enemy_resources: Array[Resource] = [
+	preload("res://nodes/actors/enemy_placeholder.tscn")
+]
+
 const party_member_textures: Array[Texture2D] = [
 	preload("res://assets/kenney_emotes-pack/PNG/Vector/Style 2/emote_stars.png"),
 	preload("res://assets/kenney_emotes-pack/PNG/Vector/Style 2/emote_drop.png"),
@@ -78,8 +86,28 @@ var enemy_stats: Array[BaseStats] = []
 var party_member_avatars: Array[Avatar] = []
 var enemy_avatars: Array[Avatar] = []
 
-var battle_participants: Array[Node] = []
+var party_members: Array[Actor] = []
+var enemies: Array[Actor] = []
 
+
+
+@onready var starting_party_member_positions: Array[Vector2] = [
+	owner.get_node("PartyMember1").position,
+	# $PartyMember1.position,
+	#$PartyMember2.position,
+	#$PartyMember3.position,
+]
+
+@onready var starting_enemy_positions: Array[Vector2] = [
+	owner.get_node("Enemy1").position,
+	# $Enemy1.position,
+	#$Enemy2.position,
+	#$Enemy3.position,
+]
+
+@onready var one_d_graph: Control = owner.get_node("UILayout/OneDGraph")
+
+var max_battle_speed: int = 0
 var damage_calculator: IDamageCalculator
 
 func generate_random_stats(actor_type: Actor_Type) -> BaseStats:
@@ -105,10 +133,9 @@ func get_starting_timeline_positions() -> Array:
 
 func _init() -> void:
 	damage_calculator = SimpleDamageCalculator.new()
-
+	
 func _enter_tree() -> void:
-	# initialize party member and enemy base stats
-	var max_battle_speed: int = 0
+	# initialize battle participants' base stats
 	for i in range(0, party_member_spawn_count):
 		var stats = generate_random_stats(Actor_Type.PARTY_MEMBER)
 		party_member_stats.append(stats)
@@ -118,32 +145,33 @@ func _enter_tree() -> void:
 		var stats = generate_random_stats(Actor_Type.ENEMY)
 		enemy_stats.append(stats)
 		max_battle_speed = maxi(max_battle_speed, stats.speed)
-	
-	
-	
+
+	# TODO
+	# 1. get access to actors in battle scene
+	# 2. for each actor, assign their respective avatar ui icon
+	# 3. encapsulate logic into each command (attack, defend, flee, pick skill)
+	# 4. link button presses to command function executions
+
+func _ready() -> void:
+	print("battle manager ready called")
 	# load avatars and set random location on path2D
-	var one_d_graph: Control = $UILayout/OneDGraph
 	var party_line: Path2D = one_d_graph.get_node("PartyPath2D")
 	var enemy_line: Path2D = one_d_graph.get_node("EnemyPath2D")
 	for i in range(0, party_member_spawn_count):
 		var avatar: Avatar = avatar_res.instantiate()
 		avatar.texture = party_member_textures[i]
+		avatar.name = party_member_stats[i].name
 		avatar.move_speed = (party_member_stats[i].speed / float(max_battle_speed)) * 0.25
 		avatar.initial_stats.set_stats(party_member_stats[i])
 		avatar.curr_stats.set_stats(party_member_stats[i])
 		avatar.avatar_type = Avatar.Avatar_Type.PARTY_MEMBER
-		
-		
 		party_line.add_child(avatar)
-		
-		
+		party_member_avatars.append(avatar)
 		# set owner of this node to be the root node of the scene it is spawned in
 		# if not set, godot scene tree won't recognize its existence
-		avatar.owner = self
+		var root = self.owner
+		avatar.owner = root
 		
-		party_member_avatars.append(avatar)
-		avatar.name = party_member_stats[i].name
-
 	for i in range(0, enemy_spawn_count):
 		var avatar: Avatar = avatar_res.instantiate()
 		avatar.texture = enemy_texture
@@ -152,67 +180,50 @@ func _enter_tree() -> void:
 		avatar.initial_stats.set_stats(enemy_stats[i])
 		avatar.curr_stats.set_stats(enemy_stats[i])
 		avatar.avatar_type = Avatar.Avatar_Type.ENEMY
-		
 		enemy_line.add_child(avatar)
 		enemy_avatars.append(avatar)
 		# set owner of this node to be the root node of the scene it is spawned in
 		# if not set, godot scene tree won't recognize its existence
-		avatar.owner = self
-
-	# spawn party members and enemies
-	var starting_positions = [
-		$PartyMember1.position,
-		#$PartyMember2.position,
-		#$PartyMember3.position,
-		$Enemy1.position,
-		#$Enemy2.position,
-		#$Enemy3.position,
-	]
+		var root = self.owner
+		avatar.owner = root
 	
-	var mobs = [
-		preload("res://nodes/temp/yellow_mob.tscn"),
-		#preload("res://nodes/temp/freddy.tscn"),
-		#preload("res://nodes/temp/green_pill.tscn"),
-		preload("res://nodes/temp/blue_mob.tscn"),
-		#preload("res://nodes/temp/green_mob.tscn"),
-		#preload("res://nodes/temp/red_mob.tscn"),
-	]
-	
-	for i in range(0, len(starting_positions)):
-		var mob = mobs[i]
-		var start_pos = starting_positions[i]
+	for i in range(len(party_member_resources)):
+		var start_pos: Vector2 = starting_party_member_positions[i]
+		var party_member_resource = party_member_resources[i]
+		var party_member: Actor = party_member_resource.instantiate()
+		add_child(party_member)
+		party_member.position = start_pos
+		party_members.append(party_member)
 		
-		var m = mob.instantiate()
-		add_child(m)
-		m.position = start_pos
-		battle_participants.append(m)
-	
-	var enemy_mobs: Array[Node] = battle_participants.filter(
-			func(b: Node): return (b as BattleParticipant) != null)
-
-	# TODO - looks super hacky... need to possibly consolidate the script into 1 later on...
-	# set avatar references from other scripts here
-	for i in range(0, len(enemy_mobs)):
-		(enemy_mobs[i] as BattleParticipant).avatar = enemy_avatars[i]
-		(enemy_mobs[i].get_node("Area2D") as MobSelection).avatar = enemy_avatars[i]
-		var info_display = enemy_mobs[i].get_node("InfoNode") as InfoDisplay
+	for i in range(len(enemy_resources)):
+		var start_pos: Vector2 = starting_enemy_positions[i]
+		var enemy_resource = enemy_resources[i]
+		var enemy: Actor = enemy_resource.instantiate()
+		add_child(enemy)
+		enemy.position = start_pos
+		enemies.append(enemy)
+		
+	### Connect Dependencies ... ###
+	for i in range(len(enemies)):
+		var enemy: Actor = enemies[i]
+		# TODO - add BattleParticipant flee back here maybe?
+		# (enemy_mobs[i] as BattleParticipant).avatar = enemy_avatars[i]
+		# TODO - add target selection node back -- MobSelection
+		# (enemy_mobs[i].get_node("Area2D") as MobSelection).avatar = enemy_avatars[i]
+		enemy.avatar = enemy_avatars[i]
+		enemy.get_info_display().update_labels(enemy.avatar)
+		var info_display = enemy.get_info_display()
 		info_display.avatar = enemy_avatars[i]
 		info_display.battle_manager = self
 	
-	var party_members: Array[Node] = battle_participants.filter(
-		func(b: Node): return (b as BattleParticipant) == null
-	)
-	
-	# set names - party members
-	for i in range(0, len(party_member_stats)):
-		battle_participants[i].name = party_member_stats[i].name
-		
 	for i in range(len(party_members)):
-		var info_display = party_members[i].get_node("InfoNode") as InfoDisplay
+		var party_member: Actor = party_members[i]
+		party_member.avatar = party_member_avatars[i]
+		party_member.get_info_display().update_labels(party_member.avatar)
+		var info_display: InfoDisplay = party_member.get_info_display()
 		info_display.avatar = party_member_avatars[i]
 		info_display.battle_manager = self
-
-func _ready() -> void:
+	
 	var ranges = get_starting_timeline_positions()
 	print ("encounter type: %d" % encounter_type)
 	

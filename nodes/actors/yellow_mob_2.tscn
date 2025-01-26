@@ -1,0 +1,145 @@
+[gd_scene load_steps=16 format=3 uid="uid://blks44s8mvnag"]
+
+[ext_resource type="Shader" path="res://shaders/transparent_fade.gdshader" id="1_ydi0w"]
+[ext_resource type="Script" path="res://scripts/actor.gd" id="2_5ud6m"]
+[ext_resource type="PackedScene" uid="uid://b6jorugo4ilds" path="res://nodes/monsters/parts/arm_types/arm_yellowE.tscn" id="3_x4dlr"]
+[ext_resource type="PackedScene" uid="uid://m8aj8e6g21ni" path="res://nodes/monsters/parts/leg_types/leg_yellowA.tscn" id="4_2l2ad"]
+[ext_resource type="PackedScene" uid="uid://dab73d2lfdlqc" path="res://nodes/monsters/parts/ear_types/detail_yellow_ear_round.tscn" id="5_svlnf"]
+[ext_resource type="PackedScene" uid="uid://ndgd4bthnfpg" path="res://nodes/monsters/parts/body_types/typeD/body_yellowD.tscn" id="6_537jf"]
+[ext_resource type="PackedScene" uid="uid://6feyfqpmlbtg" path="res://nodes/monsters/parts/eye_types/eye_cute_light.tscn" id="7_dc50n"]
+[ext_resource type="PackedScene" uid="uid://doiqyey08hhcb" path="res://nodes/monsters/parts/mouth_types/mouthD.tscn" id="8_juhgk"]
+[ext_resource type="PackedScene" uid="uid://cx3vhulcggapg" path="res://nodes/info_node.tscn" id="9_un1iw"]
+[ext_resource type="PackedScene" uid="uid://de228clgk2wkw" path="res://nodes/ui/status_effect_layout.tscn" id="10_12ki7"]
+[ext_resource type="Texture2D" uid="uid://dcv61ts3lojeo" path="res://assets/kenney-board-game-icons/Tilesheet/iconsDouble.png" id="11_wosbv"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_usbqb"]
+shader = ExtResource("1_ydi0w")
+shader_parameter/transparency_value = 1.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_fpomk"]
+radius = 324.222
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_nv8vh"]
+radius = 194.371
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_qta2k"]
+radius = 172.0
+height = 400.0
+
+[node name="yellow_mob2" type="Node2D"]
+material = SubResource("ShaderMaterial_usbqb")
+position = Vector2(290, 565)
+scale = Vector2(0.5, 0.5)
+script = ExtResource("2_5ud6m")
+move_speed = 1000.0
+enable_debug_menu = true
+flee_fade_time = 1.0
+
+[node name="arm_yellowE_left" parent="." instance=ExtResource("3_x4dlr")]
+position = Vector2(-90, -218)
+rotation = 0.392699
+flip_h = true
+
+[node name="arm_yellowE_right" parent="." instance=ExtResource("3_x4dlr")]
+position = Vector2(68, -218)
+rotation = -0.392699
+
+[node name="leg_yellowA_right" parent="." instance=ExtResource("4_2l2ad")]
+position = Vector2(36, -141.5)
+
+[node name="leg_yellowA_left" parent="." instance=ExtResource("4_2l2ad")]
+position = Vector2(-55, -141.5)
+flip_h = true
+
+[node name="detail_yellow_ear_round_right" parent="." instance=ExtResource("5_svlnf")]
+position = Vector2(55, -273)
+
+[node name="detail_yellow_ear_round_left" parent="." instance=ExtResource("5_svlnf")]
+position = Vector2(-75, -273)
+flip_h = true
+
+[node name="body_yellowD" parent="." instance=ExtResource("6_537jf")]
+position = Vector2(-3.3847, -219)
+
+[node name="eye_cute_light" parent="." instance=ExtResource("7_dc50n")]
+position = Vector2(-0.492352, -263.125)
+scale = Vector2(0.75, 0.75)
+
+[node name="eye_cute_light2" parent="." instance=ExtResource("7_dc50n")]
+position = Vector2(-39.4924, -219.125)
+scale = Vector2(0.6, 0.6)
+
+[node name="eye_cute_light3" parent="." instance=ExtResource("7_dc50n")]
+position = Vector2(40.5076, -220.125)
+scale = Vector2(0.6, 0.6)
+
+[node name="mouthD" parent="." instance=ExtResource("8_juhgk")]
+position = Vector2(-0.692352, -188)
+
+[node name="InfoNode" parent="." instance=ExtResource("9_un1iw")]
+offset_top = -664.0
+offset_bottom = -378.0
+
+[node name="CollisionGeometry" type="Node2D" parent="."]
+visible = false
+
+[node name="InteractArea" type="Area2D" parent="CollisionGeometry"]
+collision_layer = 8
+collision_mask = 4
+
+[node name="OverlapDetection2D" type="CollisionShape2D" parent="CollisionGeometry/InteractArea"]
+position = Vector2(-2, -198)
+shape = SubResource("CircleShape2D_fpomk")
+
+[node name="HitArea2D" type="Area2D" parent="CollisionGeometry"]
+collision_layer = 32
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CollisionGeometry/HitArea2D"]
+position = Vector2(342, -196)
+shape = SubResource("CircleShape2D_nv8vh")
+disabled = true
+
+[node name="ActorArea" type="Area2D" parent="CollisionGeometry"]
+collision_layer = 2
+collision_mask = 81
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CollisionGeometry/ActorArea"]
+position = Vector2(-2, -180)
+shape = SubResource("CapsuleShape2D_qta2k")
+
+[node name="Timers" type="Node2D" parent="."]
+
+[node name="AttackTimer" type="Timer" parent="Timers"]
+one_shot = true
+
+[node name="EnableAttackTimer" type="Timer" parent="Timers"]
+wait_time = 0.5
+one_shot = true
+
+[node name="DefenseTimer" type="Timer" parent="Timers"]
+wait_time = 3.0
+one_shot = true
+
+[node name="Defense" type="Node2D" parent="."]
+visible = false
+
+[node name="StatusEffectLayout" parent="Defense" instance=ExtResource("10_12ki7")]
+offset_left = 220.0
+offset_top = -460.0
+offset_right = 467.0
+offset_bottom = -388.0
+
+[node name="Label" parent="Defense/StatusEffectLayout" index="0"]
+theme_override_font_sizes/font_size = 48
+
+[node name="Shield" type="Sprite2D" parent="Defense"]
+self_modulate = Color(0.25, 0.75, 1, 1)
+position = Vector2(340, -214)
+scale = Vector2(3, 3)
+texture = ExtResource("11_wosbv")
+region_enabled = true
+region_rect = Rect2(1407, 127, 131, 126)
+
+[editable path="InfoNode"]
+[editable path="Defense/StatusEffectLayout"]

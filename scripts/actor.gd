@@ -68,6 +68,9 @@ func _ready():
 	original_pos = position
 	original_target = target
 	
+	if info_node:
+		info_node.avatar = avatar
+	
 	if not interact_area or not attack_timer or not enable_attack_timer or not defense_timer or not hit_area:
 		return
 	
@@ -83,10 +86,11 @@ func _ready():
 	
 	if info_node and avatar:
 		info_node.update_labels(avatar)
+		
 
 func _process(delta_time: float):
 	# player controls
-	if (name == "yellow_mob"):
+	if (name == "yellow_mob2"):
 		if (Input.is_action_pressed("attack")):
 			attack_cmd.execute(self)
 		elif (Input.is_action_pressed("defend")):
@@ -94,7 +98,7 @@ func _process(delta_time: float):
 		elif (Input.is_action_pressed("flee")):
 			flee_cmd.execute(self)
 	# enemy controls
-	elif (name == "BaseBodyE"):
+	elif (name == "enemy_placeholder"):
 		if (Input.is_action_pressed("attack2")):
 			attack_cmd.execute(self)
 		elif (Input.is_action_pressed("defend2")):
@@ -205,3 +209,7 @@ func begin_flee():
 		
 	flee_time = 0.0
 	motion_state = Active_Battle_State.FLEE
+
+
+func get_info_display() -> InfoDisplay:
+	return get_node("InfoNode")

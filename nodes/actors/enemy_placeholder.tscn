@@ -1,0 +1,234 @@
+[gd_scene load_steps=15 format=3 uid="uid://d07n6ni2r73e1"]
+
+[ext_resource type="Script" path="res://scripts/actor.gd" id="1_iwbjg"]
+[ext_resource type="PackedScene" uid="uid://cx3vhulcggapg" path="res://nodes/info_node.tscn" id="2_w0tf0"]
+[ext_resource type="PackedScene" uid="uid://cwta2763wqy3y" path="res://nodes/monsters/parts/body_types/body_whiteE.tscn" id="3_bisbi"]
+[ext_resource type="PackedScene" uid="uid://dau5ljlwfj3km" path="res://nodes/monsters/parts/eye_types/eye_psycho_dark.tscn" id="4_45xcr"]
+[ext_resource type="PackedScene" uid="uid://bglnbhk5i6221" path="res://nodes/monsters/parts/mouth_types/mouthH.tscn" id="5_7tetp"]
+[ext_resource type="PackedScene" uid="uid://db40v3vl0mg3f" path="res://nodes/monsters/parts/arm_types/arm_whiteD.tscn" id="6_hfix3"]
+[ext_resource type="PackedScene" uid="uid://c3vhpwpkqt4jn" path="res://nodes/monsters/parts/leg_types/leg_darkE.tscn" id="7_v6etj"]
+[ext_resource type="PackedScene" uid="uid://4j6hujkvddhm" path="res://nodes/monsters/parts/ear_types/detail_blue_ear.tscn" id="8_pixyd"]
+[ext_resource type="PackedScene" uid="uid://dpot30rtha5yi" path="res://nodes/monsters/parts/horn_types/detail_dark_horn_small.tscn" id="9_rxj02"]
+[ext_resource type="PackedScene" uid="uid://de228clgk2wkw" path="res://nodes/ui/status_effect_layout.tscn" id="10_hx63x"]
+[ext_resource type="Texture2D" uid="uid://dcv61ts3lojeo" path="res://assets/kenney-board-game-icons/Tilesheet/iconsDouble.png" id="11_368f0"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_wlbfe"]
+radius = 202.062
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_tmwpw"]
+radius = 97.0052
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ie1ax"]
+radius = 79.0
+height = 270.0
+
+[node name="enemy_placeholder" type="Node2D"]
+position = Vector2(1019, 551)
+script = ExtResource("1_iwbjg")
+move_speed = 500.0
+battle_state = 2
+
+[node name="InfoNode" parent="." instance=ExtResource("2_w0tf0")]
+offset_left = -95.0
+offset_top = -358.0
+offset_right = 99.0
+offset_bottom = -150.0
+
+[node name="Label" parent="InfoNode/ScrollContainer/DebugMenu" index="0"]
+theme_override_font_sizes/font_size = 16
+
+[node name="InitStatsBtn" parent="InfoNode/ScrollContainer/DebugMenu" index="1"]
+theme_override_font_sizes/font_size = 16
+
+[node name="ToggleDmgBtn" parent="InfoNode/ScrollContainer/DebugMenu" index="2"]
+theme_override_font_sizes/font_size = 16
+
+[node name="NameLabel" parent="InfoNode" index="1"]
+theme_override_font_sizes/font_size = 24
+
+[node name="HPLabel" parent="InfoNode" index="2"]
+theme_override_font_sizes/font_size = 24
+
+[node name="body" parent="." instance=ExtResource("3_bisbi")]
+self_modulate = Color(0.180392, 0.8, 0.443137, 1)
+z_index = 2
+z_as_relative = false
+position = Vector2(0, -98)
+scale = Vector2(0.5, 0.5)
+
+[node name="face" type="Node2D" parent="body"]
+
+[node name="config_1" type="Node2D" parent="body/face"]
+
+[node name="eyes" type="Node2D" parent="body/face/config_1"]
+
+[node name="eyes_l" type="Marker2D" parent="body/face/config_1/eyes"]
+position = Vector2(-30, -40)
+
+[node name="eye_psycho_dark" parent="body/face/config_1/eyes/eyes_l" instance=ExtResource("4_45xcr")]
+flip_h = true
+
+[node name="eyes_r" type="Marker2D" parent="body/face/config_1/eyes"]
+position = Vector2(30, -40)
+
+[node name="eye_psycho_dark" parent="body/face/config_1/eyes/eyes_r" instance=ExtResource("4_45xcr")]
+
+[node name="mouth" type="Node2D" parent="body/face/config_1"]
+
+[node name="Marker2D" type="Marker2D" parent="body/face/config_1/mouth"]
+position = Vector2(0, 40)
+gizmo_extents = 30.0
+
+[node name="mouthH" parent="body/face/config_1/mouth/Marker2D" instance=ExtResource("5_7tetp")]
+
+[node name="nose" type="Node2D" parent="body/face/config_1"]
+
+[node name="Marker2D" type="Marker2D" parent="body/face/config_1/nose"]
+
+[node name="limbs" type="Node2D" parent="body"]
+
+[node name="arms" type="Node2D" parent="body/limbs"]
+z_index = 1
+z_as_relative = false
+
+[node name="config_1" type="Node2D" parent="body/limbs/arms"]
+
+[node name="arm_l" type="Marker2D" parent="body/limbs/arms/config_1"]
+position = Vector2(-59, 0)
+rotation = 0.261799
+gizmo_extents = 25.0
+
+[node name="arm_whiteD" parent="body/limbs/arms/config_1/arm_l" instance=ExtResource("6_hfix3")]
+z_as_relative = false
+offset = Vector2(-19, 69)
+flip_h = true
+
+[node name="arm_r" type="Marker2D" parent="body/limbs/arms/config_1"]
+position = Vector2(59, 0)
+rotation = -0.261799
+
+[node name="arm_whiteD" parent="body/limbs/arms/config_1/arm_r" instance=ExtResource("6_hfix3")]
+z_as_relative = false
+
+[node name="legs" type="Node2D" parent="body/limbs"]
+
+[node name="config_1" type="Node2D" parent="body/limbs/legs"]
+
+[node name="leg_l" type="Marker2D" parent="body/limbs/legs/config_1"]
+position = Vector2(-34, 115)
+gizmo_extents = 30.0
+
+[node name="leg_darkE" parent="body/limbs/legs/config_1/leg_l" instance=ExtResource("7_v6etj")]
+z_as_relative = false
+offset = Vector2(-26, 29)
+flip_h = true
+
+[node name="leg_r" type="Marker2D" parent="body/limbs/legs/config_1"]
+position = Vector2(34, 115)
+gizmo_extents = 30.0
+
+[node name="leg_darkE" parent="body/limbs/legs/config_1/leg_r" instance=ExtResource("7_v6etj")]
+z_as_relative = false
+
+[node name="accessories" type="Node2D" parent="body"]
+
+[node name="config_1" type="Node2D" parent="body/accessories"]
+
+[node name="ears" type="Node2D" parent="body/accessories/config_1"]
+
+[node name="ear_l" type="Marker2D" parent="body/accessories/config_1/ears"]
+position = Vector2(-60, -48)
+rotation = -0.523599
+
+[node name="detail_blue_ear" parent="body/accessories/config_1/ears/ear_l" instance=ExtResource("8_pixyd")]
+z_as_relative = false
+offset = Vector2(-6, -11)
+flip_h = true
+
+[node name="ear_r" type="Marker2D" parent="body/accessories/config_1/ears"]
+position = Vector2(60, -48)
+rotation = 0.523599
+
+[node name="detail_blue_ear" parent="body/accessories/config_1/ears/ear_r" instance=ExtResource("8_pixyd")]
+z_as_relative = false
+
+[node name="antennaes" type="Node2D" parent="body/accessories/config_1"]
+
+[node name="antenna_l" type="Marker2D" parent="body/accessories/config_1/antennaes"]
+position = Vector2(-40, -88)
+rotation = -0.261799
+
+[node name="antenna_r" type="Marker2D" parent="body/accessories/config_1/antennaes"]
+position = Vector2(40, -88)
+rotation = 0.261799
+
+[node name="horns" type="Node2D" parent="body/accessories/config_1"]
+
+[node name="horn_r" type="Marker2D" parent="body/accessories/config_1/horns"]
+position = Vector2(0, -67)
+rotation = -0.785398
+
+[node name="detail_dark_horn_small" parent="body/accessories/config_1/horns/horn_r" instance=ExtResource("9_rxj02")]
+
+[node name="CollisionGeometry" type="Node2D" parent="."]
+
+[node name="InteractArea" type="Area2D" parent="CollisionGeometry"]
+collision_layer = 16
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CollisionGeometry/InteractArea"]
+position = Vector2(0, -100)
+shape = SubResource("CircleShape2D_wlbfe")
+
+[node name="HitArea2D" type="Area2D" parent="CollisionGeometry"]
+collision_layer = 64
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CollisionGeometry/HitArea2D"]
+position = Vector2(-166, -89)
+shape = SubResource("CircleShape2D_tmwpw")
+disabled = true
+
+[node name="ActorArea" type="Area2D" parent="CollisionGeometry"]
+collision_layer = 4
+collision_mask = 41
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CollisionGeometry/ActorArea"]
+position = Vector2(0, -87)
+shape = SubResource("CapsuleShape2D_ie1ax")
+
+[node name="Timers" type="Node2D" parent="."]
+
+[node name="AttackTimer" type="Timer" parent="Timers"]
+one_shot = true
+
+[node name="EnableAttackTimer" type="Timer" parent="Timers"]
+wait_time = 0.5
+one_shot = true
+
+[node name="DefenseTimer" type="Timer" parent="Timers"]
+wait_time = 3.0
+one_shot = true
+
+[node name="Defense" type="Node2D" parent="."]
+visible = false
+
+[node name="StatusEffectLayout" parent="Defense" instance=ExtResource("10_hx63x")]
+offset_left = -257.0
+offset_top = -219.0
+offset_right = -75.0
+offset_bottom = -169.0
+
+[node name="Label" parent="Defense/StatusEffectLayout" index="0"]
+theme_override_font_sizes/font_size = 24
+
+[node name="Shield" type="Sprite2D" parent="Defense"]
+self_modulate = Color(0.25, 0.75, 1, 1)
+position = Vector2(-171, -95)
+scale = Vector2(1.3855, 1.43651)
+texture = ExtResource("11_368f0")
+region_enabled = true
+region_rect = Rect2(1407, 127, 131, 126)
+
+[editable path="InfoNode"]
+[editable path="Defense/StatusEffectLayout"]

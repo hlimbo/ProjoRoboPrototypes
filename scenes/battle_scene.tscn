@@ -11,6 +11,8 @@
 [ext_resource type="PackedScene" uid="uid://dobxqawvevo1c" path="res://nodes/ui/battle_results_screen.tscn" id="5_f3g4b"]
 
 [node name="main" type="Node2D"]
+
+[node name="BattleManager" type="Node2D" parent="."]
 script = ExtResource("1_rrotr")
 enemy_spawn_count = 1
 party_member_spawn_count = 1

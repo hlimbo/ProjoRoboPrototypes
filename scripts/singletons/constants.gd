@@ -19,6 +19,7 @@ enum Active_Battle_State {
 	DEFEND,
 	ATTACK,
 	SKILL,
+	FLEE
 }
 
 enum Avatar_Type {

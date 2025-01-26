@@ -1,4 +1,4 @@
-[gd_scene load_steps=43 format=3 uid="uid://eo8tlkixiwhf"]
+[gd_scene load_steps=45 format=3 uid="uid://eo8tlkixiwhf"]
 
 [ext_resource type="Texture2D" uid="uid://l5nje6fpe8f3" path="res://icon.svg" id="1_sghae"]
 [ext_resource type="AnimationLibrary" uid="uid://csius7k8khfc5" path="res://resources/animation_libraries/playground_library.res" id="2_t7aap"]
@@ -16,6 +16,7 @@
 [ext_resource type="Texture2D" uid="uid://bsvwn0lmyr6ap" path="res://assets/cutout_animation_assets/gbot/gBot_head.png" id="14_l03yu"]
 [ext_resource type="Texture2D" uid="uid://73vb11382nha" path="res://assets/cutout_animation_assets/gbot/gBot_jaw.png" id="15_eynwh"]
 [ext_resource type="Script" path="res://scripts/actor.gd" id="16_qnwcl"]
+[ext_resource type="Shader" path="res://shaders/transparent_fade.gdshader" id="16_s88q1"]
 [ext_resource type="PackedScene" uid="uid://b6jorugo4ilds" path="res://nodes/monsters/parts/arm_types/arm_yellowE.tscn" id="17_rqj1e"]
 [ext_resource type="PackedScene" uid="uid://m8aj8e6g21ni" path="res://nodes/monsters/parts/leg_types/leg_yellowA.tscn" id="18_fx0y6"]
 [ext_resource type="PackedScene" uid="uid://wlrgdq8ncg46" path="res://nodes/battle_timeline/avatar.tscn" id="18_hrobm"]
@@ -53,6 +54,10 @@ tracks/0/keys = {
 _data = {
 "RESET": SubResource("Animation_g13a0")
 }
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_usbqb"]
+shader = ExtResource("16_s88q1")
+shader_parameter/transparency_value = 1.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_fpomk"]
 radius = 324.222
@@ -189,6 +194,7 @@ position = Vector2(0, 80)
 remote_path = NodePath("../../../../foot_l")
 
 [node name="yellow_mob" type="Node2D" parent="." node_paths=PackedStringArray("target", "avatar")]
+material = SubResource("ShaderMaterial_usbqb")
 position = Vector2(290, 565)
 scale = Vector2(0.5, 0.5)
 script = ExtResource("16_qnwcl")
@@ -196,6 +202,7 @@ move_speed = 1000.0
 target = NodePath("../BaseBodyE")
 avatar = NodePath("../UI/Control/Path2D/PlayerAvatar")
 enable_debug_menu = true
+flee_fade_time = 1.0
 
 [node name="arm_yellowE_left" parent="yellow_mob" instance=ExtResource("17_rqj1e")]
 position = Vector2(-90, -218)
@@ -246,6 +253,7 @@ damage_dealer = NodePath("../../UI/Control/Path2D/PlayerAvatar")
 damage_receiver = NodePath("../../UI/Control/Path2D/EnemyAvatar")
 
 [node name="CollisionGeometry" type="Node2D" parent="yellow_mob"]
+visible = false
 
 [node name="InteractArea" type="Area2D" parent="yellow_mob/CollisionGeometry"]
 collision_layer = 8

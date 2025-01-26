@@ -45,6 +45,9 @@ var original_pos: Vector2
 
 @onready var defense_node: Node2D = $Defense
 
+var flee_time: float = 0.0
+@export var flee_fade_time: float = 3.0
+
 func _ready():
 	original_pos = position
 	original_target = target
@@ -68,14 +71,16 @@ func _process(delta_time: float):
 		if (Input.is_action_pressed("attack")):
 			target = original_target
 			start_motion(delta_time)
-		elif(Input.is_action_pressed("defend")):
+		elif (Input.is_action_pressed("defend")):
 			on_defend()
+		elif (Input.is_action_pressed("flee")):
+			on_flee()
 	# enemy controls
 	elif (name == "BaseBodyE"):
 		if (Input.is_action_pressed("attack2")):
 			target = original_target
 			start_motion(delta_time)
-		elif(Input.is_action_pressed("defend2")):
+		elif (Input.is_action_pressed("defend2")):
 			on_defend()
 
 
@@ -92,6 +97,9 @@ func _process(delta_time: float):
 			var dist = position.distance_to(original_pos)
 			if dist <= 100:
 				motion_state = Active_Battle_State.NEUTRAL
+	elif motion_state == Active_Battle_State.FLEE:
+		flee_time = clampf(flee_time + delta_time, flee_time, flee_fade_time)
+		(material as ShaderMaterial).set_shader_parameter("transparency_value", flee_fade_time - flee_time)
 
 func start_motion(delta_time: float):
 	# if already moving don't trigger it again
@@ -154,7 +162,6 @@ func on_attack_connect(area: Area2D):
 	print("disabling attack at end of frame")
 	hit_shape.set_deferred("disabled", true)
 
-
 func on_defend():
 	if motion_state == Active_Battle_State.DEFEND:
 		return
@@ -168,7 +175,6 @@ func on_defend():
 	defense_node.visible = true
 	defense_timer.start()
 	
-	
 func on_defend_end():
 	if avatar:
 		avatar.curr_stats.defense = avatar.initial_stats.defense
@@ -176,3 +182,10 @@ func on_defend_end():
 	
 	defense_node.visible = false
 	motion_state = Active_Battle_State.NEUTRAL
+
+func on_flee():
+	if motion_state == Active_Battle_State.FLEE:
+		return
+		
+	flee_time = 0.0
+	motion_state = Active_Battle_State.FLEE

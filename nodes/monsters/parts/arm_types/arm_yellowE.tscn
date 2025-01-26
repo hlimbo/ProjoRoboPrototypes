@@ -3,6 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://cgv4r3bn20in1" path="res://assets/kenney_monster_pack/spritesheet_default.png" id="1_b7wnh"]
 
 [node name="arm_yellowE" type="Sprite2D"]
+use_parent_material = true
 texture = ExtResource("1_b7wnh")
 offset = Vector2(12, 65)
 region_enabled = true

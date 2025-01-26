@@ -27,6 +27,8 @@ var is_alive: bool
 var resume_motion: bool = true
 var battle_state: Battle_State = Battle_State.WAITING
 
+# TODO: consider moving this in its own script file
+# it should not be part of the avatar object as avatar is being passed down already
 signal on_start_order_step(avatar: Avatar)
 signal on_resume_play(avatar: Avatar)
 signal on_turn_end(avatar: Avatar)

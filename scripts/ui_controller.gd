@@ -67,6 +67,9 @@ var party_battle_state: Party_Battle_States = Party_Battle_States.IN_PROGRESS
 @onready var transition_rect: ColorRect = $TransitionRect
 @onready var transition_label: Label = $TransitionRect/Label
 
+var battle_controller: BattleController
+var action_buttons: BattleController.ActionButtons
+
 var timers: Array[Timer] = []
 var attack_type: Attack_Type
 var pending_skill: Skill
@@ -83,6 +86,10 @@ func _ready():
 	cancel.pressed.connect(_on_cancel_button_pressed)
 	target_cancel.pressed.connect(_on_cancel_button_pressed)
 	flee.pressed.connect(_on_flee_button_pressed)
+	
+	battle_controller = BattleController.new()
+	action_buttons = BattleController.ActionButtons.new()
+	action_buttons.init(attack, skill_btn, defend, flee, cancel)
 	
 	for node in avatar_nodes:
 		party_members.append(node as Avatar)
@@ -344,35 +351,25 @@ func on_start_order_step(avatar: Avatar) -> void:
 		party_member_name.text = avatar.name
 		action_layout.visible = true
 		
-		# remove previous atk connections
-		var atk_connections = attack.pressed.get_connections()
-		for i in range(0, len(atk_connections)):
-			attack.pressed.disconnect(atk_connections[i].callable)
-			
-		# remove previous skill connections
-		for conn in skill_btn.pressed.get_connections():
-			skill_btn.pressed.disconnect(conn.callable)
-			
-		# remove previous target clicked connections
-		for i in range(0, len(enemy_avatars)):
-			for conn in mobs[i].on_target_clicked.get_connections():
-				mobs[i].on_target_clicked.disconnect(conn.callable)
-				
-		# remove previous defend connections
-		for conn in defend.pressed.get_connections():
-			defend.pressed.disconnect(conn.callable)
+		# Disconnect previous action connections 
+		# avoids previous party member actions from being triggered
+		Utility.disconnect_all_signal_connections(action_buttons.attack_button.pressed)
+		Utility.disconnect_all_signal_connections(action_buttons.defend_button.pressed)
+		Utility.disconnect_all_signal_connections(action_buttons.pick_skills_button.pressed)
+		# Utility.disconnect_all_signal_connections(action_buttons.flee_button.pressed)
+		
+		
+		for i in range(len(enemy_avatars)):
+			# Disconnect mob target selection and previous avatar relationship
+			Utility.disconnect_all_signal_connections(mobs[i].on_target_clicked)
+			# Connect all possible enemy targets that can be clicked on when doing target selection
+			var lambda = func(enemy_avatar: Avatar, party_member: Avatar): on_target_clicked(enemy_avatar, party_member)
+			mobs[i].on_target_clicked.connect(lambda.bind(enemy_avatars[i], avatar))
 	
-		# dynamically wire buttons to the party member whose turn is starting
-		# bind all possible attack combinations where
-		# damage dealer = party member
-		# damage receiver = enemy
-		for i in range(0, len(enemy_avatars)):
-			var callable = on_target_clicked.bind(enemy_avatars[i], avatar)
-			mobs[i].on_target_clicked.connect(callable)
-			
-		attack.pressed.connect(_on_attack_button_pressed.bind(avatar))
-		defend.pressed.connect(_on_defend_button_pressed.bind(avatar))
-		skill_btn.pressed.connect(_on_skills_button_pressed.bind(avatar))
+		
+		action_buttons.attack_button.pressed.connect(_on_attack_button_pressed.bind(avatar))
+		action_buttons.defend_button.pressed.connect(_on_defend_button_pressed.bind(avatar))
+		action_buttons.pick_skills_button.pressed.connect(_on_skills_button_pressed.bind(avatar))
 		
 	# entry point for enemies to pick a move
 	elif avatar.avatar_type == Avatar.Avatar_Type.ENEMY:

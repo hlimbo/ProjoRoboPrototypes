@@ -56,6 +56,9 @@ var flee_cmd: FleeCommand
 #endregion
 
 func _init():
+	# These should be created as they are issued by button presses by player controller
+	# or when AI issues these commands
+	# leaving it here to keep things simple
 	attack_cmd = AttackCommand.new()
 	defend_cmd = DefendCommand.new()
 	pick_skill_cmd = PickSkillCommand.new()
@@ -64,6 +67,9 @@ func _init():
 func _ready():
 	original_pos = position
 	original_target = target
+	
+	if not interact_area or not attack_timer or not enable_attack_timer or not defense_timer or not hit_area:
+		return
 	
 	interact_area.area_entered.connect(on_other_entered)
 	attack_timer.timeout.connect(on_attack_end)

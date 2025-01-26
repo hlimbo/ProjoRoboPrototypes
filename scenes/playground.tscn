@@ -1,4 +1,4 @@
-[gd_scene load_steps=45 format=3 uid="uid://eo8tlkixiwhf"]
+[gd_scene load_steps=46 format=3 uid="uid://eo8tlkixiwhf"]
 
 [ext_resource type="Texture2D" uid="uid://l5nje6fpe8f3" path="res://icon.svg" id="1_sghae"]
 [ext_resource type="AnimationLibrary" uid="uid://csius7k8khfc5" path="res://resources/animation_libraries/playground_library.res" id="2_t7aap"]
@@ -34,6 +34,7 @@
 [ext_resource type="PackedScene" uid="uid://dpot30rtha5yi" path="res://nodes/monsters/parts/horn_types/detail_dark_horn_small.tscn" id="30_l6pu7"]
 [ext_resource type="Texture2D" uid="uid://dcv61ts3lojeo" path="res://assets/kenney-board-game-icons/Tilesheet/iconsDouble.png" id="32_lndji"]
 [ext_resource type="PackedScene" uid="uid://de228clgk2wkw" path="res://nodes/ui/status_effect_layout.tscn" id="33_h6qpn"]
+[ext_resource type="Script" path="res://scripts/battle_controller.gd" id="35_s55f0"]
 
 [sub_resource type="Animation" id="Animation_g13a0"]
 length = 0.001
@@ -551,6 +552,32 @@ move_speed = 0.0
 position = Vector2(0, 0)
 rotation = -0.0090632
 move_speed = 0.0
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("35_s55f0")
+
+[node name="Button" type="Button" parent="Control"]
+offset_right = 468.0
+offset_bottom = 90.0
+text = "Button1"
+
+[node name="Button2" type="Button" parent="Control"]
+offset_left = 478.0
+offset_top = 2.0
+offset_right = 946.0
+offset_bottom = 92.0
+text = "Button2"
+
+[node name="Button3" type="Button" parent="Control"]
+offset_left = 4.0
+offset_top = 96.0
+offset_right = 472.0
+offset_bottom = 186.0
+text = "Button3"
 
 [editable path="yellow_mob/InfoNode"]
 [editable path="yellow_mob/Defense/StatusEffectLayout"]

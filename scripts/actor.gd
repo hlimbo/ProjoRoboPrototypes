@@ -48,6 +48,19 @@ var original_pos: Vector2
 var flee_time: float = 0.0
 @export var flee_fade_time: float = 3.0
 
+#region Commands
+var attack_cmd: AttackCommand
+var defend_cmd: DefendCommand
+var pick_skill_cmd: PickSkillCommand
+var flee_cmd: FleeCommand
+#endregion
+
+func _init():
+	attack_cmd = AttackCommand.new()
+	defend_cmd = DefendCommand.new()
+	pick_skill_cmd = PickSkillCommand.new()
+	flee_cmd = FleeCommand.new()
+
 func _ready():
 	original_pos = position
 	original_target = target
@@ -69,19 +82,17 @@ func _process(delta_time: float):
 	# player controls
 	if (name == "yellow_mob"):
 		if (Input.is_action_pressed("attack")):
-			target = original_target
-			start_motion(delta_time)
+			attack_cmd.execute(self)
 		elif (Input.is_action_pressed("defend")):
-			on_defend()
+			defend_cmd.execute(self)
 		elif (Input.is_action_pressed("flee")):
-			on_flee()
+			flee_cmd.execute(self)
 	# enemy controls
 	elif (name == "BaseBodyE"):
 		if (Input.is_action_pressed("attack2")):
-			target = original_target
-			start_motion(delta_time)
+			attack_cmd.execute(self)
 		elif (Input.is_action_pressed("defend2")):
-			on_defend()
+			defend_cmd.execute(self)
 
 
 	if motion_state == Active_Battle_State.MOVING:
@@ -101,7 +112,7 @@ func _process(delta_time: float):
 		flee_time = clampf(flee_time + delta_time, flee_time, flee_fade_time)
 		(material as ShaderMaterial).set_shader_parameter("transparency_value", flee_fade_time - flee_time)
 
-func start_motion(delta_time: float):
+func start_motion():
 	# if already moving don't trigger it again
 	if motion_state == Active_Battle_State.MOVING:
 		return
@@ -162,12 +173,11 @@ func on_attack_connect(area: Area2D):
 	print("disabling attack at end of frame")
 	hit_shape.set_deferred("disabled", true)
 
-func on_defend():
+func start_defend():
 	if motion_state == Active_Battle_State.DEFEND:
 		return
 	
 	motion_state = Active_Battle_State.DEFEND
-	
 	if avatar:
 		avatar.curr_stats.defense += avatar.curr_stats.defense * 0.25
 		print ("%s defense is now at %d" % [avatar.curr_stats.name, avatar.curr_stats.defense])
@@ -183,7 +193,7 @@ func on_defend_end():
 	defense_node.visible = false
 	motion_state = Active_Battle_State.NEUTRAL
 
-func on_flee():
+func begin_flee():
 	if motion_state == Active_Battle_State.FLEE:
 		return
 		

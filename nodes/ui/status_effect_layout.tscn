@@ -1,0 +1,26 @@
+[gd_scene load_steps=3 format=3 uid="uid://de228clgk2wkw"]
+
+[ext_resource type="Texture2D" uid="uid://dk0e3u604aw54" path="res://assets/kenney-board-game-icons/Tilesheet/iconsDefault.png" id="1_66dph"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gj627"]
+atlas = ExtResource("1_66dph")
+region = Rect2(1102, 2, 36, 33)
+
+[node name="StatusEffectLayout" type="HBoxContainer"]
+offset_left = 379.0
+offset_top = 328.0
+offset_right = 552.0
+offset_bottom = 368.0
+alignment = 1
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "DEF UP"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="arrow" type="TextureRect" parent="."]
+layout_mode = 2
+texture = SubResource("AtlasTexture_gj627")
+expand_mode = 3

@@ -1,6 +1,7 @@
 # Singleton Global Class
-extends Node
+extends RefCounted
 
+# TODO: rename to UI_Battle_State
 enum Battle_State {
 	WAITING,
 	MOVE_SELECTION,
@@ -12,9 +13,12 @@ enum Battle_State {
 	KNOCKBACK
 }
 
-enum Motion_State {
+enum Active_Battle_State {
 	NEUTRAL,
-	MOVING
+	MOVING,
+	DEFEND,
+	ATTACK,
+	SKILL,
 }
 
 enum Avatar_Type {

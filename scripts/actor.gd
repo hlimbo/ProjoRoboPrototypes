@@ -5,13 +5,18 @@ extends Node2D
 # work backwards from what kind of gameplay to achieve
 class_name Actor
 
+# Type Aliases through singleton script constants
+const Ui_Battle_State = Constants.Battle_State
+const Active_Battle_State = Constants.Active_Battle_State
+
 @onready var damage_calculator: IDamageCalculator = BattleSceneManager.damage_calculator
 @onready var info_node: InfoDisplay = $InfoNode
 
 @export var move_speed: float
 @export var target: Node2D
-@export var battle_state = Constants.Battle_State.WAITING
-@export var motion_state = Constants.Motion_State.NEUTRAL
+var original_target: Node2D
+@export var battle_state = Ui_Battle_State.WAITING
+@export var motion_state = Active_Battle_State.NEUTRAL
 # TODO - move curr_stats and initial_stats from avatar to here
 @export var avatar: Avatar
 
@@ -36,15 +41,18 @@ var original_pos: Vector2
 # enable hitbox and on end frame disable hitbox
 @onready var enable_attack_timer: Timer = $Timers/EnableAttackTimer
 
-var delay_timer: Timer = Timer.new()
-var can_start_movement: bool = false
+@onready var defense_timer: Timer = $Timers/DefenseTimer
+
+@onready var defense_node: Node2D = $Defense
 
 func _ready():
 	original_pos = position
+	original_target = target
 	
 	interact_area.area_entered.connect(on_other_entered)
 	attack_timer.timeout.connect(on_attack_end)
 	enable_attack_timer.timeout.connect(on_enable_attack_hitbox)
+	defense_timer.timeout.connect(on_defend_end)
 	hit_area.area_entered.connect(on_attack_connect)
 	
 	# hardcode testing
@@ -53,33 +61,44 @@ func _ready():
 	
 	if info_node and avatar:
 		info_node.update_labels(avatar)
-	
-	# info_node.visible = enable_debug_menu
-	# Temp code to capture gif
-	delay_timer.autostart = false
-	delay_timer.one_shot = true
-	delay_timer.wait_time = 3
-	delay_timer.timeout.connect(func(): can_start_movement = true)
-	add_child(delay_timer)
-	delay_timer.start()
 
 func _process(delta_time: float):
-	if !can_start_movement:
+	# player controls
+	if (name == "yellow_mob"):
+		if (Input.is_action_pressed("attack")):
+			target = original_target
+			start_motion(delta_time)
+		elif(Input.is_action_pressed("defend")):
+			on_defend()
+	# enemy controls
+	elif (name == "BaseBodyE"):
+		if (Input.is_action_pressed("attack2")):
+			target = original_target
+			start_motion(delta_time)
+		elif(Input.is_action_pressed("defend2")):
+			on_defend()
+
+
+	if motion_state == Active_Battle_State.MOVING:
+		if target:
+			var vel: Vector2 = move_to_target(target.position)
+			position += vel * delta_time
+		else:
+			# move back to original position
+			var vel: Vector2 = move_to_target(original_pos)
+			position += vel * delta_time
+		
+			# if close enough transition to neutral state -> stop moving
+			var dist = position.distance_to(original_pos)
+			if dist <= 100:
+				motion_state = Active_Battle_State.NEUTRAL
+
+func start_motion(delta_time: float):
+	# if already moving don't trigger it again
+	if motion_state == Active_Battle_State.MOVING:
 		return
 	
-	if battle_state == Constants.Battle_State.PENDING_MOVE:
-		var vel: Vector2 = move_to_target(target.position)
-		position += vel * delta_time
-	elif motion_state == Constants.Motion_State.MOVING:
-		# move back to original position
-		var vel: Vector2 = move_to_target(original_pos)
-		position += vel * delta_time
-		
-		# if close enough transition to neutral state -> stop moving
-		var dist = position.distance_to(original_pos)
-		if dist <= 100:
-			motion_state = Constants.Motion_State.NEUTRAL
-
+	motion_state = Active_Battle_State.MOVING
 
 func move_to_target(target_pos: Vector2) -> Vector2:
 	var dir = (target_pos - position).normalized()
@@ -88,20 +107,20 @@ func move_to_target(target_pos: Vector2) -> Vector2:
 
 # assume this other is always an enemy.. need to add a tagging system later on to determine what is being hit (like how unity does it)
 func on_other_entered(other: Area2D):
-	print("entered attacking area")
-	motion_state = Constants.Motion_State.NEUTRAL
+	# don't trigger this overlap if not moving previously
+	# prevent double attacks
+	if motion_state != Active_Battle_State.MOVING:
+		return
 	
-	if battle_state == Constants.Battle_State.PENDING_MOVE:
-		battle_state = Constants.Battle_State.EXECUTING_MOVE
-		# simulate attack animation delay -- timer
-		enable_attack_timer.start()
-	else: # wait if attack already happened
-		battle_state = Constants.Battle_State.WAITING
+	print("entered attacking area: %s" % other.name)
+	motion_state = Active_Battle_State.ATTACK
+	# simulate attack animation delay -- timer
+	enable_attack_timer.start()
 	
 func on_attack_end():
 	print("ending attack")
-	motion_state = Constants.Motion_State.MOVING
-	battle_state = Constants.Battle_State.WAITING
+	motion_state = Active_Battle_State.MOVING
+	target = null
 
 # simulate enabling hit box at end of the frame
 func on_enable_attack_hitbox():
@@ -134,3 +153,26 @@ func on_attack_connect(area: Area2D):
 	# disable at end of frame as per Godot Docs recommendation
 	print("disabling attack at end of frame")
 	hit_shape.set_deferred("disabled", true)
+
+
+func on_defend():
+	if motion_state == Active_Battle_State.DEFEND:
+		return
+	
+	motion_state = Active_Battle_State.DEFEND
+	
+	if avatar:
+		avatar.curr_stats.defense += avatar.curr_stats.defense * 0.25
+		print ("%s defense is now at %d" % [avatar.curr_stats.name, avatar.curr_stats.defense])
+
+	defense_node.visible = true
+	defense_timer.start()
+	
+	
+func on_defend_end():
+	if avatar:
+		avatar.curr_stats.defense = avatar.initial_stats.defense
+		print ("%s defense end with def at %d" % [avatar.curr_stats.name, avatar.curr_stats.defense])
+	
+	defense_node.visible = false
+	motion_state = Active_Battle_State.NEUTRAL

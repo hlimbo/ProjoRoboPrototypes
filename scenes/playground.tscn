@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=3 uid="uid://eo8tlkixiwhf"]
+[gd_scene load_steps=43 format=3 uid="uid://eo8tlkixiwhf"]
 
 [ext_resource type="Texture2D" uid="uid://l5nje6fpe8f3" path="res://icon.svg" id="1_sghae"]
 [ext_resource type="AnimationLibrary" uid="uid://csius7k8khfc5" path="res://resources/animation_libraries/playground_library.res" id="2_t7aap"]
@@ -31,6 +31,8 @@
 [ext_resource type="PackedScene" uid="uid://c3vhpwpkqt4jn" path="res://nodes/monsters/parts/leg_types/leg_darkE.tscn" id="28_d1bkn"]
 [ext_resource type="PackedScene" uid="uid://4j6hujkvddhm" path="res://nodes/monsters/parts/ear_types/detail_blue_ear.tscn" id="29_frpkm"]
 [ext_resource type="PackedScene" uid="uid://dpot30rtha5yi" path="res://nodes/monsters/parts/horn_types/detail_dark_horn_small.tscn" id="30_l6pu7"]
+[ext_resource type="Texture2D" uid="uid://dcv61ts3lojeo" path="res://assets/kenney-board-game-icons/Tilesheet/iconsDouble.png" id="32_lndji"]
+[ext_resource type="PackedScene" uid="uid://de228clgk2wkw" path="res://nodes/ui/status_effect_layout.tscn" id="33_h6qpn"]
 
 [sub_resource type="Animation" id="Animation_g13a0"]
 length = 0.001
@@ -192,8 +194,6 @@ scale = Vector2(0.5, 0.5)
 script = ExtResource("16_qnwcl")
 move_speed = 1000.0
 target = NodePath("../BaseBodyE")
-battle_state = 2
-motion_state = 1
 avatar = NodePath("../UI/Control/Path2D/PlayerAvatar")
 enable_debug_menu = true
 
@@ -281,9 +281,36 @@ one_shot = true
 wait_time = 0.5
 one_shot = true
 
-[node name="BaseBodyE" type="Node2D" parent="." node_paths=PackedStringArray("avatar")]
+[node name="DefenseTimer" type="Timer" parent="yellow_mob/Timers"]
+wait_time = 3.0
+one_shot = true
+
+[node name="Defense" type="Node2D" parent="yellow_mob"]
+visible = false
+
+[node name="StatusEffectLayout" parent="yellow_mob/Defense" instance=ExtResource("33_h6qpn")]
+offset_left = 220.0
+offset_top = -460.0
+offset_right = 467.0
+offset_bottom = -388.0
+
+[node name="Label" parent="yellow_mob/Defense/StatusEffectLayout" index="0"]
+theme_override_font_sizes/font_size = 48
+
+[node name="Shield" type="Sprite2D" parent="yellow_mob/Defense"]
+self_modulate = Color(0.25, 0.75, 1, 1)
+position = Vector2(340, -214)
+scale = Vector2(3, 3)
+texture = ExtResource("32_lndji")
+region_enabled = true
+region_rect = Rect2(1407, 127, 131, 126)
+
+[node name="BaseBodyE" type="Node2D" parent="." node_paths=PackedStringArray("target", "avatar")]
 position = Vector2(1019, 551)
 script = ExtResource("16_qnwcl")
+move_speed = 500.0
+target = NodePath("../yellow_mob")
+battle_state = 2
 avatar = NodePath("../UI/Control/Path2D/EnemyAvatar")
 
 [node name="InfoNode" parent="BaseBodyE" node_paths=PackedStringArray("avatar", "damage_dealer", "damage_receiver") instance=ExtResource("23_yanyr")]
@@ -442,8 +469,8 @@ position = Vector2(0, -100)
 shape = SubResource("CircleShape2D_wlbfe")
 
 [node name="HitArea2D" type="Area2D" parent="BaseBodyE/CollisionGeometry"]
-collision_layer = 4
-collision_mask = 32
+collision_layer = 64
+collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="BaseBodyE/CollisionGeometry/HitArea2D"]
 position = Vector2(-166, -89)
@@ -466,6 +493,30 @@ one_shot = true
 [node name="EnableAttackTimer" type="Timer" parent="BaseBodyE/Timers"]
 wait_time = 0.5
 one_shot = true
+
+[node name="DefenseTimer" type="Timer" parent="BaseBodyE/Timers"]
+wait_time = 3.0
+one_shot = true
+
+[node name="Defense" type="Node2D" parent="BaseBodyE"]
+visible = false
+
+[node name="StatusEffectLayout" parent="BaseBodyE/Defense" instance=ExtResource("33_h6qpn")]
+offset_left = -257.0
+offset_top = -219.0
+offset_right = -75.0
+offset_bottom = -169.0
+
+[node name="Label" parent="BaseBodyE/Defense/StatusEffectLayout" index="0"]
+theme_override_font_sizes/font_size = 24
+
+[node name="Shield" type="Sprite2D" parent="BaseBodyE/Defense"]
+self_modulate = Color(0.25, 0.75, 1, 1)
+position = Vector2(-171, -95)
+scale = Vector2(1.3855, 1.43651)
+texture = ExtResource("32_lndji")
+region_enabled = true
+region_rect = Rect2(1407, 127, 131, 126)
 
 [node name="UI" type="CanvasLayer" parent="."]
 visible = false
@@ -494,4 +545,6 @@ rotation = -0.0090632
 move_speed = 0.0
 
 [editable path="yellow_mob/InfoNode"]
+[editable path="yellow_mob/Defense/StatusEffectLayout"]
 [editable path="BaseBodyE/InfoNode"]
+[editable path="BaseBodyE/Defense/StatusEffectLayout"]

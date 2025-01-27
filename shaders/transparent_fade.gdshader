@@ -34,6 +34,7 @@ void fragment() {
         color.a = 0.0; // Make transparent if below threshold
     }
 	
+	// figure out and see if modulate can be obtained...
 	COLOR = color * vec4(1.0, 1.0, 1.0, transparency_value);
 	
 }

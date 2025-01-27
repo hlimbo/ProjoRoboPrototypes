@@ -151,25 +151,23 @@ func _on_skills_button_pressed(actor: Actor):
 	skill_controller.avatar = actor.avatar
 	attack_type = Attack_Type.SKILL
 
-func _on_defend_button_pressed(actor: Actor):
+func start_defend(actor: Actor):
 	var avatar: Avatar = actor.avatar
-	avatar.progress_ratio = 1
 	label.text = "%s is defending!" % avatar.name
 	
 	description_panel.visible = true
 	action_layout.visible = false
 	
-	avatar.battle_state = avatar.Battle_State.EXECUTING_MOVE
-	avatar.update_battle_state_text()
-	
 	var def_cmd = DefendCommand.new()
 	def_cmd.execute(actor)
 	
 	description_timer.start()
-	avatar.battle_timers.defense_timer.start()
 	
 	resume_avatars_motion()
 	toggle_timer_tick(false)
+
+func _on_defend_button_pressed(actor: Actor):
+	start_defend(actor)
 	
 func _on_cancel_button_pressed():
 	target_menu.visible = false
@@ -389,11 +387,11 @@ func on_start_order_step(actor: Actor) -> void:
 		
 	# entry point for enemies to pick a move
 	elif avatar.avatar_type == Avatar.Avatar_Type.ENEMY:
-		ai_determine_move(avatar)
+		# ai_determine_move(avatar)
 		#ai_use_random_skill(avatar)
-		#ai_defend(avatar)
-		#ai_flee(avatar)
-		#ai_attack(avatar)
+		# start_defend(actor)
+		ai_flee(actor)
+		#ai_attack(actor)
 
 func transition_to_main_scene(status: Party_Battle_States):
 	var exit_scene = func():
@@ -431,65 +429,40 @@ func transition_to_main_scene(status: Party_Battle_States):
 
 #region AI Commands
 func ai_determine_move(avatar: Avatar) -> void:
-	var possible_actions: Array[Callable] = [ai_attack, ai_defend, ai_use_random_skill]
+	var possible_actions: Array[Callable] = [ai_attack, start_defend, ai_use_random_skill]
 	var random_move_index = randi_range(0, len(possible_actions) - 1)
 	possible_actions[random_move_index].call(avatar)
 
-func ai_attack(avatar: Avatar) -> void:
-	print("ai_attack will be reworked once player commands are integrated")
-		#var avatar: Avatar = actor.avatar
-		#avatar.progress_ratio = 1
-		## pick a random party member
-		#var live_party_members: Array[Avatar] = party_members.filter(func(p: Avatar): return p.is_alive)
-		#
-		## no more party members to attack
-		#if len(live_party_members) == 0:
-			#return
-		#
-		#avatar.battle_state = avatar.Battle_State.EXECUTING_MOVE
-		#avatar.update_battle_state_text()
-		#
-		#var i = randi_range(0, len(live_party_members) - 1)
-		#var target: Avatar = live_party_members[i]
-		#var dmg = battle_manager.damage_calculator.calculate_damage(target, avatar)
-		#target.curr_stats.hp = maxi(target.curr_stats.hp - dmg, 0)
-		#
-		#battle_manager.damage_calculator.on_damage_received.emit(target, avatar)
-		#
-		## target downed...
-		#if target.curr_stats.hp <= 0:
-			#target.curr_stats.hp = 0
-			## reset their timeline back to 0
-			#target.progress_ratio = 0
-			#target.resume_motion = false
-			#target.is_alive = false
-			#
-		#
-		## display damage dealt to target
-		#description_panel.visible = true
-		#label.text = "%s dealt %d damage to %s" % [avatar.name, dmg, target.name]
-		#
-		#BattleSignals.on_end_turn.emit(avatar)
-
-func ai_defend(avatar: Avatar) -> void:
-	print("ai_defend will be reworked once player commands are integrated")
-	avatar.curr_stats.defense += avatar.curr_stats.defense * .25
+func ai_attack(actor: Actor) -> void:
+	var avatar: Avatar = actor.avatar
 	avatar.progress_ratio = 1
-	avatar.resume_motion = false
-	description_panel.visible = true
-	label.text = "%s is defending" % [avatar.name]
+	# pick a random party member
+	var live_party_members: Array[Avatar] = party_members.filter(func(p: Avatar): return p.is_alive)
+	
+	# no more party members to attack
+	if len(live_party_members) == 0:
+		return
 	
 	avatar.battle_state = avatar.Battle_State.EXECUTING_MOVE
 	avatar.update_battle_state_text()
 	
-	avatar.battle_timers.defense_timer.start()
-
-func ai_flee(avatar: Avatar) -> void:
+	var atk_cmd = AttackCommand.new()
+	# pick random target to attack
+	var i = randi_range(0, len(live_party_members) - 1)
+	var target: Avatar = live_party_members[i]
+	atk_cmd.target = target.actor.get_ref()
+	atk_cmd.execute(actor)
+	
+func ai_flee(actor: Actor) -> void:
 	print("ai_flee will be reworked once player commands are integrated")
-	#description_panel.visible = true
-	#label.text = "%s fled from battle" % avatar.name
-	#description_timer.start()
-	#
+	var avatar: Avatar = actor.avatar
+	description_panel.visible = true
+	label.text = "%s fled from battle" % avatar.name
+	description_timer.start()
+	
+	var flee_cmd = FleeCommand.new()
+	flee_cmd.execute(actor)
+	
 	#avatar.on_avatar_flee.emit()
 	#
 	#var i = 0
@@ -596,15 +569,21 @@ func ui_on_damage_received(damage_receiver: Actor, damage_dealer: Actor, damage:
 	var dr_avatar: Avatar = damage_receiver.avatar
 	print("ui on damage received: %s atks %s" % [dd_avatar.curr_stats.name, dr_avatar.curr_stats.name])
 	
-	if dd_avatar.avatar_type == Avatar.Avatar_Type.PARTY_MEMBER:
-		target_menu.visible = false
-		description_panel.visible = true
-		# start timer to hide description panel
-		description_timer.start()
-		
-		label.text = "%s attacked for %d damage to %s" % [dd_avatar.curr_stats.name, damage, dr_avatar.curr_stats.name]
-		
-		dd_avatar.battle_state = Constants.Battle_State.EXECUTING_MOVE
-		dd_avatar.update_battle_state_text()
-		# need to fix function signature damage_calculator on_damage_received and for all its call refs
-		BattleSignals.on_end_turn.emit(damage_dealer)
+	# UI-updates #
+	target_menu.visible = false
+	description_panel.visible = true
+	# start timer to hide description panel
+	description_timer.start()
+	label.text = "%s attacked for %d damage to %s" % [dd_avatar.curr_stats.name, damage, dr_avatar.curr_stats.name]
+	
+	dd_avatar.battle_state = Constants.Battle_State.EXECUTING_MOVE
+	dd_avatar.update_battle_state_text()
+	
+	# check if target is downed... no longer able to battle
+	if dr_avatar.curr_stats.hp <= 0:
+		dr_avatar.curr_stats.hp = 0
+		dr_avatar.progress_ratio = 0
+		dr_avatar.resume_motion = false
+		dr_avatar.is_alive = false
+	
+	BattleSignals.on_end_turn.emit(damage_dealer)

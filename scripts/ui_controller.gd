@@ -263,26 +263,29 @@ func on_target_clicked(dr_actor: Actor, dd_actor: Actor):
 		# move avatar immediately towards end of exe
 		damage_dealer.progress_ratio = 1
 		
-		#damage_dealer.target = damage_receiver
-		#var atk_cmd = AttackCommand.new()
-		#atk_cmd.execute(damage_dealer)
+		dd_actor.target = dr_actor
+		var atk_cmd = AttackCommand.new()
+		atk_cmd.execute(dd_actor)
+		
+		
+		# TODO: need to register more signals here to let this controller know when it can display UI elements again....
 		
 		
 		var dmg := battle_manager.damage_calculator.calculate_damage(damage_receiver, damage_dealer)
 		label.text = "%s attacked for %d damage to %s" % [damage_dealer.name, dmg, damage_receiver.name]
-		damage_receiver.curr_stats.hp = maxi(damage_receiver.curr_stats.hp - dmg, 0)
-		
-		battle_manager.damage_calculator.on_damage_received.emit(damage_receiver, damage_dealer)
-			
-		target_menu.visible = false
-		description_panel.visible = true
-		toggle_timer_tick(false)
-		# start timer to hide description panel
-		description_timer.start()
-		
-		damage_dealer.battle_state = Constants.Battle_State.EXECUTING_MOVE
-		damage_dealer.update_battle_state_text()
-		BattleSignals.on_end_turn.emit(dd_actor)
+		#damage_receiver.curr_stats.hp = maxi(damage_receiver.curr_stats.hp - dmg, 0)
+		#
+		#battle_manager.damage_calculator.on_damage_received.emit(damage_receiver, damage_dealer)
+			#
+		#target_menu.visible = false
+		#description_panel.visible = true
+		#toggle_timer_tick(false)
+		## start timer to hide description panel
+		#description_timer.start()
+		#
+		#damage_dealer.battle_state = Constants.Battle_State.EXECUTING_MOVE
+		#damage_dealer.update_battle_state_text()
+		#BattleSignals.on_end_turn.emit(dd_actor)
 		
 	elif attack_type == Attack_Type.SKILL:
 		# set skill execution speed

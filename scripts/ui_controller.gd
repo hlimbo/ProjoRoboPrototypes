@@ -67,6 +67,11 @@ var pending_skill: Skill
 
 func on_end_turn(actor: Actor):
 	description_timer.start()
+	# GAME FEEL: this feels terrible from a game feel perspective... 
+	# other actors should be able to move as long as the following are NOT happening:
+	# 1. player picking a move
+	# 2. actor is in front of their target about to perform their skill
+	# 3. actor begins to cast a skill
 	actor.avatar.battle_timers.resume_delay_timer.start()
 
 func on_resume_play(_actor: Actor):
@@ -240,7 +245,6 @@ func on_determine_flee_rate(actor: Actor):
 	if roll < flee_rate:
 		label.text = "Party fled!"
 		party_battle_state = Party_Battle_States.FLEE
-		pause_avatars_motion()
 		
 		# trigger flee command for all party members
 		for party_member in party_members:
@@ -259,9 +263,8 @@ func _on_flee_button_pressed(actor: Actor):
 	avatar.update_battle_state_text()
 	
 	# delay skill until avatar progress ratio reaches 1
-	var diff: float = 1 - avatar.progress_ratio
-	var flee_exec_time: float = diff / avatar.battle_timers.flee_timer.wait_time
-	avatar._curr_speed = flee_exec_time
+	var wait_time: float = avatar.battle_timers.flee_timer.wait_time
+	avatar._curr_speed = avatar.calculate_action_execution_speed(wait_time)
 	avatar.resume_motion = true
 	
 	toggle_timer_tick(false)
@@ -291,6 +294,9 @@ func on_target_clicked(dr_actor: Actor, dd_actor: Actor):
 	var damage_receiver: Avatar = dr_actor.avatar
 	var damage_dealer: Avatar = dd_actor.avatar
 	
+	toggle_timer_tick(false)
+	resume_avatars_motion()
+	
 	if attack_type == Attack_Type.BASIC:
 		# move avatar immediately towards end of exe
 		damage_dealer.progress_ratio = 1
@@ -300,14 +306,10 @@ func on_target_clicked(dr_actor: Actor, dd_actor: Actor):
 		atk_cmd.execute(dd_actor)
 		
 	elif attack_type == Attack_Type.SKILL:
-		# set skill execution speed
 		damage_dealer.battle_state = Constants.Battle_State.PENDING_MOVE
 		damage_dealer.update_battle_state_text()
-		# delay skill until avatar progress ratio reaches 1
-		var diff: float = 1 - damage_dealer.progress_ratio
-		var skill_exec_time: float = diff / damage_dealer.battle_timers.skill_timer.wait_time
-		damage_dealer._curr_speed = skill_exec_time
-		
+		var wait_time: float = damage_dealer.battle_timers.skill_timer.wait_time
+		damage_dealer._curr_speed = damage_dealer.calculate_action_execution_speed(wait_time)	
 		damage_dealer.battle_timers.skill_timer.start()
 		
 		var on_timeout = func(): on_party_member_skill_end(dr_actor, dd_actor)
@@ -315,7 +317,6 @@ func on_target_clicked(dr_actor: Actor, dd_actor: Actor):
 		
 		target_menu.visible = false
 		active_skill_menu.visible = false
-		BattleSignals.on_end_turn.emit(dd_actor)
 
 
 func pause_avatars_motion():
@@ -378,15 +379,13 @@ func on_start_order_step(actor: Actor) -> void:
 			Utility.disconnect_all_signal_connections(target_selection_area.on_target_clicked)
 			# Connect all possible enemy targets that can be clicked on when doing target selection
 			var lambda = func(e: Actor, party_member: Actor): on_target_clicked(e, party_member)
-			var output = target_selection_area.on_target_clicked.connect(lambda.bind(enemy, actor))
-			print("connection result: %d" % output)
+			target_selection_area.on_target_clicked.connect(lambda.bind(enemy, actor))
 		
 		action_buttons.attack_button.pressed.connect(_on_attack_button_pressed.bind(actor))
 		action_buttons.defend_button.pressed.connect(_on_defend_button_pressed.bind(actor))
 		action_buttons.pick_skills_button.pressed.connect(_on_skills_button_pressed.bind(actor))
 		action_buttons.flee_button.pressed.connect(_on_flee_button_pressed.bind(actor))
-		var conn = avatar.battle_timers.flee_timer.timeout.connect(on_determine_flee_rate.bind(actor))
-		print("connected ? ", conn)
+		avatar.battle_timers.flee_timer.timeout.connect(on_determine_flee_rate.bind(actor))
 		
 	# entry point for enemies to pick a move
 	elif avatar.avatar_type == Avatar.Avatar_Type.ENEMY:
@@ -506,15 +505,11 @@ func ai_flee(avatar: Avatar) -> void:
 		#avatar.queue_free()
 
 func ai_use_random_skill(avatar: Avatar) -> void:
-	# compute skill exec speed 
-	# numerator is the difference b/w the progress_ratios ranging between 0 and 1 inclusive
-	# denominator is the time period that the skill will take to execute measured in seconds
-	var diff: float = 1 - avatar.progress_ratio
-	var skill_exec_speed: float = diff / avatar.battle_timers.skill_timer.wait_time
+	var wait_time: float = avatar.battle_timers.skill_timer.wait_time
+	avatar._curr_speed = avatar.calculate_action_execution_speed(wait_time)
 	
 	print("avatar %s start skill at time %d" % [avatar.name, Time.get_ticks_msec()])
 	
-	avatar._curr_speed = skill_exec_speed
 	avatar.battle_state = avatar.Battle_State.PENDING_MOVE
 	avatar.update_battle_state_text()
 	avatar.battle_timers.skill_timer.start()
@@ -572,19 +567,24 @@ func on_party_member_skill_end(dr_actor: Actor, dd_actor: Actor):
 	var damage_receiver: Avatar = dr_actor.avatar
 	var damage_dealer: Avatar = dd_actor.avatar
 	
-	# TODO may need to hold which avatar skill started in an array
+	
 	description_panel.visible = true
 	var skill: Skill = pending_skill
 	
+	# you can have an AOE skill, a single target skill, or a multi-target skill
+	var skill_cmd = SkillPlaceholderCommand.new()
+	skill_cmd.target = dr_actor
+	skill_cmd.skill = skill
+	skill_cmd.execute(dd_actor)
+	
+	
 	print("on party member skill end %s" % damage_dealer.name)
-	# pass in damage dealer and damage receiver and skill used to compute damage taken
 	var enemy_name := damage_receiver.name
 	var skill_name := skill.name
 	var dmg := skill.attack
 	
-	# TODO: Add damage calculations for skills
 	damage_receiver.curr_stats.hp = maxi(damage_receiver.curr_stats.hp - dmg, 0)
-	battle_manager.damage_calculator.on_damage_received.emit(damage_receiver, damage_dealer)
+	battle_manager.damage_calculator.on_damage_received.emit(damage_receiver, damage_dealer, dmg)
 	label.text = "%s casts %s to %s. It deals %d damage!" % [damage_dealer.name, skill_name, enemy_name, dmg]
 	
 	# display damage description

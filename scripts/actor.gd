@@ -56,7 +56,6 @@ var flee_time: float = 0.0
 #region Commands
 var attack_cmd: AttackCommand
 var defend_cmd: DefendCommand
-var pick_skill_cmd: PickSkillCommand
 var flee_cmd: FleeCommand
 #endregion
 
@@ -66,7 +65,6 @@ func _init():
 	# leaving it here to keep things simple
 	attack_cmd = AttackCommand.new()
 	defend_cmd = DefendCommand.new()
-	pick_skill_cmd = PickSkillCommand.new()
 	flee_cmd = FleeCommand.new()
 
 func _ready():

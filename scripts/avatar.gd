@@ -134,3 +134,14 @@ func generate_random_stats() -> void:
 	curr_stats.set_stats(initial_stats)
 
 #endregion
+
+
+# wait_time measured in seconds
+func calculate_action_execution_speed(wait_time: float) -> float:
+	# compute skill exec speed 
+	# numerator is the difference b/w the progress_ratios ranging between 0 and 1 inclusive
+	# denominator is the time period that the skill will take to execute measured in seconds
+	# delay skill until avatar progress ratio reaches 1
+	var diff: float = 1 - self.progress_ratio
+	var action_exec_time: float = diff / wait_time
+	return action_exec_time

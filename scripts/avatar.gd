@@ -21,22 +21,22 @@ const Battle_State = Constants.Battle_State
 
 var initial_stats: BaseStats
 var curr_stats: BaseStats
-var avatar_type: Avatar_Type
-var is_alive: bool
+# exporting to view human readable enum strings
+@export var avatar_type: Avatar_Type
+@export var is_alive: bool = true
 # controls whether or not movement along timeline continues on
 var resume_motion: bool = true
 var battle_state: Battle_State = Battle_State.WAITING
 
-# TODO: consider moving this in its own script file
-# it should not be part of the avatar object as avatar is being passed down already
-signal on_start_order_step(avatar: Avatar)
-signal on_resume_play(avatar: Avatar)
-signal on_turn_end(avatar: Avatar)
-
 # AI signals
 signal on_avatar_flee()
 
-var battle_manager: BattleManager
+#var battle_manager: BattleManager
+
+# TODO - find a way to remove circular reference
+# circular reference between actor and avatar
+# this is needed for now to integrate command pattern here...
+var actor: WeakRef
 
 # names generated from https://www.fantasynamegenerators.com/bleach-shinigami-names.php
 const random_names: PackedStringArray = [
@@ -60,6 +60,7 @@ func _init() -> void:
 	
 
 func _ready() -> void:
+	print("avatar ready called: %s" % name)
 	_curr_speed = move_speed
 	if sprite_2d:
 		sprite_2d.texture = texture
@@ -67,12 +68,11 @@ func _ready() -> void:
 	avatar_label.text = self.name
 	update_battle_state_text()
 	
-	if area_2d:
-		area_2d.body_entered.connect(on_area_entered)
-	
 	battle_timers.skill_timer.timeout.connect(on_skill_timeout)
 	battle_timers.defense_timer.timeout.connect(on_defend_end)
 	battle_timers.resume_delay_timer.timeout.connect(on_resume_timeout)
+	
+	area_2d.body_entered.connect(on_area_entered)
 
 
 func _physics_process(delta: float) -> void:
@@ -81,7 +81,8 @@ func _physics_process(delta: float) -> void:
 func on_area_entered(_body: Node2D) -> void:
 	battle_state = Battle_State.MOVE_SELECTION
 	update_battle_state_text()
-	on_start_order_step.emit(self)
+	if actor.get_ref():
+		BattleSignals.on_start_turn.emit(actor.get_ref())
 	
 #region Timer Timeout functions
 
@@ -90,7 +91,7 @@ func on_skill_timeout():
 
 func on_defend_end():
 	curr_stats.defense = initial_stats.defense
-	on_turn_end.emit(self)
+	BattleSignals.on_end_turn.emit(self)
 
 func on_resume_timeout():
 	print("on resume timeout %s at time %d " % [self.name, Time.get_ticks_msec()])
@@ -98,7 +99,8 @@ func on_resume_timeout():
 	update_battle_state_text()
 	self.progress_ratio = 0 # reset back to beginning of timeline
 	self._curr_speed = move_speed # restore movespeed
-	on_resume_play.emit(self)
+	if actor.get_ref():
+		BattleSignals.on_resume_play.emit(actor.get_ref())
 
 #endregion
 

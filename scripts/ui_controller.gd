@@ -23,21 +23,13 @@ class_name UIController
 var skills: Array[SkillView] = []
 
 # TODO: need to reorganize nodes to make things cleaner and easier to understand
-@onready var camera_2d: Camera2D = $"../Camera2D"
+@onready var camera_2d: Camera2D = $"../BattleScene/Camera2D"
 var original_cam_pos: Vector2
 
 # Target Menu
 @onready var target_menu: PanelContainer = $TargetMenu
 @onready var target_label: Label = $TargetMenu/VBoxContainer/TargetLabel
 @onready var target_cancel: Button = $TargetMenu/VBoxContainer/Cancel
-
-# TODO - add back once command pattern implemented for actors
-# Placeholders -- bad code as this pathing is dependent on battle_manager.gd on spawning these mobs in the scene
-#@onready var mobs: Array[MobSelection] = [
-	#$"../blue_mob/Area2D",
-	##$"../green_mob/Area2D",
-	##$"../red_mob/Area2D"
-#]
 
 ## 1-D Graph variables
 @onready var one_d_graph: Control = $OneDGraph
@@ -75,11 +67,11 @@ var timers: Array[Timer] = []
 var attack_type: Attack_Type
 var pending_skill: Skill
 
-func on_turn_end(avatar: Avatar):
+func on_end_turn(actor: Actor):
 	description_timer.start()
-	avatar.battle_timers.resume_delay_timer.start()
+	actor.avatar.battle_timers.resume_delay_timer.start()
 
-func on_resume_play(_avatar: Avatar):
+func on_resume_play(_actor: Actor):
 	resume_avatars_motion()
 
 func _ready():
@@ -98,21 +90,17 @@ func _ready():
 	for node in enemy_nodes:
 		enemy_avatars.append(node as Avatar)
 		
-	#for mob in mobs:
-		#mob.on_target_hovered.connect(on_target_hovered)
-		#mob.on_target_unhovered.connect(on_target_unhovered)
+	for enemy in battle_manager.enemies:
+		enemy.get_target_selection_area().on_target_hovered.connect(on_target_hovered)
+		enemy.get_target_selection_area().on_target_unhovered.connect(on_target_unhovered)
 	
 	# 1-d graph
-	for avatar in party_members:
-		avatar.on_start_order_step.connect(on_start_order_step)
-		avatar.on_resume_play.connect(on_resume_play)
-		avatar.on_turn_end.connect(on_turn_end)
+	BattleSignals.on_end_turn.connect(on_end_turn)
+	BattleSignals.on_resume_play.connect(on_resume_play)
+	BattleSignals.on_start_turn.connect(on_start_order_step)
 	
 	for avatar in enemy_avatars:
-		avatar.on_start_order_step.connect(on_start_order_step)
 		avatar.battle_timers.skill_timer.timeout.connect(on_ai_skill_end.bind(avatar))
-		avatar.on_resume_play.connect(on_resume_play)
-		avatar.on_turn_end.connect(on_turn_end)
 		
 	# Fetch all timers in battle scene
 	for avatar in enemy_avatars:
@@ -137,26 +125,26 @@ func toggle_timer_tick(paused: bool):
 func toggle_pickable_mobs(input_pickable: bool):
 	# pick target to attack
 	# enable as pickable which accepts mouse pointer events
-	#for mob in mobs:
-		#mob.input_pickable = input_pickable
-	pass
+	for enemy in battle_manager.enemies:
+		enemy.get_target_selection_area().input_pickable = input_pickable
 
-func _on_attack_button_pressed(_avatar: Avatar):
+func _on_attack_button_pressed(actor: Actor):
 	action_layout.visible = false
 	toggle_pickable_mobs(true)
 	# switch to attack selection menu
 	target_menu.visible = true
 	attack_type = Attack_Type.BASIC
 
-func _on_skills_button_pressed(avatar: Avatar):
+func _on_skills_button_pressed(actor: Actor):
 	active_skill_menu.visible = true
 	action_layout.visible = false
 	
 	# set the correct avatar that will be executing their own skills
-	skill_controller.avatar = avatar
+	skill_controller.avatar = actor.avatar
 	attack_type = Attack_Type.SKILL
 
-func _on_defend_button_pressed(avatar: Avatar):
+func _on_defend_button_pressed(actor: Actor):
+	var avatar: Avatar = actor.avatar
 	avatar.progress_ratio = 1
 	avatar.curr_stats.defense += avatar.curr_stats.defense * 0.25
 	label.text = "%s is defending!" % avatar.name
@@ -178,9 +166,7 @@ func _on_cancel_button_pressed():
 	active_skill_menu.visible = false
 	action_layout.visible = true
 	
-	## disable pickables
-	#for mob in mobs:
-		#mob.input_pickable = false
+	toggle_pickable_mobs(false)
 
 func _on_description_timer_timeout():
 	target_menu.visible = false
@@ -190,6 +176,7 @@ func _on_description_timer_timeout():
 	label.text = ""
 
 func _process(_delta: float) -> void:
+	pass
 	# TODO - add back once command pattern implemented for Actors
 	## check if enemies are defeated
 	#var i = 0
@@ -209,25 +196,26 @@ func _process(_delta: float) -> void:
 			#
 		#i += 1
 	
-	# check Party Battle Status
-	var pending_battle_state: Party_Battle_States = Party_Battle_States.DEFEAT
-	for avatar in party_members:
-		if avatar.curr_stats.hp > 0:
-			pending_battle_state = Party_Battle_States.IN_PROGRESS
-			break
-			
-	# all enemies are defeated
-	if len(enemy_avatars) == 0:
-		pending_battle_state = Party_Battle_States.WIN
-	
-	# hacky - setting the flee state happens in another callable function
-	# need to either handle state changes in callable functions or have it all happen in process
-	if party_battle_state != Party_Battle_States.FLEE:
-		party_battle_state = pending_battle_state
-	
-	if did_tween_start == false and party_battle_state != Party_Battle_States.IN_PROGRESS:
-		transition_to_main_scene(party_battle_state)
-		did_tween_start = true
+	# TODO - comment back in once command pattern integrated
+	## check Party Battle Status
+	#var pending_battle_state: Party_Battle_States = Party_Battle_States.DEFEAT
+	#for avatar in party_members:
+		#if avatar.curr_stats.hp > 0:
+			#pending_battle_state = Party_Battle_States.IN_PROGRESS
+			#break
+			#
+	## all enemies are defeated
+	#if len(enemy_avatars) == 0:
+		#pending_battle_state = Party_Battle_States.WIN
+	#
+	## hacky - setting the flee state happens in another callable function
+	## need to either handle state changes in callable functions or have it all happen in process
+	#if party_battle_state != Party_Battle_States.FLEE:
+		#party_battle_state = pending_battle_state
+	#
+	#if did_tween_start == false and party_battle_state != Party_Battle_States.IN_PROGRESS:
+		#transition_to_main_scene(party_battle_state)
+		#did_tween_start = true
 
 func _on_flee_button_pressed():
 	# TODOs
@@ -252,26 +240,34 @@ func _on_flee_button_pressed():
 	
 	description_timer.start()
 
-func on_target_hovered(avatar: Avatar, mob: MobSelection):
-	target_label.text = avatar.name
+func on_target_hovered(actor: Actor, mob: MobSelection):
+	target_label.text = actor.avatar.name
 	
 	print("mob position: %s" % str(mob.root_node.position))
 	print("cam position: %s" % str(camera_2d.position))
 	
 	camera_2d.position = mob.root_node.position
-	
 
 func on_target_unhovered():
 	target_label.text = ""
 	camera_2d.position = original_cam_pos
 
 
-func on_target_clicked(damage_receiver: Avatar, damage_dealer: Avatar):
+func on_target_clicked(dr_actor: Actor, dd_actor: Actor):
 	toggle_pickable_mobs(false)
+	
+	var damage_receiver: Avatar = dr_actor.avatar
+	var damage_dealer: Avatar = dd_actor.avatar
 	
 	if attack_type == Attack_Type.BASIC:
 		# move avatar immediately towards end of exe
 		damage_dealer.progress_ratio = 1
+		
+		#damage_dealer.target = damage_receiver
+		#var atk_cmd = AttackCommand.new()
+		#atk_cmd.execute(damage_dealer)
+		
+		
 		var dmg := battle_manager.damage_calculator.calculate_damage(damage_receiver, damage_dealer)
 		label.text = "%s attacked for %d damage to %s" % [damage_dealer.name, dmg, damage_receiver.name]
 		damage_receiver.curr_stats.hp = maxi(damage_receiver.curr_stats.hp - dmg, 0)
@@ -284,13 +280,13 @@ func on_target_clicked(damage_receiver: Avatar, damage_dealer: Avatar):
 		# start timer to hide description panel
 		description_timer.start()
 		
-		damage_dealer.battle_state = damage_dealer.Battle_State.EXECUTING_MOVE
+		damage_dealer.battle_state = Constants.Battle_State.EXECUTING_MOVE
 		damage_dealer.update_battle_state_text()
-		damage_dealer.on_turn_end.emit(damage_dealer)
+		BattleSignals.on_end_turn.emit(dd_actor)
 		
 	elif attack_type == Attack_Type.SKILL:
 		# set skill execution speed
-		damage_dealer.battle_state = damage_dealer.Battle_State.PENDING_MOVE
+		damage_dealer.battle_state = Constants.Battle_State.PENDING_MOVE
 		damage_dealer.update_battle_state_text()
 		# delay skill until avatar progress ratio reaches 1
 		var diff: float = 1 - damage_dealer.progress_ratio
@@ -299,7 +295,7 @@ func on_target_clicked(damage_receiver: Avatar, damage_dealer: Avatar):
 		
 		damage_dealer.battle_timers.skill_timer.start()
 		
-		var on_timeout = func(): on_party_member_skill_end(damage_receiver, damage_dealer)
+		var on_timeout = func(): on_party_member_skill_end(dr_actor, dd_actor)
 		damage_dealer.battle_timers.skill_timer.timeout.connect(on_timeout, ConnectFlags.CONNECT_ONE_SHOT)
 		
 		target_menu.visible = false
@@ -341,7 +337,8 @@ func resume_avatars_motion():
 	for enemy in live_enemies:
 		enemy.resume_motion = true
 
-func on_start_order_step(avatar: Avatar) -> void:
+func on_start_order_step(actor: Actor) -> void:
+	var avatar: Avatar = actor.avatar
 	print("entering order step %s at time: %d" % [avatar.name, Time.get_ticks_msec()])
 	avatar.progress_ratio = ORDER_STEP
 	
@@ -360,18 +357,18 @@ func on_start_order_step(avatar: Avatar) -> void:
 		Utility.disconnect_all_signal_connections(action_buttons.defend_button.pressed)
 		Utility.disconnect_all_signal_connections(action_buttons.pick_skills_button.pressed)
 
-		# TODO - add back once command pattern for actors is implemented
-		#for i in range(len(enemy_avatars)):
-			## Disconnect mob target selection and previous avatar relationship
-			#Utility.disconnect_all_signal_connections(mobs[i].on_target_clicked)
-			## Connect all possible enemy targets that can be clicked on when doing target selection
-			#var lambda = func(enemy_avatar: Avatar, party_member: Avatar): on_target_clicked(enemy_avatar, party_member)
-			#mobs[i].on_target_clicked.connect(lambda.bind(enemy_avatars[i], avatar))
-	
+		for enemy in battle_manager.enemies:
+			# Disconnect mob target selection and previous actor relationship
+			var target_selection_area: MobSelection = enemy.get_target_selection_area()
+			Utility.disconnect_all_signal_connections(target_selection_area.on_target_clicked)
+			# Connect all possible enemy targets that can be clicked on when doing target selection
+			var lambda = func(e: Actor, party_member: Actor): on_target_clicked(e, party_member)
+			var output = target_selection_area.on_target_clicked.connect(lambda.bind(enemy, actor))
+			print("connection result: %d" % output)
 		
-		action_buttons.attack_button.pressed.connect(_on_attack_button_pressed.bind(avatar))
-		action_buttons.defend_button.pressed.connect(_on_defend_button_pressed.bind(avatar))
-		action_buttons.pick_skills_button.pressed.connect(_on_skills_button_pressed.bind(avatar))
+		action_buttons.attack_button.pressed.connect(_on_attack_button_pressed.bind(actor))
+		action_buttons.defend_button.pressed.connect(_on_defend_button_pressed.bind(actor))
+		action_buttons.pick_skills_button.pressed.connect(_on_skills_button_pressed.bind(actor))
 		
 	# entry point for enemies to pick a move
 	elif avatar.avatar_type == Avatar.Avatar_Type.ENEMY:
@@ -453,7 +450,7 @@ func ai_attack(avatar: Avatar) -> void:
 		description_panel.visible = true
 		label.text = "%s dealt %d damage to %s" % [avatar.name, dmg, target.name]
 		
-		avatar.on_turn_end.emit(avatar)
+		BattleSignals.on_end_turn.emit(avatar)
 
 func ai_defend(avatar: Avatar) -> void:
 	avatar.curr_stats.defense += avatar.curr_stats.defense * .25
@@ -544,11 +541,14 @@ func on_ai_skill_end(avatar: Avatar) -> void:
 	avatar.resume_motion = false
 	avatar._curr_speed = avatar.move_speed
 
-	avatar.on_turn_end.emit(avatar)
+	BattleSignals.on_end_turn.emit(avatar)
 
 #endregion
 
-func on_party_member_skill_end(damage_receiver: Avatar, damage_dealer: Avatar) -> void:
+func on_party_member_skill_end(dr_actor: Actor, dd_actor: Actor) -> void:
+	var damage_receiver: Avatar = dr_actor.avatar
+	var damage_dealer: Avatar = dd_actor.avatar
+	
 	# TODO may need to hold which avatar skill started in an array
 	description_panel.visible = true
 	var skill: Skill = pending_skill
@@ -566,4 +566,4 @@ func on_party_member_skill_end(damage_receiver: Avatar, damage_dealer: Avatar) -
 	
 	# display damage description
 	description_timer.start()
-	damage_dealer.on_turn_end.emit(damage_dealer)
+	BattleSignals.on_end_turn.emit(dd_actor)

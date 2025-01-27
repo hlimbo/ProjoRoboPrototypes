@@ -27,12 +27,7 @@ func _ready() -> void:
 		hp_label.text = "HP %d/%d" % [avatar.curr_stats.hp, avatar.initial_stats.hp]
 
 	if damage_calculator:
-		damage_calculator.on_damage_received.connect(_on_damage_received)
-	
-	if battle_manager:
-		battle_manager.damage_calculator.on_damage_received.connect(_on_damage_received)
-	else:
-		print_rich("[color=red]no battle manager ref found[/color]")
+		damage_calculator.on_damage_received.connect(on_damage_received)
 	
 	if toggle_dmg_btn:
 		toggle_dmg_btn.pressed.connect(_on_damage_emit)
@@ -41,7 +36,7 @@ func _ready() -> void:
 		init_stats_btn.pressed.connect(_on_init_fake_stats)
 
 
-func _on_damage_received(damage_recv: Avatar, _damage_dealer: Avatar) -> void:	
+func on_damage_received(damage_recv: Avatar, _damage_dealer: Avatar) -> void:	
 	# if the receiver matches the curr avatar, then update its hp
 	if damage_recv == avatar:
 		print("%s attacks: %s " % [_damage_dealer.curr_stats.name, damage_recv.curr_stats.name])

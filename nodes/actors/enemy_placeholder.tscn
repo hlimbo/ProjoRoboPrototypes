@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://d07n6ni2r73e1"]
+[gd_scene load_steps=17 format=3 uid="uid://d07n6ni2r73e1"]
 
 [ext_resource type="Script" path="res://scripts/actor.gd" id="1_iwbjg"]
 [ext_resource type="PackedScene" uid="uid://cx3vhulcggapg" path="res://nodes/info_node.tscn" id="2_w0tf0"]
@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://4j6hujkvddhm" path="res://nodes/monsters/parts/ear_types/detail_blue_ear.tscn" id="8_pixyd"]
 [ext_resource type="PackedScene" uid="uid://dpot30rtha5yi" path="res://nodes/monsters/parts/horn_types/detail_dark_horn_small.tscn" id="9_rxj02"]
 [ext_resource type="PackedScene" uid="uid://de228clgk2wkw" path="res://nodes/ui/status_effect_layout.tscn" id="10_hx63x"]
+[ext_resource type="Script" path="res://scripts/mob_selection.gd" id="10_sihkc"]
 [ext_resource type="Texture2D" uid="uid://dcv61ts3lojeo" path="res://assets/kenney-board-game-icons/Tilesheet/iconsDouble.png" id="11_368f0"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_wlbfe"]
@@ -22,6 +23,9 @@ radius = 97.0052
 radius = 79.0
 height = 270.0
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_w8t7j"]
+radius = 138.279
+
 [node name="enemy_placeholder" type="Node2D"]
 position = Vector2(1019, 551)
 script = ExtResource("1_iwbjg")
@@ -30,24 +34,9 @@ battle_state = 2
 
 [node name="InfoNode" parent="." instance=ExtResource("2_w0tf0")]
 offset_left = -95.0
-offset_top = -358.0
+offset_top = -252.0
 offset_right = 99.0
-offset_bottom = -150.0
-
-[node name="Label" parent="InfoNode/ScrollContainer/DebugMenu" index="0"]
-theme_override_font_sizes/font_size = 16
-
-[node name="InitStatsBtn" parent="InfoNode/ScrollContainer/DebugMenu" index="1"]
-theme_override_font_sizes/font_size = 16
-
-[node name="ToggleDmgBtn" parent="InfoNode/ScrollContainer/DebugMenu" index="2"]
-theme_override_font_sizes/font_size = 16
-
-[node name="NameLabel" parent="InfoNode" index="1"]
-theme_override_font_sizes/font_size = 24
-
-[node name="HPLabel" parent="InfoNode" index="2"]
-theme_override_font_sizes/font_size = 24
+offset_bottom = -165.0
 
 [node name="body" parent="." instance=ExtResource("3_bisbi")]
 self_modulate = Color(0.180392, 0.8, 0.443137, 1)
@@ -179,6 +168,7 @@ collision_mask = 2
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CollisionGeometry/InteractArea"]
 position = Vector2(0, -100)
 shape = SubResource("CircleShape2D_wlbfe")
+debug_color = Color(0.608226, 0.539873, 1.92523e-07, 0.42)
 
 [node name="HitArea2D" type="Area2D" parent="CollisionGeometry"]
 collision_layer = 64
@@ -188,6 +178,7 @@ collision_mask = 2
 position = Vector2(-166, -89)
 shape = SubResource("CircleShape2D_tmwpw")
 disabled = true
+debug_color = Color(0.956863, 0, 0.552941, 0.501961)
 
 [node name="ActorArea" type="Area2D" parent="CollisionGeometry"]
 collision_layer = 4
@@ -196,6 +187,25 @@ collision_mask = 41
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CollisionGeometry/ActorArea"]
 position = Vector2(0, -87)
 shape = SubResource("CapsuleShape2D_ie1ax")
+debug_color = Color(0, 0.408333, 0.7, 0.419608)
+
+[node name="TargetSelectionArea" type="Area2D" parent="CollisionGeometry"]
+collision_layer = 128
+collision_mask = 128
+input_pickable = false
+script = ExtResource("10_sihkc")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CollisionGeometry/TargetSelectionArea"]
+position = Vector2(0, -85)
+shape = SubResource("CircleShape2D_w8t7j")
+debug_color = Color(0.699391, 1.44392e-07, 0.36548, 0.419608)
+
+[node name="SelectionArrow" type="Sprite2D" parent="CollisionGeometry/TargetSelectionArea"]
+visible = false
+position = Vector2(0, -303)
+texture = ExtResource("11_368f0")
+region_enabled = true
+region_rect = Rect2(785, 391, 92, 73)
 
 [node name="Timers" type="Node2D" parent="."]
 
@@ -230,5 +240,4 @@ texture = ExtResource("11_368f0")
 region_enabled = true
 region_rect = Rect2(1407, 127, 131, 126)
 
-[editable path="InfoNode"]
 [editable path="Defense/StatusEffectLayout"]

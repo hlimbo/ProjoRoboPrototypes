@@ -9,7 +9,9 @@ class_name Actor
 const Ui_Battle_State = Constants.Battle_State
 const Active_Battle_State = Constants.Active_Battle_State
 
-@onready var damage_calculator: IDamageCalculator = BattleSceneManager.damage_calculator
+# comes from the main scene which contains a unique node named BattleManager
+@export var battle_manager: BattleManager
+@onready var damage_calculator: IDamageCalculator
 @onready var info_node: InfoDisplay = $InfoNode
 
 @export var move_speed: float
@@ -65,8 +67,11 @@ func _init():
 	flee_cmd = FleeCommand.new()
 
 func _ready():
+	print("actor ready called: %s" % name)
 	original_pos = position
 	original_target = target
+	
+	damage_calculator = battle_manager.damage_calculator
 	
 	if info_node:
 		info_node.avatar = avatar
@@ -80,7 +85,6 @@ func _ready():
 	defense_timer.timeout.connect(on_defend_end)
 	hit_area.area_entered.connect(on_attack_connect)
 	
-	# hardcode testing
 	if avatar:
 		avatar.generate_random_stats()
 	
@@ -160,16 +164,16 @@ func on_enable_attack_hitbox():
 	attack_timer.start()
 
 func on_attack_connect(area: Area2D):
-	print("hit %s" % area.name)
 	
 	# apply damage calculations
 	if damage_calculator:
-		# go up the node tree for area to find the Actor... assume root node .. unsafe code
-		var actor_receiving_dmg: Actor = area.get_node("../..") as Actor
+		var actor_receiving_dmg: Actor = target
 		
 		if actor_receiving_dmg == null:
 			print_rich("[color=red]Unable to find actor to damage...[/color]")
 			return
+			
+		print("hit %s" % actor_receiving_dmg.avatar.name)
 		
 		var damage_receiver: Avatar = actor_receiving_dmg.avatar
 		var damage_dealer: Avatar = avatar
@@ -177,7 +181,8 @@ func on_attack_connect(area: Area2D):
 		var dmg = damage_calculator.calculate_damage(damage_receiver, damage_dealer)
 		damage_receiver.curr_stats.hp = maxi(damage_receiver.curr_stats.hp - dmg, 0)
 		damage_calculator.on_damage_received.emit(damage_receiver, damage_dealer)
-		
+	else:
+		print_rich("[color=red]Damage Calculator is null in Actor.gd[/color]")
 		
 	# disable at end of frame as per Godot Docs recommendation
 	print("disabling attack at end of frame")
@@ -213,3 +218,7 @@ func begin_flee():
 
 func get_info_display() -> InfoDisplay:
 	return get_node("InfoNode")
+	
+# enemy actors can only access this
+func get_target_selection_area() -> MobSelection:
+	return get_node("CollisionGeometry/TargetSelectionArea")

@@ -8,11 +8,22 @@ anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -122.0
 offset_right = 122.0
-offset_bottom = 286.0
+offset_bottom = 114.0
 grow_horizontal = 2
 script = ExtResource("1_cgbj1")
 
+[node name="NameLabel" type="Label" parent="."]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Name"
+
+[node name="HPLabel" type="Label" parent="."]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "HP"
+
 [node name="ScrollContainer" type="ScrollContainer" parent="."]
+visible = false
 layout_mode = 2
 size_flags_vertical = 3
 
@@ -35,13 +46,3 @@ text = "Init Fake Stats"
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "Toggle Damage"
-
-[node name="NameLabel" type="Label" parent="."]
-layout_mode = 2
-theme_override_font_sizes/font_size = 32
-text = "Name"
-
-[node name="HPLabel" type="Label" parent="."]
-layout_mode = 2
-theme_override_font_sizes/font_size = 32
-text = "HP"

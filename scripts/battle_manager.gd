@@ -89,17 +89,17 @@ var enemy_avatars: Array[Avatar] = []
 var party_members: Array[Actor] = []
 var enemies: Array[Actor] = []
 
-
+@onready var battle_scene: Node2D = $"../BattleScene"
 
 @onready var starting_party_member_positions: Array[Vector2] = [
-	owner.get_node("PartyMember1").position,
+	$"../BattleScene/PartyMember1".position,
 	# $PartyMember1.position,
 	#$PartyMember2.position,
 	#$PartyMember3.position,
 ]
 
 @onready var starting_enemy_positions: Array[Vector2] = [
-	owner.get_node("Enemy1").position,
+	$"../BattleScene/Enemy1".position,
 	# $Enemy1.position,
 	#$Enemy2.position,
 	#$Enemy3.position,
@@ -146,17 +146,12 @@ func _enter_tree() -> void:
 		enemy_stats.append(stats)
 		max_battle_speed = maxi(max_battle_speed, stats.speed)
 
-	# TODO
-	# 1. get access to actors in battle scene
-	# 2. for each actor, assign their respective avatar ui icon
-	# 3. encapsulate logic into each command (attack, defend, flee, pick skill)
-	# 4. link button presses to command function executions
-
 func _ready() -> void:
 	print("battle manager ready called")
 	# load avatars and set random location on path2D
 	var party_line: Path2D = one_d_graph.get_node("PartyPath2D")
 	var enemy_line: Path2D = one_d_graph.get_node("EnemyPath2D")
+	
 	for i in range(0, party_member_spawn_count):
 		var avatar: Avatar = avatar_res.instantiate()
 		avatar.texture = party_member_textures[i]
@@ -169,8 +164,7 @@ func _ready() -> void:
 		party_member_avatars.append(avatar)
 		# set owner of this node to be the root node of the scene it is spawned in
 		# if not set, godot scene tree won't recognize its existence
-		var root = self.owner
-		avatar.owner = root
+		avatar.owner = party_line
 		
 	for i in range(0, enemy_spawn_count):
 		var avatar: Avatar = avatar_res.instantiate()
@@ -184,45 +178,63 @@ func _ready() -> void:
 		enemy_avatars.append(avatar)
 		# set owner of this node to be the root node of the scene it is spawned in
 		# if not set, godot scene tree won't recognize its existence
-		var root = self.owner
-		avatar.owner = root
+		avatar.owner = enemy_line
 	
+	### Connect Dependencies ... ###
 	for i in range(len(party_member_resources)):
 		var start_pos: Vector2 = starting_party_member_positions[i]
 		var party_member_resource = party_member_resources[i]
 		var party_member: Actor = party_member_resource.instantiate()
-		add_child(party_member)
-		party_member.position = start_pos
-		party_members.append(party_member)
 		
+		party_member.owner = self
+		party_member.position = start_pos
+		
+		party_member.avatar = party_member_avatars[i]
+		var info_display: InfoDisplay = party_member.get_info_display()
+		info_display.avatar = party_member_avatars[i]
+		
+		damage_calculator.on_damage_received.connect(info_display.on_damage_received)
+		party_member.battle_manager = self
+		
+		party_members.append(party_member)
+		# triggers _ready() function to be invoked on the child being added
+		battle_scene.add_child(party_member)
+	
+	
 	for i in range(len(enemy_resources)):
 		var start_pos: Vector2 = starting_enemy_positions[i]
 		var enemy_resource = enemy_resources[i]
 		var enemy: Actor = enemy_resource.instantiate()
-		add_child(enemy)
-		enemy.position = start_pos
-		enemies.append(enemy)
 		
-	### Connect Dependencies ... ###
-	for i in range(len(enemies)):
-		var enemy: Actor = enemies[i]
+		enemy.owner = self
+		enemy.position = start_pos
+		
 		# TODO - add BattleParticipant flee back here maybe?
 		# (enemy_mobs[i] as BattleParticipant).avatar = enemy_avatars[i]
-		# TODO - add target selection node back -- MobSelection
-		# (enemy_mobs[i].get_node("Area2D") as MobSelection).avatar = enemy_avatars[i]
 		enemy.avatar = enemy_avatars[i]
-		enemy.get_info_display().update_labels(enemy.avatar)
-		var info_display = enemy.get_info_display()
-		info_display.avatar = enemy_avatars[i]
-		info_display.battle_manager = self
+		var info_display: InfoDisplay = enemy.get_info_display()
+		info_display.avatar = enemy.avatar
+		# Improvement - could re-organize the actor class by creating 2 subclasses party_member and enemy_ai
+		var target_selection_area: MobSelection = enemy.get_target_selection_area()
+		target_selection_area.actor = enemy
+		
+		damage_calculator.on_damage_received.connect(info_display.on_damage_received)
+		enemy.battle_manager = self
+		
+		enemies.append(enemy)
+		battle_scene.add_child(enemy)
 	
+	### Remove circular references....
 	for i in range(len(party_members)):
-		var party_member: Actor = party_members[i]
-		party_member.avatar = party_member_avatars[i]
-		party_member.get_info_display().update_labels(party_member.avatar)
-		var info_display: InfoDisplay = party_member.get_info_display()
-		info_display.avatar = party_member_avatars[i]
-		info_display.battle_manager = self
+		var party_actor: Actor = party_members[i]
+		var party_avatar: Avatar = party_member_avatars[i]
+		party_avatar.actor = weakref(party_actor)
+		
+	for i in range(len(enemies)):
+		var enemy: Actor = enemies[i]
+		var enemy_avatar: Avatar = enemy_avatars[i]
+		enemy_avatar.actor = weakref(enemy)
+	
 	
 	var ranges = get_starting_timeline_positions()
 	print ("encounter type: %d" % encounter_type)

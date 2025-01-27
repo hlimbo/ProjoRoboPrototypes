@@ -81,7 +81,6 @@ offset_top = -664.0
 offset_bottom = -378.0
 
 [node name="CollisionGeometry" type="Node2D" parent="."]
-visible = false
 
 [node name="InteractArea" type="Area2D" parent="CollisionGeometry"]
 collision_layer = 8
@@ -90,6 +89,7 @@ collision_mask = 4
 [node name="OverlapDetection2D" type="CollisionShape2D" parent="CollisionGeometry/InteractArea"]
 position = Vector2(-2, -198)
 shape = SubResource("CircleShape2D_fpomk")
+debug_color = Color(0.652594, 0.518529, 1.92523e-07, 0.42)
 
 [node name="HitArea2D" type="Area2D" parent="CollisionGeometry"]
 collision_layer = 32
@@ -99,6 +99,7 @@ collision_mask = 4
 position = Vector2(342, -196)
 shape = SubResource("CircleShape2D_nv8vh")
 disabled = true
+debug_color = Color(0.714281, 0, 0.294284, 0.42)
 
 [node name="ActorArea" type="Area2D" parent="CollisionGeometry"]
 collision_layer = 2

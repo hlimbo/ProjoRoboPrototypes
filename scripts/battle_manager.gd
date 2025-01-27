@@ -108,7 +108,7 @@ var enemies: Array[Actor] = []
 @onready var one_d_graph: Control = owner.get_node("UILayout/OneDGraph")
 
 var max_battle_speed: int = 0
-var damage_calculator: IDamageCalculator
+@export var damage_calculator: IDamageCalculator
 
 func generate_random_stats(actor_type: Actor_Type) -> BaseStats:
 	var stats = BaseStats.new()
@@ -130,9 +130,6 @@ func get_starting_timeline_positions() -> Array:
 	var party_range = starting_timeline_positions[encounter_type][Actor_Type.PARTY_MEMBER]
 	var enemy_range = starting_timeline_positions[encounter_type][Actor_Type.ENEMY]
 	return [party_range, enemy_range]
-
-func _init() -> void:
-	damage_calculator = SimpleDamageCalculator.new()
 	
 func _enter_tree() -> void:
 	# initialize battle participants' base stats
@@ -193,13 +190,13 @@ func _ready() -> void:
 		var info_display: InfoDisplay = party_member.get_info_display()
 		info_display.avatar = party_member_avatars[i]
 		
-		damage_calculator.on_damage_received.connect(info_display.on_damage_received)
+		var status = damage_calculator.on_damage_received.connect(info_display.on_damage_received)
+		print("info_display pm conn status? %d" % status)
 		party_member.battle_manager = self
 		
 		party_members.append(party_member)
 		# triggers _ready() function to be invoked on the child being added
 		battle_scene.add_child(party_member)
-	
 	
 	for i in range(len(enemy_resources)):
 		var start_pos: Vector2 = starting_enemy_positions[i]
@@ -218,13 +215,22 @@ func _ready() -> void:
 		var target_selection_area: MobSelection = enemy.get_target_selection_area()
 		target_selection_area.actor = enemy
 		
-		damage_calculator.on_damage_received.connect(info_display.on_damage_received)
+		var status = damage_calculator.on_damage_received.connect(info_display.on_damage_received)
 		enemy.battle_manager = self
 		
 		enemies.append(enemy)
 		battle_scene.add_child(enemy)
+		
+		print("info_display e conn status? %d" % status)
+
 	
-	### Remove circular references....
+	var dmg_calc_signal = damage_calculator.on_damage_received
+	var conns = dmg_calc_signal.get_connections()
+	for conn in conns:
+		print("is null? ", conn.callable.is_null())
+		print("is valid? ", conn.callable.is_valid())
+	
+	### TODO - figure out how to remove circular references between actor and avatar
 	for i in range(len(party_members)):
 		var party_actor: Actor = party_members[i]
 		var party_avatar: Avatar = party_member_avatars[i]

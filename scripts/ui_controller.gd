@@ -115,7 +115,11 @@ func _ready():
 	
 	timers.append(description_timer)
 	
+	# for camera motions
 	original_cam_pos = camera_2d.position
+	
+	var conn_status = battle_manager.damage_calculator.on_damage_received.connect(ui_on_damage_received)
+	print("on_damage recv connect status: %d" % conn_status)
 
 func toggle_timer_tick(paused: bool):
 	for timer in timers:
@@ -263,16 +267,17 @@ func on_target_clicked(dr_actor: Actor, dd_actor: Actor):
 		# move avatar immediately towards end of exe
 		damage_dealer.progress_ratio = 1
 		
-		dd_actor.target = dr_actor
 		var atk_cmd = AttackCommand.new()
+		atk_cmd.target = dr_actor
 		atk_cmd.execute(dd_actor)
 		
+		# battle_manager.damage_calculator.on_damage_received.emit(damage_receiver, damage_dealer)
 		
 		# TODO: need to register more signals here to let this controller know when it can display UI elements again....
 		
 		
-		var dmg := battle_manager.damage_calculator.calculate_damage(damage_receiver, damage_dealer)
-		label.text = "%s attacked for %d damage to %s" % [damage_dealer.name, dmg, damage_receiver.name]
+		#var dmg := battle_manager.damage_calculator.calculate_damage(damage_receiver, damage_dealer)
+		#label.text = "%s attacked for %d damage to %s" % [damage_dealer.name, dmg, damage_receiver.name]
 		#damage_receiver.curr_stats.hp = maxi(damage_receiver.curr_stats.hp - dmg, 0)
 		#
 		#battle_manager.damage_calculator.on_damage_received.emit(damage_receiver, damage_dealer)
@@ -422,40 +427,43 @@ func ai_determine_move(avatar: Avatar) -> void:
 	possible_actions[random_move_index].call(avatar)
 
 func ai_attack(avatar: Avatar) -> void:
-		avatar.progress_ratio = 1
-		# pick a random party member
-		var live_party_members: Array[Avatar] = party_members.filter(func(p: Avatar): return p.is_alive)
-		
-		# no more party members to attack
-		if len(live_party_members) == 0:
-			return
-		
-		avatar.battle_state = avatar.Battle_State.EXECUTING_MOVE
-		avatar.update_battle_state_text()
-		
-		var i = randi_range(0, len(live_party_members) - 1)
-		var target: Avatar = live_party_members[i]
-		var dmg = battle_manager.damage_calculator.calculate_damage(target, avatar)
-		target.curr_stats.hp = maxi(target.curr_stats.hp - dmg, 0)
-		
-		battle_manager.damage_calculator.on_damage_received.emit(target, avatar)
-		
-		# target downed...
-		if target.curr_stats.hp <= 0:
-			target.curr_stats.hp = 0
-			# reset their timeline back to 0
-			target.progress_ratio = 0
-			target.resume_motion = false
-			target.is_alive = false
-			
-		
-		# display damage dealt to target
-		description_panel.visible = true
-		label.text = "%s dealt %d damage to %s" % [avatar.name, dmg, target.name]
-		
-		BattleSignals.on_end_turn.emit(avatar)
+	print("ai_attack will be reworked once player commands are integrated")
+		#var avatar: Avatar = actor.avatar
+		#avatar.progress_ratio = 1
+		## pick a random party member
+		#var live_party_members: Array[Avatar] = party_members.filter(func(p: Avatar): return p.is_alive)
+		#
+		## no more party members to attack
+		#if len(live_party_members) == 0:
+			#return
+		#
+		#avatar.battle_state = avatar.Battle_State.EXECUTING_MOVE
+		#avatar.update_battle_state_text()
+		#
+		#var i = randi_range(0, len(live_party_members) - 1)
+		#var target: Avatar = live_party_members[i]
+		#var dmg = battle_manager.damage_calculator.calculate_damage(target, avatar)
+		#target.curr_stats.hp = maxi(target.curr_stats.hp - dmg, 0)
+		#
+		#battle_manager.damage_calculator.on_damage_received.emit(target, avatar)
+		#
+		## target downed...
+		#if target.curr_stats.hp <= 0:
+			#target.curr_stats.hp = 0
+			## reset their timeline back to 0
+			#target.progress_ratio = 0
+			#target.resume_motion = false
+			#target.is_alive = false
+			#
+		#
+		## display damage dealt to target
+		#description_panel.visible = true
+		#label.text = "%s dealt %d damage to %s" % [avatar.name, dmg, target.name]
+		#
+		#BattleSignals.on_end_turn.emit(avatar)
 
 func ai_defend(avatar: Avatar) -> void:
+	print("ai_defend will be reworked once player commands are integrated")
 	avatar.curr_stats.defense += avatar.curr_stats.defense * .25
 	avatar.progress_ratio = 1
 	avatar.resume_motion = false
@@ -468,23 +476,24 @@ func ai_defend(avatar: Avatar) -> void:
 	avatar.battle_timers.defense_timer.start()
 
 func ai_flee(avatar: Avatar) -> void:
-	description_panel.visible = true
-	label.text = "%s fled from battle" % avatar.name
-	description_timer.start()
-	
-	avatar.on_avatar_flee.emit()
-	
-	var i = 0
-	while i < len(enemy_avatars):
-		if enemy_avatars[i] == avatar:
-			break
-		i += 1
-		
-	# remove avatar from scene if found
-	if i < len(enemy_avatars):
-		enemy_avatars.remove_at(i)
-		remove_child(avatar)
-		avatar.queue_free()
+	print("ai_flee will be reworked once player commands are integrated")
+	#description_panel.visible = true
+	#label.text = "%s fled from battle" % avatar.name
+	#description_timer.start()
+	#
+	#avatar.on_avatar_flee.emit()
+	#
+	#var i = 0
+	#while i < len(enemy_avatars):
+		#if enemy_avatars[i] == avatar:
+			#break
+		#i += 1
+		#
+	## remove avatar from scene if found
+	#if i < len(enemy_avatars):
+		#enemy_avatars.remove_at(i)
+		#remove_child(avatar)
+		#avatar.queue_free()
 
 func ai_use_random_skill(avatar: Avatar) -> void:
 	# compute skill exec speed 
@@ -501,54 +510,55 @@ func ai_use_random_skill(avatar: Avatar) -> void:
 	avatar.battle_timers.skill_timer.start()
 
 func on_ai_skill_end(avatar: Avatar) -> void:
-	print("avatar %s skill end at time %d" % [avatar.name, Time.get_ticks_msec()])
-	# pick random skill
-	var skill1 = Skill.new(1, 5, "Sizzle")
-	var skill2 = Skill.new(4, 10, "Spitfire")
-	var skill3 = Skill.new(8, 20, "Oven Overload")
-	
-	# TODO: check ahead of time if enemy can cast a skill, if not, don't do this action
-	var skills: Array[Skill] = [skill1, skill2, skill3]
-	var castable_skills: Array[Skill] = skills.filter(func(s: Skill): return s.cost <= avatar.curr_stats.skill_points)
-	
-	# pick random target to cast skill on
-	var members: Array[Avatar] = party_members.filter(func(p: Avatar): return p.is_alive)
-	
-	description_panel.visible = true
-	
-	# no party members alive...
-	if len(members) == 0:
-		label.text = "%s no target to cast..." % avatar.name
-		return
-		
-	if len(castable_skills) == 0:
-		label.text = "%s cannot execute any skills!" % avatar.name
-		return
-	
-	var skill_index: int = randi_range(0, len(castable_skills) - 1)
-	var target_index: int = randi_range(0, len(members) - 1)
-	var target: Avatar = members[target_index]
-	var skill: Skill = skills[skill_index]
-	
-	var dmg = battle_manager.damage_calculator.calculate_damage(target, avatar)
-	
-	var text = "%s used %s on %s! It dealt %d damage" % [avatar.name, skill.name, target.name, dmg]
-	label.text = text 
-	
-	target.curr_stats.hp = maxi(target.curr_stats.hp - dmg, 0)
-	avatar.curr_stats.skill_points = maxi(avatar.curr_stats.skill_points - skill.cost, 0)
-	
-	battle_manager.damage_calculator.on_damage_received.emit(target, avatar)
-	
-	# pause movement momentarily
-	avatar.resume_motion = false
-	avatar._curr_speed = avatar.move_speed
-
-	BattleSignals.on_end_turn.emit(avatar)
+	print("on_ai_skill_end will be reworked once player commands are integrated")
+	#print("avatar %s skill end at time %d" % [avatar.name, Time.get_ticks_msec()])
+	## pick random skill
+	#var skill1 = Skill.new(1, 5, "Sizzle")
+	#var skill2 = Skill.new(4, 10, "Spitfire")
+	#var skill3 = Skill.new(8, 20, "Oven Overload")
+	#
+	## TODO: check ahead of time if enemy can cast a skill, if not, don't do this action
+	#var skills: Array[Skill] = [skill1, skill2, skill3]
+	#var castable_skills: Array[Skill] = skills.filter(func(s: Skill): return s.cost <= avatar.curr_stats.skill_points)
+	#
+	## pick random target to cast skill on
+	#var members: Array[Avatar] = party_members.filter(func(p: Avatar): return p.is_alive)
+	#
+	#description_panel.visible = true
+	#
+	## no party members alive...
+	#if len(members) == 0:
+		#label.text = "%s no target to cast..." % avatar.name
+		#return
+		#
+	#if len(castable_skills) == 0:
+		#label.text = "%s cannot execute any skills!" % avatar.name
+		#return
+	#
+	#var skill_index: int = randi_range(0, len(castable_skills) - 1)
+	#var target_index: int = randi_range(0, len(members) - 1)
+	#var target: Avatar = members[target_index]
+	#var skill: Skill = skills[skill_index]
+	#
+	#var dmg = battle_manager.damage_calculator.calculate_damage(target, avatar)
+	#
+	#var text = "%s used %s on %s! It dealt %d damage" % [avatar.name, skill.name, target.name, dmg]
+	#label.text = text 
+	#
+	#target.curr_stats.hp = maxi(target.curr_stats.hp - dmg, 0)
+	#avatar.curr_stats.skill_points = maxi(avatar.curr_stats.skill_points - skill.cost, 0)
+	#
+	#battle_manager.damage_calculator.on_damage_received.emit(target, avatar)
+	#
+	## pause movement momentarily
+	#avatar.resume_motion = false
+	#avatar._curr_speed = avatar.move_speed
+#
+	#BattleSignals.on_end_turn.emit(avatar)
 
 #endregion
 
-func on_party_member_skill_end(dr_actor: Actor, dd_actor: Actor) -> void:
+func on_party_member_skill_end(dr_actor: Actor, dd_actor: Actor):
 	var damage_receiver: Avatar = dr_actor.avatar
 	var damage_dealer: Avatar = dd_actor.avatar
 	
@@ -570,3 +580,22 @@ func on_party_member_skill_end(dr_actor: Actor, dd_actor: Actor) -> void:
 	# display damage description
 	description_timer.start()
 	BattleSignals.on_end_turn.emit(dd_actor)
+
+func ui_on_damage_received(damage_receiver: Actor, damage_dealer: Actor, damage: int):
+	var dd_avatar: Avatar = damage_dealer.avatar
+	var dr_avatar: Avatar = damage_receiver.avatar
+	print("ui on damage received: %s atks %s" % [dd_avatar.curr_stats.name, dr_avatar.curr_stats.name])
+	
+	if dd_avatar.avatar_type == Avatar.Avatar_Type.PARTY_MEMBER:
+		target_menu.visible = false
+		description_panel.visible = true
+		toggle_timer_tick(false)
+		# start timer to hide description panel
+		description_timer.start()
+		
+		label.text = "%s attacked for %d damage to %s" % [dd_avatar.curr_stats.name, damage, dr_avatar.curr_stats.name]
+		
+		dd_avatar.battle_state = Constants.Battle_State.EXECUTING_MOVE
+		dd_avatar.update_battle_state_text()
+		# need to fix function signature damage_calculator on_damage_received and for all its call refs
+		BattleSignals.on_end_turn.emit(damage_dealer)

@@ -9,10 +9,13 @@ class_name Actor
 const Ui_Battle_State = Constants.Battle_State
 const Active_Battle_State = Constants.Active_Battle_State
 
-# comes from the main scene which contains a unique node named BattleManager
+# battle_manager class self-injects itself into this class as it creates Actor instances
 @export var battle_manager: BattleManager
 @onready var damage_calculator: IDamageCalculator
 @onready var info_node: InfoDisplay = $InfoNode
+
+# Used when debugging in isolation
+#@onready var damage_calculator: IDamageCalculator = BattleSceneManager.damage_calculator
 
 @export var move_speed: float
 @export var target: Node2D
@@ -85,8 +88,8 @@ func _ready():
 	defense_timer.timeout.connect(on_defend_end)
 	hit_area.area_entered.connect(on_attack_connect)
 	
-	if avatar:
-		avatar.generate_random_stats()
+	#if avatar:
+		#avatar.generate_random_stats()
 	
 	if info_node and avatar:
 		info_node.update_labels(avatar)
@@ -126,12 +129,13 @@ func _process(delta_time: float):
 		flee_time = clampf(flee_time + delta_time, flee_time, flee_fade_time)
 		(material as ShaderMaterial).set_shader_parameter("transparency_value", flee_fade_time - flee_time)
 
-func start_motion():
+func start_motion(target_actor: Actor):
 	# if already moving don't trigger it again
 	if motion_state == Active_Battle_State.MOVING:
 		return
 	
 	motion_state = Active_Battle_State.MOVING
+	target = target_actor
 
 func move_to_target(target_pos: Vector2) -> Vector2:
 	var dir = (target_pos - position).normalized()
@@ -178,9 +182,9 @@ func on_attack_connect(area: Area2D):
 		var damage_receiver: Avatar = actor_receiving_dmg.avatar
 		var damage_dealer: Avatar = avatar
 		
-		var dmg = damage_calculator.calculate_damage(damage_receiver, damage_dealer)
+		var dmg = damage_calculator.calculate_damage(actor_receiving_dmg, self)
 		damage_receiver.curr_stats.hp = maxi(damage_receiver.curr_stats.hp - dmg, 0)
-		damage_calculator.on_damage_received.emit(damage_receiver, damage_dealer)
+		damage_calculator.on_damage_received.emit(actor_receiving_dmg, self, dmg)
 	else:
 		print_rich("[color=red]Damage Calculator is null in Actor.gd[/color]")
 		

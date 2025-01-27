@@ -190,8 +190,7 @@ func _ready() -> void:
 		var info_display: InfoDisplay = party_member.get_info_display()
 		info_display.avatar = party_member_avatars[i]
 		
-		var status = damage_calculator.on_damage_received.connect(info_display.on_damage_received)
-		print("info_display pm conn status? %d" % status)
+		damage_calculator.on_damage_received.connect(info_display.on_damage_received)
 		party_member.battle_manager = self
 		
 		party_members.append(party_member)
@@ -215,20 +214,11 @@ func _ready() -> void:
 		var target_selection_area: MobSelection = enemy.get_target_selection_area()
 		target_selection_area.actor = enemy
 		
-		var status = damage_calculator.on_damage_received.connect(info_display.on_damage_received)
+		damage_calculator.on_damage_received.connect(info_display.on_damage_received)
 		enemy.battle_manager = self
 		
 		enemies.append(enemy)
 		battle_scene.add_child(enemy)
-		
-		print("info_display e conn status? %d" % status)
-
-	
-	var dmg_calc_signal = damage_calculator.on_damage_received
-	var conns = dmg_calc_signal.get_connections()
-	for conn in conns:
-		print("is null? ", conn.callable.is_null())
-		print("is valid? ", conn.callable.is_valid())
 	
 	### TODO - figure out how to remove circular references between actor and avatar
 	for i in range(len(party_members)):

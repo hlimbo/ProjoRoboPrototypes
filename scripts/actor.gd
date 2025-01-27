@@ -128,6 +128,7 @@ func _process(delta_time: float):
 	elif motion_state == Active_Battle_State.FLEE:
 		flee_time = clampf(flee_time + delta_time, flee_time, flee_fade_time)
 		(material as ShaderMaterial).set_shader_parameter("transparency_value", flee_fade_time - flee_time)
+		info_node.visible = false
 
 func start_motion(target_actor: Actor):
 	# if already moving don't trigger it again
@@ -211,6 +212,7 @@ func on_defend_end():
 	
 	defense_node.visible = false
 	motion_state = Active_Battle_State.NEUTRAL
+	BattleSignals.on_end_turn.emit(self)
 
 func begin_flee():
 	if motion_state == Active_Battle_State.FLEE:

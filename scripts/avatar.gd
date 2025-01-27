@@ -13,8 +13,6 @@ var _curr_speed: float
 @onready var avatar_label: Label = $AvatarLabel
 @onready var battle_timers: BattleTimers = $BattleTimers
 
-# @onready var ui_layout: UIController = %UILayout
-
 # type aliasing for convenience
 const Avatar_Type = Constants.Avatar_Type
 const Battle_State = Constants.Battle_State
@@ -89,9 +87,11 @@ func on_area_entered(_body: Node2D) -> void:
 func on_skill_timeout():
 	print("on skill timeout called on: %s" % self.name)
 
+# moving all timers into Actor class
+# Avatar class will only be concerned about how it moves along the battle timeline
 func on_defend_end():
-	curr_stats.defense = initial_stats.defense
-	BattleSignals.on_end_turn.emit(self)
+	pass
+	# curr_stats.defense = initial_stats.defense
 
 func on_resume_timeout():
 	print("on resume timeout %s at time %d " % [self.name, Time.get_ticks_msec()])

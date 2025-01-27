@@ -1,5 +1,5 @@
 # Singleton Global Class
-extends RefCounted
+extends Node
 
 # TODO: rename to UI_Battle_State
 enum Battle_State {

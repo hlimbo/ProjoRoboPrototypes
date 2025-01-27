@@ -39,8 +39,6 @@ var party_members: Array[Avatar] = []
 var enemy_avatars: Array[Avatar] = []
 
 const ORDER_STEP: float = 0.858
-# avatar reference that will make a move
-var active_avatar: Avatar = null
 var did_tween_start: bool = false
 
 enum Party_Battle_States {
@@ -73,6 +71,7 @@ func on_end_turn(actor: Actor):
 
 func on_resume_play(_actor: Actor):
 	resume_avatars_motion()
+	toggle_timer_tick(false)
 
 func _ready():
 	print("ui controller ready called")
@@ -80,7 +79,6 @@ func _ready():
 	action_buttons = BattleController.ActionButtons.new()
 	action_buttons.init(attack, skill_btn, defend, flee, cancel)
 	
-	action_buttons.flee_button.pressed.connect(_on_flee_button_pressed)
 	cancel.pressed.connect(_on_cancel_button_pressed)
 	target_cancel.pressed.connect(_on_cancel_button_pressed)
 	
@@ -106,20 +104,21 @@ func _ready():
 	for avatar in enemy_avatars:
 		timers.append(avatar.battle_timers.skill_timer)
 		timers.append(avatar.battle_timers.defense_timer)
-		timers.append(avatar.battle_timers.resume_delay_timer)
+		#timers.append(avatar.battle_timers.resume_delay_timer)
+		timers.append(avatar.battle_timers.flee_timer)
 	
 	for avatar in party_members:
 		timers.append(avatar.battle_timers.skill_timer)
 		timers.append(avatar.battle_timers.defense_timer)
-		timers.append(avatar.battle_timers.resume_delay_timer)
+		#timers.append(avatar.battle_timers.resume_delay_timer)
+		timers.append(avatar.battle_timers.flee_timer)
 	
 	timers.append(description_timer)
 	
 	# for camera motions
 	original_cam_pos = camera_2d.position
 	
-	var conn_status = battle_manager.damage_calculator.on_damage_received.connect(ui_on_damage_received)
-	print("on_damage recv connect status: %d" % conn_status)
+	battle_manager.damage_calculator.on_damage_received.connect(ui_on_damage_received)
 
 func toggle_timer_tick(paused: bool):
 	for timer in timers:
@@ -150,7 +149,6 @@ func _on_skills_button_pressed(actor: Actor):
 func _on_defend_button_pressed(actor: Actor):
 	var avatar: Avatar = actor.avatar
 	avatar.progress_ratio = 1
-	avatar.curr_stats.defense += avatar.curr_stats.defense * 0.25
 	label.text = "%s is defending!" % avatar.name
 	
 	description_panel.visible = true
@@ -158,6 +156,9 @@ func _on_defend_button_pressed(actor: Actor):
 	
 	avatar.battle_state = avatar.Battle_State.EXECUTING_MOVE
 	avatar.update_battle_state_text()
+	
+	var def_cmd = DefendCommand.new()
+	def_cmd.execute(actor)
 	
 	description_timer.start()
 	avatar.battle_timers.defense_timer.start()
@@ -221,28 +222,55 @@ func _process(_delta: float) -> void:
 		#transition_to_main_scene(party_battle_state)
 		#did_tween_start = true
 
-func _on_flee_button_pressed():
+func on_determine_flee_rate(actor: Actor):
 	# TODOs
 	# - change scene to the overworld scene when successfully fled from battle
 	# - figure out a formula that takes difference between your party's avg level
 	# and enemies avg level into consideration for when a flee will be successful
 	# - if dice roll is less than flee rate, flee is successful, otherwise flee fails
+	# - modify it to where once timeline reaches progress = 1, decide if party can flee or not
+	
+	# pause timers and avatar movement along timeline
+	toggle_timer_tick(true)
+	pause_avatars_motion()
+	
 	var flee_rate := 0.5
 	var roll = randf()
 	description_panel.visible = true
-	action_layout.visible = false
 	if roll < flee_rate:
 		label.text = "Party fled!"
 		party_battle_state = Party_Battle_States.FLEE
+		pause_avatars_motion()
+		
+		# trigger flee command for all party members
+		for party_member in party_members:
+			var flee_cmd = FleeCommand.new()
+			flee_cmd.execute(party_member.actor.get_ref())
 	else:
 		label.text = "Party cannot escape!"
-		resume_avatars_motion()
-		toggle_timer_tick(false)
-	
-	if active_avatar:
-		active_avatar.progress_ratio = 1
-	
+		
 	description_timer.start()
+	BattleSignals.on_end_turn.emit(actor)
+
+func _on_flee_button_pressed(actor: Actor):
+	# set flee execution speed
+	var avatar: Avatar = actor.avatar
+	avatar.battle_state = Constants.Battle_State.PENDING_MOVE
+	avatar.update_battle_state_text()
+	
+	# delay skill until avatar progress ratio reaches 1
+	var diff: float = 1 - avatar.progress_ratio
+	var flee_exec_time: float = diff / avatar.battle_timers.flee_timer.wait_time
+	avatar._curr_speed = flee_exec_time
+	avatar.resume_motion = true
+	
+	toggle_timer_tick(false)
+	resume_avatars_motion()
+	
+	action_layout.visible = false
+	
+	avatar.battle_timers.flee_timer.start()
+
 
 func on_target_hovered(actor: Actor, mob: MobSelection):
 	target_label.text = actor.avatar.name
@@ -271,27 +299,6 @@ func on_target_clicked(dr_actor: Actor, dd_actor: Actor):
 		atk_cmd.target = dr_actor
 		atk_cmd.execute(dd_actor)
 		
-		# battle_manager.damage_calculator.on_damage_received.emit(damage_receiver, damage_dealer)
-		
-		# TODO: need to register more signals here to let this controller know when it can display UI elements again....
-		
-		
-		#var dmg := battle_manager.damage_calculator.calculate_damage(damage_receiver, damage_dealer)
-		#label.text = "%s attacked for %d damage to %s" % [damage_dealer.name, dmg, damage_receiver.name]
-		#damage_receiver.curr_stats.hp = maxi(damage_receiver.curr_stats.hp - dmg, 0)
-		#
-		#battle_manager.damage_calculator.on_damage_received.emit(damage_receiver, damage_dealer)
-			#
-		#target_menu.visible = false
-		#description_panel.visible = true
-		#toggle_timer_tick(false)
-		## start timer to hide description panel
-		#description_timer.start()
-		#
-		#damage_dealer.battle_state = Constants.Battle_State.EXECUTING_MOVE
-		#damage_dealer.update_battle_state_text()
-		#BattleSignals.on_end_turn.emit(dd_actor)
-		
 	elif attack_type == Attack_Type.SKILL:
 		# set skill execution speed
 		damage_dealer.battle_state = Constants.Battle_State.PENDING_MOVE
@@ -308,8 +315,7 @@ func on_target_clicked(dr_actor: Actor, dd_actor: Actor):
 		
 		target_menu.visible = false
 		active_skill_menu.visible = false
-		toggle_timer_tick(false)
-		resume_avatars_motion()
+		BattleSignals.on_end_turn.emit(dd_actor)
 
 
 func pause_avatars_motion():
@@ -352,7 +358,6 @@ func on_start_order_step(actor: Actor) -> void:
 	
 	# entry point for party member to pick a move
 	if avatar.avatar_type == Avatar.Avatar_Type.PARTY_MEMBER:
-		# active_avatar = avatar
 		# pause all timers to prevent them going off when party member is picking a move
 		toggle_timer_tick(true)
 		pause_avatars_motion()
@@ -364,6 +369,8 @@ func on_start_order_step(actor: Actor) -> void:
 		Utility.disconnect_all_signal_connections(action_buttons.attack_button.pressed)
 		Utility.disconnect_all_signal_connections(action_buttons.defend_button.pressed)
 		Utility.disconnect_all_signal_connections(action_buttons.pick_skills_button.pressed)
+		Utility.disconnect_all_signal_connections(action_buttons.flee_button.pressed)
+		Utility.disconnect_all_signal_connections(avatar.battle_timers.flee_timer.timeout)
 
 		for enemy in battle_manager.enemies:
 			# Disconnect mob target selection and previous actor relationship
@@ -377,6 +384,9 @@ func on_start_order_step(actor: Actor) -> void:
 		action_buttons.attack_button.pressed.connect(_on_attack_button_pressed.bind(actor))
 		action_buttons.defend_button.pressed.connect(_on_defend_button_pressed.bind(actor))
 		action_buttons.pick_skills_button.pressed.connect(_on_skills_button_pressed.bind(actor))
+		action_buttons.flee_button.pressed.connect(_on_flee_button_pressed.bind(actor))
+		var conn = avatar.battle_timers.flee_timer.timeout.connect(on_determine_flee_rate.bind(actor))
+		print("connected ? ", conn)
 		
 	# entry point for enemies to pick a move
 	elif avatar.avatar_type == Avatar.Avatar_Type.ENEMY:
@@ -589,7 +599,6 @@ func ui_on_damage_received(damage_receiver: Actor, damage_dealer: Actor, damage:
 	if dd_avatar.avatar_type == Avatar.Avatar_Type.PARTY_MEMBER:
 		target_menu.visible = false
 		description_panel.visible = true
-		toggle_timer_tick(false)
 		# start timer to hide description panel
 		description_timer.start()
 		

@@ -76,7 +76,6 @@ func on_end_turn(actor: Actor):
 
 func on_resume_play(_actor: Actor):
 	resume_avatars_motion()
-	toggle_timer_tick(false)
 
 func _ready():
 	print("ui controller ready called")
@@ -102,8 +101,7 @@ func _ready():
 	BattleSignals.on_resume_play.connect(on_resume_play)
 	BattleSignals.on_start_turn.connect(on_start_order_step)
 	
-	for avatar in enemy_avatars:
-		avatar.battle_timers.skill_timer.timeout.connect(on_ai_skill_end.bind(avatar))
+	battle_manager.damage_calculator.on_damage_received.connect(on_skill_attack_damage_received)
 		
 	# Fetch all timers in battle scene
 	for avatar in enemy_avatars:
@@ -123,7 +121,6 @@ func _ready():
 	# for camera motions
 	original_cam_pos = camera_2d.position
 	
-	battle_manager.damage_calculator.on_damage_received.connect(ui_on_damage_received)
 
 func toggle_timer_tick(paused: bool):
 	for timer in timers:
@@ -162,9 +159,7 @@ func start_defend(actor: Actor):
 	def_cmd.execute(actor)
 	
 	description_timer.start()
-	
 	resume_avatars_motion()
-	toggle_timer_tick(false)
 
 func _on_defend_button_pressed(actor: Actor):
 	start_defend(actor)
@@ -234,7 +229,6 @@ func on_determine_flee_rate(actor: Actor):
 	# - modify it to where once timeline reaches progress = 1, decide if party can flee or not
 	
 	# pause timers and avatar movement along timeline
-	toggle_timer_tick(true)
 	pause_avatars_motion()
 	
 	var flee_rate := 0.5
@@ -265,11 +259,8 @@ func _on_flee_button_pressed(actor: Actor):
 	avatar._curr_speed = avatar.calculate_action_execution_speed(wait_time)
 	avatar.resume_motion = true
 	
-	toggle_timer_tick(false)
 	resume_avatars_motion()
-	
 	action_layout.visible = false
-	
 	avatar.battle_timers.flee_timer.start()
 
 
@@ -292,34 +283,32 @@ func on_target_clicked(dr_actor: Actor, dd_actor: Actor):
 	var damage_receiver: Avatar = dr_actor.avatar
 	var damage_dealer: Avatar = dd_actor.avatar
 	
-	toggle_timer_tick(false)
-	resume_avatars_motion()
-	
 	if attack_type == Attack_Type.BASIC:
-		# move avatar immediately towards end of exe
-		damage_dealer.progress_ratio = 1
-		
+		battle_manager.damage_calculator.on_damage_received.connect(on_basic_attack_damage_received, ConnectFlags.CONNECT_ONE_SHOT)
 		var atk_cmd = AttackCommand.new()
 		atk_cmd.target = dr_actor
 		atk_cmd.execute(dd_actor)
 		
-	elif attack_type == Attack_Type.SKILL:
-		damage_dealer.battle_state = Constants.Battle_State.PENDING_MOVE
-		damage_dealer.update_battle_state_text()
-		var wait_time: float = damage_dealer.battle_timers.skill_timer.wait_time
-		damage_dealer._curr_speed = damage_dealer.calculate_action_execution_speed(wait_time)	
-		damage_dealer.battle_timers.skill_timer.start()
+		target_menu.visible = false
 		
+	elif attack_type == Attack_Type.SKILL:
 		var on_timeout = func(): on_party_member_skill_end(dr_actor, dd_actor)
 		damage_dealer.battle_timers.skill_timer.timeout.connect(on_timeout, ConnectFlags.CONNECT_ONE_SHOT)
+		
+		
+		var begin_skill_cmd = BeginSkillCommand.new()
+		begin_skill_cmd.execute(dd_actor)
 		
 		target_menu.visible = false
 		active_skill_menu.visible = false
 
+	resume_avatars_motion()
 
 func pause_avatars_motion():
 	var live_party_members = party_members.filter(func(a: Avatar): return a.is_alive)
 	var live_enemies = enemy_avatars.filter(func(a: Avatar): return a.is_alive)
+	
+	toggle_timer_tick(true)
 	
 	for member in live_party_members:
 		member.resume_motion = false
@@ -343,7 +332,20 @@ func can_resume_avatars_motion() -> bool:
 
 func resume_avatars_motion():
 	var live_party_members = party_members.filter(func(a: Avatar): return a.is_alive)
-	var live_enemies = enemy_avatars.filter(func(a: Avatar): return a.is_alive and a.battle_state == a.Battle_State.WAITING)
+	var live_enemies = enemy_avatars.filter(func(a: Avatar): return a.is_alive)
+	
+	#var is_exe_move = func(a: Avatar): 
+		#return a.battle_state == Constants.Battle_State.EXECUTING_MOVE
+	
+	# may cause stalls as there other timers ticking....
+	# don't resume avatar motion if any live party member is making a move or a move is executing
+	var any_party_member_making_move: bool = live_party_members.any(func(a: Avatar): return a.battle_state == Constants.Battle_State.MOVE_SELECTION)
+	#var any_executing_move: bool = live_party_members.any(is_exe_move) or live_enemies.any(is_exe_move) 
+	
+	if any_party_member_making_move:
+		return
+		
+	toggle_timer_tick(false)
 	
 	for member in live_party_members:
 		member.resume_motion = true
@@ -358,7 +360,6 @@ func on_start_order_step(actor: Actor) -> void:
 	# entry point for party member to pick a move
 	if avatar.avatar_type == Avatar.Avatar_Type.PARTY_MEMBER:
 		# pause all timers to prevent them going off when party member is picking a move
-		toggle_timer_tick(true)
 		pause_avatars_motion()
 		party_member_name.text = avatar.name
 		action_layout.visible = true
@@ -388,9 +389,9 @@ func on_start_order_step(actor: Actor) -> void:
 	# entry point for enemies to pick a move
 	elif avatar.avatar_type == Avatar.Avatar_Type.ENEMY:
 		# ai_determine_move(avatar)
-		#ai_use_random_skill(avatar)
+		ai_use_random_skill(actor)
 		# start_defend(actor)
-		ai_flee(actor)
+		# ai_flee(actor)
 		#ai_attack(actor)
 
 func transition_to_main_scene(status: Party_Battle_States):
@@ -434,17 +435,12 @@ func ai_determine_move(avatar: Avatar) -> void:
 	possible_actions[random_move_index].call(avatar)
 
 func ai_attack(actor: Actor) -> void:
-	var avatar: Avatar = actor.avatar
-	avatar.progress_ratio = 1
 	# pick a random party member
 	var live_party_members: Array[Avatar] = party_members.filter(func(p: Avatar): return p.is_alive)
 	
-	# no more party members to attack
 	if len(live_party_members) == 0:
+		print_rich("[color=yellow]Warning no more party members to attack[/color]")
 		return
-	
-	avatar.battle_state = avatar.Battle_State.EXECUTING_MOVE
-	avatar.update_battle_state_text()
 	
 	var atk_cmd = AttackCommand.new()
 	# pick random target to attack
@@ -477,62 +473,60 @@ func ai_flee(actor: Actor) -> void:
 		#remove_child(avatar)
 		#avatar.queue_free()
 
-func ai_use_random_skill(avatar: Avatar) -> void:
-	var wait_time: float = avatar.battle_timers.skill_timer.wait_time
-	avatar._curr_speed = avatar.calculate_action_execution_speed(wait_time)
+func ai_use_random_skill(actor: Actor) -> void:
+	var avatar: Avatar = actor.avatar
 	
-	print("avatar %s start skill at time %d" % [avatar.name, Time.get_ticks_msec()])
+	var members: Array[Avatar] = party_members.filter(func(p: Avatar): return p.is_alive)
+	if len(members) == 0:
+		print_rich("[color=yellow]No party members to cast skills on[/color]")
+		return
 	
-	avatar.battle_state = avatar.Battle_State.PENDING_MOVE
-	avatar.update_battle_state_text()
-	avatar.battle_timers.skill_timer.start()
+	var damage_receiver: Actor = members[randi_range(0, len(members) - 1)].actor.get_ref()
+	avatar.battle_timers.skill_timer.timeout.connect(on_ai_skill_end.bind(damage_receiver, actor), ConnectFlags.CONNECT_ONE_SHOT)
+	
+	var begin_skill_cmd = BeginSkillCommand.new()
+	begin_skill_cmd.execute(actor)
 
-func on_ai_skill_end(avatar: Avatar) -> void:
-	print("on_ai_skill_end will be reworked once player commands are integrated")
-	#print("avatar %s skill end at time %d" % [avatar.name, Time.get_ticks_msec()])
-	## pick random skill
-	#var skill1 = Skill.new(1, 5, "Sizzle")
-	#var skill2 = Skill.new(4, 10, "Spitfire")
-	#var skill3 = Skill.new(8, 20, "Oven Overload")
-	#
-	## TODO: check ahead of time if enemy can cast a skill, if not, don't do this action
-	#var skills: Array[Skill] = [skill1, skill2, skill3]
-	#var castable_skills: Array[Skill] = skills.filter(func(s: Skill): return s.cost <= avatar.curr_stats.skill_points)
-	#
-	## pick random target to cast skill on
-	#var members: Array[Avatar] = party_members.filter(func(p: Avatar): return p.is_alive)
-	#
-	#description_panel.visible = true
-	#
-	## no party members alive...
-	#if len(members) == 0:
-		#label.text = "%s no target to cast..." % avatar.name
-		#return
-		#
-	#if len(castable_skills) == 0:
-		#label.text = "%s cannot execute any skills!" % avatar.name
-		#return
-	#
-	#var skill_index: int = randi_range(0, len(castable_skills) - 1)
-	#var target_index: int = randi_range(0, len(members) - 1)
-	#var target: Avatar = members[target_index]
-	#var skill: Skill = skills[skill_index]
-	#
-	#var dmg = battle_manager.damage_calculator.calculate_damage(target, avatar)
-	#
-	#var text = "%s used %s on %s! It dealt %d damage" % [avatar.name, skill.name, target.name, dmg]
-	#label.text = text 
-	#
-	#target.curr_stats.hp = maxi(target.curr_stats.hp - dmg, 0)
-	#avatar.curr_stats.skill_points = maxi(avatar.curr_stats.skill_points - skill.cost, 0)
-	#
-	#battle_manager.damage_calculator.on_damage_received.emit(target, avatar)
-	#
+func on_ai_skill_end(damage_receiver: Actor, damage_dealer: Actor) -> void:
+	var avatar: Avatar = damage_dealer.avatar
+	var target: Avatar = damage_receiver.avatar
+	
+	pause_avatars_motion()
+	
+	print("avatar %s skill end at time %d" % [avatar.name, Time.get_ticks_msec()])
+	# pick random skill
+	var skill1 = Skill.new(1, 5, "Sizzle")
+	var skill2 = Skill.new(4, 10, "Spitfire")
+	var skill3 = Skill.new(8, 20, "Oven Overload")
+	
+	# TODO: check ahead of time if enemy can cast a skill, if not, don't do this action
+	var skills: Array[Skill] = [skill1, skill2, skill3]
+	var castable_skills: Array[Skill] = skills.filter(func(s: Skill): return s.cost <= avatar.curr_stats.skill_points)
+
+	description_panel.visible = true
+	if len(castable_skills) == 0:
+		label.text = "%s cannot execute any skills!" % avatar.name
+		return
+	
+	var skill_index: int = randi_range(0, len(castable_skills) - 1)
+	var skill: Skill = skills[skill_index]
+	
+	# TODO: add motion to skill being utilized and move damage calculations to actor logic
+	var skill_cmd = SkillPlaceholderCommand.new()
+	skill_cmd.target = damage_receiver
+	skill_cmd.skill = skill
+	skill_cmd.execute(damage_dealer)
+	
+	var dmg: int = battle_manager.damage_calculator.calculate_damage(damage_receiver, damage_dealer)
+	target.curr_stats.hp = maxi(target.curr_stats.hp - dmg, 0)
+	battle_manager.damage_calculator.on_damage_received.emit(damage_receiver, damage_dealer, dmg)
+	
+	var text = "%s used %s on %s! It dealt %d damage" % [avatar.curr_stats.name, skill.name, target.curr_stats.name, dmg]
+	label.text = text 
+
 	## pause movement momentarily
 	#avatar.resume_motion = false
 	#avatar._curr_speed = avatar.move_speed
-#
-	#BattleSignals.on_end_turn.emit(avatar)
 
 #endregion
 
@@ -540,31 +534,26 @@ func on_party_member_skill_end(dr_actor: Actor, dd_actor: Actor):
 	var damage_receiver: Avatar = dr_actor.avatar
 	var damage_dealer: Avatar = dd_actor.avatar
 	
-	
-	description_panel.visible = true
+	## pause all other avatar movement and timers
+	pause_avatars_motion()
+
 	var skill: Skill = pending_skill
-	
 	# you can have an AOE skill, a single target skill, or a multi-target skill
 	var skill_cmd = SkillPlaceholderCommand.new()
 	skill_cmd.target = dr_actor
 	skill_cmd.skill = skill
 	skill_cmd.execute(dd_actor)
-	
-	
+		
 	print("on party member skill end %s" % damage_dealer.name)
 	var enemy_name := damage_receiver.name
 	var skill_name := skill.name
 	var dmg := skill.attack
 	
 	damage_receiver.curr_stats.hp = maxi(damage_receiver.curr_stats.hp - dmg, 0)
-	battle_manager.damage_calculator.on_damage_received.emit(damage_receiver, damage_dealer, dmg)
+	battle_manager.damage_calculator.on_damage_received.emit(dr_actor, dd_actor, dmg)
 	label.text = "%s casts %s to %s. It deals %d damage!" % [damage_dealer.name, skill_name, enemy_name, dmg]
-	
-	# display damage description
-	description_timer.start()
-	BattleSignals.on_end_turn.emit(dd_actor)
 
-func ui_on_damage_received(damage_receiver: Actor, damage_dealer: Actor, damage: int):
+func on_basic_attack_damage_received(damage_receiver: Actor, damage_dealer: Actor, damage: int):
 	var dd_avatar: Avatar = damage_dealer.avatar
 	var dr_avatar: Avatar = damage_receiver.avatar
 	print("ui on damage received: %s atks %s" % [dd_avatar.curr_stats.name, dr_avatar.curr_stats.name])
@@ -576,9 +565,6 @@ func ui_on_damage_received(damage_receiver: Actor, damage_dealer: Actor, damage:
 	description_timer.start()
 	label.text = "%s attacked for %d damage to %s" % [dd_avatar.curr_stats.name, damage, dr_avatar.curr_stats.name]
 	
-	dd_avatar.battle_state = Constants.Battle_State.EXECUTING_MOVE
-	dd_avatar.update_battle_state_text()
-	
 	# check if target is downed... no longer able to battle
 	if dr_avatar.curr_stats.hp <= 0:
 		dr_avatar.curr_stats.hp = 0
@@ -586,4 +572,22 @@ func ui_on_damage_received(damage_receiver: Actor, damage_dealer: Actor, damage:
 		dr_avatar.resume_motion = false
 		dr_avatar.is_alive = false
 	
+	BattleSignals.on_end_turn.emit(damage_dealer)
+
+func on_skill_attack_damage_received(damage_receiver: Actor, damage_dealer: Actor, damage: int):
+	var dd_avatar: Avatar = damage_dealer.avatar
+	var dr_avatar: Avatar = damage_receiver.avatar
+
+	description_panel.visible = true
+	description_timer.start()
+	dd_avatar.battle_state = Constants.Battle_State.EXECUTING_MOVE
+	dd_avatar.update_battle_state_text()
+
+	# check if target is downed... no longer able to battle
+	if dr_avatar.curr_stats.hp <= 0:
+		dr_avatar.curr_stats.hp = 0
+		dr_avatar.progress_ratio = 0
+		dr_avatar.resume_motion = false
+		dr_avatar.is_alive = false
+
 	BattleSignals.on_end_turn.emit(damage_dealer)

@@ -12,7 +12,10 @@ const mat4 dither_matrix = mat4(
 
 void fragment() {
 	// Called for every pixel the material is visible on.
-	vec4 color = texture(TEXTURE, UV);
+	// COLOR includes the color value from modulate and self modulate blended together
+	// https://docs.godotengine.org/en/stable/tutorials/shaders/shader_reference/canvas_item_shader.html#color-and-texture
+	// texture(TEXTURE, UV); // samples the texture's original color without modulate and self-modulate applied
+	vec4 color = COLOR;
 	
 	float threshold = 0.0;
 	vec2 dither_size = vec2(0.0, 0.0);
@@ -34,7 +37,5 @@ void fragment() {
         color.a = 0.0; // Make transparent if below threshold
     }
 	
-	// figure out and see if modulate can be obtained...
 	COLOR = color * vec4(1.0, 1.0, 1.0, transparency_value);
-	
 }

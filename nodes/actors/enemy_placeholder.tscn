@@ -204,7 +204,6 @@ rotation = -0.785398
 use_parent_material = true
 
 [node name="CollisionGeometry" type="Node2D" parent="."]
-visible = false
 
 [node name="InteractArea" type="Area2D" parent="CollisionGeometry"]
 collision_layer = 16

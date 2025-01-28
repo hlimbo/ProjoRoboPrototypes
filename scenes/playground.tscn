@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://eo8tlkixiwhf"]
+[gd_scene load_steps=26 format=3 uid="uid://eo8tlkixiwhf"]
 
 [ext_resource type="Texture2D" uid="uid://l5nje6fpe8f3" path="res://icon.svg" id="1_sghae"]
 [ext_resource type="AnimationLibrary" uid="uid://csius7k8khfc5" path="res://resources/animation_libraries/playground_library.res" id="2_t7aap"]
@@ -19,6 +19,7 @@
 [ext_resource type="PackedScene" uid="uid://d07n6ni2r73e1" path="res://nodes/actors/enemy_placeholder.tscn" id="17_4gojv"]
 [ext_resource type="PackedScene" uid="uid://wlrgdq8ncg46" path="res://nodes/battle_timeline/avatar.tscn" id="18_hrobm"]
 [ext_resource type="Script" path="res://scripts/move_styles.gd" id="20_1jo0f"]
+[ext_resource type="Script" path="res://scripts/battle_spawn_manager.gd" id="21_ktyip"]
 [ext_resource type="Script" path="res://scripts/battle_controller.gd" id="35_s55f0"]
 
 [sub_resource type="Animation" id="Animation_g13a0"]
@@ -226,3 +227,8 @@ text = "Button3"
 position = Vector2(675, 339)
 texture = SubResource("PlaceholderTexture2D_4npj2")
 script = ExtResource("20_1jo0f")
+
+[node name="BattleSpawnManager" type="Node2D" parent="."]
+script = ExtResource("21_ktyip")
+party_member_spawn_count = 2
+enemy_spawn_count = 2

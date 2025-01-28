@@ -22,6 +22,7 @@ enum Active_Battle_State {
 	FLEE
 }
 
+# TODO: rename to Actor_Type and move typing up Actor class instead of avatar...
 enum Avatar_Type {
 	PARTY_MEMBER,
 	ENEMY

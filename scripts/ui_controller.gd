@@ -388,8 +388,8 @@ func on_start_order_step(actor: Actor) -> void:
 		
 	# entry point for enemies to pick a move
 	elif avatar.avatar_type == Avatar.Avatar_Type.ENEMY:
-		# ai_determine_move(avatar)
-		ai_use_random_skill(actor)
+		ai_determine_move(actor)
+		#ai_use_random_skill(actor)
 		# start_defend(actor)
 		# ai_flee(actor)
 		#ai_attack(actor)
@@ -429,10 +429,10 @@ func transition_to_main_scene(status: Party_Battle_States):
 
 
 #region AI Commands
-func ai_determine_move(avatar: Avatar) -> void:
+func ai_determine_move(actor: Actor) -> void:
 	var possible_actions: Array[Callable] = [ai_attack, start_defend, ai_use_random_skill]
 	var random_move_index = randi_range(0, len(possible_actions) - 1)
-	possible_actions[random_move_index].call(avatar)
+	possible_actions[random_move_index].call(actor)
 
 func ai_attack(actor: Actor) -> void:
 	# pick a random party member

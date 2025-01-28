@@ -8,6 +8,9 @@ class_name Actor
 # Type Aliases through singleton script constants
 const Ui_Battle_State = Constants.Battle_State
 const Active_Battle_State = Constants.Active_Battle_State
+const Avatar_Type = Constants.Avatar_Type
+
+@export var avatar_type: Avatar_Type
 
 # battle_manager class self-injects itself into this class as it creates Actor instances
 @export var battle_manager: BattleManager
@@ -72,7 +75,8 @@ func _ready():
 	original_pos = position
 	original_target = target
 	
-	damage_calculator = battle_manager.damage_calculator
+	if damage_calculator:
+		damage_calculator = battle_manager.damage_calculator
 	
 	if info_node:
 		info_node.avatar = avatar

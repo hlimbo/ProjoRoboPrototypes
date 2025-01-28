@@ -75,7 +75,7 @@ func _ready():
 	original_pos = position
 	original_target = target
 	
-	if damage_calculator:
+	if battle_manager:
 		damage_calculator = battle_manager.damage_calculator
 	
 	if info_node:
@@ -96,6 +96,11 @@ func _ready():
 	if info_node and avatar:
 		info_node.update_labels(avatar)
 		
+	connect_battle_signals()
+
+func connect_battle_signals():
+	if avatar:
+		avatar.on_start_turn.connect(func(): BattleSignals.on_start_turn.emit(self))
 
 func _process(delta_time: float):
 	# player controls
@@ -127,6 +132,8 @@ func _process(delta_time: float):
 			var dist = position.distance_to(original_pos)
 			if dist <= 100:
 				motion_state = Active_Battle_State.NEUTRAL
+				BattleSignals.on_end_turn.emit(self)
+				
 	elif motion_state == Active_Battle_State.FLEE:
 		flee_time = clampf(flee_time + delta_time, flee_time, flee_fade_time)
 		(material as ShaderMaterial).set_shader_parameter("transparency_value", flee_fade_time - flee_time)
@@ -170,6 +177,7 @@ func on_enable_attack_hitbox():
 	# simulate attack animation
 	attack_timer.start()
 
+# its possible the attack will not connect... causing battle timeline not to resume
 func on_attack_connect(area: Area2D):
 	
 	# apply damage calculations
@@ -222,7 +230,6 @@ func begin_flee():
 		
 	flee_time = 0.0
 	motion_state = Active_Battle_State.FLEE
-
 
 func get_info_display() -> InfoDisplay:
 	return get_node("InfoNode")

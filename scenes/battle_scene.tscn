@@ -1,6 +1,7 @@
-[gd_scene load_steps=11 format=3 uid="uid://bx67atr86l06a"]
+[gd_scene load_steps=12 format=3 uid="uid://bx67atr86l06a"]
 
 [ext_resource type="PackedScene" uid="uid://yirvhthqc5v6" path="res://nodes/party_member_layout.tscn" id="1_jaw4a"]
+[ext_resource type="Script" path="res://scripts/battle_spawn_manager.gd" id="1_lnptf"]
 [ext_resource type="PackedScene" uid="uid://cmclhu115571j" path="res://nodes/action_layout.tscn" id="1_p0qnp"]
 [ext_resource type="Script" path="res://scripts/ui_controller.gd" id="1_qdx8j"]
 [ext_resource type="Script" path="res://scripts/battle_manager.gd" id="1_rrotr"]
@@ -15,10 +16,13 @@ script = ExtResource("3_ina5a")
 
 [node name="main" type="Node2D"]
 
+[node name="BattleSpawnManager" type="Node2D" parent="."]
+script = ExtResource("1_lnptf")
+party_member_spawn_count = 1
+enemy_spawn_count = 1
+
 [node name="BattleManager" type="Node2D" parent="."]
 script = ExtResource("1_rrotr")
-enemy_spawn_count = 1
-party_member_spawn_count = 1
 enemy_texture = ExtResource("2_yphs6")
 damage_calculator = SubResource("Resource_i4p3w")
 
@@ -48,9 +52,10 @@ position = Vector2(1487, 1262)
 [node name="Enemy3" type="Marker2D" parent="BattleScene"]
 position = Vector2(1671, 1262)
 
-[node name="UILayout" type="CanvasLayer" parent="."]
+[node name="UILayout" type="CanvasLayer" parent="." node_paths=PackedStringArray("battle_spawn_manager")]
 unique_name_in_owner = true
 script = ExtResource("1_qdx8j")
+battle_spawn_manager = NodePath("../BattleSpawnManager")
 
 [node name="BattleResultsScreen" parent="UILayout" instance=ExtResource("5_f3g4b")]
 visible = false

@@ -116,3 +116,15 @@ func get_party_members() -> Array[Actor]:
 	
 func get_enemies() -> Array[Actor]:
 	return enemies
+
+func _convert_to_avatars(arr: Array[Actor]) -> Array[Avatar]:
+	var output: Array[Avatar] = []
+	for actor in arr:
+		output.append(actor.avatar)
+	return output
+
+func get_enemy_avatars() -> Array[Avatar]:
+	return _convert_to_avatars(enemies)
+
+func get_party_member_avatars() -> Array[Avatar]:
+	return _convert_to_avatars(party_members)

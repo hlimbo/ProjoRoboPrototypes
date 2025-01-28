@@ -29,12 +29,7 @@ var battle_state: Battle_State = Battle_State.WAITING
 # AI signals
 signal on_avatar_flee()
 
-#var battle_manager: BattleManager
-
-# TODO - find a way to remove circular reference
-# circular reference between actor and avatar
-# this is needed for now to integrate command pattern here...
-var actor: WeakRef
+signal on_start_turn
 
 # names generated from https://www.fantasynamegenerators.com/bleach-shinigami-names.php
 const random_names: PackedStringArray = [
@@ -67,9 +62,7 @@ func _ready() -> void:
 	update_battle_state_text()
 	
 	battle_timers.skill_timer.timeout.connect(on_skill_timeout)
-	battle_timers.defense_timer.timeout.connect(on_defend_end)
 	battle_timers.resume_delay_timer.timeout.connect(on_resume_timeout)
-	
 	area_2d.body_entered.connect(on_area_entered)
 
 
@@ -79,19 +72,15 @@ func _physics_process(delta: float) -> void:
 func on_area_entered(_body: Node2D) -> void:
 	battle_state = Battle_State.MOVE_SELECTION
 	update_battle_state_text()
-	if actor.get_ref():
-		BattleSignals.on_start_turn.emit(actor.get_ref())
-	
+	on_start_turn.emit()
+
+func connect_on_area_entered():
+	area_2d.body_entered.connect(on_area_entered)
+
 #region Timer Timeout functions
 
 func on_skill_timeout():
 	print("on skill timeout called on: %s" % self.name)
-
-# moving all timers into Actor class
-# Avatar class will only be concerned about how it moves along the battle timeline
-func on_defend_end():
-	pass
-	# curr_stats.defense = initial_stats.defense
 
 func on_resume_timeout():
 	print("on resume timeout %s at time %d " % [self.name, Time.get_ticks_msec()])
@@ -99,8 +88,7 @@ func on_resume_timeout():
 	update_battle_state_text()
 	self.progress_ratio = 0 # reset back to beginning of timeline
 	self._curr_speed = move_speed # restore movespeed
-	if actor.get_ref():
-		BattleSignals.on_resume_play.emit(actor.get_ref())
+	BattleSignals.on_resume_play.emit()
 
 #endregion
 

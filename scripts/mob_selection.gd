@@ -5,6 +5,7 @@ class_name MobSelection
 @onready var target_selection: Sprite2D = $SelectionArrow
 @onready var col_shape: CollisionShape2D = $CollisionShape2D
 
+## TODO: figure out how to remove this circular dependency b/w MobSelection and Actor
 var actor: Actor
 @onready var root_node: Node2D = owner
 
@@ -31,6 +32,4 @@ func _on_mouse_exited() -> void:
 func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
 	if event.is_action_pressed("select"):
 		target_selection.visible = false
-		# why is this connection missing stuff?
-		var connections = on_target_clicked.get_connections()
 		on_target_clicked.emit()

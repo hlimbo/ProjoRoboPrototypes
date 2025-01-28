@@ -1,8 +1,10 @@
 extends CanvasLayer
 class_name UIController
 
+### Dependencies ###
 # owner is the root node of the scene that this node belongs to e.g. main
 @onready var battle_manager: BattleManager = owner.get_node("BattleManager")
+@export var battle_spawn_manager: BattleSpawnManager
 
 @onready var active_skill_menu: Control = $ActiveSkillMenu
 @onready var action_layout: Control = $ActionLayout
@@ -31,12 +33,12 @@ var original_cam_pos: Vector2
 @onready var target_label: Label = $TargetMenu/VBoxContainer/TargetLabel
 @onready var target_cancel: Button = $TargetMenu/VBoxContainer/Cancel
 
-## 1-D Graph variables
-@onready var one_d_graph: Control = $OneDGraph
-@onready var avatar_nodes: Array[Node] = one_d_graph.get_node("PartyPath2D").get_children()
-var party_members: Array[Avatar] = []
-@onready var enemy_nodes: Array[Node] = one_d_graph.get_node("EnemyPath2D").get_children()
-var enemy_avatars: Array[Avatar] = []
+### 1-D Graph variables
+#@onready var one_d_graph: Control = $OneDGraph
+#@onready var avatar_nodes: Array[Node] = one_d_graph.get_node("PartyPath2D").get_children()
+#var party_members: Array[Avatar] = []
+#@onready var enemy_nodes: Array[Node] = one_d_graph.get_node("EnemyPath2D").get_children()
+#var enemy_avatars: Array[Avatar] = []
 
 const ORDER_STEP: float = 0.858
 var did_tween_start: bool = false
@@ -74,7 +76,7 @@ func on_end_turn(actor: Actor):
 	# 3. actor begins to cast a skill
 	actor.avatar.battle_timers.resume_delay_timer.start()
 
-func on_resume_play(_actor: Actor):
+func on_resume_play():
 	resume_avatars_motion()
 
 func _ready():
@@ -85,14 +87,8 @@ func _ready():
 	
 	cancel.pressed.connect(_on_cancel_button_pressed)
 	target_cancel.pressed.connect(_on_cancel_button_pressed)
-	
-	for node in avatar_nodes:
-		party_members.append(node as Avatar)
-	
-	for node in enemy_nodes:
-		enemy_avatars.append(node as Avatar)
 		
-	for enemy in battle_manager.enemies:
+	for enemy in battle_spawn_manager.get_enemies():
 		enemy.get_target_selection_area().on_target_hovered.connect(on_target_hovered)
 		enemy.get_target_selection_area().on_target_unhovered.connect(on_target_unhovered)
 	
@@ -100,9 +96,10 @@ func _ready():
 	BattleSignals.on_end_turn.connect(on_end_turn)
 	BattleSignals.on_resume_play.connect(on_resume_play)
 	BattleSignals.on_start_turn.connect(on_start_order_step)
-	
-	battle_manager.damage_calculator.on_damage_received.connect(on_skill_attack_damage_received)
 		
+	var enemy_avatars: Array[Avatar] = battle_spawn_manager.get_enemy_avatars()
+	var party_members: Array[Avatar] = battle_spawn_manager.get_party_member_avatars()
+	
 	# Fetch all timers in battle scene
 	for avatar in enemy_avatars:
 		timers.append(avatar.battle_timers.skill_timer)
@@ -130,7 +127,7 @@ func toggle_timer_tick(paused: bool):
 func toggle_pickable_mobs(input_pickable: bool):
 	# pick target to attack
 	# enable as pickable which accepts mouse pointer events
-	for enemy in battle_manager.enemies:
+	for enemy in battle_spawn_manager.get_enemies():
 		enemy.get_target_selection_area().input_pickable = input_pickable
 
 func _on_attack_button_pressed(actor: Actor):
@@ -239,9 +236,10 @@ func on_determine_flee_rate(actor: Actor):
 		party_battle_state = Party_Battle_States.FLEE
 		
 		# trigger flee command for all party members
+		var party_members: Array[Actor] = battle_spawn_manager.get_party_members()
 		for party_member in party_members:
 			var flee_cmd = FleeCommand.new()
-			flee_cmd.execute(party_member.actor.get_ref())
+			flee_cmd.execute(party_member)
 	else:
 		label.text = "Party cannot escape!"
 		
@@ -284,6 +282,7 @@ func on_target_clicked(dr_actor: Actor, dd_actor: Actor):
 	var damage_dealer: Avatar = dd_actor.avatar
 	
 	if attack_type == Attack_Type.BASIC:
+		var on_basic_atk_dmg_recv = func(dr: Actor, dd: Actor, dmg: int): on_basic_attack_damage_received(dr, dd, dmg)
 		battle_manager.damage_calculator.on_damage_received.connect(on_basic_attack_damage_received, ConnectFlags.CONNECT_ONE_SHOT)
 		var atk_cmd = AttackCommand.new()
 		atk_cmd.target = dr_actor
@@ -295,7 +294,6 @@ func on_target_clicked(dr_actor: Actor, dd_actor: Actor):
 		var on_timeout = func(): on_party_member_skill_end(dr_actor, dd_actor)
 		damage_dealer.battle_timers.skill_timer.timeout.connect(on_timeout, ConnectFlags.CONNECT_ONE_SHOT)
 		
-		
 		var begin_skill_cmd = BeginSkillCommand.new()
 		begin_skill_cmd.execute(dd_actor)
 		
@@ -305,6 +303,9 @@ func on_target_clicked(dr_actor: Actor, dd_actor: Actor):
 	resume_avatars_motion()
 
 func pause_avatars_motion():
+	var party_members: Array[Avatar] = battle_spawn_manager.get_party_member_avatars()
+	var enemy_avatars: Array[Avatar] = battle_spawn_manager.get_enemy_avatars()
+	
 	var live_party_members = party_members.filter(func(a: Avatar): return a.is_alive)
 	var live_enemies = enemy_avatars.filter(func(a: Avatar): return a.is_alive)
 	
@@ -315,22 +316,10 @@ func pause_avatars_motion():
 	for enemy in live_enemies:
 		enemy.resume_motion = false
 
-func can_resume_avatars_motion() -> bool:
-	var live_party_members = party_members.filter(func(a: Avatar): return a.is_alive)
-	var live_enemies = enemy_avatars.filter(func(a: Avatar): return a.is_alive)
-	# Don't resume avatar motion if any party members are 
-	# executing a move or picking a move
-	var is_any_party_member_acting: bool = live_party_members.any(
-			func(a: Avatar): return a.battle_state == a.Battle_State.EXECUTING_MOVE or a.battle_state == a.Battle_State.MOVE_SELECTION
-		)
-		
-	# Don't resume avatar motion if any enemies are
-	# executing a move
-	var is_any_enemy_executing: bool = live_enemies.any(func(a: Avatar): return a.battle_state == a.Battle_State.EXECUTING_MOVE)
-		
-	return not (is_any_party_member_acting or is_any_enemy_executing)
-
 func resume_avatars_motion():
+	var party_members: Array[Avatar] = battle_spawn_manager.get_party_member_avatars()
+	var enemy_avatars: Array[Avatar] = battle_spawn_manager.get_enemy_avatars()
+	
 	var live_party_members = party_members.filter(func(a: Avatar): return a.is_alive)
 	var live_enemies = enemy_avatars.filter(func(a: Avatar): return a.is_alive)
 	
@@ -372,7 +361,7 @@ func on_start_order_step(actor: Actor) -> void:
 		Utility.disconnect_all_signal_connections(action_buttons.flee_button.pressed)
 		Utility.disconnect_all_signal_connections(avatar.battle_timers.flee_timer.timeout)
 
-		for enemy in battle_manager.enemies:
+		for enemy in battle_spawn_manager.get_enemies():
 			# Disconnect mob target selection and previous actor relationship
 			var target_selection_area: MobSelection = enemy.get_target_selection_area()
 			Utility.disconnect_all_signal_connections(target_selection_area.on_target_clicked)
@@ -387,12 +376,12 @@ func on_start_order_step(actor: Actor) -> void:
 		avatar.battle_timers.flee_timer.timeout.connect(on_determine_flee_rate.bind(actor))
 		
 	# entry point for enemies to pick a move
-	elif avatar.avatar_type == Avatar.Avatar_Type.ENEMY:
-		ai_determine_move(actor)
+	elif avatar.avatar_type == Constants.Avatar_Type.ENEMY:
+		#ai_determine_move(actor)
 		#ai_use_random_skill(actor)
-		# start_defend(actor)
+		#start_defend(actor)
 		# ai_flee(actor)
-		#ai_attack(actor)
+		ai_attack(actor)
 
 func transition_to_main_scene(status: Party_Battle_States):
 	var exit_scene = func():
@@ -436,7 +425,12 @@ func ai_determine_move(actor: Actor) -> void:
 
 func ai_attack(actor: Actor) -> void:
 	# pick a random party member
-	var live_party_members: Array[Avatar] = party_members.filter(func(p: Avatar): return p.is_alive)
+	var party_members: Array[Actor] = battle_spawn_manager.get_party_members()
+	var live_party_members: Array[Actor] = party_members.filter(func(p: Actor): return p.avatar.is_alive)
+	
+	# create copy of function to pass into the connection
+	var on_basic_atk_dmg_recv = func(dr: Actor, dd: Actor, dmg: int): on_basic_attack_damage_received(dr, dd, dmg)
+	battle_manager.damage_calculator.on_damage_received.connect(on_basic_atk_dmg_recv, ConnectFlags.CONNECT_ONE_SHOT)
 	
 	if len(live_party_members) == 0:
 		print_rich("[color=yellow]Warning no more party members to attack[/color]")
@@ -445,8 +439,8 @@ func ai_attack(actor: Actor) -> void:
 	var atk_cmd = AttackCommand.new()
 	# pick random target to attack
 	var i = randi_range(0, len(live_party_members) - 1)
-	var target: Avatar = live_party_members[i]
-	atk_cmd.target = target.actor.get_ref()
+	var target: Actor = live_party_members[i]
+	atk_cmd.target = target
 	atk_cmd.execute(actor)
 	
 func ai_flee(actor: Actor) -> void:
@@ -476,12 +470,14 @@ func ai_flee(actor: Actor) -> void:
 func ai_use_random_skill(actor: Actor) -> void:
 	var avatar: Avatar = actor.avatar
 	
-	var members: Array[Avatar] = party_members.filter(func(p: Avatar): return p.is_alive)
+	var party_members: Array[Actor] = battle_spawn_manager.get_party_members()
+	var members: Array[Actor] = party_members.filter(func(p: Actor): return p.avatar.is_alive)
 	if len(members) == 0:
 		print_rich("[color=yellow]No party members to cast skills on[/color]")
+		BattleSignals.on_end_turn.emit(actor)
 		return
 	
-	var damage_receiver: Actor = members[randi_range(0, len(members) - 1)].actor.get_ref()
+	var damage_receiver: Actor = members[randi_range(0, len(members) - 1)]
 	avatar.battle_timers.skill_timer.timeout.connect(on_ai_skill_end.bind(damage_receiver, actor), ConnectFlags.CONNECT_ONE_SHOT)
 	
 	var begin_skill_cmd = BeginSkillCommand.new()
@@ -519,14 +515,12 @@ func on_ai_skill_end(damage_receiver: Actor, damage_dealer: Actor) -> void:
 	
 	var dmg: int = battle_manager.damage_calculator.calculate_damage(damage_receiver, damage_dealer)
 	target.curr_stats.hp = maxi(target.curr_stats.hp - dmg, 0)
+
 	battle_manager.damage_calculator.on_damage_received.emit(damage_receiver, damage_dealer, dmg)
+	on_skill_attack_damage_received(damage_receiver, damage_dealer, dmg)
 	
 	var text = "%s used %s on %s! It dealt %d damage" % [avatar.curr_stats.name, skill.name, target.curr_stats.name, dmg]
 	label.text = text 
-
-	## pause movement momentarily
-	#avatar.resume_motion = false
-	#avatar._curr_speed = avatar.move_speed
 
 #endregion
 
@@ -548,9 +542,10 @@ func on_party_member_skill_end(dr_actor: Actor, dd_actor: Actor):
 	var enemy_name := damage_receiver.name
 	var skill_name := skill.name
 	var dmg := skill.attack
-	
+		
 	damage_receiver.curr_stats.hp = maxi(damage_receiver.curr_stats.hp - dmg, 0)
 	battle_manager.damage_calculator.on_damage_received.emit(dr_actor, dd_actor, dmg)
+	on_skill_attack_damage_received(dr_actor, dd_actor, dmg)
 	label.text = "%s casts %s to %s. It deals %d damage!" % [damage_dealer.name, skill_name, enemy_name, dmg]
 
 func on_basic_attack_damage_received(damage_receiver: Actor, damage_dealer: Actor, damage: int):
@@ -571,8 +566,6 @@ func on_basic_attack_damage_received(damage_receiver: Actor, damage_dealer: Acto
 		dr_avatar.progress_ratio = 0
 		dr_avatar.resume_motion = false
 		dr_avatar.is_alive = false
-	
-	BattleSignals.on_end_turn.emit(damage_dealer)
 
 func on_skill_attack_damage_received(damage_receiver: Actor, damage_dealer: Actor, damage: int):
 	var dd_avatar: Avatar = damage_dealer.avatar
@@ -589,5 +582,6 @@ func on_skill_attack_damage_received(damage_receiver: Actor, damage_dealer: Acto
 		dr_avatar.progress_ratio = 0
 		dr_avatar.resume_motion = false
 		dr_avatar.is_alive = false
-
+		
+	# TODO: remove once skill motions are implemented in actor
 	BattleSignals.on_end_turn.emit(damage_dealer)

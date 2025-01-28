@@ -32,9 +32,11 @@ enum Actor_Type {
 
 # hardcode encounter type for now
 @export var encounter_type: Encounter_Type
-@export var enemy_spawn_count: int
-@export var party_member_spawn_count: int
+
 @export var enemy_texture: Texture2D
+
+var enemy_spawn_count: int
+var party_member_spawn_count: int
 
 # describes the range where actors can start on the timeline
 const starting_timeline_positions = {
@@ -83,11 +85,13 @@ const enemy_names: PackedStringArray = [
 var party_member_stats: Array[BaseStats]= []
 var enemy_stats: Array[BaseStats] = []
 
-var party_member_avatars: Array[Avatar] = []
-var enemy_avatars: Array[Avatar] = []
+#var party_member_avatars: Array[Avatar] = []
+#var enemy_avatars: Array[Avatar] = []
 
-var party_members: Array[Actor] = []
-var enemies: Array[Actor] = []
+#var party_members: Array[Actor] = []
+#var enemies: Array[Actor] = []
+
+@onready var battle_spawn_manager: BattleSpawnManager = $"../BattleSpawnManager"
 
 @onready var battle_scene: Node2D = $"../BattleScene"
 
@@ -130,8 +134,24 @@ func get_starting_timeline_positions() -> Array:
 	var party_range = starting_timeline_positions[encounter_type][Actor_Type.PARTY_MEMBER]
 	var enemy_range = starting_timeline_positions[encounter_type][Actor_Type.ENEMY]
 	return [party_range, enemy_range]
+
+func add_to_line(avatar: Avatar, avatar_line: Path2D, stats: BaseStats, avatar_texture: Texture2D, max_battle_speed: int):
+	avatar.texture = avatar_texture
+	avatar.name = stats.name
+	avatar.move_speed = (stats.speed / float(max_battle_speed)) * 0.25
+	avatar.initial_stats.set_stats(stats)
+	avatar.curr_stats.set_stats(stats)
+	avatar_line.add_child(avatar)
+	# set owner of this node to be the root node of the scene it is spawned in
+	# if not set, godot scene tree won't recognize its existence
+	avatar.owner = avatar_line
+
+func _ready() -> void:
+	var party_members: Array[Actor] = battle_spawn_manager.get_party_members()
+	var enemies: Array[Actor] = battle_spawn_manager.get_enemies()
+	enemy_spawn_count = len(enemies)
+	party_member_spawn_count = len(party_members)
 	
-func _enter_tree() -> void:
 	# initialize battle participants' base stats
 	for i in range(0, party_member_spawn_count):
 		var stats = generate_random_stats(Actor_Type.PARTY_MEMBER)
@@ -142,106 +162,70 @@ func _enter_tree() -> void:
 		var stats = generate_random_stats(Actor_Type.ENEMY)
 		enemy_stats.append(stats)
 		max_battle_speed = maxi(max_battle_speed, stats.speed)
-
-func _ready() -> void:
+	
 	print("battle manager ready called")
-	# load avatars and set random location on path2D
+	# set starting values for avatar and actors and set random location on path2D
 	var party_line: Path2D = one_d_graph.get_node("PartyPath2D")
 	var enemy_line: Path2D = one_d_graph.get_node("EnemyPath2D")
 	
-	for i in range(0, party_member_spawn_count):
-		var avatar: Avatar = avatar_res.instantiate()
-		avatar.texture = party_member_textures[i]
-		avatar.name = party_member_stats[i].name
-		avatar.move_speed = (party_member_stats[i].speed / float(max_battle_speed)) * 0.25
-		avatar.initial_stats.set_stats(party_member_stats[i])
-		avatar.curr_stats.set_stats(party_member_stats[i])
-		avatar.avatar_type = Avatar.Avatar_Type.PARTY_MEMBER
-		party_line.add_child(avatar)
-		party_member_avatars.append(avatar)
-		# set owner of this node to be the root node of the scene it is spawned in
-		# if not set, godot scene tree won't recognize its existence
-		avatar.owner = party_line
+	for i in range(len(party_members)):
+		var actor: Actor = party_members[i]
+		var avatar: Avatar = actor.avatar
+		var stats: BaseStats = party_member_stats[i]
+		var texture: Texture2D = party_member_textures[i]
 		
-	for i in range(0, enemy_spawn_count):
-		var avatar: Avatar = avatar_res.instantiate()
-		avatar.texture = enemy_texture
-		avatar.move_speed = (enemy_stats[i].speed / float(max_battle_speed)) * 0.25
-		avatar.name = enemy_stats[i].name
-		avatar.initial_stats.set_stats(enemy_stats[i])
-		avatar.curr_stats.set_stats(enemy_stats[i])
-		avatar.avatar_type = Avatar.Avatar_Type.ENEMY
-		enemy_line.add_child(avatar)
-		enemy_avatars.append(avatar)
-		# set owner of this node to be the root node of the scene it is spawned in
-		# if not set, godot scene tree won't recognize its existence
-		avatar.owner = enemy_line
-	
-	### Connect Dependencies ... ###
-	for i in range(len(party_member_resources)):
+		## Avatar Setup
+		add_to_line(avatar, party_line, stats, texture, max_battle_speed)
+		
+		## Actor Setup
 		var start_pos: Vector2 = starting_party_member_positions[i]
-		var party_member_resource = party_member_resources[i]
-		var party_member: Actor = party_member_resource.instantiate()
+		actor.position = start_pos
+		var info_display: InfoDisplay = actor.get_info_display()
+		info_display.avatar = avatar
 		
-		party_member.owner = self
-		party_member.position = start_pos
+		actor.battle_manager = self
+		info_display.battle_manager = self
 		
-		party_member.avatar = party_member_avatars[i]
-		var info_display: InfoDisplay = party_member.get_info_display()
-		info_display.avatar = party_member_avatars[i]
-		
-		damage_calculator.on_damage_received.connect(info_display.on_damage_received)
-		party_member.battle_manager = self
-		
-		party_members.append(party_member)
 		# triggers _ready() function to be invoked on the child being added
-		battle_scene.add_child(party_member)
+		battle_scene.add_child(actor)
 	
-	for i in range(len(enemy_resources)):
-		var start_pos: Vector2 = starting_enemy_positions[i]
-		var enemy_resource = enemy_resources[i]
-		var enemy: Actor = enemy_resource.instantiate()
+	for i in range(len(enemies)):
+		var actor: Actor = enemies[i]
+		var avatar: Avatar = actor.avatar
+		var stats: BaseStats = enemy_stats[i]
 		
-		enemy.owner = self
-		enemy.position = start_pos
-		
+		## Avatar Setup
+		add_to_line(avatar, enemy_line, stats, enemy_texture, max_battle_speed)
+
+		## Actor Setup
 		# TODO - add BattleParticipant flee back here maybe?
 		# (enemy_mobs[i] as BattleParticipant).avatar = enemy_avatars[i]
-		enemy.avatar = enemy_avatars[i]
-		var info_display: InfoDisplay = enemy.get_info_display()
-		info_display.avatar = enemy.avatar
+		
+		var start_pos: Vector2 = starting_enemy_positions[i]
+		actor.position = start_pos
+		var info_display: InfoDisplay = actor.get_info_display()
+		info_display.avatar = avatar
+		
+		actor.battle_manager = self
+		info_display.battle_manager = self
+		
 		# Improvement - could re-organize the actor class by creating 2 subclasses party_member and enemy_ai
-		var target_selection_area: MobSelection = enemy.get_target_selection_area()
-		target_selection_area.actor = enemy
+		var target_selection_area: MobSelection = actor.get_target_selection_area()
+		target_selection_area.actor = actor
 		
-		damage_calculator.on_damage_received.connect(info_display.on_damage_received)
-		enemy.battle_manager = self
-		
-		enemies.append(enemy)
-		battle_scene.add_child(enemy)
-	
-	### TODO - figure out how to remove circular references between actor and avatar
-	for i in range(len(party_members)):
-		var party_actor: Actor = party_members[i]
-		var party_avatar: Avatar = party_member_avatars[i]
-		party_avatar.actor = weakref(party_actor)
-		
-	for i in range(len(enemies)):
-		var enemy: Actor = enemies[i]
-		var enemy_avatar: Avatar = enemy_avatars[i]
-		enemy_avatar.actor = weakref(enemy)
-	
+		# triggers _ready() function to be invoked on the child being added
+		battle_scene.add_child(actor)
 	
 	var ranges = get_starting_timeline_positions()
 	print ("encounter type: %d" % encounter_type)
 	
 	# give random starting locations based on a range
-	for party_member in party_member_avatars:
+	for party_member in party_members:
 		var start_position = randf_range(ranges[0][0], ranges[0][1])
 		print_rich("[color=yellow]progress ratio picked for party avatar is %f[/color]" % start_position)
-		party_member.progress_ratio = start_position
+		party_member.avatar.progress_ratio = start_position
 	
 	# give random starting locations based on a range
-	for enemy in enemy_avatars:
+	for enemy in enemies:
 		var start_position = randf_range(ranges[1][0], ranges[1][1])
-		enemy.progress_ratio = start_position
+		enemy.avatar.progress_ratio = start_position

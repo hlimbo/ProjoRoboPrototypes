@@ -39,6 +39,7 @@ func _ready() -> void:
 		
 	if battle_manager:
 		damage_calculator = battle_manager.damage_calculator
+		damage_calculator.on_damage_received.connect(on_damage_received)
 
 
 func on_damage_received(damage_recv: Actor, _damage_dealer: Actor, damage: int) -> void:

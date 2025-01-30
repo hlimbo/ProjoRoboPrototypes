@@ -133,3 +133,8 @@ func calculate_action_execution_speed(wait_time: float) -> float:
 	var diff: float = 1 - self.progress_ratio
 	var action_exec_time: float = diff / wait_time
 	return action_exec_time
+
+
+func toggle_motion(is_paused: bool):
+	resume_motion = !is_paused
+	battle_timers.toggle_timers(is_paused)

@@ -13,3 +13,9 @@ func _exit_tree() -> void:
 	resume_delay_timer.queue_free()
 	skill_timer.queue_free()
 	flee_timer.queue_free()
+	
+func toggle_timers(is_paused: bool):
+	defense_timer.paused = is_paused
+	#resume_delay_timer.paused = is_paused
+	skill_timer.paused = is_paused
+	flee_timer.paused = is_paused

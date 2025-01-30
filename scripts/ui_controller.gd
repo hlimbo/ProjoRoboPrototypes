@@ -5,6 +5,7 @@ class_name UIController
 # owner is the root node of the scene that this node belongs to e.g. main
 @onready var battle_manager: BattleManager = owner.get_node("BattleManager")
 @export var battle_spawn_manager: BattleSpawnManager
+@export var battle_timer_manager: BattleTimerManager
 
 @onready var active_skill_menu: Control = $ActiveSkillMenu
 @onready var action_layout: Control = $ActionLayout
@@ -63,7 +64,7 @@ var party_battle_state: Party_Battle_States = Party_Battle_States.IN_PROGRESS
 var battle_controller: BattleController
 var action_buttons: BattleController.ActionButtons
 
-var timers: Array[Timer] = []
+#var timers: Array[Timer] = []
 var attack_type: Attack_Type
 var pending_skill: Skill
 
@@ -77,7 +78,7 @@ func on_end_turn(actor: Actor):
 	actor.avatar.battle_timers.resume_delay_timer.start()
 
 func on_resume_play():
-	resume_avatars_motion()
+	resume_actors_motion()
 
 func _ready():
 	print("ui controller ready called")
@@ -100,29 +101,12 @@ func _ready():
 	var enemy_avatars: Array[Avatar] = battle_spawn_manager.get_enemy_avatars()
 	var party_members: Array[Avatar] = battle_spawn_manager.get_party_member_avatars()
 	
-	# Fetch all timers in battle scene
-	for avatar in enemy_avatars:
-		timers.append(avatar.battle_timers.skill_timer)
-		timers.append(avatar.battle_timers.defense_timer)
-		#timers.append(avatar.battle_timers.resume_delay_timer)
-		timers.append(avatar.battle_timers.flee_timer)
 	
-	for avatar in party_members:
-		timers.append(avatar.battle_timers.skill_timer)
-		timers.append(avatar.battle_timers.defense_timer)
-		#timers.append(avatar.battle_timers.resume_delay_timer)
-		timers.append(avatar.battle_timers.flee_timer)
-	
-	timers.append(description_timer)
+	# TODO whenever pausing/resuming avatar's motion, also pause/resume description timer
+	# timers.append(description_timer)
 	
 	# for camera motions
 	original_cam_pos = camera_2d.position
-	
-
-func toggle_timer_tick(paused: bool):
-	for timer in timers:
-		if timer and not timer.is_queued_for_deletion():
-			timer.paused = paused
 
 func toggle_pickable_mobs(input_pickable: bool):
 	# pick target to attack
@@ -156,7 +140,9 @@ func start_defend(actor: Actor):
 	def_cmd.execute(actor)
 	
 	description_timer.start()
-	resume_avatars_motion()
+	
+	var actors: Array[Actor] = battle_spawn_manager.get_all_actors()	
+	battle_timer_manager.resume_actors_excluding(actors, actor)
 
 func _on_defend_button_pressed(actor: Actor):
 	start_defend(actor)
@@ -226,7 +212,7 @@ func on_determine_flee_rate(actor: Actor):
 	# - modify it to where once timeline reaches progress = 1, decide if party can flee or not
 	
 	# pause timers and avatar movement along timeline
-	pause_avatars_motion()
+	pause_actors_motion()
 	
 	var flee_rate := 0.5
 	var roll = randf()
@@ -257,7 +243,8 @@ func _on_flee_button_pressed(actor: Actor):
 	avatar._curr_speed = avatar.calculate_action_execution_speed(wait_time)
 	avatar.resume_motion = true
 	
-	resume_avatars_motion()
+	resume_actors_motion()
+	
 	action_layout.visible = false
 	avatar.battle_timers.flee_timer.start()
 
@@ -283,7 +270,7 @@ func on_target_clicked(dr_actor: Actor, dd_actor: Actor):
 	
 	if attack_type == Attack_Type.BASIC:
 		var on_basic_atk_dmg_recv = func(dr: Actor, dd: Actor, dmg: int): on_basic_attack_damage_received(dr, dd, dmg)
-		battle_manager.damage_calculator.on_damage_received.connect(on_basic_attack_damage_received, ConnectFlags.CONNECT_ONE_SHOT)
+		battle_manager.damage_calculator.on_damage_received.connect(on_basic_atk_dmg_recv, ConnectFlags.CONNECT_ONE_SHOT)
 		var atk_cmd = AttackCommand.new()
 		atk_cmd.target = dr_actor
 		atk_cmd.execute(dd_actor)
@@ -300,46 +287,41 @@ func on_target_clicked(dr_actor: Actor, dd_actor: Actor):
 		target_menu.visible = false
 		active_skill_menu.visible = false
 
-	resume_avatars_motion()
+	resume_actors_motion()
 
-func pause_avatars_motion():
-	var party_members: Array[Avatar] = battle_spawn_manager.get_party_member_avatars()
-	var enemy_avatars: Array[Avatar] = battle_spawn_manager.get_enemy_avatars()
+func pause_actors_motion():
+	var party_members: Array[Actor] = battle_spawn_manager.get_party_members()
+	var enemies: Array[Actor] = battle_spawn_manager.get_enemies()
 	
-	var live_party_members = party_members.filter(func(a: Avatar): return a.is_alive)
-	var live_enemies = enemy_avatars.filter(func(a: Avatar): return a.is_alive)
+	var live_party_members = party_members.filter(func(a: Actor): return a.avatar.is_alive)
+	var live_enemies = enemies.filter(func(a: Actor): return a.avatar.is_alive)
 	
-	toggle_timer_tick(true)
+	description_timer.paused = true
+	battle_timer_manager.pause_actors(live_party_members)
+	battle_timer_manager.pause_actors(live_enemies)
 	
-	for member in live_party_members:
-		member.resume_motion = false
-	for enemy in live_enemies:
-		enemy.resume_motion = false
 
-func resume_avatars_motion():
-	var party_members: Array[Avatar] = battle_spawn_manager.get_party_member_avatars()
-	var enemy_avatars: Array[Avatar] = battle_spawn_manager.get_enemy_avatars()
+func resume_actors_motion():
+	var party_members: Array[Actor] = battle_spawn_manager.get_party_members()
+	var enemies: Array[Actor] = battle_spawn_manager.get_enemies()
 	
-	var live_party_members = party_members.filter(func(a: Avatar): return a.is_alive)
-	var live_enemies = enemy_avatars.filter(func(a: Avatar): return a.is_alive)
+	var live_party_members = party_members.filter(func(a: Actor): return a.avatar.is_alive)
+	var live_enemies = enemies.filter(func(a: Actor): return a.avatar.is_alive)
 	
 	#var is_exe_move = func(a: Avatar): 
 		#return a.battle_state == Constants.Battle_State.EXECUTING_MOVE
 	
 	# may cause stalls as there other timers ticking....
 	# don't resume avatar motion if any live party member is making a move or a move is executing
-	var any_party_member_making_move: bool = live_party_members.any(func(a: Avatar): return a.battle_state == Constants.Battle_State.MOVE_SELECTION)
+	var any_party_member_making_move: bool = live_party_members.any(func(a: Actor): return a.avatar.battle_state == Constants.Battle_State.MOVE_SELECTION)
 	#var any_executing_move: bool = live_party_members.any(is_exe_move) or live_enemies.any(is_exe_move) 
 	
 	if any_party_member_making_move:
 		return
-		
-	toggle_timer_tick(false)
 	
-	for member in live_party_members:
-		member.resume_motion = true
-	for enemy in live_enemies:
-		enemy.resume_motion = true
+	description_timer.paused = false
+	battle_timer_manager.resume_actors(live_party_members)
+	battle_timer_manager.resume_actors(live_enemies)
 
 func on_start_order_step(actor: Actor) -> void:
 	var avatar: Avatar = actor.avatar
@@ -349,7 +331,7 @@ func on_start_order_step(actor: Actor) -> void:
 	# entry point for party member to pick a move
 	if avatar.avatar_type == Avatar.Avatar_Type.PARTY_MEMBER:
 		# pause all timers to prevent them going off when party member is picking a move
-		pause_avatars_motion()
+		pause_actors_motion()
 		party_member_name.text = avatar.name
 		action_layout.visible = true
 		
@@ -487,7 +469,7 @@ func on_ai_skill_end(damage_receiver: Actor, damage_dealer: Actor) -> void:
 	var avatar: Avatar = damage_dealer.avatar
 	var target: Avatar = damage_receiver.avatar
 	
-	pause_avatars_motion()
+	pause_actors_motion()
 	
 	print("avatar %s skill end at time %d" % [avatar.name, Time.get_ticks_msec()])
 	# pick random skill
@@ -528,8 +510,8 @@ func on_party_member_skill_end(dr_actor: Actor, dd_actor: Actor):
 	var damage_receiver: Avatar = dr_actor.avatar
 	var damage_dealer: Avatar = dd_actor.avatar
 	
-	## pause all other avatar movement and timers
-	pause_avatars_motion()
+	## TODO pause all avatar and actor movement/timers except for actor performing the skill
+	pause_actors_motion()
 
 	var skill: Skill = pending_skill
 	# you can have an AOE skill, a single target skill, or a multi-target skill

@@ -32,8 +32,9 @@ var original_target: Node2D
 @export_group("Debug Menu")
 @export var enable_debug_menu: bool
 
-var velocity: Vector2
 var original_pos: Vector2
+# controls if movement is allowed or not
+var resume_motion: bool = true
 
 # used to detect when actor can stop moving
 @onready var interact_area: Area2D = $CollisionGeometry/InteractArea
@@ -61,6 +62,8 @@ var attack_cmd: AttackCommand
 var defend_cmd: DefendCommand
 var flee_cmd: FleeCommand
 #endregion
+
+signal on_damage_received(damage_receiver: Actor, damage: int)
 
 func _init():
 	# These should be created as they are issued by button presses by player controller
@@ -149,7 +152,7 @@ func start_motion(target_actor: Actor):
 
 func move_to_target(target_pos: Vector2) -> Vector2:
 	var dir = (target_pos - position).normalized()
-	velocity = Vector2(dir.x, dir.y) * move_speed
+	var velocity = Vector2(dir.x, dir.y) * move_speed * float(resume_motion)
 	return velocity
 
 # assume this other is always an enemy.. need to add a tagging system later on to determine what is being hit (like how unity does it)
@@ -180,6 +183,9 @@ func on_enable_attack_hitbox():
 # its possible the attack will not connect... causing battle timeline not to resume
 func on_attack_connect(area: Area2D):
 	
+	print("who's attacking? ", avatar.curr_stats.name)
+	print("area hit: ", area.name)
+	
 	# apply damage calculations
 	if damage_calculator:
 		var actor_receiving_dmg: Actor = target
@@ -195,6 +201,7 @@ func on_attack_connect(area: Area2D):
 		
 		var dmg = damage_calculator.calculate_damage(actor_receiving_dmg, self)
 		damage_receiver.curr_stats.hp = maxi(damage_receiver.curr_stats.hp - dmg, 0)
+		#on_damage_received.emit(actor_receiving_dmg, dmg)
 		damage_calculator.on_damage_received.emit(actor_receiving_dmg, self, dmg)
 	else:
 		print_rich("[color=red]Damage Calculator is null in Actor.gd[/color]")
@@ -237,3 +244,19 @@ func get_info_display() -> InfoDisplay:
 # enemy actors can only access this
 func get_target_selection_area() -> MobSelection:
 	return get_node("CollisionGeometry/TargetSelectionArea")
+
+# TODO: once animation frames are added in, add it functionality to freeze frames
+func toggle_motion(is_paused: bool):
+	toggle_timers(is_paused)
+	resume_motion = !is_paused
+	
+	if avatar:
+		avatar.toggle_motion(is_paused)
+	
+	# this gets uppdated at the end of the frame
+	hit_shape.set_deferred("disabled", is_paused)
+
+func toggle_timers(is_paused: bool):
+	attack_timer.paused = is_paused
+	enable_attack_timer.paused = is_paused
+	defense_timer.paused = is_paused

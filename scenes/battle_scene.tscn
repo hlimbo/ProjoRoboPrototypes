@@ -1,5 +1,6 @@
-[gd_scene load_steps=12 format=3 uid="uid://bx67atr86l06a"]
+[gd_scene load_steps=13 format=3 uid="uid://bx67atr86l06a"]
 
+[ext_resource type="Script" path="res://scripts/battle_timer_manager.gd" id="1_gg4k4"]
 [ext_resource type="PackedScene" uid="uid://yirvhthqc5v6" path="res://nodes/party_member_layout.tscn" id="1_jaw4a"]
 [ext_resource type="Script" path="res://scripts/battle_spawn_manager.gd" id="1_lnptf"]
 [ext_resource type="PackedScene" uid="uid://cmclhu115571j" path="res://nodes/action_layout.tscn" id="1_p0qnp"]
@@ -15,6 +16,9 @@
 script = ExtResource("3_ina5a")
 
 [node name="main" type="Node2D"]
+
+[node name="BattleTimerManager" type="Node" parent="."]
+script = ExtResource("1_gg4k4")
 
 [node name="BattleSpawnManager" type="Node2D" parent="."]
 script = ExtResource("1_lnptf")
@@ -52,10 +56,11 @@ position = Vector2(1487, 1262)
 [node name="Enemy3" type="Marker2D" parent="BattleScene"]
 position = Vector2(1671, 1262)
 
-[node name="UILayout" type="CanvasLayer" parent="." node_paths=PackedStringArray("battle_spawn_manager")]
+[node name="UILayout" type="CanvasLayer" parent="." node_paths=PackedStringArray("battle_spawn_manager", "battle_timer_manager")]
 unique_name_in_owner = true
 script = ExtResource("1_qdx8j")
 battle_spawn_manager = NodePath("../BattleSpawnManager")
+battle_timer_manager = NodePath("../BattleTimerManager")
 
 [node name="BattleResultsScreen" parent="UILayout" instance=ExtResource("5_f3g4b")]
 visible = false

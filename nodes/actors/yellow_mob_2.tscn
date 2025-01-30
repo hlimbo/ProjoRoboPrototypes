@@ -112,14 +112,17 @@ shape = SubResource("CapsuleShape2D_qta2k")
 [node name="Timers" type="Node2D" parent="."]
 
 [node name="AttackTimer" type="Timer" parent="Timers"]
+process_callback = 0
 one_shot = true
 
 [node name="EnableAttackTimer" type="Timer" parent="Timers"]
+process_callback = 0
 wait_time = 0.5
 one_shot = true
 
 [node name="DefenseTimer" type="Timer" parent="Timers"]
-wait_time = 3.0
+process_callback = 0
+wait_time = 1.5
 one_shot = true
 
 [node name="Defense" type="Node2D" parent="."]

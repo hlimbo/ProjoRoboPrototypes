@@ -97,13 +97,13 @@ func _ready():
 	BattleSignals.on_end_turn.connect(on_end_turn)
 	BattleSignals.on_resume_play.connect(on_resume_play)
 	BattleSignals.on_start_turn.connect(on_start_order_step)
-		
+	
+	battle_manager.damage_calculator.on_damage_received.connect(on_show_description_panel_basic_attack)
+	battle_manager.damage_calculator.on_damage_received.connect(on_check_damage_receiver_is_defeated)
+
 	var enemy_avatars: Array[Avatar] = battle_spawn_manager.get_enemy_avatars()
 	var party_members: Array[Avatar] = battle_spawn_manager.get_party_member_avatars()
 	
-	
-	# TODO whenever pausing/resuming avatar's motion, also pause/resume description timer
-	# timers.append(description_timer)
 	
 	# for camera motions
 	original_cam_pos = camera_2d.position
@@ -269,8 +269,6 @@ func on_target_clicked(dr_actor: Actor, dd_actor: Actor):
 	var damage_dealer: Avatar = dd_actor.avatar
 	
 	if attack_type == Attack_Type.BASIC:
-		var on_basic_atk_dmg_recv = func(dr: Actor, dd: Actor, dmg: int): on_basic_attack_damage_received(dr, dd, dmg)
-		battle_manager.damage_calculator.on_damage_received.connect(on_basic_atk_dmg_recv, ConnectFlags.CONNECT_ONE_SHOT)
 		var atk_cmd = AttackCommand.new()
 		atk_cmd.target = dr_actor
 		atk_cmd.execute(dd_actor)
@@ -410,10 +408,6 @@ func ai_attack(actor: Actor) -> void:
 	var party_members: Array[Actor] = battle_spawn_manager.get_party_members()
 	var live_party_members: Array[Actor] = party_members.filter(func(p: Actor): return p.avatar.is_alive)
 	
-	# create copy of function to pass into the connection
-	var on_basic_atk_dmg_recv = func(dr: Actor, dd: Actor, dmg: int): on_basic_attack_damage_received(dr, dd, dmg)
-	battle_manager.damage_calculator.on_damage_received.connect(on_basic_atk_dmg_recv, ConnectFlags.CONNECT_ONE_SHOT)
-	
 	if len(live_party_members) == 0:
 		print_rich("[color=yellow]Warning no more party members to attack[/color]")
 		return
@@ -530,20 +524,26 @@ func on_party_member_skill_end(dr_actor: Actor, dd_actor: Actor):
 	on_skill_attack_damage_received(dr_actor, dd_actor, dmg)
 	label.text = "%s casts %s to %s. It deals %d damage!" % [damage_dealer.name, skill_name, enemy_name, dmg]
 
-func on_basic_attack_damage_received(damage_receiver: Actor, damage_dealer: Actor, damage: int):
-	var dd_avatar: Avatar = damage_dealer.avatar
-	var dr_avatar: Avatar = damage_receiver.avatar
-	print("ui on damage received: %s atks %s" % [dd_avatar.curr_stats.name, dr_avatar.curr_stats.name])
-	
-	# UI-updates #
+func on_show_description_panel_basic_attack(damage_receiver: Actor, damage_dealer: Actor, damage: int):
 	target_menu.visible = false
 	description_panel.visible = true
-	# start timer to hide description panel
+	# start to begin hiding the description panel after some time passed
 	description_timer.start()
-	label.text = "%s attacked for %d damage to %s" % [dd_avatar.curr_stats.name, damage, dr_avatar.curr_stats.name]
+	var dd_avatar: Avatar = damage_dealer.avatar
+	var dr_avatar: Avatar = damage_receiver.avatar
+	print("on damage received basic attack: %s atks %s for %d dmg" % [dd_avatar.curr_stats.name, dr_avatar.curr_stats.name, damage])
+	
+	# TODO: need to know what action the actor picked in order to print out the appropriate message for attack or skill
+	var text = "%s attacked %s for %d damage" % [dd_avatar.curr_stats.name, dr_avatar.curr_stats.name, damage]
+	label.text = text
+	
+func on_check_damage_receiver_is_defeated(damage_receiver: Actor, damage_dealer: Actor, damage: int):
+	var dd_avatar: Avatar = damage_dealer.avatar
+	var dr_avatar: Avatar = damage_receiver.avatar
 	
 	# check if target is downed... no longer able to battle
 	if dr_avatar.curr_stats.hp <= 0:
+		print("damage receiver %s is defeated!" % dr_avatar.curr_stats.name)
 		dr_avatar.curr_stats.hp = 0
 		dr_avatar.progress_ratio = 0
 		dr_avatar.resume_motion = false
@@ -557,13 +557,6 @@ func on_skill_attack_damage_received(damage_receiver: Actor, damage_dealer: Acto
 	description_timer.start()
 	dd_avatar.battle_state = Constants.Battle_State.EXECUTING_MOVE
 	dd_avatar.update_battle_state_text()
-
-	# check if target is downed... no longer able to battle
-	if dr_avatar.curr_stats.hp <= 0:
-		dr_avatar.curr_stats.hp = 0
-		dr_avatar.progress_ratio = 0
-		dr_avatar.resume_motion = false
-		dr_avatar.is_alive = false
 		
 	# TODO: remove once skill motions are implemented in actor
 	BattleSignals.on_end_turn.emit(damage_dealer)

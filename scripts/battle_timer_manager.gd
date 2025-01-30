@@ -3,9 +3,15 @@ class_name BattleTimerManager
 
 func pause_actor(actor: Actor):
 	actor.toggle_motion(true)
+	# disable attack hitbox if in the middle of attacking to avoid damaging the other actor
+	if actor.motion_state == Constants.Active_Battle_State.ATTACK:
+		actor.toggle_hitbox(false)
 	
 func resume_actor(actor: Actor):
 	actor.toggle_motion(false)
+	# resume attacking if in attack state
+	if actor.motion_state == Constants.Active_Battle_State.ATTACK:
+		actor.toggle_hitbox(true)
 
 func pause_actors(actors: Array[Actor]):
 	for actor in actors:

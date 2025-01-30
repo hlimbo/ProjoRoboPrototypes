@@ -40,7 +40,6 @@ var resume_motion: bool = true
 @onready var interact_area: Area2D = $CollisionGeometry/InteractArea
 # used to detect actor's hitbox when attacking
 @onready var hit_area: Area2D = $CollisionGeometry/HitArea2D
-@onready var hit_shape: CollisionShape2D = $CollisionGeometry/HitArea2D/CollisionShape2D
 
 # used to detect when actor may receive attacks or other status effects
 @onready var actor_area: Area2D = $CollisionGeometry/ActorArea
@@ -157,9 +156,15 @@ func move_to_target(target_pos: Vector2) -> Vector2:
 
 # assume this other is always an enemy.. need to add a tagging system later on to determine what is being hit (like how unity does it)
 func on_other_entered(other: Area2D):
+	print("entering this state for actor: ", avatar.curr_stats.name)
+	
 	# don't trigger this overlap if not moving previously
 	# prevent double attacks
 	if motion_state != Active_Battle_State.MOVING:
+		return
+	
+	# if not target OR the other area2D isn't an actor's collision body, don't trigger the attack state
+	if !target or target.get_node("CollisionGeometry/ActorArea") != other:
 		return
 	
 	print("entered attacking area: %s" % other.name)
@@ -174,13 +179,10 @@ func on_attack_end():
 
 # simulate enabling hit box at end of the frame
 func on_enable_attack_hitbox():
-	print("enabling attack at end of frame")
-	hit_shape.set_deferred("disabled", false)
-	
+	hit_area.monitoring = true
 	# simulate attack animation
 	attack_timer.start()
 
-# its possible the attack will not connect... causing battle timeline not to resume
 func on_attack_connect(area: Area2D):
 	
 	print("who's attacking? ", avatar.curr_stats.name)
@@ -192,6 +194,8 @@ func on_attack_connect(area: Area2D):
 		
 		if actor_receiving_dmg == null:
 			print_rich("[color=red]Unable to find actor to damage...[/color]")
+			# turn off hitbox
+			hit_area.monitoring = false
 			return
 			
 		print("hit %s" % actor_receiving_dmg.avatar.name)
@@ -206,9 +210,8 @@ func on_attack_connect(area: Area2D):
 	else:
 		print_rich("[color=red]Damage Calculator is null in Actor.gd[/color]")
 		
-	# disable at end of frame as per Godot Docs recommendation
-	print("disabling attack at end of frame")
-	hit_shape.set_deferred("disabled", true)
+		
+	hit_area.monitoring = false
 
 func start_defend():
 	if motion_state == Active_Battle_State.DEFEND:
@@ -253,8 +256,8 @@ func toggle_motion(is_paused: bool):
 	if avatar:
 		avatar.toggle_motion(is_paused)
 	
-	# this gets uppdated at the end of the frame
-	hit_shape.set_deferred("disabled", is_paused)
+func toggle_hitbox(is_enabled: bool):
+	hit_area.monitoring = is_enabled
 
 func toggle_timers(is_paused: bool):
 	attack_timer.paused = is_paused

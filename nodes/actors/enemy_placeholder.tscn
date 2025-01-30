@@ -22,7 +22,7 @@ shader_parameter/transparency_value = 1.0
 radius = 202.062
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_tmwpw"]
-radius = 97.0052
+radius = 73.0274
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ie1ax"]
 radius = 79.0
@@ -217,11 +217,11 @@ debug_color = Color(0.608226, 0.539873, 1.92523e-07, 0.42)
 [node name="HitArea2D" type="Area2D" parent="CollisionGeometry"]
 collision_layer = 64
 collision_mask = 2
+monitoring = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CollisionGeometry/HitArea2D"]
-position = Vector2(-166, -89)
+position = Vector2(-128, -88)
 shape = SubResource("CircleShape2D_tmwpw")
-disabled = true
 debug_color = Color(0.956863, 0, 0.552941, 0.501961)
 
 [node name="ActorArea" type="Area2D" parent="CollisionGeometry"]

@@ -162,46 +162,39 @@ func _on_description_timer_timeout():
 	label.text = ""
 
 func _process(_delta: float) -> void:
-	pass
-	# TODO - add back once command pattern implemented for Actors
-	## check if enemies are defeated
-	#var i = 0
-	#var limit = len(enemy_avatars)
-	#while i < limit:
-		#if enemy_avatars[i].curr_stats.hp <= 0:
-			#enemy_avatars[i].queue_free()
-			## TODO - don't do this... find a better solution to remove (prefer to remove rootmost node)
-			#mobs[i].get_parent().queue_free()
-			#enemy_avatars.remove_at(i)
-			#mobs.remove_at(i)
-			#
-			## shift index to left and update limit as item is removed
-			## and maybe skipped...
-			#i -= 1
-			#limit = len(enemy_avatars)
-			#
-		#i += 1
+	# check if enemies are defeated
+	var enemies: Array[Actor] = battle_spawn_manager.get_enemies()
+	var removed_enemies: Array[Actor] = []
+	for i in range(len(enemies)):
+		if enemies[i] and !enemies[i].avatar.is_alive:
+			removed_enemies.append(enemies[i])
 	
-	# TODO - comment back in once command pattern integrated
-	## check Party Battle Status
-	#var pending_battle_state: Party_Battle_States = Party_Battle_States.DEFEAT
-	#for avatar in party_members:
-		#if avatar.curr_stats.hp > 0:
-			#pending_battle_state = Party_Battle_States.IN_PROGRESS
-			#break
-			#
+	while len(removed_enemies) > 0:
+		var enemy: Actor = removed_enemies.pop_back()
+		# slow algorithm but ok since there will be between 1 to 6 enemies in a battle
+		battle_spawn_manager.remove_actor(Constants.Avatar_Type.ENEMY, enemy)
+		enemy.queue_free()
+	
+	# check Party Battle Status
+	var party_members: Array[Actor] = battle_spawn_manager.get_party_members()
+	var pending_battle_state: Party_Battle_States = Party_Battle_States.DEFEAT
+	for actor in party_members:
+		if actor.avatar.is_alive:
+			pending_battle_state = Party_Battle_States.IN_PROGRESS
+			break
+			
 	## all enemies are defeated
-	#if len(enemy_avatars) == 0:
-		#pending_battle_state = Party_Battle_States.WIN
+	if len(enemies) == 0:
+		pending_battle_state = Party_Battle_States.WIN
 	#
-	## hacky - setting the flee state happens in another callable function
-	## need to either handle state changes in callable functions or have it all happen in process
-	#if party_battle_state != Party_Battle_States.FLEE:
-		#party_battle_state = pending_battle_state
-	#
-	#if did_tween_start == false and party_battle_state != Party_Battle_States.IN_PROGRESS:
-		#transition_to_main_scene(party_battle_state)
-		#did_tween_start = true
+	# hacky - setting the flee state happens in another callable function
+	# need to either handle state changes in callable functions or have it all happen in process
+	if party_battle_state != Party_Battle_States.FLEE:
+		party_battle_state = pending_battle_state
+	
+	if did_tween_start == false and party_battle_state != Party_Battle_States.IN_PROGRESS:
+		transition_to_main_scene(party_battle_state)
+		did_tween_start = true
 
 func on_determine_flee_rate(actor: Actor):
 	# TODOs
@@ -359,9 +352,9 @@ func on_start_order_step(actor: Actor) -> void:
 	elif avatar.avatar_type == Constants.Avatar_Type.ENEMY:
 		#ai_determine_move(actor)
 		#ai_use_random_skill(actor)
-		#start_defend(actor)
-		# ai_flee(actor)
-		ai_attack(actor)
+		start_defend(actor)
+		#ai_flee(actor)
+		#ai_attack(actor)
 
 func transition_to_main_scene(status: Party_Battle_States):
 	var exit_scene = func():
@@ -428,20 +421,6 @@ func ai_flee(actor: Actor) -> void:
 	
 	var flee_cmd = FleeCommand.new()
 	flee_cmd.execute(actor)
-	
-	#avatar.on_avatar_flee.emit()
-	#
-	#var i = 0
-	#while i < len(enemy_avatars):
-		#if enemy_avatars[i] == avatar:
-			#break
-		#i += 1
-		#
-	## remove avatar from scene if found
-	#if i < len(enemy_avatars):
-		#enemy_avatars.remove_at(i)
-		#remove_child(avatar)
-		#avatar.queue_free()
 
 func ai_use_random_skill(actor: Actor) -> void:
 	var avatar: Avatar = actor.avatar
@@ -544,6 +523,7 @@ func on_check_damage_receiver_is_defeated(damage_receiver: Actor, damage_dealer:
 	# check if target is downed... no longer able to battle
 	if dr_avatar.curr_stats.hp <= 0:
 		print("damage receiver %s is defeated!" % dr_avatar.curr_stats.name)
+		dr_avatar.is_alive = false
 		dr_avatar.curr_stats.hp = 0
 		dr_avatar.progress_ratio = 0
 		dr_avatar.resume_motion = false

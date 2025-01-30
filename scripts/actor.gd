@@ -77,6 +77,11 @@ func _ready():
 	original_pos = position
 	original_target = target
 	
+	# for some reason in between scene changes, the prev shader value persists...
+	# resetting on scene ready
+	(material as ShaderMaterial).set_shader_parameter("transparency_value", 1)
+	info_node.visible = true
+	
 	if battle_manager:
 		damage_calculator = battle_manager.damage_calculator
 	
@@ -138,8 +143,10 @@ func _process(delta_time: float):
 				
 	elif motion_state == Active_Battle_State.FLEE:
 		flee_time = clampf(flee_time + delta_time, flee_time, flee_fade_time)
-		(material as ShaderMaterial).set_shader_parameter("transparency_value", flee_fade_time - flee_time)
-		info_node.visible = false
+		var diff: float = flee_fade_time - flee_time
+		fadeout(diff)
+		if diff == 0:
+			avatar.is_alive = false
 
 func start_motion(target_actor: Actor):
 	# if already moving don't trigger it again
@@ -263,3 +270,7 @@ func toggle_timers(is_paused: bool):
 	attack_timer.paused = is_paused
 	enable_attack_timer.paused = is_paused
 	defense_timer.paused = is_paused
+
+func fadeout(t: float):
+	(material as ShaderMaterial).set_shader_parameter("transparency_value", t)
+	info_node.visible = false

@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://blks44s8mvnag"]
+[gd_scene load_steps=20 format=3 uid="uid://blks44s8mvnag"]
 
 [ext_resource type="Shader" path="res://shaders/transparent_fade.gdshader" id="1_ydi0w"]
 [ext_resource type="Script" path="res://scripts/actor.gd" id="2_5ud6m"]
@@ -11,6 +11,9 @@
 [ext_resource type="PackedScene" uid="uid://cx3vhulcggapg" path="res://nodes/info_node.tscn" id="9_un1iw"]
 [ext_resource type="PackedScene" uid="uid://de228clgk2wkw" path="res://nodes/ui/status_effect_layout.tscn" id="10_12ki7"]
 [ext_resource type="Texture2D" uid="uid://dcv61ts3lojeo" path="res://assets/kenney-board-game-icons/Tilesheet/iconsDouble.png" id="11_wosbv"]
+[ext_resource type="PackedScene" uid="uid://qml0ed0h5m72" path="res://nodes/battle_reaction.tscn" id="12_ei5bv"]
+[ext_resource type="PackedScene" uid="uid://hqd2d6o5vprn" path="res://nodes/reaction_based_button.tscn" id="13_ppa4i"]
+[ext_resource type="PackedScene" uid="uid://dmdn61yneme7o" path="res://nodes/reaction_label.tscn" id="14_ua884"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_usbqb"]
 shader = ExtResource("1_ydi0w")
@@ -25,6 +28,9 @@ radius = 146.0
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_qta2k"]
 radius = 172.0
 height = 400.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_sv3b4"]
+radius = 525.524
 
 [node name="yellow_mob2" type="Node2D"]
 material = SubResource("ShaderMaterial_usbqb")
@@ -80,6 +86,12 @@ position = Vector2(-0.692352, -188)
 offset_top = -664.0
 offset_bottom = -378.0
 
+[node name="NameLabel" parent="InfoNode" index="0"]
+theme_override_font_sizes/font_size = 48
+
+[node name="HPLabel" parent="InfoNode" index="1"]
+theme_override_font_sizes/font_size = 48
+
 [node name="CollisionGeometry" type="Node2D" parent="."]
 
 [node name="InteractArea" type="Area2D" parent="CollisionGeometry"]
@@ -87,7 +99,7 @@ collision_layer = 8
 collision_mask = 4
 
 [node name="OverlapDetection2D" type="CollisionShape2D" parent="CollisionGeometry/InteractArea"]
-position = Vector2(-2, -198)
+position = Vector2(0, -188)
 shape = SubResource("CircleShape2D_fpomk")
 debug_color = Color(0.652594, 0.518529, 1.92523e-07, 0.42)
 
@@ -108,6 +120,14 @@ collision_mask = 81
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CollisionGeometry/ActorArea"]
 position = Vector2(-2, -180)
 shape = SubResource("CapsuleShape2D_qta2k")
+
+[node name="OuterInteractArea" type="Area2D" parent="CollisionGeometry"]
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CollisionGeometry/OuterInteractArea"]
+position = Vector2(0, -188)
+shape = SubResource("CircleShape2D_sv3b4")
+debug_color = Color(0.752525, 0.195799, 1, 0.42)
 
 [node name="Timers" type="Node2D" parent="."]
 
@@ -145,5 +165,26 @@ texture = ExtResource("11_wosbv")
 region_enabled = true
 region_rect = Rect2(1407, 127, 131, 126)
 
+[node name="BattleReaction" parent="." instance=ExtResource("12_ei5bv")]
+visible = false
+z_index = 100
+offset_left = 170.0
+offset_top = -594.0
+offset_right = 953.0
+offset_bottom = -457.0
+
+[node name="Label" parent="BattleReaction" index="1"]
+theme_override_font_sizes/font_size = 100
+
+[node name="ReactionBasedButton" parent="." instance=ExtResource("13_ppa4i")]
+
+[node name="ReactionLabel" parent="." instance=ExtResource("14_ua884")]
+visible = false
+offset_left = 12.0
+offset_top = -730.0
+offset_right = 12.0
+offset_bottom = -730.0
+
 [editable path="InfoNode"]
 [editable path="Defense/StatusEffectLayout"]
+[editable path="BattleReaction"]

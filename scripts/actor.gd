@@ -44,14 +44,21 @@ var resume_motion: bool = true
 # used to detect when actor may receive attacks or other status effects
 @onready var actor_area: Area2D = $CollisionGeometry/ActorArea
 
+# used to detect Quick Time Event (QTE) Defend
+@onready var outer_interact_area: Area2D = $CollisionGeometry/OuterInteractArea
+
 @onready var attack_timer: Timer = $Timers/AttackTimer
 # TODO: once placeholder art with frames is in... could code it to where when a frame starts
 # enable hitbox and on end frame disable hitbox
 @onready var enable_attack_timer: Timer = $Timers/EnableAttackTimer
-
 @onready var defense_timer: Timer = $Timers/DefenseTimer
 
 @onready var defense_node: Node2D = $Defense
+
+# quick time defend
+@onready var battle_reaction: BattleReaction = $BattleReaction
+@onready var reaction_based_button: ReactionBasedButton = $ReactionBasedButton
+@onready var reaction_label: Control = $ReactionLabel
 
 var flee_time: float = 0.0
 @export var flee_fade_time: float = 3.0
@@ -62,7 +69,7 @@ var defend_cmd: DefendCommand
 var flee_cmd: FleeCommand
 #endregion
 
-signal on_damage_received(damage_receiver: Actor, damage: int)
+signal on_disable_quick_time_defend
 
 func _init():
 	# These should be created as they are issued by button presses by player controller
@@ -91,10 +98,12 @@ func _ready():
 	if not interact_area or not attack_timer or not enable_attack_timer or not defense_timer or not hit_area:
 		return
 	
-	interact_area.area_entered.connect(on_other_entered)
 	attack_timer.timeout.connect(on_attack_end)
 	enable_attack_timer.timeout.connect(on_enable_attack_hitbox)
 	defense_timer.timeout.connect(on_defend_end)
+	
+	outer_interact_area.area_entered.connect(on_outer_area_entered)
+	interact_area.area_entered.connect(on_other_entered)
 	hit_area.area_entered.connect(on_attack_connect)
 	
 	#if avatar:
@@ -104,6 +113,35 @@ func _ready():
 		info_node.update_labels(avatar)
 		
 	connect_battle_signals()
+	the_reaction_button()
+
+func the_reaction_button():
+	if reaction_based_button:
+		var on_key_pressed = func(reaction_state: ReactionBasedButton.ReactionState):
+			var label = reaction_label.get_node("Label") as Label
+			reaction_label.visible = true
+			if reaction_state == ReactionBasedButton.ReactionState.ON_TIME:
+				label.text = "Right On!"
+				start_defend()
+			elif reaction_state == ReactionBasedButton.ReactionState.EARLY:
+				label.text = "Too Early!"
+			elif reaction_state == ReactionBasedButton.ReactionState.LATE:
+				label.text = "Too Late!"
+			else:
+				label.text = "Not Quite!"
+				
+			var hide_timer = Timer.new()
+			add_child(hide_timer)
+			hide_timer.one_shot = true
+			hide_timer.wait_time = 3
+			hide_timer.start()
+			var on_timeout = func():
+				reaction_label.visible = false
+				hide_timer.queue_free()
+			hide_timer.timeout.connect(on_timeout)
+			
+		
+		reaction_based_button.on_key_pressed.connect(on_key_pressed)
 
 func connect_battle_signals():
 	if avatar:
@@ -161,23 +199,48 @@ func move_to_target(target_pos: Vector2) -> Vector2:
 	var velocity = Vector2(dir.x, dir.y) * move_speed * float(resume_motion)
 	return velocity
 
-# assume this other is always an enemy.. need to add a tagging system later on to determine what is being hit (like how unity does it)
-func on_other_entered(other: Area2D):
-	print("entering this state for actor: ", avatar.curr_stats.name)
-	
-	# don't trigger this overlap if not moving previously
-	# prevent double attacks
-	if motion_state != Active_Battle_State.MOVING:
-		return
-	
+# find 
+
+# TODO: use groups to tag by party member and enemy
+# inner area
+func on_other_entered(other: Area2D):	
 	# if not target OR the other area2D isn't an actor's collision body, don't trigger the attack state
 	if !target or target.get_node("CollisionGeometry/ActorArea") != other:
 		return
 	
-	print("entered attacking area: %s" % other.name)
-	motion_state = Active_Battle_State.ATTACK
-	# simulate attack animation delay -- timer
-	enable_attack_timer.start()
+	if motion_state == Active_Battle_State.MOVING:
+		print("entered attacking area: %s" % other.name)
+		motion_state = Active_Battle_State.ATTACK
+		# simulate attack animation delay -- timer
+		enable_attack_timer.start()
+
+# outer area
+func on_outer_area_entered(area: Area2D):
+	if avatar.avatar_type == Avatar_Type.PARTY_MEMBER:
+		print("party member entered outer area")
+	
+	var is_valid_state: bool = [Active_Battle_State.NEUTRAL, Active_Battle_State.DEFEND].has(motion_state)
+	if avatar.avatar_type == Avatar_Type.PARTY_MEMBER and is_valid_state:
+		battle_reaction.visible = true
+		
+		# assumption: the Actor class is attached to the root node
+		var node: Node = area
+		print("node owner?? ", node.owner)
+		# this climbs up all the way to the main node of the scene
+		while node and node is not Actor and node.get_parent() != null:
+			print("node now: ", node.name)
+			node = node.get_parent()
+			
+		if node:
+			var other_actor: Actor = node as Actor
+			# disable exclamation point at a later time
+			var disable_quick_time = func():
+				battle_reaction.visible = false
+			other_actor.on_disable_quick_time_defend.connect(disable_quick_time, ConnectFlags.CONNECT_ONE_SHOT)
+			BattleSignals.on_quick_time_defend_pressed_valid.emit()
+		else:
+			print_rich("[color=red]Could not find other actor here on_outer_area_entered[/color]")
+
 	
 func on_attack_end():
 	print("ending attack")
@@ -191,12 +254,13 @@ func on_enable_attack_hitbox():
 	attack_timer.start()
 
 func on_attack_connect(area: Area2D):
-	
-	print("who's attacking? ", avatar.curr_stats.name)
-	print("area hit: ", area.name)
-	
 	# apply damage calculations
 	if damage_calculator:
+		
+		# disable quick_time defend for party member as enemy since enemy owns their own hitbox
+		on_disable_quick_time_defend.emit()
+		BattleSignals.on_quick_time_defend_late.emit()
+		
 		var actor_receiving_dmg: Actor = target
 		
 		if actor_receiving_dmg == null:
@@ -212,7 +276,6 @@ func on_attack_connect(area: Area2D):
 		
 		var dmg = damage_calculator.calculate_damage(actor_receiving_dmg, self)
 		damage_receiver.curr_stats.hp = maxi(damage_receiver.curr_stats.hp - dmg, 0)
-		#on_damage_received.emit(actor_receiving_dmg, dmg)
 		damage_calculator.on_damage_received.emit(actor_receiving_dmg, self, dmg)
 	else:
 		print_rich("[color=red]Damage Calculator is null in Actor.gd[/color]")
@@ -274,3 +337,6 @@ func toggle_timers(is_paused: bool):
 func fadeout(t: float):
 	(material as ShaderMaterial).set_shader_parameter("transparency_value", t)
 	info_node.visible = false
+
+func get_reaction_button() -> ReactionBasedButton:
+	return reaction_based_button

@@ -48,6 +48,12 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "Attack"
 
+[node name="No-op" type="Button" parent="ActionLayout"]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "No-op"
+
 [node name="Defend" type="Button" parent="ActionLayout"]
 custom_minimum_size = Vector2(180, 0)
 layout_mode = 2

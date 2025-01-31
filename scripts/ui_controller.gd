@@ -64,9 +64,10 @@ var party_battle_state: Party_Battle_States = Party_Battle_States.IN_PROGRESS
 var battle_controller: BattleController
 var action_buttons: BattleController.ActionButtons
 
-#var timers: Array[Timer] = []
 var attack_type: Attack_Type
 var pending_skill: Skill
+
+@onready var no_op: Button
 
 func on_end_turn(actor: Actor):
 	description_timer.start()
@@ -76,6 +77,12 @@ func on_end_turn(actor: Actor):
 	# 2. actor is in front of their target about to perform their skill
 	# 3. actor begins to cast a skill
 	actor.avatar.battle_timers.resume_delay_timer.start()
+	
+	# turn off reaction button for all party members
+	if actor.avatar_type == Constants.Avatar_Type.ENEMY:
+		var party_members: Array[Actor] = battle_spawn_manager.get_party_members()
+		for party_member in party_members:
+			party_member.get_reaction_button().enable(false)
 
 func on_resume_play():
 	resume_actors_motion()
@@ -88,6 +95,7 @@ func _ready():
 	
 	cancel.pressed.connect(_on_cancel_button_pressed)
 	target_cancel.pressed.connect(_on_cancel_button_pressed)
+	no_op = action_layout.get_node("ActionLayout/No-op") as Button
 		
 	for enemy in battle_spawn_manager.get_enemies():
 		enemy.get_target_selection_area().on_target_hovered.connect(on_target_hovered)
@@ -141,7 +149,7 @@ func start_defend(actor: Actor):
 	
 	description_timer.start()
 	
-	var actors: Array[Actor] = battle_spawn_manager.get_all_actors()	
+	var actors: Array[Actor] = battle_spawn_manager.get_all_actors()
 	battle_timer_manager.resume_actors_excluding(actors, actor)
 
 func _on_defend_button_pressed(actor: Actor):
@@ -153,6 +161,14 @@ func _on_cancel_button_pressed():
 	action_layout.visible = true
 	
 	toggle_pickable_mobs(false)
+
+func on_no_op_pressed(actor: Actor):
+	target_menu.visible = false
+	active_skill_menu.visible = false
+	action_layout.visible = false
+	
+	var no_op_cmd = NoOpCommand.new()
+	no_op_cmd.execute(actor)
 
 func _on_description_timer_timeout():
 	target_menu.visible = false
@@ -333,6 +349,7 @@ func on_start_order_step(actor: Actor) -> void:
 		Utility.disconnect_all_signal_connections(action_buttons.pick_skills_button.pressed)
 		Utility.disconnect_all_signal_connections(action_buttons.flee_button.pressed)
 		Utility.disconnect_all_signal_connections(avatar.battle_timers.flee_timer.timeout)
+		Utility.disconnect_all_signal_connections(no_op.pressed)
 
 		for enemy in battle_spawn_manager.get_enemies():
 			# Disconnect mob target selection and previous actor relationship
@@ -347,14 +364,20 @@ func on_start_order_step(actor: Actor) -> void:
 		action_buttons.pick_skills_button.pressed.connect(_on_skills_button_pressed.bind(actor))
 		action_buttons.flee_button.pressed.connect(_on_flee_button_pressed.bind(actor))
 		avatar.battle_timers.flee_timer.timeout.connect(on_determine_flee_rate.bind(actor))
+		no_op.pressed.connect(on_no_op_pressed.bind(actor))
 		
 	# entry point for enemies to pick a move
 	elif avatar.avatar_type == Constants.Avatar_Type.ENEMY:
+		# on start of turn, enable all reaction buttons for party members
+		var party_members: Array[Actor] = battle_spawn_manager.get_party_members()
+		for party_member in party_members:
+			party_member.get_reaction_button().enable(true)
+		
 		#ai_determine_move(actor)
 		#ai_use_random_skill(actor)
-		start_defend(actor)
+		#start_defend(actor)
 		#ai_flee(actor)
-		#ai_attack(actor)
+		ai_attack(actor)
 
 func transition_to_main_scene(status: Party_Battle_States):
 	var exit_scene = func():

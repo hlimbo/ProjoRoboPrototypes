@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://hqd2d6o5vprn"]
+
+[ext_resource type="Script" path="res://scripts/reaction_based_button.gd" id="1_ugbky"]
+
+[node name="ReactionBasedButton" type="Node2D"]
+script = ExtResource("1_ugbky")
+key_binding = 81
+is_enabled = true

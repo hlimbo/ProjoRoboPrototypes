@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://d07n6ni2r73e1"]
+[gd_scene load_steps=20 format=3 uid="uid://d07n6ni2r73e1"]
 
 [ext_resource type="Script" path="res://scripts/actor.gd" id="1_iwbjg"]
 [ext_resource type="PackedScene" uid="uid://cx3vhulcggapg" path="res://nodes/info_node.tscn" id="2_w0tf0"]
@@ -19,7 +19,7 @@ shader = ExtResource("4_5sjon")
 shader_parameter/transparency_value = 1.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_wlbfe"]
-radius = 202.062
+radius = 140.032
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_tmwpw"]
 radius = 73.0274
@@ -30,6 +30,9 @@ height = 270.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_w8t7j"]
 radius = 138.279
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_4qpko"]
+radius = 256.07
 
 [node name="enemy_placeholder" type="Node2D"]
 material = SubResource("ShaderMaterial_cvdjs")
@@ -250,6 +253,13 @@ position = Vector2(0, -303)
 texture = ExtResource("11_368f0")
 region_enabled = true
 region_rect = Rect2(785, 391, 92, 73)
+
+[node name="OuterInteractArea" type="Area2D" parent="CollisionGeometry"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CollisionGeometry/OuterInteractArea"]
+position = Vector2(0, -100)
+shape = SubResource("CircleShape2D_4qpko")
+debug_color = Color(0, 0.537789, 0.96583, 0.42)
 
 [node name="Timers" type="Node2D" parent="."]
 

@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3 uid="uid://qml0ed0h5m72"]
+
+[ext_resource type="Script" path="res://scripts/battle_reaction.gd" id="1_olkry"]
+[ext_resource type="Texture2D" uid="uid://nxddqhwjhu2g" path="res://assets/kenney_emotes-pack/PNG/Vector/Style 2/emote_exclamation.png" id="2_u7pln"]
+
+[node name="BattleReaction" type="HBoxContainer"]
+offset_right = 783.0
+offset_bottom = 23.0
+theme_override_constants/separation = 20
+script = ExtResource("1_olkry")
+texture = ExtResource("2_u7pln")
+key_press_label = "press Q"
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 2
+texture = ExtResource("2_u7pln")
+expand_mode = 2
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "Press Q"

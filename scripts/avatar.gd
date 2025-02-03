@@ -30,6 +30,7 @@ var battle_state: Battle_State = Battle_State.WAITING
 signal on_avatar_flee()
 
 signal on_start_turn
+signal on_interrupt(interruptee: Avatar)
 
 # names generated from https://www.fantasynamegenerators.com/bleach-shinigami-names.php
 const random_names: PackedStringArray = [
@@ -69,9 +70,11 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	path_follow_2d.progress_ratio += delta * _curr_speed * float(resume_motion)
 
+func _process(delta: float) -> void:
+	update_battle_state_text()
+
 func on_area_entered(_body: Node2D) -> void:
 	battle_state = Battle_State.MOVE_SELECTION
-	update_battle_state_text()
 	on_start_turn.emit()
 
 func connect_on_area_entered():
@@ -85,7 +88,6 @@ func on_skill_timeout():
 func on_resume_timeout():
 	print("on resume timeout %s at time %d " % [self.name, Time.get_ticks_msec()])
 	battle_state = Battle_State.WAITING
-	update_battle_state_text()
 	self.progress_ratio = 0 # reset back to beginning of timeline
 	self._curr_speed = move_speed # restore movespeed
 	BattleSignals.on_resume_play.emit()
@@ -138,3 +140,45 @@ func calculate_action_execution_speed(wait_time: float) -> float:
 func toggle_motion(is_paused: bool):
 	resume_motion = !is_paused
 	battle_timers.toggle_timers(is_paused)
+	
+func on_interrupt_motion(interruptee: Avatar, old_battle_state: Constants.Battle_State):
+	if interruptee.battle_state == Constants.Battle_State.PAUSED:
+		var seconds_to_pause: float = 3
+		interruptee.pause_motion_for(seconds_to_pause, old_battle_state)
+	elif interruptee.battle_state == Constants.Battle_State.KNOCKBACK:
+		var push_back_amount: float = 0.25
+		var duration_sec: float = 1
+		interruptee.push_back_progress(push_back_amount, duration_sec)
+	else:
+		print_rich("[color=yellow]avatar %s was neither paused or knocked back[/color]" % curr_stats.name)
+		
+func pause_motion_for(seconds_to_pause: float, old_battle_state: Constants.Battle_State):
+	var process_on_physics_tick: bool = true
+	# TODO: may need different levels of "pausing"
+	# one where the pause happens when party member is picking an action and another when a skill is being used
+	var pause_timer: SceneTreeTimer = get_tree().create_timer(seconds_to_pause, true, process_on_physics_tick)
+	resume_motion = false
+	
+	var on_restore_motion = func():
+		print("resuming avatar motion for ", curr_stats.name)
+		resume_motion = true
+		battle_state = old_battle_state
+	
+	pause_timer.timeout.connect(on_restore_motion)
+
+# push_back_amount must be a value between 0 and 1.0
+func push_back_progress(push_back_amount: float, duration_sec: float):
+	resume_motion = false
+	
+	var knockback_tween: Tween = create_tween()
+	knockback_tween.set_process_mode(Tween.TWEEN_PROCESS_PHYSICS)
+	var final_avatar_progress_ratio: float = maxf(progress_ratio - push_back_amount, 0.0)
+	knockback_tween.tween_property(self, "progress_ratio", final_avatar_progress_ratio, duration_sec)
+	
+	var on_finished = func():
+		print("finished pushback on ", curr_stats.name)
+		battle_state = Constants.Battle_State.WAITING
+		resume_motion = true
+	
+	knockback_tween.finished.connect(on_finished)
+	knockback_tween.play()

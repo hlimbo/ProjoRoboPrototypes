@@ -245,7 +245,6 @@ func _on_flee_button_pressed(actor: Actor):
 	# set flee execution speed
 	var avatar: Avatar = actor.avatar
 	avatar.battle_state = Constants.Battle_State.PENDING_MOVE
-	avatar.update_battle_state_text()
 	
 	# delay skill until avatar progress ratio reaches 1
 	var wait_time: float = avatar.battle_timers.flee_timer.wait_time
@@ -496,7 +495,7 @@ func on_ai_skill_end(damage_receiver: Actor, damage_dealer: Actor) -> void:
 
 	battle_manager.damage_calculator.on_damage_received.emit(damage_receiver, damage_dealer, dmg)
 	on_skill_attack_damage_received(damage_receiver, damage_dealer, dmg)
-	
+		
 	var text = "%s used %s on %s! It dealt %d damage" % [avatar.curr_stats.name, skill.name, target.curr_stats.name, dmg]
 	label.text = text 
 
@@ -524,6 +523,7 @@ func on_party_member_skill_end(dr_actor: Actor, dd_actor: Actor):
 	damage_receiver.curr_stats.hp = maxi(damage_receiver.curr_stats.hp - dmg, 0)
 	battle_manager.damage_calculator.on_damage_received.emit(dr_actor, dd_actor, dmg)
 	on_skill_attack_damage_received(dr_actor, dd_actor, dmg)
+	
 	label.text = "%s casts %s to %s. It deals %d damage!" % [damage_dealer.name, skill_name, enemy_name, dmg]
 
 func on_show_description_panel_basic_attack(damage_receiver: Actor, damage_dealer: Actor, damage: int):
@@ -559,7 +559,6 @@ func on_skill_attack_damage_received(damage_receiver: Actor, damage_dealer: Acto
 	description_panel.visible = true
 	description_timer.start()
 	dd_avatar.battle_state = Constants.Battle_State.EXECUTING_MOVE
-	dd_avatar.update_battle_state_text()
 		
 	# TODO: remove once skill motions are implemented in actor
 	BattleSignals.on_end_turn.emit(damage_dealer)

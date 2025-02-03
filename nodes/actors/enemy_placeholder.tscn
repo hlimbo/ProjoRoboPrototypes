@@ -211,6 +211,7 @@ use_parent_material = true
 [node name="InteractArea" type="Area2D" parent="CollisionGeometry"]
 collision_layer = 16
 collision_mask = 2
+monitoring = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CollisionGeometry/InteractArea"]
 position = Vector2(0, -100)

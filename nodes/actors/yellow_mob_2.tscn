@@ -97,6 +97,7 @@ theme_override_font_sizes/font_size = 48
 [node name="InteractArea" type="Area2D" parent="CollisionGeometry"]
 collision_layer = 8
 collision_mask = 4
+monitoring = false
 
 [node name="OverlapDetection2D" type="CollisionShape2D" parent="CollisionGeometry/InteractArea"]
 position = Vector2(0, -188)
@@ -122,6 +123,7 @@ position = Vector2(-2, -180)
 shape = SubResource("CapsuleShape2D_qta2k")
 
 [node name="OuterInteractArea" type="Area2D" parent="CollisionGeometry"]
+visible = false
 collision_mask = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CollisionGeometry/OuterInteractArea"]
@@ -130,6 +132,7 @@ shape = SubResource("CircleShape2D_sv3b4")
 debug_color = Color(0.752525, 0.195799, 1, 0.42)
 
 [node name="Timers" type="Node2D" parent="."]
+visible = false
 
 [node name="AttackTimer" type="Timer" parent="Timers"]
 process_callback = 0

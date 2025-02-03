@@ -8,8 +8,9 @@ enum Battle_State {
 	PENDING_MOVE,
 	EXECUTING_MOVE,
 	MOVE_CANCELLED,
-	# used when receiving damage
+	# used when receiving damage to temporarily pause the avatar's motion on timeline
 	PAUSED,
+	# moves back avatar's motion on the timeline
 	KNOCKBACK
 }
 
@@ -19,7 +20,9 @@ enum Active_Battle_State {
 	DEFEND,
 	ATTACK,
 	SKILL,
-	FLEE
+	FLEE,
+	HURT,
+	KNOCKBACK
 }
 
 # TODO: rename to Actor_Type and move typing up Actor class instead of avatar...

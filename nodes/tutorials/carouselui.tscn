@@ -1,0 +1,39 @@
+[gd_scene load_steps=2 format=3 uid="uid://de2e411xdc1dl"]
+
+[ext_resource type="Script" path="res://scripts/tutorials/carousel_ui.gd" id="1_lxlfm"]
+
+[node name="Carouselui" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+
+[node name="Control" type="ColorRect" parent="."]
+layout_mode = 0
+offset_left = 464.0
+offset_top = 228.0
+offset_right = 504.0
+offset_bottom = 268.0
+script = ExtResource("1_lxlfm")
+
+[node name="item1" type="ColorRect" parent="Control"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+color = Color(0.731937, 0.000922955, 0.815061, 1)
+
+[node name="item2" type="ColorRect" parent="Control"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+color = Color(0.0946835, 0.405887, 1, 1)
+
+[node name="item3" type="ColorRect" parent="Control"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+color = Color(0.731937, 0.000922955, 0.815061, 1)
+
+[node name="item4" type="ColorRect" parent="Control"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+color = Color(0.0946835, 0.405887, 1, 1)

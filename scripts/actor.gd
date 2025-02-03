@@ -1,8 +1,4 @@
 extends Node2D
-# controller class that will do all the actions!
-# will break down into smaller things as needed
-# strat - top down approach (code high level things)
-# work backwards from what kind of gameplay to achieve
 class_name Actor
 
 # Type Aliases through singleton script constants
@@ -115,6 +111,7 @@ func _ready():
 	connect_battle_signals()
 	the_reaction_button()
 
+
 func the_reaction_button():
 	if reaction_based_button:
 		var on_key_pressed = func(reaction_state: ReactionBasedButton.ReactionState):
@@ -163,7 +160,7 @@ func _process(delta_time: float):
 		elif (Input.is_action_pressed("defend2")):
 			defend_cmd.execute(self)
 
-
+func _physics_process(delta_time: float):
 	if motion_state == Active_Battle_State.MOVING:
 		if target:
 			var vel: Vector2 = move_to_target(target.position)
@@ -187,10 +184,13 @@ func _process(delta_time: float):
 			avatar.is_alive = false
 
 func start_motion(target_actor: Actor):
+	
 	# if already moving don't trigger it again
 	if motion_state == Active_Battle_State.MOVING:
 		return
 	
+	# turn on interact area to detect when an attack animation can be simulated
+	interact_area.monitoring = true
 	motion_state = Active_Battle_State.MOVING
 	target = target_actor
 
@@ -199,11 +199,13 @@ func move_to_target(target_pos: Vector2) -> Vector2:
 	var velocity = Vector2(dir.x, dir.y) * move_speed * float(resume_motion)
 	return velocity
 
-# find 
-
 # TODO: use groups to tag by party member and enemy
 # inner area
-func on_other_entered(other: Area2D):	
+func on_other_entered(other: Area2D):
+	# turn off the interact area to prevent further overlap events from being triggered
+	# one event should be triggered per single target attack
+	interact_area.monitoring = false
+
 	# if not target OR the other area2D isn't an actor's collision body, don't trigger the attack state
 	if !target or target.get_node("CollisionGeometry/ActorArea") != other:
 		return
@@ -241,11 +243,11 @@ func on_outer_area_entered(area: Area2D):
 		else:
 			print_rich("[color=red]Could not find other actor here on_outer_area_entered[/color]")
 
-	
 func on_attack_end():
 	print("ending attack")
 	motion_state = Active_Battle_State.MOVING
 	target = null
+	toggle_hitbox(false)
 
 # simulate enabling hit box at end of the frame
 func on_enable_attack_hitbox():
@@ -254,6 +256,8 @@ func on_enable_attack_hitbox():
 	attack_timer.start()
 
 func on_attack_connect(area: Area2D):
+	
+	toggle_hitbox(false)
 	# apply damage calculations
 	if damage_calculator:
 		
@@ -264,9 +268,8 @@ func on_attack_connect(area: Area2D):
 		var actor_receiving_dmg: Actor = target
 		
 		if actor_receiving_dmg == null:
-			print_rich("[color=red]Unable to find actor to damage...[/color]")
-			# turn off hitbox
-			hit_area.monitoring = false
+			print_rich("[color=red]Unable to find actor to damage for %s[/color]" % avatar.curr_stats.name)
+			BattleSignals.on_end_turn.emit(self)
 			return
 			
 		print("hit %s" % actor_receiving_dmg.avatar.name)
@@ -277,11 +280,15 @@ func on_attack_connect(area: Area2D):
 		var dmg = damage_calculator.calculate_damage(actor_receiving_dmg, self)
 		damage_receiver.curr_stats.hp = maxi(damage_receiver.curr_stats.hp - dmg, 0)
 		damage_calculator.on_damage_received.emit(actor_receiving_dmg, self, dmg)
+		
+		# determine which battle state avatar should be in
+		var old_avatar_battle_state: Constants.Battle_State = damage_receiver.battle_state
+		if damage_receiver.battle_state == Constants.Battle_State.WAITING:
+			damage_receiver.battle_state = Constants.Battle_State.PAUSED
+		
+		self.on_interrupt_motion(actor_receiving_dmg, old_avatar_battle_state)
 	else:
 		print_rich("[color=red]Damage Calculator is null in Actor.gd[/color]")
-		
-		
-	hit_area.monitoring = false
 
 func start_defend():
 	if motion_state == Active_Battle_State.DEFEND:
@@ -340,3 +347,31 @@ func fadeout(t: float):
 
 func get_reaction_button() -> ReactionBasedButton:
 	return reaction_based_button
+
+func on_pause(interruptor: Actor):
+	pass
+
+func on_knockback(interruptor: Actor):
+	pass
+	
+func on_interrupt_motion(interruptee: Actor, old_avatar_battle_state: Constants.Battle_State):
+	var old_motion_state: Active_Battle_State = interruptee.motion_state
+	if [Active_Battle_State.NEUTRAL, Active_Battle_State.MOVING].has(old_motion_state):
+		avatar.on_interrupt_motion(interruptee.avatar, old_avatar_battle_state)
+		interruptee.motion_state = Active_Battle_State.HURT
+		var seconds_to_pause: float = 3
+		interruptee.pause_motion_for(seconds_to_pause, old_motion_state)
+		
+func pause_motion_for(seconds_to_pause: float, old_motion_state: Active_Battle_State):
+	var process_on_physics_tick: bool = true
+	# TODO: may need different levels of "pausing"
+	# one where the pause happens when party member is picking an action and another when a skill is being used
+	var pause_timer: SceneTreeTimer = get_tree().create_timer(seconds_to_pause, true, process_on_physics_tick)
+	resume_motion = false
+	
+	var on_restore_motion = func():
+		print("resuming actor motion for ", name)
+		resume_motion = true
+		motion_state = old_motion_state
+	
+	pause_timer.timeout.connect(on_restore_motion)

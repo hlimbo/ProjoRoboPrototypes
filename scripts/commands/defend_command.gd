@@ -7,6 +7,4 @@ func execute(actor: Actor):
 	
 	avatar.progress_ratio = 1
 	avatar.battle_state = avatar.Battle_State.EXECUTING_MOVE
-	avatar.update_battle_state_text()
-	
 	actor.start_defend()

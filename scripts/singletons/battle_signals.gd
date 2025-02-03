@@ -14,3 +14,10 @@ signal on_quick_time_defend_late
 signal on_executing_action(actor: Actor)
 
 signal on_executed_action(actor: Actor)
+
+# used to determine when an interrupt happens
+# an interrupt can occur if actor receives damage from another actor
+# damage can come from either basic attacks or skills
+# interruptor - actor interrupting the other actor
+# interruptee - actor being interrupted by the other actor
+# signal on_interrupt(interruptor: Actor, interruptee: Actor)

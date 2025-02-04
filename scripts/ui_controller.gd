@@ -500,7 +500,9 @@ func on_ai_skill_end(damage_receiver: Actor, damage_dealer: Actor) -> void:
 
 	battle_manager.damage_calculator.on_damage_received.emit(damage_receiver, damage_dealer, dmg)
 	on_skill_attack_damage_received(damage_receiver, damage_dealer, dmg)
-	damage_dealer.on_interrupt_motion(damage_receiver, Constants.Battle_State.KNOCKBACK)
+	
+	if damage_receiver.motion_state != Constants.Active_Battle_State.DEFEND:
+		damage_dealer.on_interrupt_motion(damage_receiver, Constants.Battle_State.KNOCKBACK)
 	
 	var text = "%s used %s on %s! It dealt %d damage" % [avatar.curr_stats.name, skill.name, target.curr_stats.name, dmg]
 	label.text = text 
@@ -534,7 +536,9 @@ func on_party_member_skill_end(dr_actor: Actor, dd_actor: Actor):
 	damage_receiver.curr_stats.hp = maxi(damage_receiver.curr_stats.hp - dmg, 0)
 	battle_manager.damage_calculator.on_damage_received.emit(dr_actor, dd_actor, dmg)
 	on_skill_attack_damage_received(dr_actor, dd_actor, dmg)
-	dd_actor.on_interrupt_motion(dr_actor, Constants.Battle_State.KNOCKBACK)
+	
+	if dr_actor.motion_state != Constants.Active_Battle_State.DEFEND:
+		dd_actor.on_interrupt_motion(dr_actor, Constants.Battle_State.KNOCKBACK)
 	
 	label.text = "%s casts %s to %s. It deals %d damage!" % [damage_dealer.name, skill_name, enemy_name, dmg]
 

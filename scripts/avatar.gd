@@ -91,12 +91,11 @@ func on_resume_timeout():
 	
 	# if pending move is NOT cancelled, reset progress back to 0
 	# why? to ensure avatar does not jump back to beginning of timeline if being knocked back
-	if not is_knocked_back:
+	if not is_knocked_back or progress_ratio == 1:
 		self.progress_ratio = 0 # reset back to beginning of timeline
 	
 	# reset if knocked back previously
 	is_knocked_back = false
-	
 	battle_state = Battle_State.WAITING
 	self._curr_speed = move_speed # restore movespeed
 	BattleSignals.on_resume_play.emit()

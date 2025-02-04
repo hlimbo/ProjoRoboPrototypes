@@ -282,7 +282,9 @@ func on_attack_connect(area: Area2D):
 		damage_receiver.curr_stats.hp = maxi(damage_receiver.curr_stats.hp - dmg, 0)
 		damage_calculator.on_damage_received.emit(actor_receiving_dmg, self, dmg)
 		
-		self.on_interrupt_motion(actor_receiving_dmg, Constants.Battle_State.PAUSED)
+		# only interrupt motion if not defending or using a skill
+		if not [Active_Battle_State.DEFEND, Active_Battle_State.SKILL].has(actor_receiving_dmg.motion_state):
+			self.on_interrupt_motion(actor_receiving_dmg, Constants.Battle_State.PAUSED)
 	else:
 		print_rich("[color=red]Damage Calculator is null in Actor.gd[/color]")
 
@@ -365,11 +367,11 @@ func pause_motion_for(seconds_to_pause: float, old_motion_state: Active_Battle_S
 	# TODO: may need different levels of "pausing"
 	# one where the pause happens when party member is picking an action and another when a skill is being used
 	var pause_timer: SceneTreeTimer = get_tree().create_timer(seconds_to_pause, true, process_on_physics_tick)
-	resume_motion = false
+	toggle_motion(true)
 	
 	var on_restore_motion = func():
 		print("resuming actor motion for ", name)
-		resume_motion = true
+		toggle_motion(false)
 		motion_state = old_motion_state
 	
 	pause_timer.timeout.connect(on_restore_motion)

@@ -5,5 +5,6 @@
 [resource]
 script = ExtResource("1_2486x")
 cost = 12
-attack = 28
+attack = 8
 name = "Earth Drill"
+description = ""

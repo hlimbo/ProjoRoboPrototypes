@@ -135,7 +135,6 @@ debug_color = Color(0.752525, 0.195799, 1, 0.42)
 
 [node name="AttackTimer" type="Timer" parent="Timers"]
 process_callback = 0
-wait_time = 3.0
 one_shot = true
 
 [node name="EnableAttackTimer" type="Timer" parent="Timers"]

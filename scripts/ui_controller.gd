@@ -78,6 +78,9 @@ func on_end_turn(actor: Actor):
 	# 3. actor begins to cast a skill
 	actor.avatar.battle_timers.resume_delay_timer.start()
 	
+	# reset attack state to prevent future attacks from this actor from being cancelled
+	actor.is_attacked = false
+	
 	# turn off reaction button for all party members
 	if actor.avatar_type == Constants.Avatar_Type.ENEMY:
 		var party_members: Array[Actor] = battle_spawn_manager.get_party_members()
@@ -374,9 +377,9 @@ func on_start_order_step(actor: Actor) -> void:
 		
 		#ai_determine_move(actor)
 		#ai_use_random_skill(actor)
-		start_defend(actor)
+		#start_defend(actor)
 		#ai_flee(actor)
-		#ai_attack(actor)
+		ai_attack(actor)
 
 func transition_to_main_scene(status: Party_Battle_States):
 	var exit_scene = func():
@@ -464,11 +467,6 @@ func on_ai_skill_end(damage_receiver: Actor, damage_dealer: Actor) -> void:
 	var avatar: Avatar = damage_dealer.avatar
 	var target: Avatar = damage_receiver.avatar
 	
-	if avatar.is_knocked_back:
-		print("move was cancelled")
-		BattleSignals.on_end_turn.emit(damage_dealer)
-		return
-	
 	pause_actors_motion()
 	
 	print("avatar %s skill end at time %d" % [avatar.name, Time.get_ticks_msec()])
@@ -512,11 +510,6 @@ func on_ai_skill_end(damage_receiver: Actor, damage_dealer: Actor) -> void:
 func on_party_member_skill_end(dr_actor: Actor, dd_actor: Actor):
 	var damage_receiver: Avatar = dr_actor.avatar
 	var damage_dealer: Avatar = dd_actor.avatar
-	
-	# if received a skill damage at this point, cancel pending skill
-	if dd_actor.avatar.is_knocked_back:
-		BattleSignals.on_end_turn.emit(dd_actor)
-		return
 	
 	## TODO pause all avatar and actor movement/timers except for actor performing the skill
 	pause_actors_motion()
@@ -565,7 +558,7 @@ func on_check_damage_receiver_is_defeated(damage_receiver: Actor, damage_dealer:
 		dr_avatar.is_alive = false
 		dr_avatar.curr_stats.hp = 0
 		dr_avatar.progress_ratio = 0
-		dr_avatar.resume_motion = false
+		damage_receiver.toggle_motion(true)
 		dr_avatar.is_alive = false
 
 func on_skill_attack_damage_received(damage_receiver: Actor, damage_dealer: Actor, damage: int):

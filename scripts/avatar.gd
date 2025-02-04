@@ -94,8 +94,6 @@ func on_resume_timeout():
 	if not is_knocked_back or progress_ratio == 1:
 		self.progress_ratio = 0 # reset back to beginning of timeline
 	
-	# reset if knocked back previously
-	is_knocked_back = false
 	battle_state = Battle_State.WAITING
 	self._curr_speed = move_speed # restore movespeed
 	BattleSignals.on_resume_play.emit()
@@ -125,7 +123,9 @@ func generate_random_stats() -> void:
 	initial_stats.name = random_names[randi_range(0, len(random_names) - 1)]
 	initial_stats.attack = randi_range(20,25)
 	initial_stats.defense = randi_range(10,15)
-	initial_stats.hp = randi_range(40, 80)
+	#initial_stats.hp = randi_range(40, 80)
+	# temp - make hp high for testing
+	initial_stats.hp = 1000
 	initial_stats.speed = randi_range(10, 20)
 	initial_stats.skill_points = 100
 	
@@ -154,14 +154,14 @@ func on_interrupt_motion(interruptee: Avatar, old_battle_state: Constants.Battle
 		var seconds_to_pause: float = 3
 		interruptee.pause_motion_for(seconds_to_pause, old_battle_state)
 	elif interruptee.battle_state == Constants.Battle_State.KNOCKBACK:
-		
 		# cancel any pending skills
 		print("move pending by %s is cancelled" % interruptee.curr_stats.name)
 		battle_timers.skill_timer.stop()
 		Utility.disconnect_all_signal_connections(battle_timers.skill_timer.timeout)
 		
-		var push_back_amount: float = 0.25
-		var duration_sec: float = 0.25
+		# TODO: these can come from data inputs like a skill that determine how much push back and the duration it takes for an avatar to get knockedback on timeline
+		var push_back_amount: float = 0.75
+		var duration_sec: float = 0.5
 		interruptee.push_back_progress(push_back_amount, duration_sec)
 	else:
 		print_rich("[color=yellow]avatar %s was neither paused or knocked back[/color]" % curr_stats.name)
@@ -171,20 +171,21 @@ func pause_motion_for(seconds_to_pause: float, old_battle_state: Constants.Battl
 	# TODO: may need different levels of "pausing"
 	# one where the pause happens when party member is picking an action and another when a skill is being used
 	var pause_timer: SceneTreeTimer = get_tree().create_timer(seconds_to_pause, true, process_on_physics_tick)
-	resume_motion = false
+	toggle_motion(true)
 	
 	var on_restore_motion = func():
 		print("resuming avatar motion for ", curr_stats.name)
-		resume_motion = true
+		toggle_motion(false)
 		battle_state = old_battle_state
 	
 	pause_timer.timeout.connect(on_restore_motion)
 
 # push_back_amount must be a value between 0 and 1.0
 func push_back_progress(push_back_amount: float, duration_sec: float):
-	resume_motion = false
+	toggle_motion(true)
 	is_knocked_back = true
 	
+	# TODO(Polish): knockback visually doesn't look quite right... maybe use a different easing function or use the _physics_process() loop to move avatar along path
 	var knockback_tween: Tween = create_tween()
 	knockback_tween.set_process_mode(Tween.TWEEN_PROCESS_PHYSICS)
 	var final_avatar_progress_ratio: float = maxf(progress_ratio - push_back_amount, 0.0)
@@ -193,7 +194,7 @@ func push_back_progress(push_back_amount: float, duration_sec: float):
 	var on_finished = func():
 		print("finished pushback on ", curr_stats.name)
 		battle_state = Constants.Battle_State.WAITING
-		resume_motion = true
+		is_knocked_back = false
 	
 	knockback_tween.finished.connect(on_finished)
 	knockback_tween.play()

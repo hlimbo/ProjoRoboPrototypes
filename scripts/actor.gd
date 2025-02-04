@@ -58,6 +58,7 @@ var resume_motion: bool = true
 
 var flee_time: float = 0.0
 @export var flee_fade_time: float = 3.0
+@export var is_attacked: bool = false
 
 #region Commands
 var attack_cmd: AttackCommand
@@ -144,6 +145,13 @@ func connect_battle_signals():
 	if avatar:
 		avatar.on_start_turn.connect(func(): BattleSignals.on_start_turn.emit(self))
 
+func move_back_to_original_position(delta_time: float) -> float:
+	# move back to original position
+	var vel: Vector2 = move_to_target(original_pos)
+	position += vel * delta_time
+	var dist: float = position.distance_to(original_pos)
+	return dist
+
 func _process(delta_time: float):
 	# player controls
 	if (name == "yellow_mob2"):
@@ -166,16 +174,16 @@ func _physics_process(delta_time: float):
 			var vel: Vector2 = move_to_target(target.position)
 			position += vel * delta_time
 		else:
-			# move back to original position
-			var vel: Vector2 = move_to_target(original_pos)
-			position += vel * delta_time
-		
-			# if close enough transition to neutral state -> stop moving
-			var dist = position.distance_to(original_pos)
+			var dist: float = move_back_to_original_position(delta_time)
 			if dist <= 100:
 				motion_state = Active_Battle_State.NEUTRAL
 				BattleSignals.on_end_turn.emit(self)
-				
+	
+	elif motion_state == Active_Battle_State.KNOCKBACK:
+		var dist: float = move_back_to_original_position(delta_time)
+		if dist <= 100:
+			motion_state = Active_Battle_State.NEUTRAL
+		
 	elif motion_state == Active_Battle_State.FLEE:
 		flee_time = clampf(flee_time + delta_time, flee_time, flee_fade_time)
 		var diff: float = flee_fade_time - flee_time
@@ -192,7 +200,6 @@ func start_motion(target_actor: Actor):
 	print("start motion ", avatar.curr_stats.name)
 	# turn on interact area to detect when an attack animation can be simulated
 	interact_area.monitoring = true
-	# toggle_hitbox(true)
 	motion_state = Active_Battle_State.MOVING
 	target = target_actor
 
@@ -210,6 +217,12 @@ func on_other_entered(other: Area2D):
 
 	# if not target OR the other area2D isn't an actor's collision body, don't trigger the attack state
 	if !target or target.get_node("CollisionGeometry/ActorArea") != other:
+		return
+		
+	# stop moving towards actor to attack if attack is cancelled by another attack source
+	if is_attacked:
+		is_attacked = false
+		print("cancelling attack for %s" % avatar.curr_stats.name)
 		return
 	
 	print("on other entered ", avatar.curr_stats.name)
@@ -272,18 +285,24 @@ func on_attack_connect(area: Area2D):
 			print_rich("[color=red]Unable to find actor to damage for %s[/color]" % avatar.curr_stats.name)
 			BattleSignals.on_end_turn.emit(self)
 			return
-			
+		
 		print("%s on attack connect %s" % [avatar.curr_stats.name, actor_receiving_dmg.avatar.name])
 		
 		var damage_receiver: Avatar = actor_receiving_dmg.avatar
 		var damage_dealer: Avatar = avatar
 		
+		# I need to go back to the drawing board and think MORE on how I'd like to implement it....
+		#actor_receiving_dmg.is_attacked = true
 		var dmg = damage_calculator.calculate_damage(actor_receiving_dmg, self)
 		damage_receiver.curr_stats.hp = maxi(damage_receiver.curr_stats.hp - dmg, 0)
 		damage_calculator.on_damage_received.emit(actor_receiving_dmg, self, dmg)
 		
 		# only interrupt motion if not defending or using a skill
 		if not [Active_Battle_State.DEFEND, Active_Battle_State.SKILL].has(actor_receiving_dmg.motion_state):
+			## cancel actor's attack if also attacking at the same time
+			#if actor_receiving_dmg.motion_state == Constants.Active_Battle_State.ATTACK:
+				#self.on_interrupt_motion(actor_receiving_dmg, Constants.Battle_State.KNOCKBACK)
+			#else:
 			self.on_interrupt_motion(actor_receiving_dmg, Constants.Battle_State.PAUSED)
 	else:
 		print_rich("[color=red]Damage Calculator is null in Actor.gd[/color]")
@@ -357,10 +376,14 @@ func on_interrupt_motion(interruptee: Actor, new_battle_state: Constants.Battle_
 		var seconds_to_pause: float = 3
 		interruptee.pause_motion_for(seconds_to_pause, old_motion_state)
 	elif new_battle_state == Constants.Battle_State.KNOCKBACK:
+		interruptee.motion_state = Constants.Active_Battle_State.KNOCKBACK
+		# cancel pending actions such as basic attack or skill
+		interruptee.on_cancel_move()
+		
 		avatar.on_interrupt_motion(interruptee.avatar, old_avatar_state)
-		var seconds_to_knockback: float = 0.25
+		var seconds_to_knockback: float = 0.5
 		# Simulate knockback animation
-		interruptee.pause_motion_for(seconds_to_knockback, old_motion_state)
+		interruptee.pause_motion_for(seconds_to_knockback, Constants.Active_Battle_State.MOVING)
 		
 func pause_motion_for(seconds_to_pause: float, old_motion_state: Active_Battle_State):
 	var process_on_physics_tick: bool = true
@@ -376,3 +399,15 @@ func pause_motion_for(seconds_to_pause: float, old_motion_state: Active_Battle_S
 	
 	pause_timer.timeout.connect(on_restore_motion)
  
+func on_cancel_move():
+	if avatar:
+		avatar.is_knocked_back = false
+		toggle_motion(false)
+		# cancel pending skills
+		avatar.battle_timers.skill_timer.stop()
+		Utility.disconnect_all_signal_connections(avatar.battle_timers.skill_timer.timeout)
+		
+	# cancel attacks that did not connect
+	target = null
+	toggle_hitbox(false)
+	interact_area.monitoring = false

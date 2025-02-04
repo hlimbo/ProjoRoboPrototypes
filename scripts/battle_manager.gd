@@ -155,11 +155,15 @@ func _ready() -> void:
 	# initialize battle participants' base stats
 	for i in range(0, party_member_spawn_count):
 		var stats = generate_random_stats(Actor_Type.PARTY_MEMBER)
+		# temp: hardcode speed for testing
+		stats.speed = 12
 		party_member_stats.append(stats)
 		max_battle_speed = maxi(max_battle_speed, stats.speed)
 	
 	for i in range(0, enemy_spawn_count):
 		var stats = generate_random_stats(Actor_Type.ENEMY)
+		# temp: hardcode speed for testing
+		stats.speed = 10
 		enemy_stats.append(stats)
 		max_battle_speed = maxi(max_battle_speed, stats.speed)
 	

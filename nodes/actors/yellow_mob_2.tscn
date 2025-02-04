@@ -123,7 +123,6 @@ position = Vector2(-2, -180)
 shape = SubResource("CapsuleShape2D_qta2k")
 
 [node name="OuterInteractArea" type="Area2D" parent="CollisionGeometry"]
-visible = false
 collision_mask = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CollisionGeometry/OuterInteractArea"]

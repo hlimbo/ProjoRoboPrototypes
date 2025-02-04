@@ -373,10 +373,10 @@ func on_start_order_step(actor: Actor) -> void:
 			party_member.get_reaction_button().enable(true)
 		
 		#ai_determine_move(actor)
-		#ai_use_random_skill(actor)
+		ai_use_random_skill(actor)
 		#start_defend(actor)
 		#ai_flee(actor)
-		ai_attack(actor)
+		#ai_attack(actor)
 
 func transition_to_main_scene(status: Party_Battle_States):
 	var exit_scene = func():
@@ -464,6 +464,11 @@ func on_ai_skill_end(damage_receiver: Actor, damage_dealer: Actor) -> void:
 	var avatar: Avatar = damage_dealer.avatar
 	var target: Avatar = damage_receiver.avatar
 	
+	if avatar.is_knocked_back:
+		print("move was cancelled")
+		BattleSignals.on_end_turn.emit(damage_dealer)
+		return
+	
 	pause_actors_motion()
 	
 	print("avatar %s skill end at time %d" % [avatar.name, Time.get_ticks_msec()])
@@ -495,7 +500,8 @@ func on_ai_skill_end(damage_receiver: Actor, damage_dealer: Actor) -> void:
 
 	battle_manager.damage_calculator.on_damage_received.emit(damage_receiver, damage_dealer, dmg)
 	on_skill_attack_damage_received(damage_receiver, damage_dealer, dmg)
-		
+	damage_dealer.on_interrupt_motion(damage_receiver, Constants.Battle_State.KNOCKBACK)
+	
 	var text = "%s used %s on %s! It dealt %d damage" % [avatar.curr_stats.name, skill.name, target.curr_stats.name, dmg]
 	label.text = text 
 
@@ -504,6 +510,11 @@ func on_ai_skill_end(damage_receiver: Actor, damage_dealer: Actor) -> void:
 func on_party_member_skill_end(dr_actor: Actor, dd_actor: Actor):
 	var damage_receiver: Avatar = dr_actor.avatar
 	var damage_dealer: Avatar = dd_actor.avatar
+	
+	# if received a skill damage at this point, cancel pending skill
+	if dd_actor.avatar.is_knocked_back:
+		BattleSignals.on_end_turn.emit(dd_actor)
+		return
 	
 	## TODO pause all avatar and actor movement/timers except for actor performing the skill
 	pause_actors_motion()
@@ -523,6 +534,7 @@ func on_party_member_skill_end(dr_actor: Actor, dd_actor: Actor):
 	damage_receiver.curr_stats.hp = maxi(damage_receiver.curr_stats.hp - dmg, 0)
 	battle_manager.damage_calculator.on_damage_received.emit(dr_actor, dd_actor, dmg)
 	on_skill_attack_damage_received(dr_actor, dd_actor, dmg)
+	dd_actor.on_interrupt_motion(dr_actor, Constants.Battle_State.KNOCKBACK)
 	
 	label.text = "%s casts %s to %s. It deals %d damage!" % [damage_dealer.name, skill_name, enemy_name, dmg]
 

@@ -22,6 +22,7 @@ var curr_stats: BaseStats
 # exporting to view human readable enum strings
 @export var avatar_type: Avatar_Type
 @export var is_alive: bool = true
+@export var is_knocked_back: bool = false
 # controls whether or not movement along timeline continues on
 var resume_motion: bool = true
 var battle_state: Battle_State = Battle_State.WAITING
@@ -87,8 +88,16 @@ func on_skill_timeout():
 
 func on_resume_timeout():
 	print("on resume timeout %s at time %d " % [self.name, Time.get_ticks_msec()])
+	
+	# if pending move is NOT cancelled, reset progress back to 0
+	# why? to ensure avatar does not jump back to beginning of timeline if being knocked back
+	if not is_knocked_back:
+		self.progress_ratio = 0 # reset back to beginning of timeline
+	
+	# reset if knocked back previously
+	is_knocked_back = false
+	
 	battle_state = Battle_State.WAITING
-	self.progress_ratio = 0 # reset back to beginning of timeline
 	self._curr_speed = move_speed # restore movespeed
 	BattleSignals.on_resume_play.emit()
 
@@ -146,8 +155,14 @@ func on_interrupt_motion(interruptee: Avatar, old_battle_state: Constants.Battle
 		var seconds_to_pause: float = 3
 		interruptee.pause_motion_for(seconds_to_pause, old_battle_state)
 	elif interruptee.battle_state == Constants.Battle_State.KNOCKBACK:
+		
+		# cancel any pending skills
+		print("move pending by %s is cancelled" % interruptee.curr_stats.name)
+		battle_timers.skill_timer.stop()
+		Utility.disconnect_all_signal_connections(battle_timers.skill_timer.timeout)
+		
 		var push_back_amount: float = 0.25
-		var duration_sec: float = 1
+		var duration_sec: float = 0.25
 		interruptee.push_back_progress(push_back_amount, duration_sec)
 	else:
 		print_rich("[color=yellow]avatar %s was neither paused or knocked back[/color]" % curr_stats.name)
@@ -169,11 +184,12 @@ func pause_motion_for(seconds_to_pause: float, old_battle_state: Constants.Battl
 # push_back_amount must be a value between 0 and 1.0
 func push_back_progress(push_back_amount: float, duration_sec: float):
 	resume_motion = false
+	is_knocked_back = true
 	
 	var knockback_tween: Tween = create_tween()
 	knockback_tween.set_process_mode(Tween.TWEEN_PROCESS_PHYSICS)
 	var final_avatar_progress_ratio: float = maxf(progress_ratio - push_back_amount, 0.0)
-	knockback_tween.tween_property(self, "progress_ratio", final_avatar_progress_ratio, duration_sec)
+	knockback_tween.tween_property(self, "progress_ratio", final_avatar_progress_ratio, duration_sec).from_current().set_ease(Tween.EASE_OUT)
 	
 	var on_finished = func():
 		print("finished pushback on ", curr_stats.name)

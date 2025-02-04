@@ -188,7 +188,8 @@ func start_motion(target_actor: Actor):
 	# if already moving don't trigger it again
 	if motion_state == Active_Battle_State.MOVING:
 		return
-	
+		
+	print("start motion ", avatar.curr_stats.name)
 	# turn on interact area to detect when an attack animation can be simulated
 	interact_area.monitoring = true
 	motion_state = Active_Battle_State.MOVING
@@ -210,6 +211,7 @@ func on_other_entered(other: Area2D):
 	if !target or target.get_node("CollisionGeometry/ActorArea") != other:
 		return
 	
+	print("on other entered ", avatar.curr_stats.name)
 	if motion_state == Active_Battle_State.MOVING:
 		print("entered attacking area: %s" % other.name)
 		motion_state = Active_Battle_State.ATTACK
@@ -244,7 +246,7 @@ func on_outer_area_entered(area: Area2D):
 			print_rich("[color=red]Could not find other actor here on_outer_area_entered[/color]")
 
 func on_attack_end():
-	print("ending attack")
+	print("%s ending attack" % avatar.curr_stats.name)
 	motion_state = Active_Battle_State.MOVING
 	target = null
 	toggle_hitbox(false)
@@ -272,7 +274,7 @@ func on_attack_connect(area: Area2D):
 			BattleSignals.on_end_turn.emit(self)
 			return
 			
-		print("hit %s" % actor_receiving_dmg.avatar.name)
+		print("%s on attack connect %s" % [avatar.curr_stats.name, actor_receiving_dmg.avatar.name])
 		
 		var damage_receiver: Avatar = actor_receiving_dmg.avatar
 		var damage_dealer: Avatar = avatar
@@ -281,12 +283,7 @@ func on_attack_connect(area: Area2D):
 		damage_receiver.curr_stats.hp = maxi(damage_receiver.curr_stats.hp - dmg, 0)
 		damage_calculator.on_damage_received.emit(actor_receiving_dmg, self, dmg)
 		
-		# determine which battle state avatar should be in
-		var old_avatar_battle_state: Constants.Battle_State = damage_receiver.battle_state
-		if damage_receiver.battle_state == Constants.Battle_State.WAITING:
-			damage_receiver.battle_state = Constants.Battle_State.PAUSED
-		
-		self.on_interrupt_motion(actor_receiving_dmg, old_avatar_battle_state)
+		self.on_interrupt_motion(actor_receiving_dmg, Constants.Battle_State.PAUSED)
 	else:
 		print_rich("[color=red]Damage Calculator is null in Actor.gd[/color]")
 
@@ -347,20 +344,22 @@ func fadeout(t: float):
 
 func get_reaction_button() -> ReactionBasedButton:
 	return reaction_based_button
-
-func on_pause(interruptor: Actor):
-	pass
-
-func on_knockback(interruptor: Actor):
-	pass
 	
-func on_interrupt_motion(interruptee: Actor, old_avatar_battle_state: Constants.Battle_State):
+func on_interrupt_motion(interruptee: Actor, new_battle_state: Constants.Battle_State):
+	var old_avatar_state: Constants.Battle_State = interruptee.avatar.battle_state
 	var old_motion_state: Active_Battle_State = interruptee.motion_state
-	if [Active_Battle_State.NEUTRAL, Active_Battle_State.MOVING].has(old_motion_state):
-		avatar.on_interrupt_motion(interruptee.avatar, old_avatar_battle_state)
+	interruptee.avatar.battle_state = new_battle_state
+	
+	if new_battle_state == Constants.Battle_State.PAUSED:
+		avatar.on_interrupt_motion(interruptee.avatar, old_avatar_state)
 		interruptee.motion_state = Active_Battle_State.HURT
 		var seconds_to_pause: float = 3
 		interruptee.pause_motion_for(seconds_to_pause, old_motion_state)
+	elif new_battle_state == Constants.Battle_State.KNOCKBACK:
+		avatar.on_interrupt_motion(interruptee.avatar, old_avatar_state)
+		var seconds_to_knockback: float = 0.25
+		# Simulate knockback animation
+		interruptee.pause_motion_for(seconds_to_knockback, old_motion_state)
 		
 func pause_motion_for(seconds_to_pause: float, old_motion_state: Active_Battle_State):
 	var process_on_physics_tick: bool = true
@@ -375,3 +374,4 @@ func pause_motion_for(seconds_to_pause: float, old_motion_state: Active_Battle_S
 		motion_state = old_motion_state
 	
 	pause_timer.timeout.connect(on_restore_motion)
+ 

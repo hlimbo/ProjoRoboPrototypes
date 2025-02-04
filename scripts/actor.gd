@@ -192,6 +192,7 @@ func start_motion(target_actor: Actor):
 	print("start motion ", avatar.curr_stats.name)
 	# turn on interact area to detect when an attack animation can be simulated
 	interact_area.monitoring = true
+	# toggle_hitbox(true)
 	motion_state = Active_Battle_State.MOVING
 	target = target_actor
 
@@ -253,13 +254,11 @@ func on_attack_end():
 
 # simulate enabling hit box at end of the frame
 func on_enable_attack_hitbox():
-	hit_area.monitoring = true
+	toggle_hitbox(true)
 	# simulate attack animation
 	attack_timer.start()
 
 func on_attack_connect(area: Area2D):
-	
-	toggle_hitbox(false)
 	# apply damage calculations
 	if damage_calculator:
 		

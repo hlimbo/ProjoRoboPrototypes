@@ -13,7 +13,7 @@ one_shot = true
 
 [node name="ResumeDelayTimer" type="Timer" parent="."]
 process_callback = 0
-wait_time = 0.25
+wait_time = 0.1
 one_shot = true
 
 [node name="SkillTimer" type="Timer" parent="."]

@@ -373,8 +373,8 @@ func on_start_order_step(actor: Actor) -> void:
 			party_member.get_reaction_button().enable(true)
 		
 		#ai_determine_move(actor)
-		ai_use_random_skill(actor)
-		#start_defend(actor)
+		#ai_use_random_skill(actor)
+		start_defend(actor)
 		#ai_flee(actor)
 		#ai_attack(actor)
 

@@ -23,7 +23,7 @@ shader_parameter/transparency_value = 1.0
 radius = 324.222
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_nv8vh"]
-radius = 146.0
+radius = 226.566
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_qta2k"]
 radius = 172.0
@@ -105,6 +105,7 @@ shape = SubResource("CircleShape2D_fpomk")
 debug_color = Color(0.652594, 0.518529, 1.92523e-07, 0.42)
 
 [node name="HitArea2D" type="Area2D" parent="CollisionGeometry"]
+position = Vector2(98, 0)
 collision_layer = 32
 collision_mask = 4
 monitoring = false
@@ -131,15 +132,15 @@ shape = SubResource("CircleShape2D_sv3b4")
 debug_color = Color(0.752525, 0.195799, 1, 0.42)
 
 [node name="Timers" type="Node2D" parent="."]
-visible = false
 
 [node name="AttackTimer" type="Timer" parent="Timers"]
 process_callback = 0
+wait_time = 3.0
 one_shot = true
 
 [node name="EnableAttackTimer" type="Timer" parent="Timers"]
 process_callback = 0
-wait_time = 0.5
+wait_time = 0.1
 one_shot = true
 
 [node name="DefenseTimer" type="Timer" parent="Timers"]

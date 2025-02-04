@@ -34,7 +34,8 @@ func on_start_turn(actor: Actor):
 		reaction_state = ReactionState.EARLY
 	
 func on_end_turn(actor: Actor):
-	if actor.avatar_type == Constants.Avatar_Type.ENEMY:
+	# reset party member's reaction state
+	if actor.avatar_type == Constants.Avatar_Type.PARTY_MEMBER:
 		reaction_state = ReactionState.DEFAULT
 	
 func on_valid_press_time():

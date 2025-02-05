@@ -262,6 +262,9 @@ func on_outer_area_entered(area: Area2D):
 			print_rich("[color=red]Could not find other actor here on_outer_area_entered[/color]")
 
 func on_attack_end():
+	# attack should not end as it got cancelled...
+	if motion_state == Active_Battle_State.KNOCKBACK:
+		return
 	print("%s ending attack" % avatar.curr_stats.name)
 	motion_state = Active_Battle_State.MOVING
 	target = null
@@ -305,11 +308,11 @@ func on_attack_connect(area: Area2D):
 		
 		# only interrupt motion if not defending or using a skill
 		if not [Active_Battle_State.DEFEND, Active_Battle_State.SKILL].has(actor_receiving_dmg.motion_state):
-			## cancel actor's attack if also attacking at the same time
-			#if actor_receiving_dmg.motion_state == Constants.Active_Battle_State.ATTACK:
-				#self.on_interrupt_motion(actor_receiving_dmg, Constants.Battle_State.KNOCKBACK)
-			#else:
-			self.on_interrupt_motion(actor_receiving_dmg, Constants.Battle_State.PAUSED)
+			# cancel actor's attack if also attacking at the same time
+			if actor_receiving_dmg.motion_state == Constants.Active_Battle_State.ATTACK:
+				self.on_interrupt_motion(actor_receiving_dmg, Constants.Battle_State.KNOCKBACK)
+			else:
+				self.on_interrupt_motion(actor_receiving_dmg, Constants.Battle_State.PAUSED)
 	else:
 		print_rich("[color=red]Damage Calculator is null in Actor.gd[/color]")
 
@@ -413,3 +416,4 @@ func on_cancel_move():
 	target = null
 	toggle_hitbox(false)
 	interact_area.monitoring = false
+	attack_timer.stop()

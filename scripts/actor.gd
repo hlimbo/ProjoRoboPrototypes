@@ -16,6 +16,7 @@ const Avatar_Type = Constants.Avatar_Type
 # Used when debugging in isolation
 #@onready var damage_calculator: IDamageCalculator = BattleSceneManager.damage_calculator
 
+
 @export var move_speed: float
 @export var target: Node2D
 var original_target: Node2D
@@ -58,7 +59,8 @@ var resume_motion: bool = true
 
 var flee_time: float = 0.0
 @export var flee_fade_time: float = 3.0
-@export var is_attacked: bool = false
+const NO_ATTACK_TIME_SET: float = INF
+@export var attack_time: float = NO_ATTACK_TIME_SET
 
 #region Commands
 var attack_cmd: AttackCommand
@@ -219,11 +221,11 @@ func on_other_entered(other: Area2D):
 	if !target or target.get_node("CollisionGeometry/ActorArea") != other:
 		return
 		
-	# stop moving towards actor to attack if attack is cancelled by another attack source
-	if is_attacked:
-		is_attacked = false
-		print("cancelling attack for %s" % avatar.curr_stats.name)
-		return
+	## stop moving towards actor to attack if attack is cancelled by another attack source
+	#if is_attacked:
+		#is_attacked = false
+		#print("cancelling attack for %s" % avatar.curr_stats.name)
+		#return
 	
 	print("on other entered ", avatar.curr_stats.name)
 	if motion_state == Active_Battle_State.MOVING:
@@ -291,8 +293,12 @@ func on_attack_connect(area: Area2D):
 		var damage_receiver: Avatar = actor_receiving_dmg.avatar
 		var damage_dealer: Avatar = avatar
 		
-		# I need to go back to the drawing board and think MORE on how I'd like to implement it....
-		#actor_receiving_dmg.is_attacked = true
+		# encapsulate this in an ExecuteAttackCommand
+		# store it in a list
+		# sort list by attack time issued
+		# take the first command in list to execute
+		# if one of the commands is targetting the attacker -> create CancelAttackCommand which will knock avatar back on timeline and move affected actor back to their original position
+		attack_time = Time.get_ticks_msec()
 		var dmg = damage_calculator.calculate_damage(actor_receiving_dmg, self)
 		damage_receiver.curr_stats.hp = maxi(damage_receiver.curr_stats.hp - dmg, 0)
 		damage_calculator.on_damage_received.emit(actor_receiving_dmg, self, dmg)
@@ -379,11 +385,7 @@ func on_interrupt_motion(interruptee: Actor, new_battle_state: Constants.Battle_
 		interruptee.motion_state = Constants.Active_Battle_State.KNOCKBACK
 		# cancel pending actions such as basic attack or skill
 		interruptee.on_cancel_move()
-		
 		avatar.on_interrupt_motion(interruptee.avatar, old_avatar_state)
-		var seconds_to_knockback: float = 0.5
-		# Simulate knockback animation
-		interruptee.pause_motion_for(seconds_to_knockback, Constants.Active_Battle_State.MOVING)
 		
 func pause_motion_for(seconds_to_pause: float, old_motion_state: Active_Battle_State):
 	var process_on_physics_tick: bool = true

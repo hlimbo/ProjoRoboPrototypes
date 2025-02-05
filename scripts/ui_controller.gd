@@ -79,7 +79,7 @@ func on_end_turn(actor: Actor):
 	actor.avatar.battle_timers.resume_delay_timer.start()
 	
 	# reset attack state to prevent future attacks from this actor from being cancelled
-	actor.is_attacked = false
+	# actor.is_attacked = false
 	
 	# turn off reaction button for all party members
 	if actor.avatar_type == Constants.Avatar_Type.ENEMY:

@@ -78,9 +78,6 @@ func on_area_entered(_body: Node2D) -> void:
 	battle_state = Battle_State.MOVE_SELECTION
 	on_start_turn.emit()
 
-func connect_on_area_entered():
-	area_2d.body_entered.connect(on_area_entered)
-
 #region Timer Timeout functions
 
 func on_skill_timeout():
@@ -184,6 +181,8 @@ func pause_motion_for(seconds_to_pause: float, old_battle_state: Constants.Battl
 func push_back_progress(push_back_amount: float, duration_sec: float):
 	toggle_motion(true)
 	is_knocked_back = true
+	# disable monitoring so that it does not trigger a start turn signal event
+	area_2d.monitoring = false
 	
 	# TODO(Polish): knockback visually doesn't look quite right... maybe use a different easing function or use the _physics_process() loop to move avatar along path
 	var knockback_tween: Tween = create_tween()
@@ -195,6 +194,7 @@ func push_back_progress(push_back_amount: float, duration_sec: float):
 		print("finished pushback on ", curr_stats.name)
 		battle_state = Constants.Battle_State.WAITING
 		is_knocked_back = false
+		area_2d.monitoring = true
 	
 	knockback_tween.finished.connect(on_finished)
 	knockback_tween.play()

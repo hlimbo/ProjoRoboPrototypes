@@ -38,7 +38,8 @@ radius = 256.07
 material = SubResource("ShaderMaterial_cvdjs")
 position = Vector2(1019, 551)
 script = ExtResource("1_iwbjg")
-move_speed = 500.0
+avatar_type = 1
+move_speed = 250.0
 battle_state = 2
 
 [node name="InfoNode" parent="." instance=ExtResource("2_w0tf0")]

@@ -48,6 +48,8 @@ var resume_motion: bool = true
 # TODO: once placeholder art with frames is in... could code it to where when a frame starts
 # enable hitbox and on end frame disable hitbox
 @onready var enable_attack_timer: Timer = $Timers/EnableAttackTimer
+# used to display basict attack damage text from UI
+var on_attack_damage_text_updated: Callable
 @onready var defense_timer: Timer = $Timers/DefenseTimer
 
 @onready var defense_node: Node2D = $Defense
@@ -206,11 +208,7 @@ func _physics_process(delta_time: float):
 			var dist: float = position.distance_to(target.position)
 			if dist <= skill_cast_range:
 				motion_state = Active_Battle_State.CAST_SKILL
-		else:
-			var dist: float = move_back_to_original_position(delta_time)
-			if dist <= 100:
-				motion_state = Active_Battle_State.NEUTRAL
-				BattleSignals.on_end_turn.emit(self)
+				
 	elif motion_state == Active_Battle_State.CAST_SKILL:
 		# stop calling this once per frame... only call this once
 		if is_skill_casted:
@@ -233,7 +231,7 @@ func _physics_process(delta_time: float):
 			lightning.queue_free()
 			motion_state = Active_Battle_State.MOVING
 			target = null
-			is_skill_casted = true
+			is_skill_casted = false
 			
 		get_tree().create_timer(3).timeout.connect(on_lightning_disappear)
 		
@@ -257,6 +255,8 @@ func start_motion_skill(target_actor: Actor, skill: Skill, on_damage_calculation
 	if motion_state == Active_Battle_State.SKILL:
 		return
 		
+	# allow actor movement when using a skill
+	resume_motion = true
 	motion_state = Active_Battle_State.SKILL
 	target = target_actor
 	active_skill = skill
@@ -356,6 +356,17 @@ func on_attack_connect(area: Area2D):
 		var dmg = damage_calculator.calculate_damage(actor_receiving_dmg, self)
 		damage_receiver.curr_stats.hp = maxi(damage_receiver.curr_stats.hp - dmg, 0)
 		damage_calculator.on_damage_received.emit(actor_receiving_dmg, self, dmg)
+		
+		print("on damage received basic attack: %s atks %s for %d dmg" % [damage_dealer.curr_stats.name, damage_receiver.curr_stats.name, dmg])
+		
+		# TODO: need to know what action the actor picked in order to print out the appropriate message for attack or skill
+		var text = "%s attacked %s for %d damage" % [damage_dealer.curr_stats.name, damage_receiver.curr_stats.name, dmg]
+		if !on_attack_damage_text_updated.is_null():
+			if on_attack_damage_text_updated.call(text):
+				print_rich("[color=red]on_attack_damage_text_updated has invalid function reference... ensure it is set before calling[/color]")
+			
+			# hack to unset function call
+			on_attack_damage_text_updated = func(): return true
 		
 		# only interrupt motion if not defending or using a skill
 		if not [Active_Battle_State.DEFEND, Active_Battle_State.SKILL].has(actor_receiving_dmg.motion_state):

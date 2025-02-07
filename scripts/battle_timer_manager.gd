@@ -16,7 +16,12 @@ func resume_actor(actor: Actor):
 func pause_actors(actors: Array[Actor]):
 	for actor in actors:
 		pause_actor(actor)
-	
+
+func pause_actors_excluding(actors: Array[Actor], excluded_actors: Array[Actor]):
+	for actor in actors:
+		if !excluded_actors.has(actor):
+			pause_actor(actor)
+			
 func resume_actors(actors: Array[Actor]):
 	for actor in actors:
 		resume_actor(actor)

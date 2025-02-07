@@ -102,7 +102,7 @@ func _ready():
 	BattleSignals.on_resume_play.connect(on_resume_play)
 	BattleSignals.on_start_turn.connect(on_start_order_step)
 	
-	battle_manager.damage_calculator.on_damage_received.connect(on_show_description_panel_basic_attack)
+	battle_manager.damage_calculator.on_damage_received.connect(on_show_description_panel)
 	battle_manager.damage_calculator.on_damage_received.connect(on_check_damage_receiver_is_defeated)
 
 	var enemy_avatars: Array[Avatar] = battle_spawn_manager.get_enemy_avatars()
@@ -275,6 +275,7 @@ func on_target_clicked(dr_actor: Actor, dd_actor: Actor):
 	if attack_type == Attack_Type.BASIC:
 		var atk_cmd = AttackCommand.new()
 		atk_cmd.target = dr_actor
+		atk_cmd.on_label_text_update = func(text: String): label.text = text
 		atk_cmd.execute(dd_actor)
 		
 		target_menu.visible = false
@@ -301,7 +302,17 @@ func pause_actors_motion():
 	description_timer.paused = true
 	battle_timer_manager.pause_actors(live_party_members)
 	battle_timer_manager.pause_actors(live_enemies)
+
+func pause_actors_motion_excluding(actors: Array[Actor]):
+	var party_members: Array[Actor] = battle_spawn_manager.get_party_members()
+	var enemies: Array[Actor] = battle_spawn_manager.get_enemies()
 	
+	var live_party_members = party_members.filter(func(a: Actor): return a.avatar.is_alive)
+	var live_enemies = enemies.filter(func(a: Actor): return a.avatar.is_alive)
+	
+	description_timer.paused = true
+	battle_timer_manager.pause_actors_excluding(live_party_members, actors)
+	battle_timer_manager.pause_actors_excluding(live_enemies, actors)
 
 func resume_actors_motion():
 	var party_members: Array[Actor] = battle_spawn_manager.get_party_members()
@@ -504,13 +515,19 @@ func on_party_member_skill_end(dr_actor: Actor, dd_actor: Actor):
 	var damage_receiver: Avatar = dr_actor.avatar
 	var damage_dealer: Avatar = dd_actor.avatar
 	
-	## TODO pause all avatar and actor movement/timers except for actor performing the skill
-	pause_actors_motion()
+	var excluded_actors: Array[Actor] = [dd_actor]
+	pause_actors_motion_excluding(excluded_actors)
 
 	var skill: Skill = pending_skill
 	# execute at a later time in SkillPlaceholderCommand
 	var on_skill_damage_calculation = func() -> bool:
+		print("on party member skill end %s" % damage_dealer.name)
+		var enemy_name := damage_receiver.name
+		var skill_name := skill.name
 		var dmg := skill.attack
+	
+		label.text = "%s casts %s to %s. It deals %d damage!" % [damage_dealer.name, skill_name, enemy_name, dmg]
+		
 		damage_receiver.curr_stats.hp = maxi(damage_receiver.curr_stats.hp - dmg, 0)
 		battle_manager.damage_calculator.on_damage_received.emit(dr_actor, dd_actor, dmg)
 		on_skill_attack_damage_received(dr_actor, dd_actor, dmg)
@@ -526,26 +543,13 @@ func on_party_member_skill_end(dr_actor: Actor, dd_actor: Actor):
 	skill_cmd.skill = skill
 	skill_cmd.on_damage_calculation = on_skill_damage_calculation
 	skill_cmd.execute(dd_actor)
-		
-	print("on party member skill end %s" % damage_dealer.name)
-	var enemy_name := damage_receiver.name
-	var skill_name := skill.name
-	var dmg := skill.attack
-	
-	label.text = "%s casts %s to %s. It deals %d damage!" % [damage_dealer.name, skill_name, enemy_name, dmg]
 
-func on_show_description_panel_basic_attack(damage_receiver: Actor, damage_dealer: Actor, damage: int):
+func on_show_description_panel(_damage_receiver: Actor, _damage_dealer: Actor, _damage: int):
 	target_menu.visible = false
 	description_panel.visible = true
 	# start to begin hiding the description panel after some time passed
 	description_timer.start()
-	var dd_avatar: Avatar = damage_dealer.avatar
-	var dr_avatar: Avatar = damage_receiver.avatar
-	print("on damage received basic attack: %s atks %s for %d dmg" % [dd_avatar.curr_stats.name, dr_avatar.curr_stats.name, damage])
-	
-	# TODO: need to know what action the actor picked in order to print out the appropriate message for attack or skill
-	var text = "%s attacked %s for %d damage" % [dd_avatar.curr_stats.name, dr_avatar.curr_stats.name, damage]
-	label.text = text
+
 	
 func on_check_damage_receiver_is_defeated(damage_receiver: Actor, damage_dealer: Actor, damage: int):
 	var dd_avatar: Avatar = damage_dealer.avatar
@@ -567,6 +571,3 @@ func on_skill_attack_damage_received(damage_receiver: Actor, damage_dealer: Acto
 	description_panel.visible = true
 	description_timer.start()
 	dd_avatar.battle_state = Constants.Battle_State.EXECUTING_MOVE
-		
-	# TODO: remove once skill motions are implemented in actor
-	BattleSignals.on_end_turn.emit(damage_dealer)

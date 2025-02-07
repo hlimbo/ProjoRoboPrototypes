@@ -59,8 +59,13 @@ var resume_motion: bool = true
 
 var flee_time: float = 0.0
 @export var flee_fade_time: float = 3.0
-const NO_ATTACK_TIME_SET: float = INF
-@export var attack_time: float = NO_ATTACK_TIME_SET
+
+@export var skill_cast_range: float = 100.0
+var lightning_placeholder: Resource = preload("res://nodes/lightning.tscn")
+var active_skill: Skill
+var on_skill_damage_calculation: Callable
+@onready var skill_placeholder_socket: Marker2D = $SkillSockets/SkillPlaceholderSocket
+@export var is_skill_casted: bool = false
 
 #region Commands
 var attack_cmd: AttackCommand
@@ -112,10 +117,10 @@ func _ready():
 		info_node.update_labels(avatar)
 		
 	connect_battle_signals()
-	the_reaction_button()
+	connect_defend_reaction_button()
 
 
-func the_reaction_button():
+func connect_defend_reaction_button():
 	if reaction_based_button:
 		var on_key_pressed = func(reaction_state: ReactionBasedButton.ReactionState):
 			var label = reaction_label.get_node("Label") as Label
@@ -192,6 +197,49 @@ func _physics_process(delta_time: float):
 		fadeout(diff)
 		if diff == 0:
 			avatar.is_alive = false
+			
+	elif motion_state == Active_Battle_State.SKILL:
+		if target:
+			resume_motion = true
+			var vel: Vector2 = move_to_target(target.position)
+			position += vel * delta_time
+			var dist: float = position.distance_to(target.position)
+			if dist <= skill_cast_range:
+				motion_state = Active_Battle_State.CAST_SKILL
+		else:
+			var dist: float = move_back_to_original_position(delta_time)
+			if dist <= 100:
+				motion_state = Active_Battle_State.NEUTRAL
+				BattleSignals.on_end_turn.emit(self)
+	elif motion_state == Active_Battle_State.CAST_SKILL:
+		# stop calling this once per frame... only call this once
+		if is_skill_casted:
+			return
+		
+		is_skill_casted = true
+		# spawn lightning effect
+		var lightning = lightning_placeholder.instantiate()
+		if skill_placeholder_socket:
+			skill_placeholder_socket.add_child(lightning)
+		
+		# deal damage to target
+		if not on_skill_damage_calculation.is_null():
+			var has_no_valid_function: bool = on_skill_damage_calculation.call()
+			if has_no_valid_function:
+				print_rich("[color=red]No Valid function for on_skill_damage_calculation...[/color]")
+		
+		# destroy lightning effect after 3 seconds
+		var on_lightning_disappear = func():
+			lightning.queue_free()
+			motion_state = Active_Battle_State.MOVING
+			target = null
+			is_skill_casted = true
+			
+		get_tree().create_timer(3).timeout.connect(on_lightning_disappear)
+		
+		# hack to tell that there is no function assigned to this callable as gdscript
+		# does not support null Callables...
+		on_skill_damage_calculation = func(): return true
 
 func start_motion(target_actor: Actor):
 	
@@ -204,6 +252,15 @@ func start_motion(target_actor: Actor):
 	interact_area.monitoring = true
 	motion_state = Active_Battle_State.MOVING
 	target = target_actor
+
+func start_motion_skill(target_actor: Actor, skill: Skill, on_damage_calculation: Callable):
+	if motion_state == Active_Battle_State.SKILL:
+		return
+		
+	motion_state = Active_Battle_State.SKILL
+	target = target_actor
+	active_skill = skill
+	on_skill_damage_calculation = on_damage_calculation
 
 func move_to_target(target_pos: Vector2) -> Vector2:
 	var dir = (target_pos - position).normalized()
@@ -296,12 +353,6 @@ func on_attack_connect(area: Area2D):
 		var damage_receiver: Avatar = actor_receiving_dmg.avatar
 		var damage_dealer: Avatar = avatar
 		
-		# encapsulate this in an ExecuteAttackCommand
-		# store it in a list
-		# sort list by attack time issued
-		# take the first command in list to execute
-		# if one of the commands is targetting the attacker -> create CancelAttackCommand which will knock avatar back on timeline and move affected actor back to their original position
-		attack_time = Time.get_ticks_msec()
 		var dmg = damage_calculator.calculate_damage(actor_receiving_dmg, self)
 		damage_receiver.curr_stats.hp = maxi(damage_receiver.curr_stats.hp - dmg, 0)
 		damage_calculator.on_damage_received.emit(actor_receiving_dmg, self, dmg)

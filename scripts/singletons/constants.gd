@@ -22,7 +22,8 @@ enum Active_Battle_State {
 	SKILL,
 	FLEE,
 	HURT,
-	KNOCKBACK
+	KNOCKBACK,
+	CAST_SKILL
 }
 
 # TODO: rename to Actor_Type and move typing up Actor class instead of avatar...

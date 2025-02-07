@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://eo8tlkixiwhf"]
+[gd_scene load_steps=27 format=3 uid="uid://eo8tlkixiwhf"]
 
 [ext_resource type="Texture2D" uid="uid://l5nje6fpe8f3" path="res://icon.svg" id="1_sghae"]
 [ext_resource type="AnimationLibrary" uid="uid://csius7k8khfc5" path="res://resources/animation_libraries/playground_library.res" id="2_t7aap"]
@@ -20,7 +20,6 @@
 [ext_resource type="PackedScene" uid="uid://wlrgdq8ncg46" path="res://nodes/battle_timeline/avatar.tscn" id="18_hrobm"]
 [ext_resource type="Script" path="res://scripts/move_styles.gd" id="20_1jo0f"]
 [ext_resource type="Script" path="res://scripts/battle_spawn_manager.gd" id="21_ktyip"]
-[ext_resource type="Shader" path="res://shaders/2d-lightining-vfx.gdshader" id="22_1ckvd"]
 [ext_resource type="PackedScene" uid="uid://denv6vgruxvrc" path="res://nodes/lightning.tscn" id="23_p1t4h"]
 [ext_resource type="Script" path="res://scripts/battle_controller.gd" id="35_s55f0"]
 
@@ -52,36 +51,6 @@ point_count = 2
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_4npj2"]
 size = Vector2(100, 100)
-
-[sub_resource type="Gradient" id="Gradient_0c4l7"]
-offsets = PackedFloat32Array(0, 0.555046, 1)
-colors = PackedColorArray(0, 0, 0, 0, 0.9075, 0.99, 0, 1, 0, 0, 0, 0)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_dp23x"]
-gradient = SubResource("Gradient_0c4l7")
-
-[sub_resource type="Gradient" id="Gradient_vt4u3"]
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_ntdx0"]
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_4qrmr"]
-color_ramp = SubResource("Gradient_vt4u3")
-noise = SubResource("FastNoiseLite_ntdx0")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_u0gvn"]
-shader = ExtResource("22_1ckvd")
-shader_parameter/width = 0.182
-shader_parameter/fix_start = false
-shader_parameter/fix_end = false
-shader_parameter/inverted = false
-shader_parameter/line_gradient = SubResource("GradientTexture1D_dp23x")
-shader_parameter/speed = 2.5
-shader_parameter/variation = 0.321
-shader_parameter/scale = 2.0
-shader_parameter/repeats = 8.0
-shader_parameter/noise_texture = SubResource("NoiseTexture2D_4qrmr")
-
-[sub_resource type="CanvasTexture" id="CanvasTexture_g06sx"]
 
 [node name="Playground" type="Node2D"]
 
@@ -270,13 +239,6 @@ script = ExtResource("20_1jo0f")
 script = ExtResource("21_ktyip")
 party_member_spawn_count = 2
 enemy_spawn_count = 2
-
-[node name="Lightning" type="Sprite2D" parent="."]
-material = SubResource("ShaderMaterial_u0gvn")
-position = Vector2(578, 400)
-rotation = 1.54885
-scale = Vector2(226.201, 60.8395)
-texture = SubResource("CanvasTexture_g06sx")
 
 [node name="Lightning2" parent="." instance=ExtResource("23_p1t4h")]
 position = Vector2(904, 445)

@@ -37,9 +37,10 @@ material = SubResource("ShaderMaterial_usbqb")
 position = Vector2(290, 565)
 scale = Vector2(0.5, 0.5)
 script = ExtResource("2_5ud6m")
-move_speed = 250.0
+move_speed = 500.0
 enable_debug_menu = true
 flee_fade_time = 1.0
+skill_cast_range = 500.0
 
 [node name="arm_yellowE_left" parent="." instance=ExtResource("3_x4dlr")]
 position = Vector2(-90, -218)
@@ -186,6 +187,11 @@ offset_left = 12.0
 offset_top = -730.0
 offset_right = 12.0
 offset_bottom = -730.0
+
+[node name="SkillSockets" type="Node2D" parent="."]
+
+[node name="SkillPlaceholderSocket" type="Marker2D" parent="SkillSockets"]
+position = Vector2(170, -210)
 
 [editable path="InfoNode"]
 [editable path="Defense/StatusEffectLayout"]

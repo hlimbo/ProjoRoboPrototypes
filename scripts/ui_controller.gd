@@ -34,13 +34,6 @@ var original_cam_pos: Vector2
 @onready var target_label: Label = $TargetMenu/VBoxContainer/TargetLabel
 @onready var target_cancel: Button = $TargetMenu/VBoxContainer/Cancel
 
-### 1-D Graph variables
-#@onready var one_d_graph: Control = $OneDGraph
-#@onready var avatar_nodes: Array[Node] = one_d_graph.get_node("PartyPath2D").get_children()
-#var party_members: Array[Avatar] = []
-#@onready var enemy_nodes: Array[Node] = one_d_graph.get_node("EnemyPath2D").get_children()
-#var enemy_avatars: Array[Avatar] = []
-
 const ORDER_STEP: float = 0.858
 var did_tween_start: bool = false
 
@@ -377,9 +370,9 @@ func on_start_order_step(actor: Actor) -> void:
 		
 		#ai_determine_move(actor)
 		#ai_use_random_skill(actor)
-		#start_defend(actor)
+		start_defend(actor)
 		#ai_flee(actor)
-		ai_attack(actor)
+		#ai_attack(actor)
 
 func transition_to_main_scene(status: Party_Battle_States):
 	var exit_scene = func():
@@ -515,23 +508,29 @@ func on_party_member_skill_end(dr_actor: Actor, dd_actor: Actor):
 	pause_actors_motion()
 
 	var skill: Skill = pending_skill
+	# execute at a later time in SkillPlaceholderCommand
+	var on_skill_damage_calculation = func() -> bool:
+		var dmg := skill.attack
+		damage_receiver.curr_stats.hp = maxi(damage_receiver.curr_stats.hp - dmg, 0)
+		battle_manager.damage_calculator.on_damage_received.emit(dr_actor, dd_actor, dmg)
+		on_skill_attack_damage_received(dr_actor, dd_actor, dmg)
+		
+		if dr_actor.motion_state != Constants.Active_Battle_State.DEFEND:
+			dd_actor.on_interrupt_motion(dr_actor, Constants.Battle_State.KNOCKBACK)
+			
+		return false
+
 	# you can have an AOE skill, a single target skill, or a multi-target skill
 	var skill_cmd = SkillPlaceholderCommand.new()
 	skill_cmd.target = dr_actor
 	skill_cmd.skill = skill
+	skill_cmd.on_damage_calculation = on_skill_damage_calculation
 	skill_cmd.execute(dd_actor)
 		
 	print("on party member skill end %s" % damage_dealer.name)
 	var enemy_name := damage_receiver.name
 	var skill_name := skill.name
 	var dmg := skill.attack
-		
-	damage_receiver.curr_stats.hp = maxi(damage_receiver.curr_stats.hp - dmg, 0)
-	battle_manager.damage_calculator.on_damage_received.emit(dr_actor, dd_actor, dmg)
-	on_skill_attack_damage_received(dr_actor, dd_actor, dmg)
-	
-	if dr_actor.motion_state != Constants.Active_Battle_State.DEFEND:
-		dd_actor.on_interrupt_motion(dr_actor, Constants.Battle_State.KNOCKBACK)
 	
 	label.text = "%s casts %s to %s. It deals %d damage!" % [damage_dealer.name, skill_name, enemy_name, dmg]
 

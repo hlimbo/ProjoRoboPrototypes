@@ -104,9 +104,6 @@ func _ready():
 	
 	battle_manager.damage_calculator.on_damage_received.connect(on_show_description_panel)
 	battle_manager.damage_calculator.on_damage_received.connect(on_check_damage_receiver_is_defeated)
-
-	var enemy_avatars: Array[Avatar] = battle_spawn_manager.get_enemy_avatars()
-	var party_members: Array[Avatar] = battle_spawn_manager.get_party_member_avatars()
 	
 	
 	# for camera motions
@@ -118,7 +115,7 @@ func toggle_pickable_mobs(input_pickable: bool):
 	for enemy in battle_spawn_manager.get_enemies():
 		enemy.get_target_selection_area().input_pickable = input_pickable
 
-func _on_attack_button_pressed(actor: Actor):
+func _on_attack_button_pressed(_actor: Actor):
 	action_layout.visible = false
 	toggle_pickable_mobs(true)
 	# switch to attack selection menu
@@ -268,14 +265,15 @@ func on_target_unhovered():
 
 func on_target_clicked(dr_actor: Actor, dd_actor: Actor):
 	toggle_pickable_mobs(false)
-	
-	var damage_receiver: Avatar = dr_actor.avatar
 	var damage_dealer: Avatar = dd_actor.avatar
 	
 	if attack_type == Attack_Type.BASIC:
 		var atk_cmd = AttackCommand.new()
 		atk_cmd.target = dr_actor
-		atk_cmd.on_label_text_update = func(text: String): label.text = text
+		var wrapper = func(text: String) -> bool:
+			label.text = text
+			return false
+		atk_cmd.on_label_text_update = wrapper
 		atk_cmd.execute(dd_actor)
 		
 		target_menu.visible = false
@@ -381,9 +379,9 @@ func on_start_order_step(actor: Actor) -> void:
 		
 		#ai_determine_move(actor)
 		#ai_use_random_skill(actor)
-		start_defend(actor)
+		#start_defend(actor)
 		#ai_flee(actor)
-		#ai_attack(actor)
+		ai_attack(actor)
 
 func transition_to_main_scene(status: Party_Battle_States):
 	var exit_scene = func():
@@ -435,10 +433,14 @@ func ai_attack(actor: Actor) -> void:
 		return
 	
 	var atk_cmd = AttackCommand.new()
+	var wrapper = func(text: String) -> bool:
+		label.text = text
+		return false
 	# pick random target to attack
 	var i = randi_range(0, len(live_party_members) - 1)
 	var target: Actor = live_party_members[i]
 	atk_cmd.target = target
+	atk_cmd.on_label_text_update = wrapper
 	atk_cmd.execute(actor)
 	
 func ai_flee(actor: Actor) -> void:
@@ -471,7 +473,7 @@ func on_ai_skill_end(damage_receiver: Actor, damage_dealer: Actor) -> void:
 	var avatar: Avatar = damage_dealer.avatar
 	var target: Avatar = damage_receiver.avatar
 	
-	pause_actors_motion()
+	pause_actors_motion_excluding([damage_dealer])
 	
 	print("avatar %s skill end at time %d" % [avatar.name, Time.get_ticks_msec()])
 	# pick random skill
@@ -480,69 +482,44 @@ func on_ai_skill_end(damage_receiver: Actor, damage_dealer: Actor) -> void:
 	var skill3 = Skill.new(8, 20, "Oven Overload")
 	
 	# TODO: check ahead of time if enemy can cast a skill, if not, don't do this action
-	var skills: Array[Skill] = [skill1, skill2, skill3]
-	var castable_skills: Array[Skill] = skills.filter(func(s: Skill): return s.cost <= avatar.curr_stats.skill_points)
+	var skillz: Array[Skill] = [skill1, skill2, skill3]
+	var castable_skills: Array[Skill] = skillz.filter(func(s: Skill): return s.cost <= avatar.curr_stats.skill_points)
 
-	description_panel.visible = true
 	if len(castable_skills) == 0:
+		description_panel.visible = true
 		label.text = "%s cannot execute any skills!" % avatar.name
 		return
 	
 	var skill_index: int = randi_range(0, len(castable_skills) - 1)
-	var skill: Skill = skills[skill_index]
+	var skill: Skill = skillz[skill_index]
+	var wrapper = func() -> bool:
+		return on_skill_damage_calculation(damage_dealer, damage_receiver, skill)
 	
 	# TODO: add motion to skill being utilized and move damage calculations to actor logic
 	var skill_cmd = SkillPlaceholderCommand.new()
 	skill_cmd.target = damage_receiver
 	skill_cmd.skill = skill
+	skill_cmd.on_damage_calculation = wrapper
 	skill_cmd.execute(damage_dealer)
-	
-	var dmg: int = battle_manager.damage_calculator.calculate_damage(damage_receiver, damage_dealer)
-	target.curr_stats.hp = maxi(target.curr_stats.hp - dmg, 0)
-
-	battle_manager.damage_calculator.on_damage_received.emit(damage_receiver, damage_dealer, dmg)
-	on_skill_attack_damage_received(damage_receiver, damage_dealer, dmg)
-	
-	if damage_receiver.motion_state != Constants.Active_Battle_State.DEFEND:
-		damage_dealer.on_interrupt_motion(damage_receiver, Constants.Battle_State.KNOCKBACK)
-	
-	var text = "%s used %s on %s! It dealt %d damage" % [avatar.curr_stats.name, skill.name, target.curr_stats.name, dmg]
-	label.text = text 
 
 #endregion
 
-func on_party_member_skill_end(dr_actor: Actor, dd_actor: Actor):
-	var damage_receiver: Avatar = dr_actor.avatar
-	var damage_dealer: Avatar = dd_actor.avatar
+func on_party_member_skill_end(damage_receiver: Actor, damage_dealer: Actor):
+	var target: Avatar = damage_receiver.avatar
 	
-	var excluded_actors: Array[Actor] = [dd_actor]
+	var excluded_actors: Array[Actor] = [damage_dealer]
 	pause_actors_motion_excluding(excluded_actors)
 
 	var skill: Skill = pending_skill
-	# execute at a later time in SkillPlaceholderCommand
-	var on_skill_damage_calculation = func() -> bool:
-		print("on party member skill end %s" % damage_dealer.name)
-		var enemy_name := damage_receiver.name
-		var skill_name := skill.name
-		var dmg := skill.attack
-	
-		label.text = "%s casts %s to %s. It deals %d damage!" % [damage_dealer.name, skill_name, enemy_name, dmg]
-		
-		damage_receiver.curr_stats.hp = maxi(damage_receiver.curr_stats.hp - dmg, 0)
-		battle_manager.damage_calculator.on_damage_received.emit(dr_actor, dd_actor, dmg)
-		on_skill_attack_damage_received(dr_actor, dd_actor, dmg)
-		
-		if dr_actor.motion_state != Constants.Active_Battle_State.DEFEND:
-			dd_actor.on_interrupt_motion(dr_actor, Constants.Battle_State.KNOCKBACK)
-			
-		return false
+	var wrapper = func() -> bool:
+		return on_skill_damage_calculation(damage_dealer, damage_receiver, skill)
 
 	# you can have an AOE skill, a single target skill, or a multi-target skill
 	var skill_cmd = SkillPlaceholderCommand.new()
-	skill_cmd.target = dr_actor
+	skill_cmd.target = damage_receiver
 	skill_cmd.skill = skill
-	skill_cmd.on_damage_calculation = on_skill_damage_calculation
-	skill_cmd.execute(dd_actor)
+	skill_cmd.on_damage_calculation = wrapper
+	skill_cmd.execute(damage_dealer)
 
 func on_show_description_panel(_damage_receiver: Actor, _damage_dealer: Actor, _damage: int):
 	target_menu.visible = false
@@ -551,8 +528,7 @@ func on_show_description_panel(_damage_receiver: Actor, _damage_dealer: Actor, _
 	description_timer.start()
 
 	
-func on_check_damage_receiver_is_defeated(damage_receiver: Actor, damage_dealer: Actor, damage: int):
-	var dd_avatar: Avatar = damage_dealer.avatar
+func on_check_damage_receiver_is_defeated(damage_receiver: Actor, _damage_dealer: Actor, _damage: int):
 	var dr_avatar: Avatar = damage_receiver.avatar
 	
 	# check if target is downed... no longer able to battle
@@ -564,10 +540,32 @@ func on_check_damage_receiver_is_defeated(damage_receiver: Actor, damage_dealer:
 		damage_receiver.toggle_motion(true)
 		dr_avatar.is_alive = false
 
-func on_skill_attack_damage_received(damage_receiver: Actor, damage_dealer: Actor, damage: int):
+func on_skill_attack_damage_received(_damage_receiver: Actor, damage_dealer: Actor, _damage: int):
 	var dd_avatar: Avatar = damage_dealer.avatar
-	var dr_avatar: Avatar = damage_receiver.avatar
-
+	
 	description_panel.visible = true
 	description_timer.start()
 	dd_avatar.battle_state = Constants.Battle_State.EXECUTING_MOVE
+
+# bool is returned here because Godot doesn't do null callables... so this hack is here to
+# check if function reference is null
+# true == null function
+# false == valid function
+func on_skill_damage_calculation(damage_dealer: Actor, damage_receiver: Actor, skill: Skill) -> bool:
+	print("on party member skill end %s" % damage_dealer.name)
+	var target: Avatar = damage_receiver.avatar
+	var avatar: Avatar = damage_dealer.avatar
+	var enemy_name := target.curr_stats.name
+	var skill_name := skill.name
+	var dmg := skill.attack
+
+	label.text = "%s casts %s to %s. It deals %d damage!" % [avatar.curr_stats.name, skill_name, enemy_name, dmg]
+	
+	target.curr_stats.hp = maxi(target.curr_stats.hp - dmg, 0)
+	battle_manager.damage_calculator.on_damage_received.emit(damage_receiver, damage_dealer, dmg)
+	on_skill_attack_damage_received(damage_receiver, damage_dealer, dmg)
+	
+	if damage_receiver.motion_state != Constants.Active_Battle_State.DEFEND:
+		damage_dealer.on_interrupt_motion(damage_receiver, Constants.Battle_State.KNOCKBACK)
+		
+	return false

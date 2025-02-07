@@ -34,6 +34,7 @@ shader_parameter/noise_texture = SubResource("NoiseTexture2D_4qrmr")
 
 [node name="Lightning" type="Sprite2D"]
 material = SubResource("ShaderMaterial_v0imk")
-position = Vector2(540.315, 60.1606)
+position = Vector2(0, 60)
 scale = Vector2(1079.37, 117.679)
 texture = SubResource("CanvasTexture_g06sx")
+offset = Vector2(0.50151, 0.00136477)

@@ -194,7 +194,10 @@ func push_back_progress(push_back_amount: float, duration_sec: float):
 		print("finished pushback on ", curr_stats.name)
 		battle_state = Constants.Battle_State.WAITING
 		is_knocked_back = false
+		# re-enable this so avatar can start their turn -- assuming you get pushed out of the exe rectangle
 		area_2d.monitoring = true
+		# assuming avatar gets pushed out of pending move or starting turn... reset movement speed back to waiting speed
+		_curr_speed = move_speed
 	
 	knockback_tween.finished.connect(on_finished)
 	knockback_tween.play()

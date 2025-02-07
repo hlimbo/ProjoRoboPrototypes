@@ -39,8 +39,9 @@ material = SubResource("ShaderMaterial_cvdjs")
 position = Vector2(1019, 551)
 script = ExtResource("1_iwbjg")
 avatar_type = 1
-move_speed = 500.0
+move_speed = 750.0
 battle_state = 2
+skill_cast_range = 500.0
 
 [node name="InfoNode" parent="." instance=ExtResource("2_w0tf0")]
 offset_left = -95.0
@@ -298,5 +299,10 @@ scale = Vector2(1.3855, 1.43651)
 texture = ExtResource("11_368f0")
 region_enabled = true
 region_rect = Rect2(1407, 127, 131, 126)
+
+[node name="SkillSockets" type="Node2D" parent="."]
+
+[node name="SkillPlaceholderSocket" type="Marker2D" parent="SkillSockets"]
+position = Vector2(-80, -76)
 
 [editable path="Defense/StatusEffectLayout"]

@@ -120,6 +120,7 @@ func _ready():
 		
 	connect_battle_signals()
 	connect_defend_reaction_button()
+	BattleSignals.on_end_turn.connect(disable_quick_time)
 
 
 func connect_defend_reaction_button():
@@ -202,7 +203,6 @@ func _physics_process(delta_time: float):
 			
 	elif motion_state == Active_Battle_State.SKILL:
 		if target:
-			resume_motion = true
 			var vel: Vector2 = move_to_target(target.position)
 			position += vel * delta_time
 			var dist: float = position.distance_to(target.position)
@@ -216,12 +216,16 @@ func _physics_process(delta_time: float):
 		
 		is_skill_casted = true
 		# spawn lightning effect
-		var lightning = lightning_placeholder.instantiate()
+		var lightning: Sprite2D = lightning_placeholder.instantiate()
+		
 		if skill_placeholder_socket:
 			skill_placeholder_socket.add_child(lightning)
+			# hack - rotate 180 degrees since enemy in battle scene is facing left
+			if avatar.avatar_type == Constants.Avatar_Type.ENEMY:
+				lightning.rotation_degrees = 180 
 		
 		# deal damage to target
-		if not on_skill_damage_calculation.is_null():
+		if on_skill_damage_calculation and not on_skill_damage_calculation.is_null():
 			var has_no_valid_function: bool = on_skill_damage_calculation.call()
 			if has_no_valid_function:
 				print_rich("[color=red]No Valid function for on_skill_damage_calculation...[/color]")
@@ -311,8 +315,6 @@ func on_outer_area_entered(area: Area2D):
 		if node:
 			var other_actor: Actor = node as Actor
 			# disable exclamation point at a later time
-			var disable_quick_time = func():
-				battle_reaction.visible = false
 			other_actor.on_disable_quick_time_defend.connect(disable_quick_time, ConnectFlags.CONNECT_ONE_SHOT)
 			BattleSignals.on_quick_time_defend_pressed_valid.emit()
 		else:
@@ -460,9 +462,13 @@ func pause_motion_for(seconds_to_pause: float, old_motion_state: Active_Battle_S
 	toggle_motion(true)
 	
 	var on_restore_motion = func():
-		print("resuming actor motion for ", name)
+		print("resuming actor motion for ", avatar.curr_stats.name)
 		toggle_motion(false)
-		motion_state = old_motion_state
+		# subtle bug I introduced here... if actor gets interrupted by an attack while its casting is skill
+		# it will go back to the neutral state as it hasn't done anything yet which is incorrect
+		# it should stay in the SKILL state
+		if motion_state != Active_Battle_State.SKILL:
+			motion_state = old_motion_state
 	
 	pause_timer.timeout.connect(on_restore_motion)
  
@@ -470,12 +476,17 @@ func on_cancel_move():
 	if avatar:
 		avatar.is_knocked_back = false
 		toggle_motion(false)
-		# cancel pending skills
-		avatar.battle_timers.skill_timer.stop()
-		Utility.disconnect_all_signal_connections(avatar.battle_timers.skill_timer.timeout)
 		
 	# cancel attacks that did not connect
 	target = null
 	toggle_hitbox(false)
 	interact_area.monitoring = false
 	attack_timer.stop()
+	
+	# cancel skills that did not connect
+	avatar.battle_timers.skill_timer.stop()
+	Utility.disconnect_all_signal_connections(avatar.battle_timers.skill_timer.timeout)
+
+func disable_quick_time(_actor: Actor):
+	if battle_reaction:
+		battle_reaction.visible = false

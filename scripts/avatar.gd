@@ -24,8 +24,11 @@ var curr_stats: BaseStats
 @export var is_alive: bool = true
 @export var is_knocked_back: bool = false
 # controls whether or not movement along timeline continues on
-var resume_motion: bool = true
-var battle_state: Battle_State = Battle_State.WAITING
+@export var resume_motion: bool = true
+# controls movement direction on timeline
+@export var is_moving_forward: bool = true
+@export var battle_state: Battle_State = Battle_State.WAITING
+var ui_battle_state_machine: Fsm = Fsm.new()
 
 # AI signals
 signal on_avatar_flee()
@@ -52,6 +55,15 @@ func _init() -> void:
 	initial_stats = BaseStats.new()
 	curr_stats = BaseStats.new()
 	is_alive = true
+	ui_battle_state_machine.current_state = int(Constants.Battle_State.WAITING)
+	ui_battle_state_machine.init_state_map({
+		Constants.Battle_State.WAITING: WaitingState.new(self),
+		Constants.Battle_State.MOVE_SELECTION: MoveSelectionState.new(self),
+		Constants.Battle_State.PENDING_MOVE: PendingMoveState.new(self),
+		Constants.Battle_State.EXECUTING_MOVE: ExecutingMoveState.new(self),
+		Constants.Battle_State.PAUSED: PausedState.new(self),
+		Constants.Battle_State.KNOCKBACK: UiKnockbackState.new(self),
+	})
 	
 
 func _ready() -> void:
@@ -60,6 +72,7 @@ func _ready() -> void:
 	if sprite_2d:
 		sprite_2d.texture = texture
 	
+	add_child(ui_battle_state_machine)
 	avatar_label.text = self.name
 	update_battle_state_text()
 	
@@ -69,7 +82,8 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	path_follow_2d.progress_ratio += delta * _curr_speed * float(resume_motion)
+	var delta_move: float = _curr_speed * delta * int(resume_motion) * (1 if is_moving_forward else -1)
+	path_follow_2d.progress_ratio += delta_move
 
 func _process(delta: float) -> void:
 	update_battle_state_text()
@@ -92,6 +106,7 @@ func on_resume_timeout():
 		self.progress_ratio = 0 # reset back to beginning of timeline
 	
 	battle_state = Battle_State.WAITING
+	ui_battle_state_machine.transition_to(Constants.Battle_State.WAITING)
 	self._curr_speed = move_speed # restore movespeed
 	BattleSignals.on_resume_play.emit()
 
@@ -100,7 +115,7 @@ func on_resume_timeout():
 #region Debug functions
 
 func update_battle_state_text():
-	match battle_state:
+	match ui_battle_state_machine.current_state:
 		Battle_State.WAITING:
 			battle_state_label.text = "WAITING"
 		Battle_State.MOVE_SELECTION:
@@ -146,23 +161,13 @@ func toggle_motion(is_paused: bool):
 	resume_motion = !is_paused
 	battle_timers.toggle_timers(is_paused)
 	
-func on_interrupt_motion(interruptee: Avatar, old_battle_state: Constants.Battle_State):
-	if interruptee.battle_state == Constants.Battle_State.PAUSED:
-		var seconds_to_pause: float = 3
-		interruptee.pause_motion_for(seconds_to_pause, old_battle_state)
-	elif interruptee.battle_state == Constants.Battle_State.KNOCKBACK:
-		# cancel any pending skills
-		print("move pending by %s is cancelled" % interruptee.curr_stats.name)
-		battle_timers.skill_timer.stop()
-		Utility.disconnect_all_signal_connections(battle_timers.skill_timer.timeout)
-		
-		# TODO: these can come from data inputs like a skill that determine how much push back and the duration it takes for an avatar to get knockedback on timeline
-		var push_back_amount: float = 0.75
-		var duration_sec: float = 0.5
-		interruptee.push_back_progress(push_back_amount, duration_sec)
-	else:
-		print_rich("[color=yellow]avatar %s was neither paused or knocked back[/color]" % curr_stats.name)
-		
+func on_interrupt_motion(interruptee: Avatar, new_battle_state: Constants.Battle_State):
+	var old_battle_state: Constants.Battle_State = interruptee.battle_state
+	interruptee.battle_state = new_battle_state
+	interruptee.ui_battle_state_machine.transition_to(new_battle_state)
+	
+
+	
 func pause_motion_for(seconds_to_pause: float, old_battle_state: Constants.Battle_State):
 	var process_on_physics_tick: bool = true
 	# TODO: may need different levels of "pausing"
@@ -174,6 +179,7 @@ func pause_motion_for(seconds_to_pause: float, old_battle_state: Constants.Battl
 		print("resuming avatar motion for ", curr_stats.name)
 		toggle_motion(false)
 		battle_state = old_battle_state
+		ui_battle_state_machine.transition_to(old_battle_state)
 	
 	pause_timer.timeout.connect(on_restore_motion)
 
@@ -183,7 +189,10 @@ func push_back_progress(push_back_amount: float, duration_sec: float):
 	is_knocked_back = true
 	# disable monitoring so that it does not trigger a start turn signal event
 	area_2d.monitoring = false
+	is_moving_forward = false
 	
+	# instead of tweening this can be put in a ui knockback state's on_physics_update
+	# where it checks when it can exit out of the state
 	# TODO(Polish): knockback visually doesn't look quite right... maybe use a different easing function or use the _physics_process() loop to move avatar along path
 	var knockback_tween: Tween = create_tween()
 	knockback_tween.set_process_mode(Tween.TWEEN_PROCESS_PHYSICS)
@@ -193,6 +202,7 @@ func push_back_progress(push_back_amount: float, duration_sec: float):
 	var on_finished = func():
 		print("finished pushback on ", curr_stats.name)
 		battle_state = Constants.Battle_State.WAITING
+		ui_battle_state_machine.transition_to(Constants.Battle_State.WAITING)
 		is_knocked_back = false
 		# re-enable this so avatar can start their turn -- assuming you get pushed out of the exe rectangle
 		area_2d.monitoring = true

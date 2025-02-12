@@ -25,6 +25,7 @@ var original_target: Node2D
 # TODO - move curr_stats and initial_stats from avatar to here
 @export var avatar: Avatar
 
+var active_battle_state_machine: Fsm = Fsm.new()
 
 @export_group("Debug Menu")
 @export var enable_debug_menu: bool
@@ -84,6 +85,19 @@ func _init():
 	attack_cmd = AttackCommand.new()
 	defend_cmd = DefendCommand.new()
 	flee_cmd = FleeCommand.new()
+	
+	active_battle_state_machine.current_state = Constants.Active_Battle_State.NEUTRAL
+	active_battle_state_machine.init_state_map({
+		Constants.Active_Battle_State.NEUTRAL: NeutralState.new(self),
+		Constants.Active_Battle_State.MOVING: MovingState.new(self),
+		Constants.Active_Battle_State.DEFEND: DefendState.new(self),
+		Constants.Active_Battle_State.ATTACK: AttackState.new(self),
+		Constants.Active_Battle_State.SKILL: SkillState.new(self),
+		Constants.Active_Battle_State.FLEE: FleeState.new(self),
+		Constants.Active_Battle_State.HURT: HurtState.new(self),
+		Constants.Active_Battle_State.KNOCKBACK: KnockbackState.new(self),
+		Constants.Active_Battle_State.CAST_SKILL: CastSkillState.new(self),
+	})
 
 func _ready():
 	print("actor ready called: %s" % name)
@@ -121,6 +135,7 @@ func _ready():
 	connect_battle_signals()
 	connect_defend_reaction_button()
 	BattleSignals.on_end_turn.connect(disable_quick_time)
+	add_child(active_battle_state_machine)
 
 
 func connect_defend_reaction_button():
@@ -381,24 +396,13 @@ func on_attack_connect(area: Area2D):
 		print_rich("[color=red]Damage Calculator is null in Actor.gd[/color]")
 
 func start_defend():
-	if motion_state == Active_Battle_State.DEFEND:
-		return
-	
-	motion_state = Active_Battle_State.DEFEND
-	if avatar:
-		avatar.curr_stats.defense += avatar.curr_stats.defense * 0.25
-		print ("%s defense is now at %d" % [avatar.curr_stats.name, avatar.curr_stats.defense])
-
 	defense_node.visible = true
 	defense_timer.start()
 	
 func on_defend_end():
-	if avatar:
-		avatar.curr_stats.defense = avatar.initial_stats.defense
-		print ("%s defense end with def at %d" % [avatar.curr_stats.name, avatar.curr_stats.defense])
-	
 	defense_node.visible = false
 	motion_state = Active_Battle_State.NEUTRAL
+	active_battle_state_machine.transition_to(Constants.Active_Battle_State.NEUTRAL)
 	BattleSignals.on_end_turn.emit(self)
 
 func begin_flee():
@@ -439,20 +443,19 @@ func get_reaction_button() -> ReactionBasedButton:
 	return reaction_based_button
 	
 func on_interrupt_motion(interruptee: Actor, new_battle_state: Constants.Battle_State):
-	var old_avatar_state: Constants.Battle_State = interruptee.avatar.battle_state
 	var old_motion_state: Active_Battle_State = interruptee.motion_state
 	interruptee.avatar.battle_state = new_battle_state
 	
 	if new_battle_state == Constants.Battle_State.PAUSED:
-		avatar.on_interrupt_motion(interruptee.avatar, old_avatar_state)
 		interruptee.motion_state = Active_Battle_State.HURT
-		var seconds_to_pause: float = 3
-		interruptee.pause_motion_for(seconds_to_pause, old_motion_state)
+		#var seconds_to_pause: float = 3
+		#interruptee.pause_motion_for(seconds_to_pause, old_motion_state)
+		avatar.on_interrupt_motion(interruptee.avatar, new_battle_state)
 	elif new_battle_state == Constants.Battle_State.KNOCKBACK:
 		interruptee.motion_state = Constants.Active_Battle_State.KNOCKBACK
 		# cancel pending actions such as basic attack or skill
 		interruptee.on_cancel_move()
-		avatar.on_interrupt_motion(interruptee.avatar, old_avatar_state)
+		avatar.on_interrupt_motion(interruptee.avatar, new_battle_state)
 		
 func pause_motion_for(seconds_to_pause: float, old_motion_state: Active_Battle_State):
 	var process_on_physics_tick: bool = true

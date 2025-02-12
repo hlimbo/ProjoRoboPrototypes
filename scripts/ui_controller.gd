@@ -238,6 +238,8 @@ func _on_flee_button_pressed(actor: Actor):
 	# set flee execution speed
 	var avatar: Avatar = actor.avatar
 	avatar.battle_state = Constants.Battle_State.PENDING_MOVE
+	# TODO: add back in once pending move state is more configurable
+	# avatar.ui_battle_state_machine.transition_to(Constants.Battle_State.PENDING_MOVE)
 	
 	# delay skill until avatar progress ratio reaches 1
 	var wait_time: float = avatar.battle_timers.flee_timer.wait_time
@@ -341,6 +343,7 @@ func on_start_order_step(actor: Actor) -> void:
 	
 	# entry point for party member to pick a move
 	if avatar.avatar_type == Avatar.Avatar_Type.PARTY_MEMBER:
+		avatar.ui_battle_state_machine.transition_to(Constants.Battle_State.MOVE_SELECTION)
 		# pause all timers to prevent them going off when party member is picking a move
 		pause_actors_motion()
 		party_member_name.text = avatar.name
@@ -377,11 +380,11 @@ func on_start_order_step(actor: Actor) -> void:
 		for party_member in party_members:
 			party_member.get_reaction_button().enable(true)
 		
-		ai_determine_move(actor)
+		#ai_determine_move(actor)
 		#ai_use_random_skill(actor)
 		#start_defend(actor)
 		#ai_flee(actor)
-		#ai_attack(actor)
+		ai_attack(actor)
 
 func transition_to_main_scene(status: Party_Battle_States):
 	var exit_scene = func():
@@ -495,7 +498,6 @@ func on_ai_skill_end(damage_receiver: Actor, damage_dealer: Actor) -> void:
 	var wrapper = func() -> bool:
 		return on_skill_damage_calculation(damage_dealer, damage_receiver, skill)
 	
-	# TODO: add motion to skill being utilized and move damage calculations to actor logic
 	var skill_cmd = SkillPlaceholderCommand.new()
 	skill_cmd.target = damage_receiver
 	skill_cmd.skill = skill
@@ -545,6 +547,7 @@ func on_skill_attack_damage_received(_damage_receiver: Actor, damage_dealer: Act
 	
 	description_panel.visible = true
 	description_timer.start()
+	dd_avatar.ui_battle_state_machine.transition_to(Constants.Battle_State.EXECUTING_MOVE)
 	dd_avatar.battle_state = Constants.Battle_State.EXECUTING_MOVE
 
 # bool is returned here because Godot doesn't do null callables... so this hack is here to

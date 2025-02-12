@@ -1,4 +1,5 @@
-extends IState
+extends IActorState
+class_name AttackState
 
 func on_enter():
 	pass
@@ -20,4 +21,3 @@ func on_exit():
 
 func on_physics_exit():
 	pass
-

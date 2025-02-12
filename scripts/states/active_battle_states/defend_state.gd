@@ -1,23 +1,12 @@
-extends IState
+extends IActorState
+class_name DefendState
 
 func on_enter():
-	pass
+	var avatar: Avatar = actor.avatar
+	avatar.curr_stats.defense += avatar.curr_stats.defense * 0.25
+	print ("%s defense is now at %d" % [avatar.curr_stats.name, avatar.curr_stats.defense])
 
-func on_physics_enter():
-	pass
-
-func on_input(event: InputEvent):
-	pass
-
-func on_process(delta: float):
-	pass
-
-func on_physics_process(delta: float):
-	pass
-	
 func on_exit():
-	pass
-
-func on_physics_exit():
-	pass
-
+	var avatar: Avatar = actor.avatar
+	avatar.curr_stats.defense = avatar.initial_stats.defense
+	print ("%s defense end with def at %d" % [avatar.curr_stats.name, avatar.curr_stats.defense])

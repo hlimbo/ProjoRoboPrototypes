@@ -1,4 +1,4 @@
-extends IState
+extends IAvatarState
 class_name WaitingState
 
 func on_enter():

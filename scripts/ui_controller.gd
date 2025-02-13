@@ -344,7 +344,7 @@ func on_start_order_step(actor: Actor) -> void:
 	# entry point for party member to pick a move
 	if avatar.avatar_type == Avatar.Avatar_Type.PARTY_MEMBER:
 		avatar.ui_battle_state_machine.transition_to(Constants.Battle_State.MOVE_SELECTION)
-		# pause all timers to prevent them going off when party member is picking a move
+		
 		pause_actors_motion()
 		party_member_name.text = avatar.name
 		action_layout.visible = true

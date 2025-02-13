@@ -400,7 +400,6 @@ func start_defend():
 	defense_timer.start()
 	
 func on_defend_end():
-	defense_node.visible = false
 	motion_state = Active_Battle_State.NEUTRAL
 	active_battle_state_machine.transition_to(Constants.Active_Battle_State.NEUTRAL)
 	BattleSignals.on_end_turn.emit(self)
@@ -448,15 +447,13 @@ func on_interrupt_motion(interruptee: Actor, new_battle_state: Constants.Battle_
 	
 	if new_battle_state == Constants.Battle_State.PAUSED:
 		interruptee.motion_state = Active_Battle_State.HURT
-		#var seconds_to_pause: float = 3
-		#interruptee.pause_motion_for(seconds_to_pause, old_motion_state)
-		avatar.on_interrupt_motion(interruptee.avatar, new_battle_state)
 	elif new_battle_state == Constants.Battle_State.KNOCKBACK:
 		interruptee.motion_state = Constants.Active_Battle_State.KNOCKBACK
-		# cancel pending actions such as basic attack or skill
-		interruptee.on_cancel_move()
-		avatar.on_interrupt_motion(interruptee.avatar, new_battle_state)
-		
+		interruptee.active_battle_state_machine.transition_to(Constants.Active_Battle_State.KNOCKBACK)
+	
+	avatar.on_interrupt_motion(interruptee.avatar, new_battle_state)
+	
+	
 func pause_motion_for(seconds_to_pause: float, old_motion_state: Active_Battle_State):
 	var process_on_physics_tick: bool = true
 	# TODO: may need different levels of "pausing"

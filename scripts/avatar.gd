@@ -105,11 +105,11 @@ func on_resume_timeout():
 	if not is_knocked_back or progress_ratio == 1:
 		self.progress_ratio = 0 # reset back to beginning of timeline
 	
+	self._curr_speed = move_speed # restore movespeed
+	
 	battle_state = Battle_State.WAITING
 	ui_battle_state_machine.transition_to(Constants.Battle_State.WAITING)
-	self._curr_speed = move_speed # restore movespeed
 	BattleSignals.on_resume_play.emit()
-
 #endregion
 
 #region Debug functions

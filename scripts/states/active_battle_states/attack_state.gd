@@ -1,6 +1,9 @@
 extends IActorState
 class_name AttackState
 
+# useful if we have an actual attack animation that can be played out here...
+# since there is none it does nothing for now
+
 func on_enter():
 	pass
 

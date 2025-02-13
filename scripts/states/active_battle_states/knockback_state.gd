@@ -2,7 +2,8 @@ extends IActorState
 class_name KnockbackState
 
 func on_enter():
-	pass
+	# cancel pending actions such as basic attack or skill
+	actor.on_cancel_move()
 
 func on_physics_enter():
 	pass

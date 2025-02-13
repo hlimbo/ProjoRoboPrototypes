@@ -12,6 +12,7 @@ func execute(actor: Actor):
 	avatar.battle_state = Constants.Battle_State.EXECUTING_MOVE
 	avatar.ui_battle_state_machine.transition_to(Constants.Battle_State.EXECUTING_MOVE)
 	
+	actor.active_battle_state_machine.transition_to(Constants.Active_Battle_State.MOVING)
 	actor.on_attack_damage_text_updated = on_label_text_update
 	actor.start_motion(target)
 	

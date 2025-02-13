@@ -1,6 +1,12 @@
 extends IActorState
 class_name NeutralState
 
+# USE cases:
+# - playing out an idle animation
+# - playing out a quick time event like defending based on reaction input
+# - doesn't do much here and that's by design to help compartmentalize code to reduce cognitive load
+# - help pinpoint bugs/issues quicker
+
 func on_enter():
 	pass
 

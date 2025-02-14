@@ -22,7 +22,7 @@ script = ExtResource("1_gg4k4")
 
 [node name="BattleSpawnManager" type="Node2D" parent="."]
 script = ExtResource("1_lnptf")
-party_member_spawn_count = 1
+party_member_spawn_count = 2
 enemy_spawn_count = 1
 
 [node name="BattleManager" type="Node2D" parent="."]

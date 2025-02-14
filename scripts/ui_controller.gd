@@ -132,7 +132,7 @@ func _on_skills_button_pressed(actor: Actor):
 
 func start_defend(actor: Actor):
 	var avatar: Avatar = actor.avatar
-	label.text = "%s is defending!" % avatar.name
+	label.text = "%s is defending!" % avatar.curr_stats.name
 	
 	description_panel.visible = true
 	action_layout.visible = false

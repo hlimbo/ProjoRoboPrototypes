@@ -97,16 +97,14 @@ var enemy_stats: Array[BaseStats] = []
 
 @onready var starting_party_member_positions: Array[Vector2] = [
 	$"../BattleScene/PartyMember1".position,
-	# $PartyMember1.position,
-	#$PartyMember2.position,
-	#$PartyMember3.position,
+	$"../BattleScene/PartyMember2".position,
+	$"../BattleScene/PartyMember3".position,
 ]
 
 @onready var starting_enemy_positions: Array[Vector2] = [
 	$"../BattleScene/Enemy1".position,
-	# $Enemy1.position,
-	#$Enemy2.position,
-	#$Enemy3.position,
+	$"../BattleScene/Enemy2".position,
+	$"../BattleScene/Enemy3".position,
 ]
 
 @onready var one_d_graph: Control = owner.get_node("UILayout/OneDGraph")
@@ -126,7 +124,7 @@ func generate_random_stats(actor_type: Actor_Type) -> BaseStats:
 	stats.defense = randi_range(10,15)
 	#stats.hp = randi_range(40, 80)
 	# temp - make hp high for testing
-	stats.hp = 1000
+	stats.hp = 20
 	stats.speed = randi_range(10, 20)
 	stats.skill_points = 100
 
@@ -157,15 +155,11 @@ func _ready() -> void:
 	# initialize battle participants' base stats
 	for i in range(0, party_member_spawn_count):
 		var stats = generate_random_stats(Actor_Type.PARTY_MEMBER)
-		# temp: hardcode speed for testing
-		stats.speed = 10
 		party_member_stats.append(stats)
 		max_battle_speed = maxi(max_battle_speed, stats.speed)
 	
 	for i in range(0, enemy_spawn_count):
 		var stats = generate_random_stats(Actor_Type.ENEMY)
-		# temp: hardcode speed for testing
-		stats.speed = 10
 		enemy_stats.append(stats)
 		max_battle_speed = maxi(max_battle_speed, stats.speed)
 	
@@ -225,19 +219,13 @@ func _ready() -> void:
 	var ranges = get_starting_timeline_positions()
 	print ("encounter type: %d" % encounter_type)
 	
-	# TEMP: give party members and enemies same starting position on timeline
+	# give random starting locations based on a range
 	for party_member in party_members:
-		party_member.avatar.progress_ratio = 0
-	for enemy in enemies:
-		enemy.avatar.progress_ratio = 0
+		var start_position = randf_range(ranges[0][0], ranges[0][1])
+		print_rich("[color=yellow]progress ratio picked for party avatar is %f[/color]" % start_position)
+		party_member.avatar.progress_ratio = start_position
 	
-	## give random starting locations based on a range
-	#for party_member in party_members:
-		#var start_position = randf_range(ranges[0][0], ranges[0][1])
-		#print_rich("[color=yellow]progress ratio picked for party avatar is %f[/color]" % start_position)
-		#party_member.avatar.progress_ratio = start_position
-	#
-	## give random starting locations based on a range
-	#for enemy in enemies:
-		#var start_position = randf_range(ranges[1][0], ranges[1][1])
-		#enemy.avatar.progress_ratio = start_position
+	# give random starting locations based on a range
+	for enemy in enemies:
+		var start_position = randf_range(ranges[1][0], ranges[1][1])
+		enemy.avatar.progress_ratio = start_position

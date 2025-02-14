@@ -208,7 +208,7 @@ func _process(delta_time: float):
 # GOAL: move each state specific logic into its own state class do handle its own processing there
 func _physics_process(delta_time: float):
 	if motion_state == Active_Battle_State.MOVING:
-		if target:
+		if is_instance_valid(target) and !target.is_queued_for_deletion():
 			var vel: Vector2 = move_to_target(target.position)
 			position += vel * delta_time
 		else:
@@ -397,7 +397,7 @@ func on_attack_connect(area: Area2D):
 				print_rich("[color=red]on_attack_damage_text_updated has invalid function reference... ensure it is set before calling[/color]")
 			
 			# hack to unset function call
-			on_attack_damage_text_updated = func(): return true
+			on_attack_damage_text_updated = func(_text: String): return true
 		
 		# only interrupt motion if not defending or using a skill
 		if not [Active_Battle_State.DEFEND, Active_Battle_State.SKILL].has(actor_receiving_dmg.motion_state):

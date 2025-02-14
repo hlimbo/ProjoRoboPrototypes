@@ -136,7 +136,7 @@ func generate_random_stats() -> void:
 	initial_stats.defense = randi_range(10,15)
 	#initial_stats.hp = randi_range(40, 80)
 	# temp - make hp high for testing
-	initial_stats.hp = 1000
+	initial_stats.hp = 20
 	initial_stats.speed = randi_range(10, 20)
 	initial_stats.skill_points = 100
 	

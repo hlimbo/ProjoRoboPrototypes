@@ -65,8 +65,10 @@ var flee_time: float = 0.0
 var lightning_placeholder: Resource = preload("res://nodes/lightning.tscn")
 var active_skill: Skill
 var on_skill_damage_calculation: Callable
-@onready var skill_placeholder_socket: Marker2D = $SkillSockets/SkillPlaceholderSocket
+@onready var skill_placeholder_socket: Marker2D = $Sockets/SkillPlaceholderSocket
 @export var is_skill_casted: bool = false
+
+@export var is_quick_time_defend: bool = false
 
 #region Commands
 var attack_cmd: AttackCommand
@@ -102,8 +104,17 @@ func _ready():
 	original_pos = position
 	original_target = target
 	
+	init_collision_layer_interactions()
 	# set all child canvas items to inherit shader from art root
 	set_descendant_material_as_root_material()
+	
+	# flip attack hitbox for enemy
+	if actor_type == Constants.Actor_Type.ENEMY:
+		var hit_shape_node = get_node("CollisionGeometry/HitArea2D/CollisionShape2D")
+		(hit_shape_node as CollisionShape2D).position.x *= -1
+	
+		# disable quick time event for enemy
+		reaction_based_button.is_enabled = false
 	
 	# for some reason in between scene changes, the prev shader value persists...
 	# resetting on scene ready
@@ -127,14 +138,11 @@ func _ready():
 	interact_area.area_entered.connect(on_other_entered)
 	hit_area.area_entered.connect(on_attack_connect)
 	
-	#if avatar:
-		#avatar.generate_random_stats()
 	
 	if info_node and avatar:
 		info_node.update_labels(avatar)
 		
 	connect_battle_signals()
-	connect_defend_reaction_button()
 	BattleSignals.on_end_turn.connect(disable_quick_time)
 	add_child(active_battle_state_machine)
 
@@ -146,7 +154,10 @@ func connect_defend_reaction_button():
 			reaction_label.visible = true
 			if reaction_state == ReactionBasedButton.ReactionState.ON_TIME:
 				label.text = "Right On!"
-				start_defend()
+				is_quick_time_defend = true
+				# TODO: create a quick time defend command as it functions differently from the standard defend button command
+				var def_cmd = DefendCommand.new()
+				def_cmd.execute(self)
 			elif reaction_state == ReactionBasedButton.ReactionState.EARLY:
 				label.text = "Too Early!"
 			elif reaction_state == ReactionBasedButton.ReactionState.LATE:
@@ -312,7 +323,7 @@ func on_other_entered(other: Area2D):
 		# simulate attack animation delay -- timer
 		enable_attack_timer.start()
 
-# outer area
+# outer area - disable for now until quick time defend command is created
 func on_outer_area_entered(area: Area2D):
 	if actor_type == Constants.Actor_Type.PARTY_MEMBER:
 		print("party member entered outer area")
@@ -356,16 +367,17 @@ func on_attack_connect(area: Area2D):
 	# apply damage calculations
 	if damage_calculator:
 		
-		# disable quick_time defend for party member as enemy since enemy owns their own hitbox
-		on_disable_quick_time_defend.emit()
-		BattleSignals.on_quick_time_defend_late.emit()
-		
 		var actor_receiving_dmg: Actor = target
 		
 		if actor_receiving_dmg == null:
 			print_rich("[color=red]Unable to find actor to damage for %s[/color]" % avatar.curr_stats.name)
 			BattleSignals.on_end_turn.emit(self)
 			return
+		
+		# disable quick_time defend for party member as enemy since enemy owns their own hitbox
+		if actor_type == Constants.Actor_Type.PARTY_MEMBER:
+			actor_receiving_dmg.on_disable_quick_time_defend.emit()
+			BattleSignals.on_quick_time_defend_late.emit()
 		
 		print("%s on attack connect %s" % [avatar.curr_stats.name, actor_receiving_dmg.avatar.name])
 		
@@ -404,7 +416,9 @@ func start_defend():
 func on_defend_end():
 	motion_state = Active_Battle_State.NEUTRAL
 	active_battle_state_machine.transition_to(Constants.Active_Battle_State.NEUTRAL)
-	BattleSignals.on_end_turn.emit(self)
+	# hack - only end turn if not quick time defend
+	if not is_quick_time_defend:
+		BattleSignals.on_end_turn.emit(self)
 
 func begin_flee():
 	if motion_state == Active_Battle_State.FLEE:
@@ -517,7 +531,49 @@ func _set_descendant_material_as_root_material_helper(curr_node: Node):
 # for each collilsion geometry, set its layer and masks based on actor type
 # https://docs.godotengine.org/en/stable/tutorials/physics/physics_introduction.html#collision-layers-and-masks
 func init_collision_layer_interactions():
+	# collision layers - bits
+	const ALL: int = 0b1
+	const PLAYER: int = 0b10
+	const ENEMY: int = 0b100
+	const PLAYER_INTERACT_RANGE: int = 0b1000
+	const ENEMY_INTERACT_RANGE: int = 0b1_0000
+	const PLAYER_ATTACK: int = 0b10_0000
+	const ENEMY_ATTACK: int = 0b100_0000
+	const LAYER_8: int = 0b1000_0000
+	
+	var interact_area: Area2D = get_node("CollisionGeometry/InteractArea")
+	var outer_interact_area: Area2D = get_node("CollisionGeometry/OuterInteractArea")
+	var hit_area: Area2D = get_node("CollisionGeometry/HitArea2D")
+	var actor_area: Area2D = get_node("CollisionGeometry/ActorArea")
+	var target_selection_area: Area2D = get_node("CollisionGeometry/TargetSelectionArea")
+	
 	if actor_type == Constants.Actor_Type.PARTY_MEMBER:
-		pass
+		interact_area.collision_layer = PLAYER_INTERACT_RANGE
+		interact_area.collision_mask = ENEMY
+		
+		outer_interact_area.collision_layer = ALL
+		outer_interact_area.collision_mask =  ALL
+		
+		hit_area.collision_layer = PLAYER_ATTACK
+		hit_area.collision_mask = ENEMY
+		
+		actor_area.collision_layer = PLAYER
+		actor_area.collision_mask = ALL | ENEMY_INTERACT_RANGE | ENEMY_ATTACK
+		
+		target_selection_area.collision_layer = LAYER_8
+		target_selection_area.collision_mask = LAYER_8
 	elif actor_type == Constants.Actor_Type.ENEMY:
-		pass
+		interact_area.collision_layer = ENEMY_INTERACT_RANGE
+		interact_area.collision_mask = PLAYER
+		
+		outer_interact_area.collision_layer = ALL
+		outer_interact_area.collision_mask =  ALL
+		
+		hit_area.collision_layer = ENEMY_ATTACK
+		hit_area.collision_mask = PLAYER
+		
+		actor_area.collision_layer = ENEMY
+		actor_area.collision_mask = ALL | PLAYER_INTERACT_RANGE | PLAYER_ATTACK
+		
+		target_selection_area.collision_layer = LAYER_8
+		target_selection_area.collision_mask = LAYER_8

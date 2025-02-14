@@ -16,13 +16,13 @@ shader = ExtResource("1_0fmsv")
 shader_parameter/transparency_value = 1.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_62w8t"]
-radius = 295.027
+radius = 306.676
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_rp85k"]
 radius = 483.004
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_6sjjy"]
-radius = 131.061
+radius = 146.57
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_xxqyq"]
 radius = 122.0
@@ -36,6 +36,7 @@ material = SubResource("ShaderMaterial_q1dyj")
 scale = Vector2(0.75, 0.75)
 script = ExtResource("1_m0sef")
 move_speed = 500.0
+skill_cast_range = 500.0
 
 [node name="HUD" type="Node2D" parent="."]
 position = Vector2(0, 72)
@@ -85,6 +86,9 @@ shape = SubResource("CircleShape2D_62w8t")
 debug_color = Color(0.608226, 0.539873, 1.92523e-07, 0.42)
 
 [node name="OuterInteractArea" type="Area2D" parent="CollisionGeometry"]
+visible = false
+monitoring = false
+monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CollisionGeometry/OuterInteractArea"]
 position = Vector2(0, -100)
@@ -97,7 +101,7 @@ collision_mask = 2
 monitoring = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CollisionGeometry/HitArea2D"]
-position = Vector2(-161, -88)
+position = Vector2(217, -87.667)
 shape = SubResource("CircleShape2D_6sjjy")
 debug_color = Color(0.956863, 0, 0.552941, 0.501961)
 
@@ -146,8 +150,8 @@ one_shot = true
 
 [node name="Sockets" type="Node2D" parent="."]
 
-[node name="SkillSocketPlaceholder" type="Marker2D" parent="Sockets"]
-position = Vector2(149.333, -192)
+[node name="SkillPlaceholderSocket" type="Marker2D" parent="Sockets"]
+position = Vector2(149.333, -306.667)
 
 [node name="BattleReaction" parent="." instance=ExtResource("7_mxa28")]
 visible = false

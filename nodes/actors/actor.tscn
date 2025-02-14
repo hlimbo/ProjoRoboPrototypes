@@ -1,0 +1,167 @@
+[gd_scene load_steps=17 format=3 uid="uid://bxhu5jd6fbl0w"]
+
+[ext_resource type="Shader" path="res://shaders/transparent_fade.gdshader" id="1_0fmsv"]
+[ext_resource type="PackedScene" uid="uid://cx3vhulcggapg" path="res://nodes/info_node.tscn" id="1_ktls5"]
+[ext_resource type="Script" path="res://scripts/actor.gd" id="1_m0sef"]
+[ext_resource type="PackedScene" uid="uid://de228clgk2wkw" path="res://nodes/ui/status_effect_layout.tscn" id="2_aw8xu"]
+[ext_resource type="PackedScene" uid="uid://badvhoswodfcv" path="res://nodes/monsters/hairy_nocturnal.tscn" id="2_vpq4e"]
+[ext_resource type="Texture2D" uid="uid://dcv61ts3lojeo" path="res://assets/kenney-board-game-icons/Tilesheet/iconsDouble.png" id="3_uryjg"]
+[ext_resource type="Script" path="res://scripts/mob_selection.gd" id="4_10atk"]
+[ext_resource type="PackedScene" uid="uid://qml0ed0h5m72" path="res://nodes/battle_reaction.tscn" id="7_mxa28"]
+[ext_resource type="PackedScene" uid="uid://hqd2d6o5vprn" path="res://nodes/reaction_based_button.tscn" id="8_aid6p"]
+[ext_resource type="PackedScene" uid="uid://dmdn61yneme7o" path="res://nodes/reaction_label.tscn" id="9_5gf0v"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_q1dyj"]
+shader = ExtResource("1_0fmsv")
+shader_parameter/transparency_value = 1.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_62w8t"]
+radius = 295.027
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_rp85k"]
+radius = 483.004
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_6sjjy"]
+radius = 131.061
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_xxqyq"]
+radius = 122.0
+height = 444.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ws575"]
+radius = 257.381
+
+[node name="Actor" type="Node2D"]
+material = SubResource("ShaderMaterial_q1dyj")
+scale = Vector2(0.75, 0.75)
+script = ExtResource("1_m0sef")
+move_speed = 500.0
+
+[node name="HUD" type="Node2D" parent="."]
+position = Vector2(0, 72)
+
+[node name="InfoNode" parent="HUD" instance=ExtResource("1_ktls5")]
+offset_left = -125.0
+offset_top = -60.0
+offset_right = 119.0
+offset_bottom = 54.0
+
+[node name="ArtRoot" type="Node2D" parent="."]
+use_parent_material = true
+
+[node name="body" parent="ArtRoot" instance=ExtResource("2_vpq4e")]
+position = Vector2(0, -243)
+
+[node name="Defense" type="Node2D" parent="."]
+visible = false
+position = Vector2(7, -185)
+
+[node name="StatusEffectLayout" parent="Defense" instance=ExtResource("2_aw8xu")]
+offset_left = -161.0
+offset_top = -389.0
+offset_right = 159.0
+offset_bottom = -301.0
+
+[node name="Shield" type="Sprite2D" parent="Defense"]
+self_modulate = Color(0.2225, 0.6675, 0.89, 0.52549)
+z_index = 10
+position = Vector2(-13.0115, 0)
+scale = Vector2(4.48837, 5.17715)
+texture = ExtResource("3_uryjg")
+region_enabled = true
+region_rect = Rect2(1407, 127, 131, 126)
+
+[node name="CollisionGeometry" type="Node2D" parent="."]
+position = Vector2(0, -127)
+
+[node name="InteractArea" type="Area2D" parent="CollisionGeometry"]
+collision_layer = 16
+collision_mask = 2
+monitoring = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CollisionGeometry/InteractArea"]
+position = Vector2(0, -100)
+shape = SubResource("CircleShape2D_62w8t")
+debug_color = Color(0.608226, 0.539873, 1.92523e-07, 0.42)
+
+[node name="OuterInteractArea" type="Area2D" parent="CollisionGeometry"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CollisionGeometry/OuterInteractArea"]
+position = Vector2(0, -100)
+shape = SubResource("CircleShape2D_rp85k")
+debug_color = Color(0, 0.537789, 0.96583, 0.42)
+
+[node name="HitArea2D" type="Area2D" parent="CollisionGeometry"]
+collision_layer = 64
+collision_mask = 2
+monitoring = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CollisionGeometry/HitArea2D"]
+position = Vector2(-161, -88)
+shape = SubResource("CircleShape2D_6sjjy")
+debug_color = Color(0.956863, 0, 0.552941, 0.501961)
+
+[node name="ActorArea" type="Area2D" parent="CollisionGeometry"]
+collision_layer = 4
+collision_mask = 41
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CollisionGeometry/ActorArea"]
+position = Vector2(0, -87)
+shape = SubResource("CapsuleShape2D_xxqyq")
+debug_color = Color(0, 0.408333, 0.7, 0.419608)
+
+[node name="TargetSelectionArea" type="Area2D" parent="CollisionGeometry"]
+collision_layer = 128
+collision_mask = 128
+input_pickable = false
+script = ExtResource("4_10atk")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CollisionGeometry/TargetSelectionArea"]
+position = Vector2(0, -85)
+shape = SubResource("CircleShape2D_ws575")
+debug_color = Color(0.699391, 1.44392e-07, 0.36548, 0.419608)
+
+[node name="SelectionArrow" type="Sprite2D" parent="CollisionGeometry/TargetSelectionArea"]
+visible = false
+position = Vector2(0, -303)
+texture = ExtResource("3_uryjg")
+region_enabled = true
+region_rect = Rect2(785, 391, 92, 73)
+
+[node name="Timers" type="Node2D" parent="."]
+
+[node name="AttackTimer" type="Timer" parent="Timers"]
+process_callback = 0
+one_shot = true
+
+[node name="EnableAttackTimer" type="Timer" parent="Timers"]
+process_callback = 0
+wait_time = 0.5
+one_shot = true
+
+[node name="DefenseTimer" type="Timer" parent="Timers"]
+process_callback = 0
+wait_time = 1.5
+one_shot = true
+
+[node name="Sockets" type="Node2D" parent="."]
+
+[node name="SkillSocketPlaceholder" type="Marker2D" parent="Sockets"]
+position = Vector2(149.333, -192)
+
+[node name="BattleReaction" parent="." instance=ExtResource("7_mxa28")]
+visible = false
+z_index = 100
+offset_left = 170.0
+offset_top = -594.0
+offset_right = 953.0
+offset_bottom = -457.0
+
+[node name="ReactionBasedButton" parent="." instance=ExtResource("8_aid6p")]
+
+[node name="ReactionLabel" parent="." instance=ExtResource("9_5gf0v")]
+visible = false
+offset_left = 12.0
+offset_top = -730.0
+offset_right = 12.0
+offset_bottom = -730.0

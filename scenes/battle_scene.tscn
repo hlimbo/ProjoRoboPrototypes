@@ -39,22 +39,22 @@ limit_smoothed = true
 position_smoothing_enabled = true
 
 [node name="PartyMember1" type="Marker2D" parent="BattleScene"]
-position = Vector2(234, 1556)
+position = Vector2(230, 1684)
 
 [node name="PartyMember2" type="Marker2D" parent="BattleScene"]
-position = Vector2(540, 1563)
+position = Vector2(593, 1529)
 
 [node name="PartyMember3" type="Marker2D" parent="BattleScene"]
-position = Vector2(779, 1563)
+position = Vector2(938, 1710)
 
 [node name="Enemy1" type="Marker2D" parent="BattleScene"]
-position = Vector2(1307, 1262)
+position = Vector2(1386, 1304)
 
 [node name="Enemy2" type="Marker2D" parent="BattleScene"]
-position = Vector2(1487, 1262)
+position = Vector2(1787, 1254)
 
 [node name="Enemy3" type="Marker2D" parent="BattleScene"]
-position = Vector2(1671, 1262)
+position = Vector2(2282, 1346)
 
 [node name="UILayout" type="CanvasLayer" parent="." node_paths=PackedStringArray("battle_spawn_manager", "battle_timer_manager")]
 unique_name_in_owner = true

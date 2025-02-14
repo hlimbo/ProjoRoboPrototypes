@@ -6,8 +6,7 @@ const Avatar_Type = Constants.Avatar_Type
 const avatar_res_path: String = "res://nodes/battle_timeline/avatar.tscn"
 const avatar_res: Resource = preload(avatar_res_path)
 
-const party_member_res: Resource = preload("res://nodes/actors/yellow_mob_2.tscn")
-const enemy_member_res: Resource = preload("res://nodes/actors/enemy_placeholder.tscn")
+const actor_resource: Resource = preload("res://nodes/actors/actor.tscn")
 
 @export var party_member_spawn_count: int
 @export var enemy_spawn_count: int
@@ -18,8 +17,8 @@ var party_members: Array[Actor] = []
 var enemies: Array[Actor] = []
 
 func _enter_tree():
-	party_members = create_actors(party_member_res, Avatar_Type.PARTY_MEMBER, party_member_spawn_count)
-	enemies = create_actors(enemy_member_res, Avatar_Type.ENEMY, enemy_spawn_count)
+	party_members = create_actors(actor_resource, Avatar_Type.PARTY_MEMBER, party_member_spawn_count)
+	enemies = create_actors(actor_resource, Avatar_Type.ENEMY, enemy_spawn_count)
 
 # may need to change function signature later if spawning in different kinds of actor nodes
 # as these can differ base on their art style... (their overall structure and function stays same)

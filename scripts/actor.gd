@@ -11,7 +11,7 @@ const Avatar_Type = Constants.Avatar_Type
 # battle_manager class self-injects itself into this class as it creates Actor instances
 @export var battle_manager: BattleManager
 @onready var damage_calculator: IDamageCalculator
-@onready var info_node: InfoDisplay = $InfoNode
+@onready var info_node: InfoDisplay = get_info_display()
 
 # Used when debugging in isolation
 #@onready var damage_calculator: IDamageCalculator = BattleSceneManager.damage_calculator
@@ -104,6 +104,9 @@ func _ready():
 	original_pos = position
 	original_target = target
 	
+	# set all child canvas items to inherit shader from art root
+	set_descendant_material_as_root_material()
+	
 	# for some reason in between scene changes, the prev shader value persists...
 	# resetting on scene ready
 	(material as ShaderMaterial).set_shader_parameter("transparency_value", 1)
@@ -193,6 +196,7 @@ func _process(delta_time: float):
 		elif (Input.is_action_pressed("defend2")):
 			defend_cmd.execute(self)
 
+# GOAL: move each state specific logic into its own state class do handle its own processing there
 func _physics_process(delta_time: float):
 	if motion_state == Active_Battle_State.MOVING:
 		if target:
@@ -412,7 +416,7 @@ func begin_flee():
 	motion_state = Active_Battle_State.FLEE
 
 func get_info_display() -> InfoDisplay:
-	return get_node("InfoNode")
+	return get_node("HUD/InfoNode")
 	
 # enemy actors can only access this
 func get_target_selection_area() -> MobSelection:
@@ -490,3 +494,24 @@ func on_cancel_move():
 func disable_quick_time(_actor: Actor):
 	if battle_reaction:
 		battle_reaction.visible = false
+
+
+# using recursion (dfs), set all art nodes to inherit from parent material object
+# saves time needing to click on all art assets to have a shader effect enabled
+func set_descendant_material_as_root_material():
+	var root_node = get_node("ArtRoot")
+	_set_descendant_material_as_root_material_helper(root_node)
+	
+func _set_descendant_material_as_root_material_helper(curr_node: Node):
+	# base case
+	if curr_node == null:
+		return
+	
+	var canvas_item: CanvasItem = curr_node as CanvasItem
+	if canvas_item == null:
+		return
+	
+	curr_node.use_parent_material = true
+	var children: Array[Node] = curr_node.get_children()
+	for child in children:
+		_set_descendant_material_as_root_material_helper(child)

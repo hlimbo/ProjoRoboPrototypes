@@ -29,8 +29,6 @@ func set_input_tick(enable: bool):
 func init_state_map(new_state_map: Dictionary):
 	for state_enum in new_state_map:
 		state_map[state_enum] = new_state_map[state_enum]
-		
-	set_physics_process(false)
 
 func transition_to(new_state: int):
 	if new_state not in state_map:
@@ -56,7 +54,4 @@ func _process(delta: float):
 
 func _physics_process(delta: float):
 	var current: IState = state_map[current_state]
-	if current is UiKnockbackState:
-		current.on_physics_process(delta)
-	else:
-		current.on_physics_process(delta)
+	current.on_physics_process(delta)

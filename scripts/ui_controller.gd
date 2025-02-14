@@ -75,7 +75,7 @@ func on_end_turn(actor: Actor):
 	# actor.is_attacked = false
 	
 	# turn off reaction button for all party members
-	if actor.avatar_type == Constants.Avatar_Type.ENEMY:
+	if actor.actor_type == Constants.Actor_Type.ENEMY:
 		var party_members: Array[Actor] = battle_spawn_manager.get_party_members()
 		for party_member in party_members:
 			party_member.get_reaction_button().enable(false)
@@ -181,7 +181,7 @@ func _process(_delta: float) -> void:
 	while len(removed_enemies) > 0:
 		var enemy: Actor = removed_enemies.pop_back()
 		# slow algorithm but ok since there will be between 1 to 6 enemies in a battle
-		battle_spawn_manager.remove_actor(Constants.Avatar_Type.ENEMY, enemy)
+		battle_spawn_manager.remove_actor(Constants.Actor_Type.ENEMY, enemy)
 		enemy.queue_free()
 	
 	# check Party Battle Status
@@ -342,7 +342,7 @@ func on_start_order_step(actor: Actor) -> void:
 	avatar.progress_ratio = ORDER_STEP
 	
 	# entry point for party member to pick a move
-	if avatar.avatar_type == Avatar.Avatar_Type.PARTY_MEMBER:
+	if avatar.avatar_type == Constants.Avatar_Type.PARTY_MEMBER:
 		avatar.ui_battle_state_machine.transition_to(Constants.Battle_State.MOVE_SELECTION)
 		
 		pause_actors_motion()

@@ -30,12 +30,12 @@ func _input(event: InputEvent) -> void:
 		on_key_pressed.emit(reaction_state)
 
 func on_start_turn(actor: Actor):
-	if actor.avatar.avatar_type == Constants.Avatar_Type.ENEMY:
+	if actor.actor_type == Constants.Actor_Type.ENEMY:
 		reaction_state = ReactionState.EARLY
 	
 func on_end_turn(actor: Actor):
 	# reset party member's reaction state
-	if actor.avatar_type == Constants.Avatar_Type.PARTY_MEMBER:
+	if actor.actor_type == Constants.Actor_Type.PARTY_MEMBER:
 		reaction_state = ReactionState.DEFAULT
 	
 func on_valid_press_time():

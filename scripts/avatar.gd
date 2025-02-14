@@ -14,13 +14,12 @@ var _curr_speed: float
 @onready var battle_timers: BattleTimers = $BattleTimers
 
 # type aliasing for convenience
-const Avatar_Type = Constants.Avatar_Type
 const Battle_State = Constants.Battle_State
 
 var initial_stats: BaseStats
 var curr_stats: BaseStats
 # exporting to view human readable enum strings
-@export var avatar_type: Avatar_Type
+@export var avatar_type: Constants.Avatar_Type
 @export var is_alive: bool = true
 @export var is_knocked_back: bool = false
 # controls whether or not movement along timeline continues on

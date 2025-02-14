@@ -4,9 +4,8 @@ class_name Actor
 # Type Aliases through singleton script constants
 const Ui_Battle_State = Constants.Battle_State
 const Active_Battle_State = Constants.Active_Battle_State
-const Avatar_Type = Constants.Avatar_Type
 
-@export var avatar_type: Avatar_Type
+@export var actor_type: Constants.Actor_Type
 
 # battle_manager class self-injects itself into this class as it creates Actor instances
 @export var battle_manager: BattleManager
@@ -15,7 +14,6 @@ const Avatar_Type = Constants.Avatar_Type
 
 # Used when debugging in isolation
 #@onready var damage_calculator: IDamageCalculator = BattleSceneManager.damage_calculator
-
 
 @export var move_speed: float
 @export var target: Node2D
@@ -240,7 +238,7 @@ func _physics_process(delta_time: float):
 		if skill_placeholder_socket:
 			skill_placeholder_socket.add_child(lightning)
 			# hack - rotate 180 degrees since enemy in battle scene is facing left
-			if avatar.avatar_type == Constants.Avatar_Type.ENEMY:
+			if actor_type == Constants.Actor_Type.ENEMY:
 				lightning.rotation_degrees = 180 
 		
 		# deal damage to target
@@ -316,11 +314,11 @@ func on_other_entered(other: Area2D):
 
 # outer area
 func on_outer_area_entered(area: Area2D):
-	if avatar.avatar_type == Avatar_Type.PARTY_MEMBER:
+	if actor_type == Constants.Actor_Type.PARTY_MEMBER:
 		print("party member entered outer area")
 	
 	var is_valid_state: bool = [Active_Battle_State.NEUTRAL, Active_Battle_State.DEFEND].has(motion_state)
-	if avatar.avatar_type == Avatar_Type.PARTY_MEMBER and is_valid_state:
+	if actor_type == Constants.Actor_Type.PARTY_MEMBER and is_valid_state:
 		battle_reaction.visible = true
 		
 		# assumption: the Actor class is attached to the root node
@@ -515,3 +513,11 @@ func _set_descendant_material_as_root_material_helper(curr_node: Node):
 	var children: Array[Node] = curr_node.get_children()
 	for child in children:
 		_set_descendant_material_as_root_material_helper(child)
+
+# for each collilsion geometry, set its layer and masks based on actor type
+# https://docs.godotengine.org/en/stable/tutorials/physics/physics_introduction.html#collision-layers-and-masks
+func init_collision_layer_interactions():
+	if actor_type == Constants.Actor_Type.PARTY_MEMBER:
+		pass
+	elif actor_type == Constants.Actor_Type.ENEMY:
+		pass

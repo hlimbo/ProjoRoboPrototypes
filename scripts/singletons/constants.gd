@@ -26,8 +26,12 @@ enum Active_Battle_State {
 	CAST_SKILL
 }
 
-# TODO: rename to Actor_Type and move typing up Actor class instead of avatar...
 enum Avatar_Type {
+	PARTY_MEMBER,
+	ENEMY
+}
+
+enum Actor_Type {
 	PARTY_MEMBER,
 	ENEMY
 }

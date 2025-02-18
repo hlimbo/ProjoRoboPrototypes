@@ -84,6 +84,7 @@ func on_resume_play():
 	resume_actors_motion()
 
 func _ready():
+	
 	print("ui controller ready called")
 	battle_controller = BattleController.new()
 	action_buttons = BattleController.ActionButtons.new()

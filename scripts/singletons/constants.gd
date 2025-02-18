@@ -35,3 +35,20 @@ enum Actor_Type {
 	PARTY_MEMBER,
 	ENEMY
 }
+
+enum Energy_Type {
+	FIRE,
+	WOOD,
+	WATER,
+	EARTH,
+	ELECTRIC,
+	WIND,
+	AU, # Gold
+	AI, # Artificial Intelligence
+}
+
+enum Creature_Type {
+	ROBOT,
+	AUTOMATON,
+	ANDROID,
+}

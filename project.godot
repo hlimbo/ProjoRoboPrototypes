@@ -21,6 +21,7 @@ Constants="*res://scripts/singletons/constants.gd"
 BattleSceneManager="res://nodes/singletons/battle_scene_manager.tscn"
 Utility="*res://scripts/singletons/utility.gd"
 BattleSignals="*res://scripts/singletons/battle_signals.gd"
+EnergyCreatureTypeSystem="*res://scripts/singletons/energy_creature_type_system.gd"
 
 [display]
 

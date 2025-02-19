@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="LootItem" load_steps=2 format=3 uid="uid://hxg6qlh78ik2"]
+
+[ext_resource type="Script" path="res://scripts/resources/loot_item.gd" id="1_h8s3j"]
+
+[resource]
+script = ExtResource("1_h8s3j")
+item_name = "Rusted Gear"
+description = "A worn-out mechanical gear covered in rust. It might still have some use for low-grade machinery."
+rarity = 1

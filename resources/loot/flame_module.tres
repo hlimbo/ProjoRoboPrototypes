@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="LootItem" load_steps=2 format=3 uid="uid://d3bo4sicv4pnp"]
+
+[ext_resource type="Script" path="res://scripts/resources/loot_item.gd" id="1_do1gi"]
+
+[resource]
+script = ExtResource("1_do1gi")
+item_name = ""
+description = ""
+rarity = 0

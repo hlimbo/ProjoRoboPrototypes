@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="LootItem" load_steps=2 format=3 uid="uid://cuhqvssngmu3s"]
+
+[ext_resource type="Script" path="res://scripts/resources/loot_item.gd" id="1_h6030"]
+
+[resource]
+script = ExtResource("1_h6030")
+item_name = "Flame Module"
+description = "A highly volatile component that generates intense heat, often used in flamethrowers or thermal weapons."
+rarity = 5

@@ -1,0 +1,14 @@
+Item Name	Rarity (1-5)	Description
+Bark-Plated Armor	3	A sturdy armor infused with reinforced tree bark, offering natural resistance to physical attacks.
+Biofuel Cell	4	An advanced energy cell that converts organic matter into usable power for machines and androids.
+Charred Circuit	2	A burnt-out circuit, still faintly crackling with residual energy. Might be useful for scrap or repairs.
+Cooling Gel	3	A specialized gel designed to dissipate heat quickly, preventing overheating in high-performance machinery.
+Flame Module	5	A highly volatile component that generates intense heat, often used in flamethrowers or thermal weapons.
+Ground Stabilizer	2	A device that enhances balance and grip, reducing the risk of falling on unstable terrain.
+High Voltage Capacitor	4	Stores massive amounts of electrical energy, capable of releasing powerful bursts when triggered.
+Hydro Core	3	A compact water-based energy source that regulates temperature and provides hydration to bio-mechanical systems.
+Leaf Sensor	2	A delicate sensor that detects air movement and environmental changes, often used in nature-inspired robotics.
+Magnetic Core	5	A highly concentrated magnetic power source, used in advanced levitation and energy shielding systems.
+Molten Core	4	A core infused with superheated plasma, radiating an immense amount of heat and energy. Handle with caution.
+Rusted Gear	1	A worn-out mechanical gear covered in rust. It might still have some use for low-grade machinery.
+Stone Plating	3	A dense and heavy plating reinforced with minerals, offering exceptional durability against brute force attacks.

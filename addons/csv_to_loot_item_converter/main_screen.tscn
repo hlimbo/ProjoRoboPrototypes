@@ -1,0 +1,86 @@
+[gd_scene format=3 uid="uid://clyu61r4hi0oa"]
+
+[node name="MainScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -492.5
+offset_right = 492.5
+offset_bottom = 88.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 64
+text = "CSV to Loot Item Converter Tool"
+
+[node name="ConvertButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 496.0
+offset_top = 284.0
+offset_right = 793.0
+offset_bottom = 360.0
+theme_override_font_sizes/font_size = 24
+text = "Convert to Loot Items"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 169.0
+offset_top = 129.0
+offset_right = 731.0
+offset_bottom = 169.0
+theme_override_constants/separation = 20
+
+[node name="Label" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+text = "csv file:"
+
+[node name="LineEdit" type="LineEdit" parent="HBoxContainer"]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 2
+placeholder_text = "path/to/csv/file"
+
+[node name="FindButton" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+text = "Find"
+
+[node name="FileDialog" type="FileDialog" parent="HBoxContainer"]
+title = "Open a File"
+ok_button_text = "Open"
+file_mode = 0
+root_subfolder = "res://resources"
+filters = PackedStringArray("")
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 111.0
+offset_top = 182.0
+offset_right = 819.0
+offset_bottom = 222.0
+theme_override_constants/separation = 20
+
+[node name="Label" type="Label" parent="HBoxContainer2"]
+layout_mode = 2
+text = "save directory: "
+
+[node name="LineEdit" type="LineEdit" parent="HBoxContainer2"]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 2
+placeholder_text = "path/to/save/resources/in"
+
+[node name="Button" type="Button" parent="HBoxContainer2"]
+layout_mode = 2
+text = "Open"
+
+[node name="FileDialog" type="FileDialog" parent="HBoxContainer2"]
+title = "Open a Directory"
+ok_button_text = "Select Current Folder"
+file_mode = 2

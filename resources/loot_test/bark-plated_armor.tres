@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="LootItem" load_steps=2 format=3 uid="uid://3hsgq11lwni8"]
+
+[ext_resource type="Script" path="res://scripts/resources/loot_item.gd" id="1_tp50p"]
+
+[resource]
+script = ExtResource("1_tp50p")
+item_name = "Bark-Plated Armor"
+description = "A sturdy armor infused with reinforced tree bark, offering natural resistance to physical attacks."
+rarity = 3

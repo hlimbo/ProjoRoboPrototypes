@@ -26,3 +26,25 @@ func generate_random_weight(items: Array[String], weights: Array[float]) -> Stri
 			break
 	
 	return items[random_index]
+
+func load_resources_from_folder(folder_path: String) -> Array[Resource]:
+	var resources: Array[Resource] = []
+	var dir = DirAccess.open(folder_path)
+
+	if dir:
+		dir.list_dir_begin()
+		var file_name = dir.get_next()
+
+		while file_name != "":
+			if file_name.ends_with(".tres") or file_name.ends_with(".res"):
+				var resource_path = folder_path + "/" + file_name
+				var resource = load(resource_path)
+				resources.append(resource)
+
+			file_name = dir.get_next()
+
+		dir.list_dir_end()
+	else:
+		print("Failed to open directory:", folder_path)
+
+	return resources

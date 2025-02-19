@@ -1,9 +1,0 @@
-[gd_resource type="Resource" script_class="LootItem" load_steps=2 format=3 uid="uid://uw8racqfl5y5"]
-
-[ext_resource type="Script" path="res://scripts/resources/loot_item.gd" id="1_6ewc4"]
-
-[resource]
-script = ExtResource("1_6ewc4")
-item_name = "Hydro Core"
-description = "A compact water-based energy source that regulates temperature and provides hydration to bio-mechanical systems."
-rarity = 3

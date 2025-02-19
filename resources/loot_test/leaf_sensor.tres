@@ -1,9 +1,0 @@
-[gd_resource type="Resource" script_class="LootItem" load_steps=2 format=3 uid="uid://cgrq2jwd3ol4u"]
-
-[ext_resource type="Script" path="res://scripts/resources/loot_item.gd" id="1_1tqwo"]
-
-[resource]
-script = ExtResource("1_1tqwo")
-item_name = "Leaf Sensor"
-description = "A delicate sensor that detects air movement and environmental changes, often used in nature-inspired robotics."
-rarity = 2

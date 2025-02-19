@@ -1,9 +1,0 @@
-[gd_resource type="Resource" script_class="LootItem" load_steps=2 format=3 uid="uid://y6mxudawce5g"]
-
-[ext_resource type="Script" path="res://scripts/resources/loot_item.gd" id="1_adjpj"]
-
-[resource]
-script = ExtResource("1_adjpj")
-item_name = "Molten Core"
-description = "A core infused with superheated plasma, radiating an immense amount of heat and energy. Handle with caution."
-rarity = 4

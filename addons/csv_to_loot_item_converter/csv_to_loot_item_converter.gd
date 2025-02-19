@@ -91,7 +91,8 @@ func on_convert_pressed():
 			
 		var loot_item: LootItem = on_convert(line)
 		items.append(loot_item)
-		
+	
+	var start_time = Time.get_ticks_msec()
 	for item in items:
 		var item_name: String = "%s.tres" % item.item_name.to_snake_case()
 		var save_path: String = "%s/%s" % [save_directory_path.text, item_name]
@@ -101,6 +102,9 @@ func on_convert_pressed():
 			push_error("Something went wrong with saving %s with error code: %d" % [item_name, error])
 		else:
 			print_rich("[color=green]Successfully saved %s[/color]" % save_path)
+
+	var elapsed_time = Time.get_ticks_msec() - start_time
+	print("Elapsed time: ", elapsed_time)
 
 func on_convert(items: PackedStringArray) -> LootItem:
 	assert(len(items) == 3, "Unable to run on_convert function, check csv file and ensure it has 3 columns")

@@ -166,6 +166,7 @@ theme_override_constants/v_separation = 16
 columns = 4
 
 [node name="ItemLootIcon" parent="RootContainer/VBoxContainer/BodyContainer/LootDescriptionLayout/ItemsContainer/ScrollContainer/ItemLootGrid" instance=ExtResource("3_y1ir7")]
+visible = false
 layout_mode = 2
 loot_icon = ExtResource("7_f0yxx")
 loot_name = "1st bulb"
@@ -173,12 +174,14 @@ quantity = 5
 description = "Lightbulbs are cool"
 
 [node name="ItemLootIcon2" parent="RootContainer/VBoxContainer/BodyContainer/LootDescriptionLayout/ItemsContainer/ScrollContainer/ItemLootGrid" instance=ExtResource("3_y1ir7")]
+visible = false
 layout_mode = 2
 loot_icon = ExtResource("8_3obmc")
 loot_name = "2nd bulb"
 quantity = 32
 
 [node name="ItemLootIcon3" parent="RootContainer/VBoxContainer/BodyContainer/LootDescriptionLayout/ItemsContainer/ScrollContainer/ItemLootGrid" instance=ExtResource("3_y1ir7")]
+visible = false
 layout_mode = 2
 loot_icon = ExtResource("6_qb51y")
 loot_name = "3rd bulb"
@@ -186,6 +189,7 @@ quantity = 18
 description = "Lorem ipsum odor amet, consectetuer adipiscing elit. Volutpat praesent sollicitudin auctor integer nisi aliquam duis feugiat primis. Himenaeos placerat aenean, maecenas dis varius dolor. Habitant ante justo sapien dui aptent turpis. Suscipit elit massa dignissim interdum urna nostra risus neque. Odio sociosqu habitasse justo, egestas magna dis non. Nascetur rutrum cubilia proin posuere nulla aliquam. Commodo ornare ex morbi per primis ut tempor. Nascetur fermentum risus dis pellentesque turpis felis."
 
 [node name="ItemLootIcon4" parent="RootContainer/VBoxContainer/BodyContainer/LootDescriptionLayout/ItemsContainer/ScrollContainer/ItemLootGrid" instance=ExtResource("3_y1ir7")]
+visible = false
 layout_mode = 2
 loot_icon = ExtResource("9_mwr7c")
 loot_name = "flower power"
@@ -193,27 +197,35 @@ quantity = 2
 description = "Up the stacks!"
 
 [node name="ItemLootIcon5" parent="RootContainer/VBoxContainer/BodyContainer/LootDescriptionLayout/ItemsContainer/ScrollContainer/ItemLootGrid" instance=ExtResource("3_y1ir7")]
+visible = false
 layout_mode = 2
 
 [node name="ItemLootIcon6" parent="RootContainer/VBoxContainer/BodyContainer/LootDescriptionLayout/ItemsContainer/ScrollContainer/ItemLootGrid" instance=ExtResource("3_y1ir7")]
+visible = false
 layout_mode = 2
 
 [node name="ItemLootIcon7" parent="RootContainer/VBoxContainer/BodyContainer/LootDescriptionLayout/ItemsContainer/ScrollContainer/ItemLootGrid" instance=ExtResource("3_y1ir7")]
+visible = false
 layout_mode = 2
 
 [node name="ItemLootIcon8" parent="RootContainer/VBoxContainer/BodyContainer/LootDescriptionLayout/ItemsContainer/ScrollContainer/ItemLootGrid" instance=ExtResource("3_y1ir7")]
+visible = false
 layout_mode = 2
 
 [node name="ItemLootIcon9" parent="RootContainer/VBoxContainer/BodyContainer/LootDescriptionLayout/ItemsContainer/ScrollContainer/ItemLootGrid" instance=ExtResource("3_y1ir7")]
+visible = false
 layout_mode = 2
 
 [node name="ItemLootIcon10" parent="RootContainer/VBoxContainer/BodyContainer/LootDescriptionLayout/ItemsContainer/ScrollContainer/ItemLootGrid" instance=ExtResource("3_y1ir7")]
+visible = false
 layout_mode = 2
 
 [node name="ItemLootIcon11" parent="RootContainer/VBoxContainer/BodyContainer/LootDescriptionLayout/ItemsContainer/ScrollContainer/ItemLootGrid" instance=ExtResource("3_y1ir7")]
+visible = false
 layout_mode = 2
 
 [node name="ItemLootIcon12" parent="RootContainer/VBoxContainer/BodyContainer/LootDescriptionLayout/ItemsContainer/ScrollContainer/ItemLootGrid" instance=ExtResource("3_y1ir7")]
+visible = false
 layout_mode = 2
 
 [node name="TransitionLayer" type="ColorRect" parent="."]

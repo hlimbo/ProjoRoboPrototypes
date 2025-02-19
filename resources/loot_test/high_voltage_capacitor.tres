@@ -1,9 +1,0 @@
-[gd_resource type="Resource" script_class="LootItem" load_steps=2 format=3 uid="uid://bskffaw51ifgg"]
-
-[ext_resource type="Script" path="res://scripts/resources/loot_item.gd" id="1_fwhpy"]
-
-[resource]
-script = ExtResource("1_fwhpy")
-item_name = "High Voltage Capacitor"
-description = "Stores massive amounts of electrical energy, capable of releasing powerful bursts when triggered."
-rarity = 4

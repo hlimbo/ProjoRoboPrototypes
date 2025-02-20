@@ -1,0 +1,14 @@
+Item Name	Weight
+Bark-Plated Armor	12
+Biofuel Cell	8
+Charred Circuit	20
+Cooling Gel	15
+Flame Module	5
+Ground Stabilizer	18
+High Voltage Capacitor	7
+Hydro Core	10
+Leaf Sensor	16
+Magnetic Core	4
+Molten Core	6
+Rusted Gear	25
+Stone Plating	13

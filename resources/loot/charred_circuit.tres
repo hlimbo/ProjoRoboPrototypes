@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="LootItem" load_steps=2 format=3 uid="uid://b6kch3sbxuxq2"]
 
-[ext_resource type="Script" path="res://scripts/resources/loot_item.gd" id="1_5cl6g"]
+[ext_resource type="Script" path="res://scripts/resources/loot_item.gd" id="1_yw6tq"]
 
 [resource]
-script = ExtResource("1_5cl6g")
+script = ExtResource("1_yw6tq")
 item_name = "Charred Circuit"
 description = "A burnt-out circuit, still faintly crackling with residual energy. Might be useful for scrap or repairs."
 rarity = 2

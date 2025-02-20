@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="LootItem" load_steps=2 format=3 uid="uid://ceiapd64b55dd"]
 
-[ext_resource type="Script" path="res://scripts/resources/loot_item.gd" id="1_ucuvb"]
+[ext_resource type="Script" path="res://scripts/resources/loot_item.gd" id="1_5i4o4"]
 
 [resource]
-script = ExtResource("1_ucuvb")
+script = ExtResource("1_5i4o4")
 item_name = "Magnetic Core"
 description = "A highly concentrated magnetic power source, used in advanced levitation and energy shielding systems."
 rarity = 5

@@ -17,10 +17,11 @@ func _ready() -> void:
 func on_view_item():
 	on_view.emit(icon_rect.texture, loot_name, quantity, description)
 
-func init(item: LootItem):
-	quantity = 1
+func init(item: LootItem, quantity: int, icon: Texture2D):
+	self.quantity = quantity
 	loot_name = item.item_name
 	description = item.description
 	
+	loot_icon = icon
 	icon_rect.texture = loot_icon
 	quantity_label.text = "x%d" % quantity

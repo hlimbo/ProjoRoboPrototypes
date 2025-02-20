@@ -210,3 +210,17 @@ func push_back_progress(push_back_amount: float, duration_sec: float):
 	
 	knockback_tween.finished.connect(on_finished)
 	knockback_tween.play()
+
+func enable():
+	visible = true
+	set_process(true)
+	set_physics_process(true)
+	toggle_motion(false)
+	ui_battle_state_machine.enable()
+
+func disable():
+	visible = false
+	set_process(false)
+	set_physics_process(false)
+	toggle_motion(true)
+	ui_battle_state_machine.disable()

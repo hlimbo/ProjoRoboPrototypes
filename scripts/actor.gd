@@ -577,3 +577,15 @@ func init_collision_layer_interactions():
 		
 		target_selection_area.collision_layer = LAYER_8
 		target_selection_area.collision_mask = LAYER_8
+
+func enable():
+	set_process(true)
+	set_physics_process(true)
+	visible = true
+	active_battle_state_machine.enable()
+
+func disable():
+	set_process(false)
+	set_physics_process(false)
+	visible = false
+	active_battle_state_machine.disable()

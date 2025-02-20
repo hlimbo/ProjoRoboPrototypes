@@ -34,6 +34,15 @@ var original_cam_pos: Vector2
 @onready var target_label: Label = $TargetMenu/VBoxContainer/TargetLabel
 @onready var target_cancel: Button = $TargetMenu/VBoxContainer/Cancel
 
+@onready var transition_rect: ColorRect = $TransitionRect
+@onready var transition_label: Label = $TransitionRect/Label
+
+@onready var no_op: Button
+
+@onready var battle_results_screen: ColorRect = $BattleResultsScreen
+@onready var one_d_graph: Control = $OneDGraph
+
+
 const ORDER_STEP: float = 0.858
 var did_tween_start: bool = false
 
@@ -49,10 +58,7 @@ enum Attack_Type {
 	SKILL,
 }
 
-var party_battle_state: Party_Battle_States = Party_Battle_States.IN_PROGRESS
-
-@onready var transition_rect: ColorRect = $TransitionRect
-@onready var transition_label: Label = $TransitionRect/Label
+@export var party_battle_state: Party_Battle_States = Party_Battle_States.IN_PROGRESS
 
 var battle_controller: BattleController
 var action_buttons: BattleController.ActionButtons
@@ -60,15 +66,8 @@ var action_buttons: BattleController.ActionButtons
 var attack_type: Attack_Type
 var pending_skill: Skill
 
-@onready var no_op: Button
-
 func on_end_turn(actor: Actor):
 	description_timer.start()
-	# GAME FEEL: this feels terrible from a game feel perspective... 
-	# other actors should be able to move as long as the following are NOT happening:
-	# 1. player picking a move
-	# 2. actor is in front of their target about to perform their skill
-	# 3. actor begins to cast a skill
 	actor.avatar.battle_timers.resume_delay_timer.start()
 	
 	# reset attack state to prevent future attacks from this actor from being cancelled
@@ -203,16 +202,29 @@ func _process(_delta: float) -> void:
 		party_battle_state = pending_battle_state
 	
 	if did_tween_start == false and party_battle_state != Party_Battle_States.IN_PROGRESS:
-		transition_to_main_scene(party_battle_state)
 		did_tween_start = true
+		end_battle()
+
+func end_battle():
+	# disable avatars
+	for avatar in battle_spawn_manager.get_party_member_avatars():
+		avatar.disable()
+	for avatar in battle_spawn_manager.get_enemy_avatars():
+		avatar.disable()
+		
+	# disable actors
+	for actor in battle_spawn_manager.get_all_actors():
+		actor.disable()
+	
+	# hide timeline
+	one_d_graph.visible = false
+	display_end_battle_screen(party_battle_state)
 
 func on_determine_flee_rate(actor: Actor):
 	# TODOs
 	# - change scene to the overworld scene when successfully fled from battle
 	# - figure out a formula that takes difference between your party's avg level
 	# and enemies avg level into consideration for when a flee will be successful
-	# - if dice roll is less than flee rate, flee is successful, otherwise flee fails
-	# - modify it to where once timeline reaches progress = 1, decide if party can flee or not
 	
 	# pause timers and avatar movement along timeline
 	pause_actors_motion()
@@ -387,39 +399,48 @@ func on_start_order_step(actor: Actor) -> void:
 		#ai_flee(actor)
 		ai_attack(actor)
 
-func transition_to_main_scene(status: Party_Battle_States):
-	var exit_scene = func():
-		var exit_timer = Timer.new()
-		exit_timer.autostart = true
-		exit_timer.one_shot = true
-		exit_timer.wait_time = 3 # seconds
-		add_child(exit_timer)
-		
-		exit_timer.timeout.connect(func():
-			var err = get_tree().change_scene_to_file("res://scenes/main.tscn")
-			if err != OK:
-				print_rich("[color=red]changing scene failed. Error code: %d [/color]" % err)
-		)
-
-	
+func display_end_battle_screen(status: Party_Battle_States):
 	match status:
 		Party_Battle_States.FLEE:
-			transition_label.text = "Party Fled"
+			run_placeholder_transition(transition_rect,"Party Fled")
 		Party_Battle_States.WIN:
-			transition_label.text = "Party Won"
+			var on_battle_results_screen_visible = func():
+				print("battle results screen visible")
+			
+			battle_results_screen.visible = true
+			battle_results_screen.z_index = 1
+			tween_to_be_visible(battle_results_screen, on_battle_results_screen_visible)
 		Party_Battle_States.DEFEAT:
-			transition_label.text = "Game Over"
-	
-	
-	transition_rect.visible = true
+			run_placeholder_transition(transition_rect, "Game Over")
+
+
+func exit_scene():
+	var exit_timer = Timer.new()
+	exit_timer.autostart = true
+	exit_timer.one_shot = true
+	exit_timer.wait_time = 3 # seconds
+	add_child(exit_timer)
+
+	exit_timer.timeout.connect(func():
+		var err = get_tree().change_scene_to_file("res://scenes/main.tscn")
+		if err != OK:
+			print_rich("[color=red]changing scene failed. Error code: %d [/color]" % err)
+	)
+
+func run_placeholder_transition(rect: ColorRect, text_label: String):
+	transition_label.text = text_label
+	rect.visible = true
 	# need to set z-level to a higher value to hide the PartyPath2D avatar nodes
-	transition_rect.z_index = 1
+	rect.z_index = 1
+	tween_to_be_visible(rect, exit_scene)
+
+
+func tween_to_be_visible(rect: ColorRect, on_transition: Callable):
 	var tween: Tween = get_tree().create_tween()
 	# set tween alpha from 0 alpha to 1 alpha on the modulate property's alpha component
-	tween.parallel().tween_property(transition_rect, "modulate:a", 1, 1).from(0)
-	tween.parallel().tween_property(transition_rect,"self_modulate:a", 1, 1).from(0)
-	tween.finished.connect(exit_scene)
-
+	tween.parallel().tween_property(rect, "modulate:a", 1, 1).from(0)
+	tween.parallel().tween_property(rect,"self_modulate:a", 1, 1).from(0)
+	tween.finished.connect(on_transition)
 
 #region AI Commands
 func ai_determine_move(actor: Actor) -> void:

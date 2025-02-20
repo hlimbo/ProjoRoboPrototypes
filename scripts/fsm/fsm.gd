@@ -44,6 +44,16 @@ func transition_to(new_state: int):
 	old_state = current_state
 	current_state = new_state
 
+func disable():
+	set_input_tick(false)
+	set_physics_process_tick(false)
+	set_process_tick(false)
+	
+func enable():
+	set_input_tick(true)
+	set_physics_process_tick(true)
+	set_process_tick(true)
+
 func _input(event: InputEvent):
 	var current: IState = state_map[current_state]
 	current.on_input(event)

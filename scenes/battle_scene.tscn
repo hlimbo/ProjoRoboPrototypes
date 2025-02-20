@@ -22,7 +22,7 @@ script = ExtResource("1_gg4k4")
 
 [node name="BattleSpawnManager" type="Node2D" parent="."]
 script = ExtResource("1_lnptf")
-party_member_spawn_count = 2
+party_member_spawn_count = 1
 enemy_spawn_count = 1
 
 [node name="BattleManager" type="Node2D" parent="."]
@@ -61,6 +61,7 @@ unique_name_in_owner = true
 script = ExtResource("1_qdx8j")
 battle_spawn_manager = NodePath("../BattleSpawnManager")
 battle_timer_manager = NodePath("../BattleTimerManager")
+party_battle_state = 2
 
 [node name="BattleResultsScreen" parent="UILayout" instance=ExtResource("5_f3g4b")]
 visible = false

@@ -81,5 +81,7 @@ func pick_random_placeholder_loot_item_icons(count: int) -> Array[Texture2D]:
 	for i in range(count):
 		var random_index = randi() % len(resources)
 		images.append(resources[random_index] as Texture2D)
+		# remove icon selected to guarantee unique images
+		resources.remove_at(random_index)
 		
 	return images

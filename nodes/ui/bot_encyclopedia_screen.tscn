@@ -1,0 +1,388 @@
+[gd_scene load_steps=6 format=3 uid="uid://cjssphbo75sfp"]
+
+[ext_resource type="Texture2D" uid="uid://dk0e3u604aw54" path="res://assets/kenney-board-game-icons/Tilesheet/iconsDefault.png" id="2_bhmjc"]
+[ext_resource type="PackedScene" uid="uid://3wmra7xlcq2v" path="res://nodes/monsters/mob1.tscn" id="2_ilujn"]
+[ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="3_82u0d"]
+[ext_resource type="Texture2D" uid="uid://cl8ualiio67lr" path="res://assets/kenney_fantasy-ui-borders/PNG/Default/Border/panel-border-030.png" id="3_lykbg"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1xrey"]
+atlas = ExtResource("2_bhmjc")
+region = Rect2(386, 2, 60, 60)
+
+[node name="BotEncyclopediaScreen" type="ColorRect"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -2.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.270588, 0.266667, 0.309804, 1)
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -288.0
+offset_right = 288.0
+offset_bottom = 60.0
+grow_horizontal = 2
+theme = ExtResource("3_82u0d")
+theme_override_font_sizes/font_size = 48
+text = "BOT ENCYCLOPEDIA"
+
+[node name="BotPreviewLayout" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -1286.0
+offset_top = -360.0
+offset_right = -616.0
+offset_bottom = 361.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="mob1" parent="BotPreviewLayout" instance=ExtResource("2_ilujn")]
+position = Vector2(349, 466)
+scale = Vector2(0.85, 0.85)
+
+[node name="RobotLabel" type="Label" parent="BotPreviewLayout"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -76.0
+offset_top = -609.0
+offset_right = 104.0
+offset_bottom = -549.0
+grow_horizontal = 2
+grow_vertical = 0
+theme = ExtResource("3_82u0d")
+theme_override_font_sizes/font_size = 40
+text = "pyrotron"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="NinePatchRect2" type="NinePatchRect" parent="BotPreviewLayout"]
+layout_mode = 0
+offset_left = 102.0
+offset_top = 109.0
+offset_right = 615.0
+offset_bottom = 679.0
+texture = ExtResource("3_lykbg")
+region_rect = Rect2(0, 0, 48, 49)
+patch_margin_left = 20
+patch_margin_top = 20
+patch_margin_right = 20
+patch_margin_bottom = 20
+
+[node name="ScrollContainer" type="ScrollContainer" parent="BotPreviewLayout"]
+layout_mode = 0
+offset_left = 127.0
+offset_top = 477.0
+offset_right = 578.0
+offset_bottom = 664.0
+
+[node name="DescriptionLabel" type="Label" parent="BotPreviewLayout/ScrollContainer"]
+custom_minimum_size = Vector2(450, 0)
+layout_mode = 2
+theme = ExtResource("3_82u0d")
+text = "The Pyrotron is designed for fire-based operations. The Flame Module provides intense heat, while the Biofuel Cell ensures a sustainable energy source. The Charred Circuits are repurposed for its electronic systems, giving it a unique fiery aesthetic."
+autowrap_mode = 2
+
+[node name="ListView" type="ScrollContainer" parent="."]
+layout_mode = 0
+offset_left = 705.0
+offset_top = 99.0
+offset_right = 1261.0
+offset_bottom = 689.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ListView"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="ListView/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="hboxcontainer" type="HBoxContainer" parent="ListView/VBoxContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="TextureRect" type="TextureRect" parent="ListView/VBoxContainer/MarginContainer/hboxcontainer"]
+layout_mode = 2
+texture = SubResource("AtlasTexture_1xrey")
+stretch_mode = 3
+
+[node name="RobotLabel" type="Label" parent="ListView/VBoxContainer/MarginContainer/hboxcontainer"]
+layout_mode = 2
+size_flags_horizontal = 2
+theme = ExtResource("3_82u0d")
+text = "PYROTRON"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ListView/VBoxContainer/MarginContainer/hboxcontainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme_override_constants/separation = 20
+
+[node name="TypeLabel" type="Label" parent="ListView/VBoxContainer/MarginContainer/hboxcontainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 2
+theme = ExtResource("3_82u0d")
+text = "ROBOT"
+
+[node name="EnergyLabel" type="Label" parent="ListView/VBoxContainer/MarginContainer/hboxcontainer/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("3_82u0d")
+text = "FIRE"
+
+[node name="ColorRect" type="ColorRect" parent="ListView/VBoxContainer/MarginContainer/hboxcontainer/HBoxContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+color = Color(1, 0.11, 0.11, 1)
+
+[node name="MarginContainer2" type="MarginContainer" parent="ListView/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="hboxcontainer" type="HBoxContainer" parent="ListView/VBoxContainer/MarginContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="TextureRect" type="TextureRect" parent="ListView/VBoxContainer/MarginContainer2/hboxcontainer"]
+layout_mode = 2
+texture = SubResource("AtlasTexture_1xrey")
+stretch_mode = 3
+
+[node name="RobotLabel" type="Label" parent="ListView/VBoxContainer/MarginContainer2/hboxcontainer"]
+layout_mode = 2
+size_flags_horizontal = 2
+theme = ExtResource("3_82u0d")
+text = "PYROTRON"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ListView/VBoxContainer/MarginContainer2/hboxcontainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme_override_constants/separation = 20
+
+[node name="TypeLabel" type="Label" parent="ListView/VBoxContainer/MarginContainer2/hboxcontainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 2
+theme = ExtResource("3_82u0d")
+text = "ROBOT"
+
+[node name="EnergyLabel" type="Label" parent="ListView/VBoxContainer/MarginContainer2/hboxcontainer/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("3_82u0d")
+text = "FIRE"
+
+[node name="ColorRect" type="ColorRect" parent="ListView/VBoxContainer/MarginContainer2/hboxcontainer/HBoxContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+color = Color(1, 0.11, 0.11, 1)
+
+[node name="MarginContainer3" type="MarginContainer" parent="ListView/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="hboxcontainer" type="HBoxContainer" parent="ListView/VBoxContainer/MarginContainer3"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="TextureRect" type="TextureRect" parent="ListView/VBoxContainer/MarginContainer3/hboxcontainer"]
+layout_mode = 2
+texture = SubResource("AtlasTexture_1xrey")
+stretch_mode = 3
+
+[node name="RobotLabel" type="Label" parent="ListView/VBoxContainer/MarginContainer3/hboxcontainer"]
+layout_mode = 2
+size_flags_horizontal = 2
+theme = ExtResource("3_82u0d")
+text = "PYROTRON"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ListView/VBoxContainer/MarginContainer3/hboxcontainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme_override_constants/separation = 20
+
+[node name="TypeLabel" type="Label" parent="ListView/VBoxContainer/MarginContainer3/hboxcontainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 2
+theme = ExtResource("3_82u0d")
+text = "ROBOT"
+
+[node name="EnergyLabel" type="Label" parent="ListView/VBoxContainer/MarginContainer3/hboxcontainer/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("3_82u0d")
+text = "FIRE"
+
+[node name="ColorRect" type="ColorRect" parent="ListView/VBoxContainer/MarginContainer3/hboxcontainer/HBoxContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+color = Color(1, 0.11, 0.11, 1)
+
+[node name="MarginContainer4" type="MarginContainer" parent="ListView/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="hboxcontainer" type="HBoxContainer" parent="ListView/VBoxContainer/MarginContainer4"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="TextureRect" type="TextureRect" parent="ListView/VBoxContainer/MarginContainer4/hboxcontainer"]
+layout_mode = 2
+texture = SubResource("AtlasTexture_1xrey")
+stretch_mode = 3
+
+[node name="RobotLabel" type="Label" parent="ListView/VBoxContainer/MarginContainer4/hboxcontainer"]
+layout_mode = 2
+size_flags_horizontal = 2
+theme = ExtResource("3_82u0d")
+text = "PYROTRON"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ListView/VBoxContainer/MarginContainer4/hboxcontainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme_override_constants/separation = 20
+
+[node name="TypeLabel" type="Label" parent="ListView/VBoxContainer/MarginContainer4/hboxcontainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 2
+theme = ExtResource("3_82u0d")
+text = "ROBOT"
+
+[node name="EnergyLabel" type="Label" parent="ListView/VBoxContainer/MarginContainer4/hboxcontainer/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("3_82u0d")
+text = "FIRE"
+
+[node name="ColorRect" type="ColorRect" parent="ListView/VBoxContainer/MarginContainer4/hboxcontainer/HBoxContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+color = Color(1, 0.11, 0.11, 1)
+
+[node name="MarginContainer5" type="MarginContainer" parent="ListView/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="hboxcontainer" type="HBoxContainer" parent="ListView/VBoxContainer/MarginContainer5"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="TextureRect" type="TextureRect" parent="ListView/VBoxContainer/MarginContainer5/hboxcontainer"]
+layout_mode = 2
+texture = SubResource("AtlasTexture_1xrey")
+stretch_mode = 3
+
+[node name="RobotLabel" type="Label" parent="ListView/VBoxContainer/MarginContainer5/hboxcontainer"]
+layout_mode = 2
+size_flags_horizontal = 2
+theme = ExtResource("3_82u0d")
+text = "PYROTRON"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ListView/VBoxContainer/MarginContainer5/hboxcontainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme_override_constants/separation = 20
+
+[node name="TypeLabel" type="Label" parent="ListView/VBoxContainer/MarginContainer5/hboxcontainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 2
+theme = ExtResource("3_82u0d")
+text = "ROBOT"
+
+[node name="EnergyLabel" type="Label" parent="ListView/VBoxContainer/MarginContainer5/hboxcontainer/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("3_82u0d")
+text = "FIRE"
+
+[node name="ColorRect" type="ColorRect" parent="ListView/VBoxContainer/MarginContainer5/hboxcontainer/HBoxContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+color = Color(1, 0.11, 0.11, 1)
+
+[node name="MarginContainer6" type="MarginContainer" parent="ListView/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="hboxcontainer" type="HBoxContainer" parent="ListView/VBoxContainer/MarginContainer6"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="TextureRect" type="TextureRect" parent="ListView/VBoxContainer/MarginContainer6/hboxcontainer"]
+layout_mode = 2
+texture = SubResource("AtlasTexture_1xrey")
+stretch_mode = 3
+
+[node name="RobotLabel" type="Label" parent="ListView/VBoxContainer/MarginContainer6/hboxcontainer"]
+layout_mode = 2
+size_flags_horizontal = 2
+theme = ExtResource("3_82u0d")
+text = "PYROTRON"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ListView/VBoxContainer/MarginContainer6/hboxcontainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme_override_constants/separation = 20
+
+[node name="TypeLabel" type="Label" parent="ListView/VBoxContainer/MarginContainer6/hboxcontainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 2
+theme = ExtResource("3_82u0d")
+text = "ROBOT"
+
+[node name="EnergyLabel" type="Label" parent="ListView/VBoxContainer/MarginContainer6/hboxcontainer/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("3_82u0d")
+text = "FIRE"
+
+[node name="ColorRect" type="ColorRect" parent="ListView/VBoxContainer/MarginContainer6/hboxcontainer/HBoxContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+color = Color(1, 0.11, 0.11, 1)
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 13.0
+offset_right = 128.0
+offset_bottom = 61.0
+theme = ExtResource("3_82u0d")
+theme_override_font_sizes/font_size = 32
+text = "back"

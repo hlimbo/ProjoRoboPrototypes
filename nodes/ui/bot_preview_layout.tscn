@@ -1,0 +1,54 @@
+[gd_scene load_steps=4 format=3 uid="uid://0lapiv1recup"]
+
+[ext_resource type="PackedScene" uid="uid://3wmra7xlcq2v" path="res://nodes/monsters/mob1.tscn" id="1_s2xx1"]
+[ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="2_crawi"]
+[ext_resource type="Texture2D" uid="uid://cl8ualiio67lr" path="res://assets/kenney_fantasy-ui-borders/PNG/Default/Border/panel-border-030.png" id="3_rh7cc"]
+
+[node name="BotPreviewLayout" type="Control"]
+layout_mode = 3
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -670.0
+offset_top = -360.0
+offset_bottom = 361.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="mob1" parent="." instance=ExtResource("1_s2xx1")]
+modulate = Color(0, 0, 0, 1)
+position = Vector2(362, 492)
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -63.0
+offset_top = -216.0
+offset_right = 117.0
+offset_bottom = -156.0
+grow_horizontal = 2
+grow_vertical = 0
+theme = ExtResource("2_crawi")
+theme_override_font_sizes/font_size = 48
+text = "???"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="NinePatchRect2" type="NinePatchRect" parent="."]
+layout_mode = 0
+offset_left = 102.0
+offset_top = 109.0
+offset_right = 615.0
+offset_bottom = 679.0
+texture = ExtResource("3_rh7cc")
+region_rect = Rect2(0, 0, 48, 49)
+patch_margin_left = 20
+patch_margin_top = 20
+patch_margin_right = 20
+patch_margin_bottom = 20

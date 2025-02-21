@@ -8,13 +8,6 @@
 
 [node name="mob1" type="Node2D"]
 
-[node name="arm_greenB_right" parent="." instance=ExtResource("1_yntbd")]
-position = Vector2(81, -135)
-
-[node name="arm_greenB_left" parent="." instance=ExtResource("1_yntbd")]
-position = Vector2(-77, -137)
-flip_h = true
-
 [node name="leg_socket_l" type="Marker2D" parent="."]
 position = Vector2(-39, -109)
 
@@ -29,6 +22,13 @@ position = Vector2(39, -109)
 [node name="leg_greenC_right" parent="leg_socket_r" instance=ExtResource("2_hxo28")]
 position = Vector2(14, 48)
 offset = Vector2(0, 0)
+
+[node name="arm_greenB_right" parent="." instance=ExtResource("1_yntbd")]
+position = Vector2(63, -187)
+
+[node name="arm_greenB_left" parent="." instance=ExtResource("1_yntbd")]
+position = Vector2(-85, -187)
+flip_h = true
 
 [node name="body_greenF" parent="." instance=ExtResource("3_1s8me")]
 position = Vector2(0, -213)

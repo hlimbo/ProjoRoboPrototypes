@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="AvatarData" load_steps=2 format=3 uid="uid://b7blroidg7roy"]
+
+[ext_resource type="Script" path="res://scripts/resources/avatar_data.gd" id="1_dgive"]
+
+[resource]
+script = ExtResource("1_dgive")
+avatar_name = "Asta"
+level = 1
+current_experience = 0.0
+max_experience_per_level = 600.0

@@ -89,3 +89,12 @@ func load_resources_from_folder(folder_path: String) -> Array[Resource]:
 		print("Failed to open directory:", folder_path)
 
 	return resources
+
+# verifies if the node is running in its own scene and not in an ancestor node's scene
+func is_running_on_own_scene(node: Node) -> bool:
+	assert(is_instance_valid(node))
+	assert(is_instance_valid(node.get_tree().current_scene))
+	
+	print("current scene name: ", node.get_tree().current_scene.name)
+	print("node name: ", node.name)
+	return node.get_tree().current_scene == node

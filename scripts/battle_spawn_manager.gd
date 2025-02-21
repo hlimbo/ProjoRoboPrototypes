@@ -10,6 +10,7 @@ const actor_resource: Resource = preload("res://nodes/actors/actor.tscn")
 
 @export var party_member_spawn_count: int
 @export var enemy_spawn_count: int
+var avatar_datum: Array[AvatarData] = []
 
 # Justification: At most, game will only have at most 4 party members
 # and 8 enemies, using a list here is ok as numbers are low

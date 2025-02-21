@@ -1,9 +1,11 @@
-[gd_scene load_steps=12 format=3 uid="uid://dobxqawvevo1c"]
+[gd_scene load_steps=14 format=3 uid="uid://dobxqawvevo1c"]
 
 [ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="1_mbypn"]
+[ext_resource type="Script" path="res://scripts/ui/battle_results_controller.gd" id="1_trplm"]
 [ext_resource type="PackedScene" uid="uid://by8g0yvkqnaa2" path="res://nodes/ui/party_member_exp_layout.tscn" id="2_axbiq"]
 [ext_resource type="PackedScene" uid="uid://tmt61ye5ah2m" path="res://nodes/ui/item_loot_icon.tscn" id="3_y1ir7"]
 [ext_resource type="Script" path="res://scripts/ui/item_loot_controller.gd" id="3_yqeet"]
+[ext_resource type="Script" path="res://scripts/ui/party_member_controller.gd" id="4_4p8jk"]
 [ext_resource type="Texture2D" uid="uid://bfqqnu3g3mts4" path="res://assets/kenney_emotes-pack/PNG/Vector/Style 4/emote_idea.png" id="6_qb51y"]
 [ext_resource type="Texture2D" uid="uid://bqcqjwwsth2i" path="res://assets/kenney_emotes-pack/PNG/Vector/Style 2/emote_idea.png" id="7_f0yxx"]
 [ext_resource type="Texture2D" uid="uid://b0bx8x2xdcb2g" path="res://assets/kenney_emotes-pack/PNG/Vector/Style 3/emote_idea.png" id="8_3obmc"]
@@ -21,6 +23,7 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 color = Color(0.270588, 0.266667, 0.309804, 1)
+script = ExtResource("1_trplm")
 
 [node name="RootContainer" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -50,11 +53,21 @@ theme = ExtResource("1_mbypn")
 theme_override_font_sizes/font_size = 60
 text = "Battle Results"
 
-[node name="ExpEarnedLabel" type="Label" parent="RootContainer/VBoxContainer/TopContainer/BattleResultsContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="RootContainer/VBoxContainer/TopContainer/BattleResultsContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="ExpEarnedLabel" type="Label" parent="RootContainer/VBoxContainer/TopContainer/BattleResultsContainer/HBoxContainer"]
 layout_mode = 2
 theme = ExtResource("1_mbypn")
 theme_override_font_sizes/font_size = 28
-text = "Exp Earned: 1000"
+text = "Exp Earned:"
+
+[node name="ExpValue" type="Label" parent="RootContainer/VBoxContainer/TopContainer/BattleResultsContainer/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("1_mbypn")
+theme_override_font_sizes/font_size = 28
+text = "1000"
 
 [node name="TransitionButton" type="Button" parent="RootContainer/VBoxContainer/TopContainer" node_paths=PackedStringArray("transition_fade")]
 layout_mode = 2
@@ -81,17 +94,22 @@ theme_override_constants/margin_bottom = 20
 
 [node name="VBoxContainer" type="VBoxContainer" parent="RootContainer/VBoxContainer/BodyContainer/PartyMemberContainer"]
 layout_mode = 2
+script = ExtResource("4_4p8jk")
 
 [node name="PartyMemberExpLayout" parent="RootContainer/VBoxContainer/BodyContainer/PartyMemberContainer/VBoxContainer" instance=ExtResource("2_axbiq")]
+visible = false
 layout_mode = 2
 
 [node name="PartyMemberExpLayout2" parent="RootContainer/VBoxContainer/BodyContainer/PartyMemberContainer/VBoxContainer" instance=ExtResource("2_axbiq")]
+visible = false
 layout_mode = 2
 
 [node name="PartyMemberExpLayout3" parent="RootContainer/VBoxContainer/BodyContainer/PartyMemberContainer/VBoxContainer" instance=ExtResource("2_axbiq")]
+visible = false
 layout_mode = 2
 
 [node name="PartyMemberExpLayout4" parent="RootContainer/VBoxContainer/BodyContainer/PartyMemberContainer/VBoxContainer" instance=ExtResource("2_axbiq")]
+visible = false
 layout_mode = 2
 
 [node name="LootDescriptionLayout" type="VBoxContainer" parent="RootContainer/VBoxContainer/BodyContainer"]

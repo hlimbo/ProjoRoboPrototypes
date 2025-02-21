@@ -40,6 +40,12 @@ var time_left: float = 0
 var start_tick: float = 0
 const MSEC_TO_SEC = 1000
 
+func initialize(avatar_data: AvatarData):
+	avatar_name = avatar_data.avatar_name
+	level = avatar_data.level
+	curr_exp = avatar_data.current_experience
+	max_exp_per_level = avatar_data.max_experience_per_level
+
 func _ready() -> void:
 	party_member_portrait.texture = avatar_image
 	name_label.text = avatar_name
@@ -50,7 +56,13 @@ func _ready() -> void:
 	
 	button.pressed.connect(on_pressed)
 
+# function to debug the node in isolation
 func on_pressed():
+	give_experience(total_exp_earned)
+	
+func give_experience(exp_earned: float):
+	toggle_process(true)
+	total_exp_earned = exp_earned
 	start_tick = Time.get_ticks_msec()
 	curr_time = 0
 	time_left = exp_gain_time
@@ -65,15 +77,15 @@ func on_pressed():
 	# to level up - ensure curr_exp < max_exp_per_level otherwise it will break
 	exp_earned_per_level = min(total_exp_earned, max_exp_per_level - start_exp)
 
-	can_start = true
+func toggle_process(enabled: bool):
+	can_start = enabled
+	set_process(enabled)
 
 # not controlled by an upper bound of delay time
 func _process(delta: float) -> void:
-	if not can_start:
-		return
-	
 	# stop when no more exp to apply
 	if remaining_exp <= 0:
+		toggle_process(false)
 		return
 		
 	## stop when all exp applied and not leveling up

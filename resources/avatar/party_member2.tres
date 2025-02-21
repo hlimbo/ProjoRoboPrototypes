@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="AvatarData" load_steps=2 format=3 uid="uid://c60dvtnquqyod"]
+
+[ext_resource type="Script" path="res://scripts/resources/avatar_data.gd" id="1_54w7g"]
+
+[resource]
+script = ExtResource("1_54w7g")
+avatar_name = "Ichigo"
+level = 2
+current_experience = 0.0
+max_experience_per_level = 500.0

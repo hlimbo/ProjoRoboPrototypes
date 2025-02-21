@@ -401,11 +401,7 @@ func on_attack_connect(area: Area2D):
 		
 		# only interrupt motion if not defending or using a skill
 		if not [Active_Battle_State.DEFEND, Active_Battle_State.SKILL].has(actor_receiving_dmg.motion_state):
-			# cancel actor's attack if also attacking at the same time
-			if actor_receiving_dmg.motion_state == Constants.Active_Battle_State.ATTACK:
-				self.on_interrupt_motion(actor_receiving_dmg, Constants.Battle_State.KNOCKBACK)
-			else:
-				self.on_interrupt_motion(actor_receiving_dmg, Constants.Battle_State.PAUSED)
+			self.on_interrupt_motion(actor_receiving_dmg, Constants.Battle_State.PAUSED)
 	else:
 		print_rich("[color=red]Damage Calculator is null in Actor.gd[/color]")
 

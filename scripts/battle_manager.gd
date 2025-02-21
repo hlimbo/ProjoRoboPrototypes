@@ -1,16 +1,14 @@
 extends Node
 class_name BattleManager
 
+enum Encounter_Type {
+	NORMAL,
+	INITIATIVE,
+	AMBUSH,
+}
+
 const avatar_res_path: String = "res://nodes/battle_timeline/avatar.tscn"
 const avatar_res: Resource = preload(avatar_res_path)
-
-const party_member_resources: Array[Resource] = [
-	preload("res://nodes/actors/yellow_mob_2.tscn")
-]
-
-const enemy_resources: Array[Resource] = [
-	preload("res://nodes/actors/enemy_placeholder.tscn")
-]
 
 const party_member_textures: Array[Texture2D] = [
 	preload("res://assets/kenney_emotes-pack/PNG/Vector/Style 2/emote_stars.png"),
@@ -19,38 +17,22 @@ const party_member_textures: Array[Texture2D] = [
 	preload("res://assets/kenney_emotes-pack/PNG/Vector/Style 2/emote_music.png"),
 ]
 
-enum Encounter_Type {
-	NORMAL,
-	INITIATIVE,
-	AMBUSH,
-}
-
-enum Actor_Type {
-	PARTY_MEMBER,
-	ENEMY,
-}
-
-# hardcode encounter type for now
-@export var encounter_type: Encounter_Type
-
-@export var enemy_texture: Texture2D
-
 var enemy_spawn_count: int
 var party_member_spawn_count: int
 
 # describes the range where actors can start on the timeline
 const starting_timeline_positions = {
 	Encounter_Type.NORMAL: {
-		Actor_Type.PARTY_MEMBER: [0.25, 0.5],
-		Actor_Type.ENEMY: [0.25, 0.5],
+		Constants.Actor_Type.PARTY_MEMBER: [0.25, 0.5],
+		Constants.Actor_Type.ENEMY: [0.25, 0.5],
 	},
 	Encounter_Type.INITIATIVE: {
-		Actor_Type.PARTY_MEMBER: [0.4, 0.5],
-		Actor_Type.ENEMY: [0.25, 0.35],
+		Constants.Actor_Type.PARTY_MEMBER: [0.4, 0.5],
+		Constants.Actor_Type.ENEMY: [0.25, 0.35],
 	},
 	Encounter_Type.AMBUSH: {
-		Actor_Type.PARTY_MEMBER: [0.25, 0.35],
-		Actor_Type.ENEMY: [0.4, 0.5],
+		Constants.Actor_Type.PARTY_MEMBER: [0.25, 0.35],
+		Constants.Actor_Type.ENEMY: [0.4, 0.5],
 	}
 }
 
@@ -81,18 +63,14 @@ const enemy_names: PackedStringArray = [
 	"Bouncy S",
 ]
 
-
 var party_member_stats: Array[BaseStats]= []
 var enemy_stats: Array[BaseStats] = []
+var avatar_datum: Array[AvatarData] = []
+var max_battle_speed: int = 0
 
-#var party_member_avatars: Array[Avatar] = []
-#var enemy_avatars: Array[Avatar] = []
-
-#var party_members: Array[Actor] = []
-#var enemies: Array[Actor] = []
-
+#region Dependencies
+@export var utility_instance: Utility
 @onready var battle_spawn_manager: BattleSpawnManager = $"../BattleSpawnManager"
-
 @onready var battle_scene: Node2D = $"../BattleScene"
 
 @onready var starting_party_member_positions: Array[Vector2] = [
@@ -109,17 +87,16 @@ var enemy_stats: Array[BaseStats] = []
 
 @onready var one_d_graph: Control = owner.get_node("UILayout/OneDGraph")
 
-var max_battle_speed: int = 0
+@export var encounter_type: Encounter_Type
+@export var enemy_texture: Texture2D
 @export var damage_calculator: IDamageCalculator
 
-func generate_random_stats(actor_type: Actor_Type) -> BaseStats:
+#endregion
+
+func generate_random_stats() -> BaseStats:
 	var stats = BaseStats.new()
 	
-	if actor_type == Actor_Type.PARTY_MEMBER:
-		stats.name = party_member_names[randi_range(0, len(party_member_names) - 1)]
-	else:
-		stats.name = enemy_names[randi_range(0, len(enemy_names) - 1)]
-	
+	stats.name = enemy_names[randi_range(0, len(enemy_names) - 1)]
 	stats.attack = randi_range(20,25)
 	stats.defense = randi_range(10,15)
 	#stats.hp = randi_range(40, 80)
@@ -131,8 +108,8 @@ func generate_random_stats(actor_type: Actor_Type) -> BaseStats:
 	return stats
 
 func get_starting_timeline_positions() -> Array:
-	var party_range = starting_timeline_positions[encounter_type][Actor_Type.PARTY_MEMBER]
-	var enemy_range = starting_timeline_positions[encounter_type][Actor_Type.ENEMY]
+	var party_range = starting_timeline_positions[encounter_type][Constants.Actor_Type.PARTY_MEMBER]
+	var enemy_range = starting_timeline_positions[encounter_type][Constants.Actor_Type.ENEMY]
 	return [party_range, enemy_range]
 
 func add_to_line(avatar: Avatar, avatar_line: Path2D, stats: BaseStats, avatar_texture: Texture2D, max_battle_speed: int):
@@ -146,20 +123,37 @@ func add_to_line(avatar: Avatar, avatar_line: Path2D, stats: BaseStats, avatar_t
 	# if not set, godot scene tree won't recognize its existence
 	avatar.owner = avatar_line
 
+func init_dependencies():
+	utility_instance = Utility
+
+func load_avatar_data():
+	var resources: Array[Resource] = utility_instance.load_resources_from_folder("res://resources/avatar")
+	for res in resources:
+		avatar_datum.append(res as AvatarData)
+
 func _ready() -> void:
+	init_dependencies()
+	load_avatar_data()
+	
 	var party_members: Array[Actor] = battle_spawn_manager.get_party_members()
 	var enemies: Array[Actor] = battle_spawn_manager.get_enemies()
 	enemy_spawn_count = len(enemies)
 	party_member_spawn_count = len(party_members)
 	
 	# initialize battle participants' base stats
-	for i in range(0, party_member_spawn_count):
-		var stats = generate_random_stats(Actor_Type.PARTY_MEMBER)
+	for i in range(0, min(len(avatar_datum),party_member_spawn_count)):
+		var avatar_data: AvatarData = avatar_datum[i]
+		var stats = generate_random_stats()
+		
+		stats.name = avatar_data.avatar_name
+		stats.level = avatar_data.level
+		stats.exp_points = avatar_data.current_experience
+		
 		party_member_stats.append(stats)
 		max_battle_speed = maxi(max_battle_speed, stats.speed)
 	
 	for i in range(0, enemy_spawn_count):
-		var stats = generate_random_stats(Actor_Type.ENEMY)
+		var stats = generate_random_stats()
 		enemy_stats.append(stats)
 		max_battle_speed = maxi(max_battle_speed, stats.speed)
 	

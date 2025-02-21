@@ -39,7 +39,7 @@ var original_cam_pos: Vector2
 
 @onready var no_op: Button
 
-@onready var battle_results_screen: ColorRect = $BattleResultsScreen
+@onready var battle_results_screen: BattleResultsController = $BattleResultsScreen
 @onready var one_d_graph: Control = $OneDGraph
 
 
@@ -406,6 +406,8 @@ func display_end_battle_screen(status: Party_Battle_States):
 		Party_Battle_States.WIN:
 			var on_battle_results_screen_visible = func():
 				print("battle results screen visible")
+				battle_results_screen.give_experience_to_party(100)
+				battle_results_screen.generate_loot()
 			
 			battle_results_screen.visible = true
 			battle_results_screen.z_index = 1

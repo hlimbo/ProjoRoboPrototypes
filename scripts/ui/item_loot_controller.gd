@@ -8,6 +8,7 @@ class_name ItemLootController
 @onready var quantity_label: Label = $TopContainer/ItemLabelContainer/QuantityLabel
 @onready var description_label: Label = $ItemsContainer/SelectedItemContainer/DescriptionScroll/DescriptionLabel
 @onready var item_loot_grid: GridContainer = $ItemsContainer/ScrollContainer/ItemLootGrid
+@onready var possible_loot_items: Array[LootItem] = instantiate_loot_items()
 
 var weights: Array[float] = [
 	3, # Barked-Plate Armor
@@ -24,17 +25,10 @@ var weights: Array[float] = [
 	1, # Rusted Gear
 	3, # Stone Plating
 ]
-
-func on_click_item(icon: Texture, item_name: String, quantity: int, description: String):
-	selected_item.texture = icon
-	selected_item_label.text = item_name
-	quantity_label.text = "x%d" % quantity
-	description_label.text = description
-
-func _ready() -> void:
-	var possible_loot_items: Array[LootItem] = instantiate_loot_items()
-	generate_random_loot(possible_loot_items, loot_count)
 	
+func generate_loot():
+	generate_random_loot(possible_loot_items, loot_count)
+
 func instantiate_loot_items() -> Array[LootItem]:
 	var resources: Array[Resource] = Utility.load_resources_from_folder("res://resources/loot")
 	
@@ -73,7 +67,6 @@ func generate_random_loot(possible_loot_items: Array[LootItem], loot_count: int)
 		
 		j += 1
 
-
 func pick_random_placeholder_loot_item_icons(count: int) -> Array[Texture2D]:
 	# load placeholder loot item images
 	var resources: Array[Resource] = Utility.load_resources_from_folder("res://assets/kenney_emotes-pack/PNG/Vector/Style 2")
@@ -85,3 +78,9 @@ func pick_random_placeholder_loot_item_icons(count: int) -> Array[Texture2D]:
 		resources.remove_at(random_index)
 		
 	return images
+
+func on_click_item(icon: Texture, item_name: String, quantity: int, description: String):
+	selected_item.texture = icon
+	selected_item_label.text = item_name
+	quantity_label.text = "x%d" % quantity
+	description_label.text = description

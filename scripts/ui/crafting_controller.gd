@@ -16,14 +16,7 @@ var placeholder_creature_name: String = "VoltStrider"
 var schematic: Schematic
 
 func _ready():
-	# TODO: add functionality to 
-	var resources = utility.load_resources_from_folder("res://resources/loot")
-	for res in resources:
-		var item = ItemQuantity.new()
-		item.item = res as LootItem
-		item.quantity = 3
-		inventory_system.add(item)
-	
+	# TODO: add functionality to dynamically load a bot schematic based on player selection
 	schematic = parse_schematic("res://resources/csv/schematics/voltstrider_schematic.txt")
 	
 	var inventory_table = inventory_system.get_inventory_table()

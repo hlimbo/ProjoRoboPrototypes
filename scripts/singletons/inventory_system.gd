@@ -101,9 +101,16 @@ func get_item(item_name: String) -> ItemQuantity:
 		
 	return inventory_map[item_name]
 
+func get_items() -> Array[ItemQuantity]:
+	var items: Array[ItemQuantity] = []
+	for item_name in inventory_array:
+		items.append(inventory_map[item_name])
+		
+	return items
+
 func get_length() -> int:
 	return len(inventory_map)
-	
+
 func clear():
 	inventory_map.clear()
 	inventory_array.clear()

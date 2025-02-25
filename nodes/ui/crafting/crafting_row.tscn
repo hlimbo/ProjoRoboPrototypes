@@ -1,0 +1,61 @@
+[gd_scene load_steps=5 format=3 uid="uid://bftapi8vom3x7"]
+
+[ext_resource type="Script" path="res://scripts/ui/crafting/crafting_row_view.gd" id="1_1n8qx"]
+[ext_resource type="Texture2D" uid="uid://bily5u0bn7omv" path="res://assets/kenney_emotes-pack/PNG/Vector/Style 2/emote_circle.png" id="1_x6ued"]
+[ext_resource type="Texture2D" uid="uid://23b0w8orx8rw" path="res://assets/kenney_emotes-pack/emote_bars.png" id="2_laxts"]
+[ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="2_ym3w2"]
+
+[node name="CraftingRow" type="MarginContainer"]
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 20
+script = ExtResource("1_1n8qx")
+texture = ExtResource("2_laxts")
+material_name = "Spark Plugs"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 40
+
+[node name="MaterialIcon" type="TextureRect" parent="HBoxContainer"]
+layout_mode = 2
+texture = ExtResource("1_x6ued")
+expand_mode = 3
+stretch_mode = 3
+
+[node name="MaterialNameLabel" type="Label" parent="HBoxContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme = ExtResource("2_ym3w2")
+theme_override_font_sizes/font_size = 22
+text = "Biofuel Cell"
+horizontal_alignment = 1
+vertical_alignment = 1
+text_overrun_behavior = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+
+[node name="OwnedQuantityLabel" type="Label" parent="HBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_ym3w2")
+theme_override_font_sizes/font_size = 22
+text = "20"
+
+[node name="Divider" type="Label" parent="HBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_ym3w2")
+theme_override_font_sizes/font_size = 22
+text = "/"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RequiredQuantityLabel" type="Label" parent="HBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_ym3w2")
+theme_override_font_sizes/font_size = 22
+text = "5"
+horizontal_alignment = 1
+vertical_alignment = 1

@@ -124,7 +124,6 @@ func decrease_item_count_test():
 	# assert
 	assert(quantity == inventory_system.get_item(items[0].item.item_name).quantity)
 
-
 func decrease_item_count_all_test():
 	# arrange
 	on_setup_test.emit()
@@ -137,7 +136,6 @@ func decrease_item_count_all_test():
 	
 	# assert
 	assert(quantity == inventory_system.get_item(items[0].item.item_name).quantity)
-
 
 # swapping
 func swap_test():

@@ -1,23 +1,23 @@
 # This example shows how to do transitions in godot 4.3
 extends Node
 
+@export var scene_manager: SceneManager = SceneManager
+@onready var transition_layer: TransitionFade = $CanvasLayer/TransitionLayer
+
 @onready var battle_button: Button = $CanvasLayer/VBoxContainer/BattleButton
-@onready var transition_rect: ColorRect = $CanvasLayer/TransitionRect
+@onready var craft_button: Button = $CanvasLayer/VBoxContainer/CraftButton
 
 const BATTLE_SCENE: String = "res://scenes/battle_scene.tscn"
+const CRAFT_SCENE: String = "res://nodes/ui/crafting_screen.tscn"
 
 func _ready() -> void:
-	transition_rect.visible = false
-	battle_button.pressed.connect(transition_to_scene)
+	battle_button.pressed.connect(on_battle_pressed)
+	craft_button.pressed.connect(on_craft_pressed)
 
-func transition_to_scene():
-	transition_rect.visible = true
-	var tween: Tween = get_tree().create_tween()
-	# set tween alpha from 0 alpha to 1 alpha on the modulate property's alpha component
-	tween.tween_property(transition_rect, "modulate:a", 1, 0.25).from(0)
-	tween.finished.connect(on_battle_pressed)
-
-func on_battle_pressed() -> void:
-	var err = get_tree().change_scene_to_file(BATTLE_SCENE)
-	if err != OK:
-		print_rich("[color=red]changing scene failed. Error code: %d [/color]" % err)
+func on_battle_pressed():
+	transition_layer.start_transition()
+	transition_layer.on_finish_tween.connect(func(): scene_manager.change_scene(BATTLE_SCENE))
+	
+func on_craft_pressed():
+	transition_layer.start_transition()
+	transition_layer.on_finish_tween.connect(func(): scene_manager.change_scene(CRAFT_SCENE))

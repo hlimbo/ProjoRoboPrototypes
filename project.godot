@@ -23,6 +23,7 @@ Utility="*res://scripts/singletons/utility.gd"
 BattleSignals="*res://scripts/singletons/battle_signals.gd"
 EnergyCreatureTypeSystem="*res://scripts/singletons/energy_creature_type_system.gd"
 InventorySystem="*res://scripts/singletons/inventory_system.gd"
+SceneManager="*res://scripts/singletons/scene_manager.gd"
 
 [display]
 

@@ -1,8 +1,9 @@
-[gd_scene load_steps=14 format=3 uid="uid://dobxqawvevo1c"]
+[gd_scene load_steps=13 format=3 uid="uid://dobxqawvevo1c"]
 
 [ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="1_mbypn"]
 [ext_resource type="Script" path="res://scripts/ui/battle_results_controller.gd" id="1_trplm"]
 [ext_resource type="PackedScene" uid="uid://by8g0yvkqnaa2" path="res://nodes/ui/party_member_exp_layout.tscn" id="2_axbiq"]
+[ext_resource type="PackedScene" uid="uid://betrrsabn7xnw" path="res://nodes/ui/transitions/transition_button.tscn" id="3_ecdt6"]
 [ext_resource type="PackedScene" uid="uid://tmt61ye5ah2m" path="res://nodes/ui/item_loot_icon.tscn" id="3_y1ir7"]
 [ext_resource type="Script" path="res://scripts/ui/item_loot_controller.gd" id="3_yqeet"]
 [ext_resource type="Script" path="res://scripts/ui/party_member_controller.gd" id="4_4p8jk"]
@@ -10,9 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://bqcqjwwsth2i" path="res://assets/kenney_emotes-pack/PNG/Vector/Style 2/emote_idea.png" id="7_f0yxx"]
 [ext_resource type="Texture2D" uid="uid://b0bx8x2xdcb2g" path="res://assets/kenney_emotes-pack/PNG/Vector/Style 3/emote_idea.png" id="8_3obmc"]
 [ext_resource type="Texture2D" uid="uid://d1labisc8bslt" path="res://assets/kenney_emotes-pack/PNG/Vector/Style 4/emote_star.png" id="9_mwr7c"]
-[ext_resource type="Script" path="res://scripts/ui/exit_scene.gd" id="10_ic8ux"]
-[ext_resource type="Texture2D" uid="uid://dghaiiot0hgjp" path="res://assets/kenney_ui_pack/Extra/icon_play_light.svg" id="10_tt4au"]
-[ext_resource type="Script" path="res://scripts/ui/transition_fade.gd" id="11_s2imn"]
+[ext_resource type="PackedScene" uid="uid://5hcous0cjeie" path="res://nodes/ui/transitions/transition_layer.tscn" id="12_ffxxn"]
 
 [node name="BattleResultsScreen" type="ColorRect"]
 anchors_preset = 15
@@ -69,18 +68,10 @@ theme = ExtResource("1_mbypn")
 theme_override_font_sizes/font_size = 28
 text = "1000"
 
-[node name="TransitionButton" type="Button" parent="RootContainer/VBoxContainer/TopContainer" node_paths=PackedStringArray("transition_fade")]
+[node name="TransitionButton" parent="RootContainer/VBoxContainer/TopContainer" node_paths=PackedStringArray("transition_fade") instance=ExtResource("3_ecdt6")]
 layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 4
-theme = ExtResource("1_mbypn")
-theme_override_font_sizes/font_size = 36
-text = "next"
-icon = ExtResource("10_tt4au")
-alignment = 0
-icon_alignment = 2
-script = ExtResource("10_ic8ux")
 transition_fade = NodePath("../../../../TransitionLayer")
+scene_path = "res://nodes/ui/crafting_screen.tscn"
 
 [node name="BodyContainer" type="HBoxContainer" parent="RootContainer/VBoxContainer"]
 layout_mode = 2
@@ -246,18 +237,5 @@ layout_mode = 2
 visible = false
 layout_mode = 2
 
-[node name="TransitionLayer" type="ColorRect" parent="."]
-visible = false
+[node name="TransitionLayer" parent="." instance=ExtResource("12_ffxxn")]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 0)
-script = ExtResource("11_s2imn")
-transition_duration = 0.75
-
-[node name="Timer" type="Timer" parent="TransitionLayer"]
-wait_time = 0.25
-one_shot = true

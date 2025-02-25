@@ -1,0 +1,22 @@
+[gd_scene load_steps=2 format=3 uid="uid://5hcous0cjeie"]
+
+[ext_resource type="Script" path="res://scripts/ui/transition_fade.gd" id="1_qmr83"]
+
+[node name="TransitionLayer" type="ColorRect"]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+mouse_force_pass_scroll_events = false
+color = Color(0, 0, 0, 0)
+script = ExtResource("1_qmr83")
+transition_duration = 0.75
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.25
+one_shot = true

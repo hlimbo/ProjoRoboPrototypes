@@ -17,4 +17,7 @@ func start_transition():
 	exit_timer.timeout.connect(func(): on_finish_tween.emit())
 	
 func tween_finished():
+	# set mouse filter to stop so buttons behind this transition don't get triggered
+	self.mouse_filter = Control.MOUSE_FILTER_STOP
+	
 	exit_timer.start()

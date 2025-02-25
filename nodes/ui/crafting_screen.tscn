@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://df6pyo8n82i6f"]
+[gd_scene load_steps=9 format=3 uid="uid://df6pyo8n82i6f"]
 
 [ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="1_6a8dh"]
 [ext_resource type="Script" path="res://scripts/ui/crafting_controller.gd" id="1_cotrs"]
@@ -6,6 +6,8 @@
 [ext_resource type="Texture2D" uid="uid://bily5u0bn7omv" path="res://assets/kenney_emotes-pack/PNG/Vector/Style 2/emote_circle.png" id="1_m522m"]
 [ext_resource type="Script" path="res://scripts/ui/crafting/crafting_list_view.gd" id="4_ywm1d"]
 [ext_resource type="PackedScene" uid="uid://3wmra7xlcq2v" path="res://nodes/monsters/mob1.tscn" id="5_qvqqo"]
+[ext_resource type="PackedScene" uid="uid://betrrsabn7xnw" path="res://nodes/ui/transitions/transition_button.tscn" id="7_1g8fg"]
+[ext_resource type="PackedScene" uid="uid://5hcous0cjeie" path="res://nodes/ui/transitions/transition_layer.tscn" id="8_k2a7i"]
 
 [node name="CraftingScreen" type="ColorRect"]
 anchors_preset = 15
@@ -208,21 +210,16 @@ text = "5"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CraftingList"]
+[node name="MarginContainer" type="MarginContainer" parent="CraftingList"]
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_bottom = 20
 
-[node name="CraftButton" type="Button" parent="CraftingList/VBoxContainer"]
+[node name="CraftButton" type="Button" parent="CraftingList/MarginContainer"]
 layout_mode = 2
 theme = ExtResource("1_6a8dh")
 theme_override_font_sizes/font_size = 28
 text = "Craft"
-
-[node name="CancelButton" type="Button" parent="CraftingList/VBoxContainer"]
-layout_mode = 2
-theme = ExtResource("1_6a8dh")
-theme_override_font_sizes/font_size = 28
-text = "Cancel"
 
 [node name="BotPreviewLayout" type="Control" parent="."]
 layout_mode = 1
@@ -231,15 +228,17 @@ anchor_left = 1.0
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-offset_left = -670.0
-offset_top = -360.0
-offset_bottom = 361.0
+offset_left = -532.0
+offset_top = -243.0
+offset_right = -36.0
+offset_bottom = 323.0
 grow_horizontal = 0
 grow_vertical = 2
+mouse_filter = 1
 
 [node name="mob1" parent="BotPreviewLayout" instance=ExtResource("5_qvqqo")]
 modulate = Color(0, 0, 0, 1)
-position = Vector2(362, 492)
+position = Vector2(243, 376)
 
 [node name="Label" type="Label" parent="BotPreviewLayout"]
 layout_mode = 1
@@ -248,10 +247,10 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -63.0
-offset_top = -216.0
-offset_right = 117.0
-offset_bottom = -156.0
+offset_left = -97.0
+offset_top = -180.0
+offset_right = 83.0
+offset_bottom = -120.0
 grow_horizontal = 2
 grow_vertical = 0
 theme = ExtResource("1_6a8dh")
@@ -262,10 +261,10 @@ vertical_alignment = 1
 
 [node name="NinePatchRect2" type="NinePatchRect" parent="BotPreviewLayout"]
 layout_mode = 0
-offset_left = 102.0
-offset_top = 109.0
-offset_right = 615.0
-offset_bottom = 679.0
+offset_left = -17.0
+offset_top = -7.0
+offset_right = 496.0
+offset_bottom = 563.0
 texture = ExtResource("1_f86kf")
 region_rect = Rect2(0, 0, 48, 49)
 patch_margin_left = 20
@@ -298,3 +297,19 @@ patch_margin_left = 20
 patch_margin_top = 20
 patch_margin_right = 20
 patch_margin_bottom = 20
+
+[node name="TransitionButton" parent="." node_paths=PackedStringArray("transition_fade") instance=ExtResource("7_1g8fg")]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -175.0
+offset_top = 15.0
+offset_right = -25.0
+offset_bottom = 68.0
+grow_horizontal = 0
+transition_fade = NodePath("../TransitionLayer")
+
+[node name="TransitionLayer" parent="." instance=ExtResource("8_k2a7i")]
+visible = true
+layout_mode = 1

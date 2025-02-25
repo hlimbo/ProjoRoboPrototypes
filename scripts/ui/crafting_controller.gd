@@ -6,7 +6,7 @@ class_name CraftingController
 @export var utility: Utility = Utility
 
 @onready var crafting_list_view: CraftingListView = $CraftingList/ScrollContainer/VBoxContainer
-@onready var craft_button: Button = $CraftingList/VBoxContainer/CraftButton
+@onready var craft_button: Button = $CraftingList/MarginContainer/CraftButton
 
 # placeholder mob - TODO: should dynamically load in the bot's sillouette based on schematic parameters
 @onready var mob_1: Node2D = $BotPreviewLayout/mob1

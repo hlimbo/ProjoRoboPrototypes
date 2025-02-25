@@ -1,0 +1,4 @@
+item_name	quantity
+Hydro Core	2
+Cooling Gel	1
+Ground Stabilizer	1

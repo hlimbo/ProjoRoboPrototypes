@@ -1,0 +1,4 @@
+item_name	quantity
+Stone Plating	2
+Ground Stabilizer	1
+Molten Core	1

@@ -5,7 +5,7 @@ extends Node
 @export var utility: Utility = Utility
 @export var res_path: String = "res://resources/loot"
 var loot_items: Array[LootItem] = []
-var items: Array[InventorySystem.ItemQuantity] = []
+var items: Array[ItemQuantity] = []
 
 signal on_setup_test
 signal on_teardown_test
@@ -17,10 +17,10 @@ func setup():
 		
 	assert(len(loot_items) > 0)
 
-func convert_to_item_quantities() -> Array[InventorySystem.ItemQuantity]:
-	var items: Array[InventorySystem.ItemQuantity] = []
+func convert_to_item_quantities() -> Array[ItemQuantity]:
+	var items: Array[ItemQuantity] = []
 	for loot_item in loot_items:
-		var item = inventory_system.ItemQuantity.new()
+		var item = ItemQuantity.new()
 		item.item = loot_item
 		item.quantity = randi() % max_quantity + 2
 		items.append(item)
@@ -44,7 +44,7 @@ func add_item_test():
 func remove_item_test():
 	# arrange
 	on_setup_test.emit()
-	var item_under_test: InventorySystem.ItemQuantity = InventorySystem.ItemQuantity.new()
+	var item_under_test = ItemQuantity.new()
 	item_under_test.item = items[2].item
 	item_under_test.quantity = items[2].quantity
 
@@ -88,7 +88,7 @@ func remove_item_with_set_quantity_test():
 	# ensure quantity > 1
 	items[0].quantity = 5
 	
-	var copy = InventorySystem.ItemQuantity.new()
+	var copy = ItemQuantity.new()
 	copy.item = items[0].item
 	copy.quantity = 3
 
@@ -140,7 +140,7 @@ func decrease_item_count_all_test():
 # swapping
 func swap_test():
 	# arrange
-	var items: Array[InventorySystem.ItemQuantity] = convert_to_item_quantities()
+	var items: Array[ItemQuantity] = convert_to_item_quantities()
 	for item in items:
 		inventory_system.add(item)
 	

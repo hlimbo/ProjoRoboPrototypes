@@ -1,0 +1,4 @@
+item_name	quantity
+Bark-Plated Armor	1
+Leaf Sensor	2
+Hydro Core	1

@@ -2,8 +2,10 @@
 
 [ext_resource type="Script" path="res://scripts/ui/crafting/crafting_row_view.gd" id="1_1n8qx"]
 [ext_resource type="Texture2D" uid="uid://bily5u0bn7omv" path="res://assets/kenney_emotes-pack/PNG/Vector/Style 2/emote_circle.png" id="1_x6ued"]
-[ext_resource type="Texture2D" uid="uid://23b0w8orx8rw" path="res://assets/kenney_emotes-pack/emote_bars.png" id="2_laxts"]
 [ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="2_ym3w2"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_8rhnb"]
+load_path = "res://.godot/imported/emote_bars.png-1c34afac6646c9fc8c9d6db01a05c734.ctex"
 
 [node name="CraftingRow" type="MarginContainer"]
 theme_override_constants/margin_left = 40
@@ -11,7 +13,7 @@ theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 40
 theme_override_constants/margin_bottom = 20
 script = ExtResource("1_1n8qx")
-texture = ExtResource("2_laxts")
+texture = SubResource("CompressedTexture2D_8rhnb")
 material_name = "Spark Plugs"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]

@@ -1,0 +1,4 @@
+item_name	quantity
+High Voltage Capacitor	1
+Biofuel Cell	1
+Charred Circuit	1

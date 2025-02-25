@@ -2,6 +2,14 @@
 extends BaseResource
 class_name Schematic
 
-# key - LootItem item_name
-# value - ItemQuantity
-@export var recipe_table: Dictionary
+# key - item_name string
+# value - SchematicRow
+@export var recipe_table: Dictionary = {}
+@export var creature_name: String
+
+func _init(creature_name: String, items: Dictionary):
+	self.creature_name = creature_name
+	recipe_table = items
+	
+func get_table() -> Dictionary:
+	return recipe_table

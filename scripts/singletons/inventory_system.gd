@@ -1,14 +1,5 @@
 extends Node
 
-class ItemQuantity:
-	var item: LootItem
-	var quantity: int
-	# this allows one to lookup where the item is located in the array
-	var index: int
-	
-	func is_equal(other: ItemQuantity) -> bool:
-		return item.is_equal(other.item) and quantity == other.quantity and index == other.index
-
 # key - item_name string
 # value - ItemQuantity Resource
 var inventory_map: Dictionary = {}
@@ -107,6 +98,9 @@ func get_items() -> Array[ItemQuantity]:
 		items.append(inventory_map[item_name])
 		
 	return items
+
+func get_inventory_table() -> Dictionary:
+	return inventory_map
 
 func get_length() -> int:
 	return len(inventory_map)

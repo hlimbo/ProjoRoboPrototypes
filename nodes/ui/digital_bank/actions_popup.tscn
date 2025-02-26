@@ -1,0 +1,33 @@
+[gd_scene format=3 uid="uid://mnjmgf4dxou5"]
+
+[node name="ActionsPopup" type="ColorRect"]
+offset_left = 400.0
+offset_top = 205.0
+offset_right = 500.0
+offset_bottom = 313.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -41.0
+offset_top = -50.5
+offset_right = 41.0
+offset_bottom = 50.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MoveButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Move Bot"
+
+[node name="AddButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Add Bot"
+
+[node name="ViewButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "View Bot"

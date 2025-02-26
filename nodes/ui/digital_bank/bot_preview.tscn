@@ -1,0 +1,37 @@
+[gd_scene load_steps=4 format=3 uid="uid://lhxhlgvf5c82"]
+
+[ext_resource type="Texture2D" uid="uid://clnk1s48rehjr" path="res://assets/kenney_fantasy-ui-borders/Vector/fantasy-ui-borders.svg" id="1_qjmvo"]
+[ext_resource type="PackedScene" uid="uid://badvhoswodfcv" path="res://nodes/monsters/hairy_nocturnal.tscn" id="2_jpn7q"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f4bc6"]
+atlas = ExtResource("1_qjmvo")
+region = Rect2(612, 164, 48, 48)
+
+[node name="BotPreview" type="NinePatchRect"]
+offset_left = 29.0
+offset_top = 155.0
+offset_right = 410.0
+offset_bottom = 638.0
+texture = SubResource("AtlasTexture_f4bc6")
+patch_margin_left = 16
+patch_margin_top = 16
+patch_margin_right = 16
+patch_margin_bottom = 16
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+disable_3d = true
+transparent_bg = true
+handle_input_locally = false
+render_target_update_mode = 4
+
+[node name="BaseBodyF" parent="SubViewportContainer/SubViewport" instance=ExtResource("2_jpn7q")]
+position = Vector2(190, 200)

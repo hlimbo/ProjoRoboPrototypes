@@ -1,10 +1,13 @@
-[gd_scene format=3 uid="uid://mnjmgf4dxou5"]
+[gd_scene load_steps=2 format=3 uid="uid://mnjmgf4dxou5"]
+
+[ext_resource type="Script" path="res://scripts/ui/digital_bank/action_pop_up_view.gd" id="1_fxs3b"]
 
 [node name="ActionsPopup" type="ColorRect"]
 offset_left = 400.0
 offset_top = 205.0
 offset_right = 500.0
 offset_bottom = 313.0
+script = ExtResource("1_fxs3b")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1

@@ -1,0 +1,1476 @@
+[gd_scene load_steps=11 format=3 uid="uid://b4s6jvbdljfyy"]
+
+[ext_resource type="Texture2D" uid="uid://clnk1s48rehjr" path="res://assets/kenney_fantasy-ui-borders/Vector/fantasy-ui-borders.svg" id="1_jnmev"]
+[ext_resource type="Texture2D" uid="uid://bmc33exgral4t" path="res://assets/kenney_emotes-pack/PNG/Vector/Style 2/emote_alert.png" id="2_oh37k"]
+[ext_resource type="PackedScene" uid="uid://badvhoswodfcv" path="res://nodes/monsters/hairy_nocturnal.tscn" id="3_7ktiv"]
+[ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="4_nt7rt"]
+[ext_resource type="Texture2D" uid="uid://d3y77q7dp5iia" path="res://assets/AttrAndElementsIcons_v1/Icons/Sprites/AllIcons16x16Outline.png" id="5_ggjbn"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_01v4u"]
+atlas = ExtResource("1_jnmev")
+region = Rect2(550, 164, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fmvyl"]
+atlas = ExtResource("1_jnmev")
+region = Rect2(924, 226, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f4bc6"]
+atlas = ExtResource("1_jnmev")
+region = Rect2(612, 164, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_buvd0"]
+atlas = ExtResource("5_ggjbn")
+region = Rect2(66, 17, 13, 14)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xy7s5"]
+atlas = ExtResource("5_ggjbn")
+region = Rect2(34, 2, 12, 12)
+filter_clip = true
+
+[node name="DigitalBank" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GridSlots" type="ScrollContainer" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -849.0
+offset_top = 231.0
+offset_right = -198.0
+offset_bottom = 695.0
+grow_horizontal = 0
+
+[node name="GridContainer" type="GridContainer" parent="GridSlots"]
+layout_mode = 2
+theme_override_constants/h_separation = 5
+columns = 6
+
+[node name="GridSlot" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot2" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot2"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot3" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot3"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot4" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot4"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot5" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot5"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot6" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot6"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot7" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot7"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot8" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot8"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot9" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot9"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot10" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot10"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot11" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot11"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot12" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot12"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot13" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot13"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot14" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot14"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot15" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot15"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot16" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot16"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot17" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot17"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot18" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot18"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot19" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot19"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot20" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot20"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot21" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot21"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot22" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot22"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot23" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot23"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot24" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot24"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot25" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot25"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot26" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot26"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot27" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot27"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot28" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot28"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot29" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot29"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot30" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot30"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot31" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot31"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot32" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot32"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot33" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot33"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot34" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot34"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot35" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot35"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot36" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot36"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot37" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot37"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot38" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot38"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot39" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot39"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot40" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot40"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot41" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot41"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot42" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot42"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot43" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot43"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot44" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot44"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot45" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot45"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot46" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot46"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot47" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot47"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="GridSlot48" type="NinePatchRect" parent="GridSlots/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_01v4u")
+
+[node name="TextureRect" type="TextureRect" parent="GridSlots/GridContainer/GridSlot48"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -39.5
+offset_right = 36.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="PartyMemberSlots" type="MarginContainer" parent="."]
+layout_mode = 0
+offset_left = 1142.0
+offset_top = 219.0
+offset_right = 1258.0
+offset_bottom = 696.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PartyMemberSlots"]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="PartyMemberSlot" type="NinePatchRect" parent="PartyMemberSlots/VBoxContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = SubResource("AtlasTexture_fmvyl")
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
+
+[node name="TextureRect" type="TextureRect" parent="PartyMemberSlots/VBoxContainer/PartyMemberSlot"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -44.5
+offset_top = -43.5
+offset_right = 44.5
+offset_bottom = 43.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="PartyMemberSlot2" type="NinePatchRect" parent="PartyMemberSlots/VBoxContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = SubResource("AtlasTexture_fmvyl")
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
+
+[node name="TextureRect" type="TextureRect" parent="PartyMemberSlots/VBoxContainer/PartyMemberSlot2"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -44.5
+offset_top = -43.5
+offset_right = 44.5
+offset_bottom = 43.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="PartyMemberSlot3" type="NinePatchRect" parent="PartyMemberSlots/VBoxContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = SubResource("AtlasTexture_fmvyl")
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
+
+[node name="TextureRect" type="TextureRect" parent="PartyMemberSlots/VBoxContainer/PartyMemberSlot3"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -44.5
+offset_top = -43.5
+offset_right = 44.5
+offset_bottom = 43.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="PartyMemberSlot4" type="NinePatchRect" parent="PartyMemberSlots/VBoxContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = SubResource("AtlasTexture_fmvyl")
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
+
+[node name="TextureRect" type="TextureRect" parent="PartyMemberSlots/VBoxContainer/PartyMemberSlot4"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -44.5
+offset_top = -43.5
+offset_right = 44.5
+offset_bottom = 43.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_oh37k")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="BotPreview" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 426.0
+offset_bottom = 708.0
+
+[node name="NinePatchRect" type="NinePatchRect" parent="BotPreview"]
+layout_mode = 0
+offset_left = 29.0
+offset_top = 220.0
+offset_right = 410.0
+offset_bottom = 703.0
+texture = SubResource("AtlasTexture_f4bc6")
+patch_margin_left = 16
+patch_margin_top = 16
+patch_margin_right = 16
+patch_margin_bottom = 16
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="BotPreview"]
+layout_mode = 0
+offset_left = 27.0
+offset_top = 222.0
+offset_right = 409.0
+offset_bottom = 693.0
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="BotPreview/SubViewportContainer"]
+disable_3d = true
+transparent_bg = true
+size = Vector2i(382, 471)
+
+[node name="BaseBodyF" parent="BotPreview/SubViewportContainer/SubViewport" instance=ExtResource("3_7ktiv")]
+position = Vector2(190, 200)
+
+[node name="NinePatchRect2" type="NinePatchRect" parent="BotPreview"]
+layout_mode = 0
+offset_left = 29.0
+offset_top = 76.0
+offset_right = 410.0
+offset_bottom = 191.0
+texture = SubResource("AtlasTexture_f4bc6")
+patch_margin_left = 16
+patch_margin_top = 16
+patch_margin_right = 16
+patch_margin_bottom = 16
+
+[node name="VBoxContainer" type="VBoxContainer" parent="BotPreview"]
+layout_mode = 0
+offset_left = 47.0
+offset_top = 92.0
+offset_right = 386.0
+offset_bottom = 168.0
+theme_override_constants/separation = 16
+
+[node name="HBoxContainer" type="HBoxContainer" parent="BotPreview/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+theme_override_constants/separation = 24
+
+[node name="NameLabel" type="Label" parent="BotPreview/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("4_nt7rt")
+theme_override_font_sizes/font_size = 20
+text = "hairy nocturnal"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LevelLabel" type="Label" parent="BotPreview/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("4_nt7rt")
+theme_override_font_sizes/font_size = 20
+text = "lv. 99"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="BotPreview/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+theme_override_constants/separation = 32
+
+[node name="HBoxContainer" type="HBoxContainer" parent="BotPreview/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/separation = 16
+
+[node name="TypeLabel" type="Label" parent="BotPreview/VBoxContainer/HBoxContainer2/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("4_nt7rt")
+theme_override_font_sizes/font_size = 20
+text = "Android"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TypeIcon" type="TextureRect" parent="BotPreview/VBoxContainer/HBoxContainer2/HBoxContainer"]
+custom_minimum_size = Vector2(12, 12)
+layout_mode = 2
+texture = SubResource("AtlasTexture_buvd0")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="BotPreview/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_constants/separation = 16
+
+[node name="EnergyLabel" type="Label" parent="BotPreview/VBoxContainer/HBoxContainer2/HBoxContainer2"]
+layout_mode = 2
+theme = ExtResource("4_nt7rt")
+theme_override_font_sizes/font_size = 20
+text = "earth"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="EnergyIcon" type="TextureRect" parent="BotPreview/VBoxContainer/HBoxContainer2/HBoxContainer2"]
+custom_minimum_size = Vector2(12, 12)
+layout_mode = 2
+texture = SubResource("AtlasTexture_xy7s5")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="BotPreview"]
+visible = false
+layout_mode = 0
+offset_left = 40.0
+offset_top = 16.0
+offset_right = 400.0
+offset_bottom = 56.0
+theme = ExtResource("4_nt7rt")
+theme_override_font_sizes/font_size = 32
+text = "hairy nocturnal"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GridArea" type="ReferenceRect" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 428.0
+offset_right = 1277.0
+offset_bottom = 496.0
+border_width = 4.0
+
+[node name="BotPreviewArea" type="ReferenceRect" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 2.0
+offset_right = 440.0
+offset_bottom = 714.0
+border_width = 4.0
+
+[node name="BotGraphic" type="ReferenceRect" parent="BotPreviewArea"]
+layout_mode = 0
+offset_left = 26.0
+offset_top = 15.0
+offset_right = 408.0
+offset_bottom = 490.0
+border_width = 4.0
+
+[node name="BotName" type="ReferenceRect" parent="BotPreviewArea"]
+layout_mode = 0
+offset_left = 129.0
+offset_top = 536.0
+offset_right = 406.0
+offset_bottom = 595.0
+border_width = 4.0
+
+[node name="LevelLabel" type="ReferenceRect" parent="BotPreviewArea"]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 536.0
+offset_right = 114.0
+offset_bottom = 595.0
+border_width = 4.0
+
+[node name="TypeName" type="ReferenceRect" parent="BotPreviewArea"]
+layout_mode = 0
+offset_left = 23.0
+offset_top = 612.0
+offset_right = 218.0
+offset_bottom = 673.0
+border_width = 4.0
+
+[node name="EnergyName" type="ReferenceRect" parent="BotPreviewArea"]
+layout_mode = 0
+offset_left = 231.0
+offset_top = 612.0
+offset_right = 405.0
+offset_bottom = 673.0
+border_width = 4.0
+
+[node name="PartyMemberArea" type="ReferenceRect" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 447.0
+offset_top = 508.0
+offset_right = 1277.0
+offset_bottom = 714.0
+border_width = 4.0
+
+[node name="PartyMember" type="ReferenceRect" parent="PartyMemberArea"]
+layout_mode = 0
+offset_left = 73.0
+offset_top = 33.0
+offset_right = 201.0
+offset_bottom = 161.0
+border_width = 4.0
+
+[node name="ReferenceRect2" type="ReferenceRect" parent="PartyMemberArea"]
+layout_mode = 0
+offset_left = 265.0
+offset_top = 33.0
+offset_right = 393.0
+offset_bottom = 161.0
+border_width = 4.0
+
+[node name="ReferenceRect3" type="ReferenceRect" parent="PartyMemberArea"]
+layout_mode = 0
+offset_left = 458.0
+offset_top = 33.0
+offset_right = 586.0
+offset_bottom = 161.0
+border_width = 4.0
+
+[node name="ReferenceRect4" type="ReferenceRect" parent="PartyMemberArea"]
+layout_mode = 0
+offset_left = 643.0
+offset_top = 33.0
+offset_right = 771.0
+offset_bottom = 161.0
+border_width = 4.0
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1152.0
+offset_top = 184.0
+offset_right = 1278.0
+offset_bottom = 219.0
+theme = ExtResource("4_nt7rt")
+theme_override_font_sizes/font_size = 28
+text = "Party "
+horizontal_alignment = 1
+vertical_alignment = 1

@@ -1,8 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://b4s6jvbdljfyy"]
+[gd_scene load_steps=10 format=3 uid="uid://b4s6jvbdljfyy"]
 
 [ext_resource type="PackedScene" uid="uid://cicxh4j1k0wp5" path="res://nodes/ui/digital_bank/bot_cell.tscn" id="1_6doak"]
 [ext_resource type="Texture2D" uid="uid://clnk1s48rehjr" path="res://assets/kenney_fantasy-ui-borders/Vector/fantasy-ui-borders.svg" id="1_jnmev"]
 [ext_resource type="Texture2D" uid="uid://bmc33exgral4t" path="res://assets/kenney_emotes-pack/PNG/Vector/Style 2/emote_alert.png" id="2_oh37k"]
+[ext_resource type="Script" path="res://scripts/ui/digital_bank/party_list_view.gd" id="3_5kg2v"]
 [ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="4_nt7rt"]
 [ext_resource type="PackedScene" uid="uid://lhxhlgvf5c82" path="res://nodes/ui/digital_bank/bot_preview.tscn" id="5_npvb8"]
 [ext_resource type="PackedScene" uid="uid://hmomiakc0dpu" path="res://nodes/ui/digital_bank/bot_info.tscn" id="6_ybu27"]
@@ -55,6 +56,7 @@ offset_left = 1119.0
 offset_top = 95.0
 offset_right = 1266.0
 offset_bottom = 628.0
+script = ExtResource("3_5kg2v")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="PartyMemberSlots"]
 layout_mode = 2
@@ -179,9 +181,17 @@ offset_bottom = 708.0
 
 [node name="BotPreview" parent="BotPreview" instance=ExtResource("5_npvb8")]
 layout_mode = 0
+offset_left = 34.0
+offset_top = 156.0
+offset_right = 415.0
+offset_bottom = 639.0
 
 [node name="BotInfo" parent="BotPreview" instance=ExtResource("6_ybu27")]
 layout_mode = 0
+offset_left = 32.0
+offset_top = 27.0
+offset_right = 413.0
+offset_bottom = 142.0
 
 [node name="Button" type="Button" parent="."]
 layout_mode = 0

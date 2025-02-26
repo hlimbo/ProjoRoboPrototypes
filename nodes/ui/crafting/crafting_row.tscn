@@ -5,7 +5,6 @@
 [ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="2_ym3w2"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_8rhnb"]
-load_path = "res://.godot/imported/emote_bars.png-1c34afac6646c9fc8c9d6db01a05c734.ctex"
 
 [node name="CraftingRow" type="MarginContainer"]
 theme_override_constants/margin_left = 40

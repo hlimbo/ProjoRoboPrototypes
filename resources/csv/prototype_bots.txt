@@ -1,0 +1,11 @@
+Name	Type	Attribute
+Pyrotron	Robot	Fire
+Verdant-07	Android	Wood
+AquaMech-X	Automaton	Water
+TerraUnit MKII	Robot	Earth
+Voltstrider	Android	Electric
+Zephyr-9	Automaton	Wind
+Aurum-Prime	Robot	Gold
+SpectraVex	Android	Supernatural
+EmberFist	Automaton	Fire
+StormChaser-5	Robot	Wind

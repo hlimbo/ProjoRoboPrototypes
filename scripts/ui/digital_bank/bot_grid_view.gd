@@ -3,6 +3,7 @@ class_name BotGridView
 
 @export var actions_popup: ActionPopUpView
 @export var action_label: Label
+@export var grid_size: int = 20
 
 var bot_cell_res: Resource = load("res://nodes/ui/digital_bank/bot_cell.tscn")
 var selected_cell: BotCellView = null
@@ -17,14 +18,17 @@ func _ready():
 	for bot in bots:
 		bot_data.append(bot as AvatarData)
 		
-	for bot in bot_data:
+	for i in range(min(len(bots), grid_size)):
+		var bot: AvatarData = bot_data[i]
 		var cell_view: BotCellView = bot_cell_res.instantiate()
 		cell_view.initialize(bot.avatar_name, bot.level, bot.bot_type, bot.energy_type)
 		cell_view.on_select.connect(on_select_cell)
 		add_child(cell_view)
-		
-	# add empty cells
-	for i in range(5):
+	
+	
+	# add empty cells for remaining left
+	var remaining_free_slots_size: int = grid_size - get_child_count()
+	for i in range(remaining_free_slots_size):
 		var cell_view: BotCellView = bot_cell_res.instantiate()
 		cell_view.is_empty = true
 		cell_view.on_select.connect(on_select_cell)

@@ -38,28 +38,32 @@ func on_party_view_update(data_container: BotDataContainer):
 	await Engine.get_main_loop().process_frame
 	
 	# add all nodes back in
-	var bots = data_container.bot_table.values()
-	for i in range(min(len(bots), party_list_size)):
-		var avatar_data = bots[i] as AvatarData
-		var cell_view: BotCellView = bot_cell_res.instantiate()
-		cell_view.on_select.connect(on_select_cell)
-		cell_view.add_to_group(Constants.PARTY_MEMBER_SLOTS)
-		cell_view.initialize(avatar_data.avatar_name, avatar_data.level, avatar_data.bot_type, avatar_data.energy_type)
-		add_child(cell_view)
-		
-		cell_view.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-		cell_view.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	var bots: Array = data_container.bot_table.values()
+	bots.sort_custom(func(b1: AvatarData, b2: AvatarData): return b1.ordinal < b2.ordinal)
 	
-	# remaining are empty slots
-	var remaining_slots_count: int = party_list_size - get_child_count()
-	var j = 0
-	while j < remaining_slots_count:
+	var bot_index: int = 0
+	var ordinal_index: int = 0
+	child_count = 0
+	while child_count < party_list_size:
 		var cell_view: BotCellView = bot_cell_res.instantiate()
-		cell_view.is_empty = true
+		if bot_index < len(bots):
+			var avatar_data = bots[bot_index] as AvatarData
+			if ordinal_index == avatar_data.ordinal:
+				cell_view.initialize(avatar_data.avatar_name, avatar_data.level, avatar_data.bot_type, avatar_data.energy_type)
+				bot_index += 1
+			else:
+				cell_view.is_empty = true
+		else:
+			cell_view.is_empty = true
+			
+		
 		cell_view.on_select.connect(on_select_cell)
 		cell_view.add_to_group(Constants.PARTY_MEMBER_SLOTS)
+		cell_view.ordinal = ordinal_index
 		add_child(cell_view)
-		
+		# center the cell within the layout
 		cell_view.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 		cell_view.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-		j += 1
+		
+		child_count += 1
+		ordinal_index += 1

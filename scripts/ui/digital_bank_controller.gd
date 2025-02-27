@@ -39,30 +39,49 @@ func on_select(curr_cell: BotCellView):
 	# as well as reflect those changes on the view layer
 	match curr_action:
 		Action.MOVE:
-			# case 1 - swap between 2 bots on the same grid
-			# case 2 - swap between 2 bots on grid and on list layout
 			selected_cell2 = curr_cell
-			
-			# case 2
-			bot_inventory_systems.swap_bots(selected_cell2.bot_name, selected_cell.bot_name)
+			# case 1 - swap between 2 bots on the same grid
+			if selected_cell.is_in_group(Constants.DIGITAL_BANK_SLOTS) and selected_cell2.is_in_group(Constants.DIGITAL_BANK_SLOTS):
+				bot_inventory_systems.swap_bots_in_digital_bank(selected_cell.bot_name, selected_cell2.bot_name)
+			# case 2 - swap between 2 bots in party layout
+			elif selected_cell.is_in_group(Constants.PARTY_MEMBER_SLOTS) and selected_cell2.is_in_group(Constants.PARTY_MEMBER_SLOTS):
+				bot_inventory_systems.swap_bots_in_party(selected_cell.bot_name, selected_cell2.bot_name)
+			# case 3 - swap bots between grid and party layout
+			elif selected_cell.is_in_group(Constants.DIGITAL_BANK_SLOTS) and selected_cell2.is_in_group(Constants.PARTY_MEMBER_SLOTS):
+				pass
+			# case 4 - swap bots betweens party and grid layout
+			elif selected_cell.is_in_group(Constants.PARTY_MEMBER_SLOTS) and selected_cell2.is_in_group(Constants.DIGITAL_BANK_SLOTS):
+				pass
+				
+			curr_action = Action.NO_OP
+			selected_cell.self_modulate = Color.WHITE
+			selected_cell2.self_modulate = Color.WHITE
+			selected_cell = null
 			
 		Action.ADD:
 			selected_cell2 = curr_cell
 			
+			# if empty cell is picked to Add, skip it -- a better way to handle this is to 
+			# filter out which cells are selectable before passing it down to this function
+			if selected_cell2.is_empty:
+				curr_action = Action.NO_OP
+				selected_cell.self_modulate = Color.WHITE
+				selected_cell2.self_modulate = Color.WHITE
+				selected_cell = null
+				return
+			
+			
 			# case 1 - add bot from grid layout to list layout
 			if selected_cell.is_in_group(Constants.PARTY_MEMBER_SLOTS) and selected_cell2.is_in_group(Constants.DIGITAL_BANK_SLOTS):
-				bot_inventory_systems.move_to_party(selected_cell2.bot_name)
+				bot_inventory_systems.move_to_party(selected_cell2.bot_name, selected_cell.ordinal)
 			# case 2 - add bot from list layout to grid layout
-			if selected_cell.is_in_group(Constants.DIGITAL_BANK_SLOTS) and selected_cell2.is_in_group(Constants.PARTY_MEMBER_SLOTS):
-				bot_inventory_systems.move_to_digital_bank(selected_cell2.bot_name)
-			# case 3 - add bot from grid layout to grid layout
-			if selected_cell.is_in_group(Constants.DIGITAL_BANK_SLOTS) and selected_cell2.is_in_group(Constants.DIGITAL_BANK_SLOTS):
-				pass
-			# case 4 - add bot from list layout to list layout
-			if selected_cell.is_in_group(Constants.PARTY_MEMBER_SLOTS) and selected_cell2.is_in_group(Constants.PARTY_MEMBER_SLOTS):
-				pass
+			elif selected_cell.is_in_group(Constants.DIGITAL_BANK_SLOTS) and selected_cell2.is_in_group(Constants.PARTY_MEMBER_SLOTS):
+				bot_inventory_systems.move_to_digital_bank(selected_cell2.bot_name, selected_cell.ordinal)
 			
 			curr_action = Action.NO_OP
+			selected_cell.self_modulate = Color.WHITE
+			selected_cell2.self_modulate = Color.WHITE
+			selected_cell = null
 			
 			
 		Action.NO_OP:

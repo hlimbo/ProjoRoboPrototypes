@@ -5,6 +5,7 @@ var bot_name: String
 var level: int
 var bot_type: String
 var energy_type: String
+var ordinal: int
 
 @onready var texture_rect: TextureRect = $TextureRect
 @onready var button: Button = $Button

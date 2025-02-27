@@ -12,19 +12,14 @@ var bot_cell_res: Resource = load("res://nodes/ui/digital_bank/bot_cell.tscn")
 signal on_select(curr_cell: BotCellView)
 
 func _ready():
-	update_grid_view()
+	init_grid_view()
 	
-	bot_inventory_systems.on_digital_bank_view_update.connect(update_grid_view2)
+	bot_inventory_systems.on_digital_bank_view_update.connect(update_grid_view)
 
 func on_select_cell(curr_cell: BotCellView):
 	on_select.emit(curr_cell)
 
-# gets called at the following scenarios
-# - when a bot is removed from this view
-# - when a bot is added into this view
-# - when a bot swaps position with another bot in this view
-# - when a bot swaps position with an empty cell in this view
-func update_grid_view():
+func init_grid_view():
 	var bots: Array = bot_inventory_systems.digital_bot_bank.bot_table.values()
 	bots.sort_custom(func(b1: AvatarData, b2: AvatarData): return b1.ordinal < b2.ordinal)
 	
@@ -61,7 +56,7 @@ func update_grid_view():
 		child_count += 1
 
 
-func update_grid_view2(bot_data_container: BotDataContainer):
+func update_grid_view(bot_data_container: BotDataContainer):
 	# temp - clear ui grid and remake it
 	var children = get_children()
 	var child_count = len(children)
@@ -88,24 +83,22 @@ func update_grid_view2(bot_data_container: BotDataContainer):
 		if bot_index >= len(bots):
 			# add empty cell
 			cell_view.is_empty = true
-			cell_view.on_select.connect(on_select_cell)
-			cell_view.add_to_group(Constants.DIGITAL_BANK_SLOTS)
 		else:
 			var bot: AvatarData = (bots[bot_index] as AvatarData)
 			if ordinal_index == bot.ordinal:
 				# add bot in position specified by its ordinal value
 				cell_view.initialize(bot.avatar_name, bot.level, bot.bot_type, bot.energy_type)
-				cell_view.on_select.connect(on_select_cell)
-				cell_view.add_to_group(Constants.DIGITAL_BANK_SLOTS)
 				bot_index += 1
 			else:
 				# add empty cell
 				cell_view.is_empty = true
-				cell_view.on_select.connect(on_select_cell)
-				cell_view.add_to_group(Constants.DIGITAL_BANK_SLOTS)
 		
-		ordinal_index += 1
+		cell_view.on_select.connect(on_select_cell)
+		cell_view.add_to_group(Constants.DIGITAL_BANK_SLOTS)
+		cell_view.ordinal = ordinal_index
 		add_child(cell_view)
+		
 		child_count += 1
+		ordinal_index += 1
 		
 	print("added new stuff")

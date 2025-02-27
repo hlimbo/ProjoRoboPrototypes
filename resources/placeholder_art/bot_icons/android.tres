@@ -1,0 +1,8 @@
+[gd_resource type="AtlasTexture" load_steps=2 format=3 uid="uid://dhsohy2e357xt"]
+
+[ext_resource type="Texture2D" uid="uid://d3y77q7dp5iia" path="res://assets/AttrAndElementsIcons_v1/Icons/Sprites/AllIcons16x16Outline.png" id="1_al3hw"]
+
+[resource]
+resource_name = "android"
+atlas = ExtResource("1_al3hw")
+region = Rect2(65.3802, 16.1371, 14.4832, 15.7999)

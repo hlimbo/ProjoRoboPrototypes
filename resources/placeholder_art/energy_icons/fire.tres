@@ -1,0 +1,8 @@
+[gd_resource type="AtlasTexture" load_steps=2 format=3 uid="uid://vhbjtnd4oj1d"]
+
+[ext_resource type="Texture2D" uid="uid://d3y77q7dp5iia" path="res://assets/AttrAndElementsIcons_v1/Icons/Sprites/AllIcons16x16Outline.png" id="1_gxrjs"]
+
+[resource]
+resource_name = "fire"
+atlas = ExtResource("1_gxrjs")
+region = Rect2(3, 2, 10, 12)

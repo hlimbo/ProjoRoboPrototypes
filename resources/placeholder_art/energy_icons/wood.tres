@@ -1,0 +1,8 @@
+[gd_resource type="AtlasTexture" load_steps=2 format=3 uid="uid://b6ibh8pp4nmo8"]
+
+[ext_resource type="Texture2D" uid="uid://d3y77q7dp5iia" path="res://assets/AttrAndElementsIcons_v1/Icons/Sprites/AllIcons16x16Outline.png" id="1_qupch"]
+
+[resource]
+resource_name = "wood"
+atlas = ExtResource("1_qupch")
+region = Rect2(35, 18, 12, 12)

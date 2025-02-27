@@ -17,6 +17,7 @@ func _ready():
 	var bot_data: Array[AvatarData] = []
 	for bot in bots:
 		bot_data.append(bot as AvatarData)
+		bot_data[len(bot_data) - 1].level = 1
 		
 	for i in range(min(len(bots), grid_size)):
 		var bot: AvatarData = bot_data[i]

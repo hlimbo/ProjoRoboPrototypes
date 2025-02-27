@@ -4,6 +4,7 @@ class_name DigitalBankController
 @onready var actions_popup: ActionPopUpView = $ActionsPopup
 @onready var action_label: Label = $ActionLabel
 @onready var grid_container: BotGridView = $GridSlots/GridContainer
+@onready var bot_info: BotDescriptionView = $BotPreview/BotInfo
 
 var selected_cell: BotCellView = null
 
@@ -52,8 +53,10 @@ func on_view_popup():
 	print("view")
 	action_label.visible = true
 	action_label.text = "Action: view mode"
-		
 	actions_popup.visible = false
+	
+	if is_instance_valid(selected_cell):
+		bot_info.initialize(selected_cell.bot_name, selected_cell.level, selected_cell.bot_type, selected_cell.energy_type)
 
 func on_close_popup():
 	if is_instance_valid(selected_cell):

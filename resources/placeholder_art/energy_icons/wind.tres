@@ -1,0 +1,8 @@
+[gd_resource type="AtlasTexture" load_steps=2 format=3 uid="uid://oh7xnt5j413q"]
+
+[ext_resource type="Texture2D" uid="uid://d3y77q7dp5iia" path="res://assets/AttrAndElementsIcons_v1/Icons/Sprites/AllIcons16x16Outline.png" id="1_nga3c"]
+
+[resource]
+resource_name = "wind"
+atlas = ExtResource("1_nga3c")
+region = Rect2(15.8739, 16.1371, 16.8532, 16.3265)

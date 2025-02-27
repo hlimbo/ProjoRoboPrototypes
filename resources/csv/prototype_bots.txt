@@ -5,7 +5,7 @@ AquaMech-X	Automaton	Water
 TerraUnit MKII	Robot	Earth
 Voltstrider	Android	Electric
 Zephyr-9	Automaton	Wind
-Aurum-Prime	Robot	Gold
-SpectraVex	Android	Supernatural
+Aurum-Prime	Robot	Au
+SpectraVex	Android	Ai
 EmberFist	Automaton	Fire
 StormChaser-5	Robot	Wind

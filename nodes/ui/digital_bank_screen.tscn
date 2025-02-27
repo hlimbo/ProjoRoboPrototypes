@@ -1,19 +1,13 @@
-[gd_scene load_steps=12 format=3 uid="uid://b4s6jvbdljfyy"]
+[gd_scene load_steps=9 format=3 uid="uid://b4s6jvbdljfyy"]
 
 [ext_resource type="PackedScene" uid="uid://cicxh4j1k0wp5" path="res://nodes/ui/digital_bank/bot_cell.tscn" id="1_6doak"]
-[ext_resource type="Texture2D" uid="uid://clnk1s48rehjr" path="res://assets/kenney_fantasy-ui-borders/Vector/fantasy-ui-borders.svg" id="1_jnmev"]
 [ext_resource type="Script" path="res://scripts/ui/digital_bank_controller.gd" id="1_oachw"]
 [ext_resource type="Script" path="res://scripts/ui/digital_bank/bot_grid_view.gd" id="2_7ylbr"]
-[ext_resource type="Texture2D" uid="uid://bmc33exgral4t" path="res://assets/kenney_emotes-pack/PNG/Vector/Style 2/emote_alert.png" id="2_oh37k"]
 [ext_resource type="Script" path="res://scripts/ui/digital_bank/party_list_view.gd" id="3_5kg2v"]
 [ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="4_nt7rt"]
 [ext_resource type="PackedScene" uid="uid://lhxhlgvf5c82" path="res://nodes/ui/digital_bank/bot_preview.tscn" id="5_npvb8"]
 [ext_resource type="PackedScene" uid="uid://hmomiakc0dpu" path="res://nodes/ui/digital_bank/bot_info.tscn" id="6_ybu27"]
 [ext_resource type="PackedScene" uid="uid://mnjmgf4dxou5" path="res://nodes/ui/digital_bank/actions_popup.tscn" id="7_jyau6"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_fmvyl"]
-atlas = ExtResource("1_jnmev")
-region = Rect2(550, 164, 48, 48)
 
 [node name="DigitalBank" type="Control"]
 layout_mode = 3
@@ -64,13 +58,10 @@ offset_left = 1119.0
 offset_top = 95.0
 offset_right = 1266.0
 offset_bottom = 628.0
-script = ExtResource("3_5kg2v")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="PartyMemberSlots"]
 layout_mode = 2
-size_flags_vertical = 4
 theme_override_constants/separation = 16
-alignment = 1
 
 [node name="Label" type="Label" parent="PartyMemberSlots/VBoxContainer"]
 layout_mode = 2
@@ -81,110 +72,12 @@ text = " Party "
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="PartyMemberSlot" type="NinePatchRect" parent="PartyMemberSlots/VBoxContainer"]
-visible = false
-custom_minimum_size = Vector2(100, 100)
+[node name="PartyListView" type="VBoxContainer" parent="PartyMemberSlots/VBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 4
 size_flags_vertical = 4
-texture = SubResource("AtlasTexture_fmvyl")
-patch_margin_bottom = 8
-
-[node name="TextureRect" type="TextureRect" parent="PartyMemberSlots/VBoxContainer/PartyMemberSlot"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -44.5
-offset_top = -43.5
-offset_right = 44.5
-offset_bottom = 43.5
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("2_oh37k")
-expand_mode = 3
-stretch_mode = 5
-
-[node name="PartyMemberSlot2" type="NinePatchRect" parent="PartyMemberSlots/VBoxContainer"]
-visible = false
-custom_minimum_size = Vector2(100, 100)
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-texture = SubResource("AtlasTexture_fmvyl")
-patch_margin_bottom = 8
-
-[node name="TextureRect" type="TextureRect" parent="PartyMemberSlots/VBoxContainer/PartyMemberSlot2"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -44.5
-offset_top = -43.5
-offset_right = 44.5
-offset_bottom = 43.5
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("2_oh37k")
-expand_mode = 3
-stretch_mode = 5
-
-[node name="PartyMemberSlot3" type="NinePatchRect" parent="PartyMemberSlots/VBoxContainer"]
-visible = false
-custom_minimum_size = Vector2(100, 100)
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-texture = SubResource("AtlasTexture_fmvyl")
-patch_margin_bottom = 8
-
-[node name="TextureRect" type="TextureRect" parent="PartyMemberSlots/VBoxContainer/PartyMemberSlot3"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -44.5
-offset_top = -43.5
-offset_right = 44.5
-offset_bottom = 43.5
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("2_oh37k")
-expand_mode = 3
-stretch_mode = 5
-
-[node name="PartyMemberSlot4" type="NinePatchRect" parent="PartyMemberSlots/VBoxContainer"]
-visible = false
-custom_minimum_size = Vector2(100, 100)
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-texture = SubResource("AtlasTexture_fmvyl")
-patch_margin_bottom = 8
-
-[node name="TextureRect" type="TextureRect" parent="PartyMemberSlots/VBoxContainer/PartyMemberSlot4"]
-visible = false
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -44.5
-offset_top = -43.5
-offset_right = 44.5
-offset_bottom = 43.5
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("2_oh37k")
-expand_mode = 3
-stretch_mode = 5
+theme_override_constants/separation = 16
+alignment = 1
+script = ExtResource("3_5kg2v")
 
 [node name="BotPreview" type="Control" parent="."]
 anchors_preset = 0

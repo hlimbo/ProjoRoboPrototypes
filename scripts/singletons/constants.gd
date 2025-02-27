@@ -52,3 +52,8 @@ enum Creature_Type {
 	AUTOMATON,
 	ANDROID,
 }
+
+# Used to determine which ui layout a cell belongs to
+# Primarily used to handle moving bot data between party and grid view layouts
+const PARTY_MEMBER_SLOTS = "party_member_slots"
+const DIGITAL_BANK_SLOTS = "digital_bank_slots"

@@ -1,8 +1,9 @@
 extends Control
 class_name PartyListView
 
+@export var bot_inventory_systems: BotInventorySystems = BotInventorySystems
+
 @export var party_list_size: int = 4
-@onready var list_container: VBoxContainer = $VBoxContainer
 
 var bot_cell_res: Resource = load("res://nodes/ui/digital_bank/bot_cell.tscn")
 
@@ -13,10 +14,52 @@ func _ready():
 		var cell_view: BotCellView = bot_cell_res.instantiate()
 		cell_view.is_empty = true
 		cell_view.on_select.connect(on_select_cell)
-		list_container.add_child(cell_view)
+		cell_view.add_to_group(Constants.PARTY_MEMBER_SLOTS)
+		add_child(cell_view)
 		
 		cell_view.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 		cell_view.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		
+	bot_inventory_systems.on_party_view_update.connect(on_party_view_update)
 
 func on_select_cell(curr_cell: BotCellView):
 	on_select.emit(curr_cell)
+
+func on_party_view_update(data_container: BotDataContainer):
+	# TEMP - clear cells
+	var children: Array = get_children()
+	var child_count: int = len(children)
+	while child_count > 0:
+		var child = children.pop_back()
+		child.queue_free()
+		child_count -= 1
+	
+	# wait 1 frame until all child nodes are deleted at end of current frame
+	await Engine.get_main_loop().process_frame
+	
+	# add all nodes back in
+	var bots = data_container.bot_table.values()
+	for i in range(min(len(bots), party_list_size)):
+		var avatar_data = bots[i] as AvatarData
+		var cell_view: BotCellView = bot_cell_res.instantiate()
+		cell_view.on_select.connect(on_select_cell)
+		cell_view.add_to_group(Constants.PARTY_MEMBER_SLOTS)
+		cell_view.initialize(avatar_data.avatar_name, avatar_data.level, avatar_data.bot_type, avatar_data.energy_type)
+		add_child(cell_view)
+		
+		cell_view.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		cell_view.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	
+	# remaining are empty slots
+	var remaining_slots_count: int = party_list_size - get_child_count()
+	var j = 0
+	while j < remaining_slots_count:
+		var cell_view: BotCellView = bot_cell_res.instantiate()
+		cell_view.is_empty = true
+		cell_view.on_select.connect(on_select_cell)
+		cell_view.add_to_group(Constants.PARTY_MEMBER_SLOTS)
+		add_child(cell_view)
+		
+		cell_view.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		cell_view.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		j += 1

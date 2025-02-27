@@ -15,7 +15,7 @@ enum Action {
 @onready var actions_popup: ActionPopUpView = $ActionsPopup
 @onready var action_label: Label = $ActionLabel
 @onready var grid_container: BotGridView = $GridSlots/GridContainer
-@onready var party_member_slots: PartyListView = $PartyMemberSlots
+@onready var party_member_slots: PartyListView = $PartyMemberSlots/VBoxContainer/PartyListView
 @onready var bot_info: BotDescriptionView = $BotPreview/BotInfo
 
 var selected_cell: BotCellView = null
@@ -47,15 +47,27 @@ func on_select(curr_cell: BotCellView):
 			bot_inventory_systems.swap_bots(selected_cell2.bot_name, selected_cell.bot_name)
 			
 		Action.ADD:
-			# case 1 - add bot from list layout to grid layout
-			# case 2 - add bot from grid layout to list layout
-			
-			# case 2
 			selected_cell2 = curr_cell
-			bot_inventory_systems.swap_bots(selected_cell.bot_name, selected_cell2.bot_name)
 			
-			pass
+			# case 1 - add bot from grid layout to list layout
+			if selected_cell.is_in_group(Constants.PARTY_MEMBER_SLOTS) and selected_cell2.is_in_group(Constants.DIGITAL_BANK_SLOTS):
+				bot_inventory_systems.move_to_party(selected_cell2.bot_name)
+			# case 2 - add bot from list layout to grid layout
+			if selected_cell.is_in_group(Constants.DIGITAL_BANK_SLOTS) and selected_cell2.is_in_group(Constants.PARTY_MEMBER_SLOTS):
+				bot_inventory_systems.move_to_digital_bank(selected_cell2.bot_name)
+			# case 3 - add bot from grid layout to grid layout
+			if selected_cell.is_in_group(Constants.DIGITAL_BANK_SLOTS) and selected_cell2.is_in_group(Constants.DIGITAL_BANK_SLOTS):
+				pass
+			# case 4 - add bot from list layout to list layout
+			if selected_cell.is_in_group(Constants.PARTY_MEMBER_SLOTS) and selected_cell2.is_in_group(Constants.PARTY_MEMBER_SLOTS):
+				pass
+			
+			curr_action = Action.NO_OP
+			
+			
 		Action.NO_OP:
+			on_highlight_cell(curr_cell)
+		Action.VIEW:
 			on_highlight_cell(curr_cell)
 
 func on_highlight_cell(curr_cell: BotCellView):

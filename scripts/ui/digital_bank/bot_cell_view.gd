@@ -31,3 +31,4 @@ func _ready():
 		texture_rect.visible = false
 		
 	button.pressed.connect(select)
+	print("I am a part of the following groups: ", self.get_groups())

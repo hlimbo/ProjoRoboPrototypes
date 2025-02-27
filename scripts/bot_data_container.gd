@@ -5,6 +5,8 @@ class_name BotDataContainer
 # value - AvatarData
 var bot_table: Dictionary = {}
 
+signal on_update_view(data_container: BotDataContainer)
+
 func load_bot_data():
 	var reader = BotCsvReader.new()
 	var bot_datum: Array = reader.read_csv_file("res://resources/csv/prototype_bots.txt", "\t")

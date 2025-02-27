@@ -82,6 +82,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="PartyMemberSlot" type="NinePatchRect" parent="PartyMemberSlots/VBoxContainer"]
+visible = false
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -107,6 +108,7 @@ expand_mode = 3
 stretch_mode = 5
 
 [node name="PartyMemberSlot2" type="NinePatchRect" parent="PartyMemberSlots/VBoxContainer"]
+visible = false
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -132,6 +134,7 @@ expand_mode = 3
 stretch_mode = 5
 
 [node name="PartyMemberSlot3" type="NinePatchRect" parent="PartyMemberSlots/VBoxContainer"]
+visible = false
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -157,6 +160,7 @@ expand_mode = 3
 stretch_mode = 5
 
 [node name="PartyMemberSlot4" type="NinePatchRect" parent="PartyMemberSlots/VBoxContainer"]
+visible = false
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 size_flags_horizontal = 4

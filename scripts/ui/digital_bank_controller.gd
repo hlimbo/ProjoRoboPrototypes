@@ -4,6 +4,7 @@ class_name DigitalBankController
 @onready var actions_popup: ActionPopUpView = $ActionsPopup
 @onready var action_label: Label = $ActionLabel
 @onready var grid_container: BotGridView = $GridSlots/GridContainer
+@onready var party_member_slots: PartyListView = $PartyMemberSlots
 @onready var bot_info: BotDescriptionView = $BotPreview/BotInfo
 
 var selected_cell: BotCellView = null
@@ -14,6 +15,7 @@ func _ready():
 	actions_popup.on_view.connect(on_view_popup)
 	actions_popup.on_close.connect(on_close_popup)
 	grid_container.on_select.connect(on_select)
+	party_member_slots.on_select.connect(on_select)
 	
 func on_select(curr_cell: BotCellView):
 	# if same cell, no operations required
@@ -23,7 +25,6 @@ func on_select(curr_cell: BotCellView):
 	if is_instance_valid(selected_cell):
 		selected_cell.self_modulate = Color.WHITE
 	
-	print("cell selected")
 	selected_cell = curr_cell
 	
 	if is_instance_valid(actions_popup):
@@ -32,7 +33,6 @@ func on_select(curr_cell: BotCellView):
 		actions_popup.visible = true
 		actions_popup.set_buttons_visibility(curr_cell.is_empty)
 		actions_popup.global_position = curr_cell.global_position + offset
-		#actions_popup.z_index = 10
 
 func on_move_popup():
 	print("move")

@@ -25,9 +25,11 @@ func set_buttons_visibility(is_cell_empty: bool):
 	
 	if self.is_cell_empty:
 		move_button.visible = false
+		view_button.visible = false
 		add_button.visible = true
 	else:
 		move_button.visible = true
+		view_button.visible = true
 		add_button.visible = false
 		
 func _ready():

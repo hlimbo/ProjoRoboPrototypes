@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://b4s6jvbdljfyy"]
+[gd_scene load_steps=11 format=3 uid="uid://b4s6jvbdljfyy"]
 
 [ext_resource type="PackedScene" uid="uid://cicxh4j1k0wp5" path="res://nodes/ui/digital_bank/bot_cell.tscn" id="1_6doak"]
 [ext_resource type="Script" path="res://scripts/ui/digital_bank_controller.gd" id="1_oachw"]
@@ -8,6 +8,8 @@
 [ext_resource type="PackedScene" uid="uid://lhxhlgvf5c82" path="res://nodes/ui/digital_bank/bot_preview.tscn" id="5_npvb8"]
 [ext_resource type="PackedScene" uid="uid://hmomiakc0dpu" path="res://nodes/ui/digital_bank/bot_info.tscn" id="6_ybu27"]
 [ext_resource type="PackedScene" uid="uid://mnjmgf4dxou5" path="res://nodes/ui/digital_bank/actions_popup.tscn" id="7_jyau6"]
+[ext_resource type="PackedScene" uid="uid://betrrsabn7xnw" path="res://nodes/ui/transitions/transition_button.tscn" id="9_vctsv"]
+[ext_resource type="PackedScene" uid="uid://5hcous0cjeie" path="res://nodes/ui/transitions/transition_layer.tscn" id="10_pme8e"]
 
 [node name="DigitalBank" type="Control"]
 layout_mode = 3
@@ -98,16 +100,6 @@ offset_top = 27.0
 offset_right = 413.0
 offset_bottom = 142.0
 
-[node name="Button" type="Button" parent="."]
-layout_mode = 0
-offset_left = 1156.0
-offset_top = 17.0
-offset_right = 1257.0
-offset_bottom = 55.0
-theme = ExtResource("4_nt7rt")
-theme_override_font_sizes/font_size = 24
-text = "exit"
-
 [node name="ActionsPopup" parent="." instance=ExtResource("7_jyau6")]
 visible = false
 layout_mode = 0
@@ -115,3 +107,17 @@ offset_left = 825.0
 offset_top = 12.0
 offset_right = 925.0
 offset_bottom = 120.0
+
+[node name="TransitionButton" parent="." node_paths=PackedStringArray("transition_fade") instance=ExtResource("9_vctsv")]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -150.0
+offset_bottom = 53.0
+grow_horizontal = 0
+transition_fade = NodePath("../TransitionLayer")
+
+[node name="TransitionLayer" parent="." instance=ExtResource("10_pme8e")]
+layout_mode = 1
+transition_duration = 0.5

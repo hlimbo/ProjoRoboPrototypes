@@ -10,7 +10,7 @@ func start_transition():
 	self.visible = true
 	# set to high z-index to prevent clicks from game objects behind from registering
 	self.z_index = 999
-	var tween: Tween = get_tree().create_tween()
+	var tween: Tween = create_tween()
 	tween.parallel().tween_property(self, "color:a", 1, transition_duration).from(0)
 	
 	tween.finished.connect(tween_finished)

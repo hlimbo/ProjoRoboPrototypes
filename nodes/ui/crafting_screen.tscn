@@ -311,5 +311,4 @@ grow_horizontal = 0
 transition_fade = NodePath("../TransitionLayer")
 
 [node name="TransitionLayer" parent="." instance=ExtResource("8_k2a7i")]
-visible = true
 layout_mode = 1

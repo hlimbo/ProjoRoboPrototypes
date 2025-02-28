@@ -32,13 +32,22 @@ func _ready():
 	var icons: Array[Texture2D] = []
 	for res in random_icon_resources:
 		icons.append(res as Texture2D)
-
+		
+	# load in placeholder bot preview art
+	var bot_resources: Array = utility.load_resources_from_folder("res://nodes/prototype_bots")
+	
+	var bot_res_map: Dictionary = {}
+	for bot_res in bot_resources:
+		var bot_name: String = bot_res.resource_path.get_file().to_lower().trim_suffix(".tscn")
+		bot_res_map[bot_name] = bot_res as PackedScene
+	
 	var index: int = 0
 	for bot in bots:
-		var avatar_data: AvatarData = (bot as AvatarData)
+		var avatar_data: AvatarData = bot as AvatarData
 		avatar_data.level = 1
 		avatar_data.ordinal = index
 		avatar_data.avatar_icon = icons[index]
+		avatar_data.avatar_preview = bot_res_map[avatar_data.avatar_name.to_lower()]
 		
 		digital_bot_bank.add_bot(avatar_data)
 		index += 1
@@ -96,3 +105,20 @@ func _swap_across_banks_internal(container_src: BotDataContainer, container_dst:
 	
 	container_src.on_update_view.emit(container_src)
 	container_dst.on_update_view.emit(container_dst)
+
+func move_bot_in_digital_bank(bot_name: String, target_index: int):
+	_move_bot_internal2(digital_bot_bank, bot_name, target_index)
+	
+func move_bot_in_party(bot_name: String, target_index: int):
+	_move_bot_internal2(party_bot_bank, bot_name, target_index)
+	
+func _move_bot_internal2(data_src: BotDataContainer, bot_name: String, target_index: int):
+	var bot: AvatarData = data_src.get_bot(bot_name)
+	bot.ordinal = target_index
+	data_src.on_update_view.emit(data_src)
+	
+func get_bot(bot_name: String):
+	if bot_name in digital_bot_bank.bot_table:
+		return digital_bot_bank.get_bot(bot_name)
+	
+	return party_bot_bank.get_bot(bot_name)

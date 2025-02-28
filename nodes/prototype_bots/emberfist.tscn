@@ -1,0 +1,140 @@
+[gd_scene load_steps=10 format=3 uid="uid://d388aaj1rs51j"]
+
+[ext_resource type="PackedScene" uid="uid://cwta2763wqy3y" path="res://nodes/monsters/parts/body_types/body_whiteE.tscn" id="1_q2oi7"]
+[ext_resource type="PackedScene" uid="uid://dau5ljlwfj3km" path="res://nodes/monsters/parts/eye_types/eye_psycho_dark.tscn" id="3_vcks5"]
+[ext_resource type="PackedScene" uid="uid://bglnbhk5i6221" path="res://nodes/monsters/parts/mouth_types/mouthH.tscn" id="4_eb5uv"]
+[ext_resource type="PackedScene" uid="uid://5lccw7c5j6ai" path="res://nodes/monsters/parts/nose_types/nose_yellow.tscn" id="5_ywopv"]
+[ext_resource type="PackedScene" uid="uid://csisea6pnykoe" path="res://nodes/monsters/parts/arm_types/arm_redE.tscn" id="6_1vmn3"]
+[ext_resource type="PackedScene" uid="uid://cebp4rjwoqoj8" path="res://nodes/monsters/parts/leg_types/leg_blueB.tscn" id="7_h2u1t"]
+[ext_resource type="PackedScene" uid="uid://dab73d2lfdlqc" path="res://nodes/monsters/parts/ear_types/detail_yellow_ear_round.tscn" id="8_wymg1"]
+[ext_resource type="PackedScene" uid="uid://yc0k2sbltlm" path="res://nodes/monsters/parts/antenna_types/detail_red_antenna_large.tscn" id="9_ulof3"]
+[ext_resource type="PackedScene" uid="uid://ctxwcdnoh6wkx" path="res://nodes/monsters/parts/horn_types/detail_blue_horn_small.tscn" id="10_tb1sf"]
+
+[node name="BaseBodyE" type="Node2D"]
+
+[node name="body" parent="." instance=ExtResource("1_q2oi7")]
+self_modulate = Color(1, 0.262745, 0.384314, 1)
+z_index = 2
+z_as_relative = false
+
+[node name="face" type="Node2D" parent="body"]
+
+[node name="config_1" type="Node2D" parent="body/face"]
+
+[node name="eyes" type="Node2D" parent="body/face/config_1"]
+
+[node name="eyes_l" type="Marker2D" parent="body/face/config_1/eyes"]
+position = Vector2(-30, -40)
+
+[node name="eye_psycho_dark" parent="body/face/config_1/eyes/eyes_l" instance=ExtResource("3_vcks5")]
+flip_h = true
+
+[node name="eyes_r" type="Marker2D" parent="body/face/config_1/eyes"]
+position = Vector2(30, -40)
+
+[node name="eye_psycho_dark" parent="body/face/config_1/eyes/eyes_r" instance=ExtResource("3_vcks5")]
+
+[node name="mouth" type="Node2D" parent="body/face/config_1"]
+
+[node name="Marker2D" type="Marker2D" parent="body/face/config_1/mouth"]
+position = Vector2(0, 40)
+gizmo_extents = 30.0
+
+[node name="mouthH" parent="body/face/config_1/mouth/Marker2D" instance=ExtResource("4_eb5uv")]
+
+[node name="nose" type="Node2D" parent="body/face/config_1"]
+
+[node name="Marker2D" type="Marker2D" parent="body/face/config_1/nose"]
+
+[node name="nose_yellow" parent="body/face/config_1/nose/Marker2D" instance=ExtResource("5_ywopv")]
+
+[node name="limbs" type="Node2D" parent="body"]
+
+[node name="arms" type="Node2D" parent="body/limbs"]
+z_index = 1
+z_as_relative = false
+
+[node name="config_1" type="Node2D" parent="body/limbs/arms"]
+
+[node name="arm_l" type="Marker2D" parent="body/limbs/arms/config_1"]
+position = Vector2(-59, 0)
+rotation = 0.261799
+gizmo_extents = 25.0
+
+[node name="arm_redE" parent="body/limbs/arms/config_1/arm_l" instance=ExtResource("6_1vmn3")]
+z_as_relative = false
+offset = Vector2(-12, 65)
+flip_h = true
+
+[node name="arm_r" type="Marker2D" parent="body/limbs/arms/config_1"]
+position = Vector2(59, 0)
+rotation = -0.261799
+
+[node name="arm_redE" parent="body/limbs/arms/config_1/arm_r" instance=ExtResource("6_1vmn3")]
+z_as_relative = false
+
+[node name="legs" type="Node2D" parent="body/limbs"]
+
+[node name="config_1" type="Node2D" parent="body/limbs/legs"]
+
+[node name="leg_l" type="Marker2D" parent="body/limbs/legs/config_1"]
+position = Vector2(-34, 115)
+gizmo_extents = 30.0
+
+[node name="leg_blueB" parent="body/limbs/legs/config_1/leg_l" instance=ExtResource("7_h2u1t")]
+z_as_relative = false
+offset = Vector2(-12, 60)
+flip_h = true
+
+[node name="leg_r" type="Marker2D" parent="body/limbs/legs/config_1"]
+position = Vector2(34, 115)
+gizmo_extents = 30.0
+
+[node name="leg_blueB" parent="body/limbs/legs/config_1/leg_r" instance=ExtResource("7_h2u1t")]
+z_as_relative = false
+
+[node name="accessories" type="Node2D" parent="body"]
+
+[node name="config_1" type="Node2D" parent="body/accessories"]
+
+[node name="ears" type="Node2D" parent="body/accessories/config_1"]
+
+[node name="ear_l" type="Marker2D" parent="body/accessories/config_1/ears"]
+position = Vector2(-60, -48)
+rotation = -0.523599
+
+[node name="detail_yellow_ear_round" parent="body/accessories/config_1/ears/ear_l" instance=ExtResource("8_wymg1")]
+z_as_relative = false
+offset = Vector2(-4, -14)
+flip_h = true
+
+[node name="ear_r" type="Marker2D" parent="body/accessories/config_1/ears"]
+position = Vector2(60, -48)
+rotation = 0.523599
+
+[node name="detail_yellow_ear_round" parent="body/accessories/config_1/ears/ear_r" instance=ExtResource("8_wymg1")]
+z_as_relative = false
+
+[node name="antennaes" type="Node2D" parent="body/accessories/config_1"]
+
+[node name="antenna_l" type="Marker2D" parent="body/accessories/config_1/antennaes"]
+position = Vector2(-40, -88)
+rotation = -0.261799
+
+[node name="detail_red_antenna_large" parent="body/accessories/config_1/antennaes/antenna_l" instance=ExtResource("9_ulof3")]
+offset = Vector2(-11, -26)
+flip_h = true
+
+[node name="antenna_r" type="Marker2D" parent="body/accessories/config_1/antennaes"]
+position = Vector2(40, -88)
+rotation = 0.261799
+
+[node name="detail_red_antenna_large" parent="body/accessories/config_1/antennaes/antenna_r" instance=ExtResource("9_ulof3")]
+
+[node name="horns" type="Node2D" parent="body/accessories/config_1"]
+
+[node name="horn_r" type="Marker2D" parent="body/accessories/config_1/horns"]
+position = Vector2(0, -67)
+rotation = -0.785398
+
+[node name="detail_blue_horn_small" parent="body/accessories/config_1/horns/horn_r" instance=ExtResource("10_tb1sf")]

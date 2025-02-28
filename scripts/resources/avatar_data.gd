@@ -10,3 +10,5 @@ class_name AvatarData
 # the order in which the data gets displayed in a layout view
 @export var ordinal: int
 @export var avatar_icon: Texture2D
+# this is used to preview what the bot will look like in the digital bank
+@export var avatar_preview: PackedScene

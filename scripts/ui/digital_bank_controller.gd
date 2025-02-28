@@ -17,6 +17,8 @@ enum Action {
 @onready var grid_container: BotGridView = $GridSlots/GridContainer
 @onready var party_member_slots: PartyListView = $PartyMemberSlots/VBoxContainer/PartyListView
 @onready var bot_info: BotDescriptionView = $BotPreview/BotInfo
+@onready var bot_preview: BotPreviewView = $BotPreview/BotPreview
+
 
 var selected_cell: BotCellView = null
 var selected_cell2: BotCellView = null
@@ -40,18 +42,33 @@ func on_select(curr_cell: BotCellView):
 	match curr_action:
 		Action.MOVE:
 			selected_cell2 = curr_cell
-			# case 1 - swap between 2 bots on the same grid
-			if selected_cell.is_in_group(Constants.DIGITAL_BANK_SLOTS) and selected_cell2.is_in_group(Constants.DIGITAL_BANK_SLOTS):
-				bot_inventory_systems.swap_bots_in_digital_bank(selected_cell.bot_name, selected_cell2.bot_name)
-			# case 2 - swap between 2 bots in party layout
-			elif selected_cell.is_in_group(Constants.PARTY_MEMBER_SLOTS) and selected_cell2.is_in_group(Constants.PARTY_MEMBER_SLOTS):
-				bot_inventory_systems.swap_bots_in_party(selected_cell.bot_name, selected_cell2.bot_name)
-			# case 3 - swap bots between grid and party layout
-			elif selected_cell.is_in_group(Constants.DIGITAL_BANK_SLOTS) and selected_cell2.is_in_group(Constants.PARTY_MEMBER_SLOTS):
-				bot_inventory_systems.swap_bots_from_digital_bank_to_party(selected_cell.bot_name, selected_cell2.bot_name)
-			# case 4 - swap bots betweens party and grid layout
-			elif selected_cell.is_in_group(Constants.PARTY_MEMBER_SLOTS) and selected_cell2.is_in_group(Constants.DIGITAL_BANK_SLOTS):
-				bot_inventory_systems.swap_bots_from_party_to_digital_bank(selected_cell.bot_name, selected_cell2.bot_name)
+			
+			if selected_cell2.is_empty:
+				# case 1 - swap between 2 bots on the same grid
+				if selected_cell.is_in_group(Constants.DIGITAL_BANK_SLOTS) and selected_cell2.is_in_group(Constants.DIGITAL_BANK_SLOTS):
+					bot_inventory_systems.move_bot_in_digital_bank(selected_cell.bot_name, selected_cell2.ordinal)
+				# case 2 - swap between 2 bots in party layout
+				elif selected_cell.is_in_group(Constants.PARTY_MEMBER_SLOTS) and selected_cell2.is_in_group(Constants.PARTY_MEMBER_SLOTS):
+					bot_inventory_systems.move_bot_in_party(selected_cell.bot_name, selected_cell2.ordinal)
+				# case 3 - swap bots between grid and party layout
+				elif selected_cell.is_in_group(Constants.DIGITAL_BANK_SLOTS) and selected_cell2.is_in_group(Constants.PARTY_MEMBER_SLOTS):
+					bot_inventory_systems.move_to_party(selected_cell.bot_name, selected_cell2.ordinal)
+				# case 4 - swap bots betweens party and grid layout
+				elif selected_cell.is_in_group(Constants.PARTY_MEMBER_SLOTS) and selected_cell2.is_in_group(Constants.DIGITAL_BANK_SLOTS):
+					bot_inventory_systems.move_to_digital_bank(selected_cell.bot_name, selected_cell2.ordinal)
+			else:
+				# case 1 - swap between 2 bots on the same grid
+				if selected_cell.is_in_group(Constants.DIGITAL_BANK_SLOTS) and selected_cell2.is_in_group(Constants.DIGITAL_BANK_SLOTS):
+					bot_inventory_systems.swap_bots_in_digital_bank(selected_cell.bot_name, selected_cell2.bot_name)
+				# case 2 - swap between 2 bots in party layout
+				elif selected_cell.is_in_group(Constants.PARTY_MEMBER_SLOTS) and selected_cell2.is_in_group(Constants.PARTY_MEMBER_SLOTS):
+					bot_inventory_systems.swap_bots_in_party(selected_cell.bot_name, selected_cell2.bot_name)
+				# case 3 - swap bots between grid and party layout
+				elif selected_cell.is_in_group(Constants.DIGITAL_BANK_SLOTS) and selected_cell2.is_in_group(Constants.PARTY_MEMBER_SLOTS):
+					bot_inventory_systems.swap_bots_from_digital_bank_to_party(selected_cell.bot_name, selected_cell2.bot_name)
+				# case 4 - swap bots betweens party and grid layout
+				elif selected_cell.is_in_group(Constants.PARTY_MEMBER_SLOTS) and selected_cell2.is_in_group(Constants.DIGITAL_BANK_SLOTS):
+					bot_inventory_systems.swap_bots_from_party_to_digital_bank(selected_cell.bot_name, selected_cell2.bot_name)
 				
 			curr_action = Action.NO_OP
 			selected_cell.self_modulate = Color.WHITE
@@ -86,8 +103,6 @@ func on_select(curr_cell: BotCellView):
 			
 		Action.NO_OP:
 			on_highlight_cell(curr_cell)
-		Action.VIEW:
-			on_highlight_cell(curr_cell)
 
 func on_highlight_cell(curr_cell: BotCellView):
 	# unhighlight previous selected cell
@@ -119,10 +134,11 @@ func on_view_popup():
 	action_label.visible = true
 	action_label.text = "Action: view mode"
 	actions_popup.visible = false
-	curr_action = Action.VIEW
 	
 	if is_instance_valid(selected_cell):
 		bot_info.initialize(selected_cell.bot_name, selected_cell.level, selected_cell.bot_type, selected_cell.energy_type)
+		var bot: AvatarData = bot_inventory_systems.get_bot(selected_cell.bot_name)
+		bot_preview.add_bot_to_preview(bot.avatar_preview)
 
 func on_close_popup():
 	if is_instance_valid(selected_cell):

@@ -48,10 +48,10 @@ func on_select(curr_cell: BotCellView):
 				bot_inventory_systems.swap_bots_in_party(selected_cell.bot_name, selected_cell2.bot_name)
 			# case 3 - swap bots between grid and party layout
 			elif selected_cell.is_in_group(Constants.DIGITAL_BANK_SLOTS) and selected_cell2.is_in_group(Constants.PARTY_MEMBER_SLOTS):
-				pass
+				bot_inventory_systems.swap_bots_from_digital_bank_to_party(selected_cell.bot_name, selected_cell2.bot_name)
 			# case 4 - swap bots betweens party and grid layout
 			elif selected_cell.is_in_group(Constants.PARTY_MEMBER_SLOTS) and selected_cell2.is_in_group(Constants.DIGITAL_BANK_SLOTS):
-				pass
+				bot_inventory_systems.swap_bots_from_party_to_digital_bank(selected_cell.bot_name, selected_cell2.bot_name)
 				
 			curr_action = Action.NO_OP
 			selected_cell.self_modulate = Color.WHITE

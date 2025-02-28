@@ -73,3 +73,26 @@ func move_to_digital_bank(bot_name: String, target_index: int):
 # target_index is the new position the bot will be placed in the layout
 func move_to_party(bot_name: String, target_index: int):
 	_move_bot_internal(digital_bot_bank, party_bot_bank, bot_name, target_index)
+
+func swap_bots_from_digital_bank_to_party(bot_name_from_bank: String, bot_name_from_party: String):
+	_swap_across_banks_internal(digital_bot_bank, party_bot_bank, bot_name_from_bank, bot_name_from_party)
+
+func swap_bots_from_party_to_digital_bank(bot_name_from_party: String, bot_name_from_bank: String):
+	_swap_across_banks_internal(party_bot_bank, digital_bot_bank, bot_name_from_party, bot_name_from_bank)
+
+func _swap_across_banks_internal(container_src: BotDataContainer, container_dst: BotDataContainer, src_bot_name: String, dst_bot_name: String):
+	var bot1: AvatarData = container_src.get_bot(src_bot_name)
+	var bot2: AvatarData = container_dst.get_bot(dst_bot_name)
+	
+	container_src.remove_bot(src_bot_name)
+	container_dst.remove_bot(dst_bot_name)
+	
+	var temp_index: int = bot1.ordinal
+	bot1.ordinal = bot2.ordinal
+	bot2.ordinal = temp_index
+	
+	container_src.add_bot(bot2)
+	container_dst.add_bot(bot1)
+	
+	container_src.on_update_view.emit(container_src)
+	container_dst.on_update_view.emit(container_dst)

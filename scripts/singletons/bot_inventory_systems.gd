@@ -5,6 +5,8 @@ enum ContainerType {
 	PARTY_BANK,
 }
 
+@export var utility: Utility = Utility
+
 var digital_bot_bank: BotDataContainer
 var party_bot_bank: BotDataContainer
 
@@ -19,18 +21,27 @@ func _ready():
 	digital_bot_bank = BotDataContainer.new()
 	party_bot_bank = BotDataContainer.new()
 	
+	# TEMP: load in placeholder bot icons and pick random ones for each bot
+	var resources: Array = utility.load_resources_from_folder("res://assets/kenney_emotes-pack/PNG/Vector/Style 2")
+	
 	# load in data into digital_bot_bank
 	var reader = BotCsvReader.new()
 	var bots: Array = reader.read_csv_file("res://resources/csv/prototype_bots.txt", "\t")
-	var ordinal_index: int = 0
+	
+	var random_icon_resources: Array = utility.pick_unique_random_elements(resources, len(bots))
+	var icons: Array[Texture2D] = []
+	for res in random_icon_resources:
+		icons.append(res as Texture2D)
 
+	var index: int = 0
 	for bot in bots:
 		var avatar_data: AvatarData = (bot as AvatarData)
 		avatar_data.level = 1
-		avatar_data.ordinal = ordinal_index
+		avatar_data.ordinal = index
+		avatar_data.avatar_icon = icons[index]
 		
 		digital_bot_bank.add_bot(avatar_data)
-		ordinal_index += 1
+		index += 1
 		
 	# forward the signal upwards so external scripts can connect to this class's signals
 	digital_bot_bank.on_update_view.connect(func(data_container: BotDataContainer): on_digital_bank_view_update.emit(data_container))

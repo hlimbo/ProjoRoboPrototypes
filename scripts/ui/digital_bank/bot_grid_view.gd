@@ -35,25 +35,22 @@ func init_grid_view():
 		if bot_index >= len(bots):
 			# add empty cell
 			cell_view.is_empty = true
-			cell_view.on_select.connect(on_select_cell)
-			cell_view.add_to_group(Constants.DIGITAL_BANK_SLOTS)
 		else:
 			var bot: AvatarData = (bots[bot_index] as AvatarData)
 			if ordinal_index == bot.ordinal:
 				# add bot in position specified by its ordinal value
-				cell_view.initialize(bot.avatar_name, bot.level, bot.bot_type, bot.energy_type)
-				cell_view.on_select.connect(on_select_cell)
-				cell_view.add_to_group(Constants.DIGITAL_BANK_SLOTS)
+				cell_view.initialize(bot.avatar_name, bot.level, bot.bot_type, bot.energy_type, bot.avatar_icon)
 				bot_index += 1
 			else:
 				# add empty cell
 				cell_view.is_empty = true
-				cell_view.on_select.connect(on_select_cell)
-				cell_view.add_to_group(Constants.DIGITAL_BANK_SLOTS)
 		
-		ordinal_index += 1
+		cell_view.on_select.connect(on_select_cell)
+		cell_view.add_to_group(Constants.DIGITAL_BANK_SLOTS)
+		cell_view.ordinal = ordinal_index
 		add_child(cell_view)
 		child_count += 1
+		ordinal_index += 1
 
 
 func update_grid_view(bot_data_container: BotDataContainer):
@@ -87,7 +84,7 @@ func update_grid_view(bot_data_container: BotDataContainer):
 			var bot: AvatarData = (bots[bot_index] as AvatarData)
 			if ordinal_index == bot.ordinal:
 				# add bot in position specified by its ordinal value
-				cell_view.initialize(bot.avatar_name, bot.level, bot.bot_type, bot.energy_type)
+				cell_view.initialize(bot.avatar_name, bot.level, bot.bot_type, bot.energy_type, bot.avatar_icon)
 				bot_index += 1
 			else:
 				# add empty cell
@@ -100,5 +97,3 @@ func update_grid_view(bot_data_container: BotDataContainer):
 		
 		child_count += 1
 		ordinal_index += 1
-		
-	print("added new stuff")

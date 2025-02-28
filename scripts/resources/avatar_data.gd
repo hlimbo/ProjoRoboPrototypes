@@ -9,3 +9,4 @@ class_name AvatarData
 @export var energy_type: String
 # the order in which the data gets displayed in a layout view
 @export var ordinal: int
+@export var avatar_icon: Texture2D

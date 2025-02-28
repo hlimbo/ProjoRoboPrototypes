@@ -15,6 +15,7 @@ func _ready():
 		cell_view.is_empty = true
 		cell_view.on_select.connect(on_select_cell)
 		cell_view.add_to_group(Constants.PARTY_MEMBER_SLOTS)
+		cell_view.ordinal = i
 		add_child(cell_view)
 		
 		cell_view.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
@@ -49,7 +50,7 @@ func on_party_view_update(data_container: BotDataContainer):
 		if bot_index < len(bots):
 			var avatar_data = bots[bot_index] as AvatarData
 			if ordinal_index == avatar_data.ordinal:
-				cell_view.initialize(avatar_data.avatar_name, avatar_data.level, avatar_data.bot_type, avatar_data.energy_type)
+				cell_view.initialize(avatar_data.avatar_name, avatar_data.level, avatar_data.bot_type, avatar_data.energy_type, avatar_data.avatar_icon)
 				bot_index += 1
 			else:
 				cell_view.is_empty = true

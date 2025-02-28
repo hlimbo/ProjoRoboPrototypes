@@ -98,3 +98,22 @@ func is_running_on_own_scene(node: Node) -> bool:
 	print("current scene name: ", node.get_tree().current_scene.name)
 	print("node name: ", node.name)
 	return node.get_tree().current_scene == node
+
+func pick_unique_random_elements(items: Array, pick_count: int) -> Array:
+	assert(len(items) >= pick_count)
+	
+	var copy: Array = items.duplicate(true)
+	var upper_limit: int = len(copy)
+	var output: Array = []
+	
+	for i in range(pick_count):
+		var random_index: int = randi() % upper_limit
+		output.append(copy[random_index])
+		
+		# swap
+		var temp = copy[random_index]
+		copy[random_index] = copy[upper_limit - 1]
+		copy[upper_limit - 1] = temp
+		upper_limit -= 1
+	
+	return output

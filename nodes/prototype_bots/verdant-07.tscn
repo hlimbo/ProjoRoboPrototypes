@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://bguhgs5ur0ves" path="res://nodes/monsters/parts/horn_types/detail_yellow_horn_small.tscn" id="9_h4lqg"]
 
 [node name="BaseBodyE" type="Node2D"]
+position = Vector2(0, -220)
 
 [node name="body" parent="." instance=ExtResource("1_w5skq")]
 self_modulate = Color(0.309804, 0.247059, 0.184314, 1)

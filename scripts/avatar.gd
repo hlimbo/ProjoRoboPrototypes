@@ -91,6 +91,9 @@ func on_area_entered(_body: Node2D) -> void:
 	battle_state = Battle_State.MOVE_SELECTION
 	on_start_turn.emit()
 
+func construct(avatar_data: AvatarData):
+	avatar_type = avatar_data.avatar_type
+
 #region Timer Timeout functions
 
 func on_skill_timeout():

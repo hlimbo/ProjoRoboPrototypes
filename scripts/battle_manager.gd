@@ -10,13 +10,6 @@ enum Encounter_Type {
 const avatar_res_path: String = "res://nodes/battle_timeline/avatar.tscn"
 const avatar_res: Resource = preload(avatar_res_path)
 
-const party_member_textures: Array[Texture2D] = [
-	preload("res://assets/kenney_emotes-pack/PNG/Vector/Style 2/emote_stars.png"),
-	preload("res://assets/kenney_emotes-pack/PNG/Vector/Style 2/emote_drop.png"),
-	preload("res://assets/kenney_emotes-pack/PNG/Vector/Style 2/emote_sleep.png"),
-	preload("res://assets/kenney_emotes-pack/PNG/Vector/Style 2/emote_music.png"),
-]
-
 var enemy_spawn_count: int
 var party_member_spawn_count: int
 
@@ -65,11 +58,12 @@ const enemy_names: PackedStringArray = [
 
 var party_member_stats: Array[BaseStats]= []
 var enemy_stats: Array[BaseStats] = []
-var avatar_datum: Array[AvatarData] = []
 var max_battle_speed: int = 0
 
 #region Dependencies
-@export var utility_instance: Utility
+@export var utility: Utility = Utility
+@export var bot_inventory_systems: BotInventorySystems = BotInventorySystems
+
 @onready var battle_spawn_manager: BattleSpawnManager = $"../BattleSpawnManager"
 @onready var battle_scene: Node2D = $"../BattleScene"
 
@@ -119,29 +113,19 @@ func add_to_line(avatar: Avatar, avatar_line: Path2D, stats: BaseStats, avatar_t
 	avatar.initial_stats.set_stats(stats)
 	avatar.curr_stats.set_stats(stats)
 	avatar_line.add_child(avatar)
-	# set owner of this node to be the root node of the scene it is spawned in
-	# if not set, godot scene tree won't recognize its existence
-	avatar.owner = avatar_line
-
-func init_dependencies():
-	utility_instance = Utility
-
-func load_avatar_data():
-	var resources: Array[Resource] = utility_instance.load_resources_from_folder("res://resources/avatar")
-	for res in resources:
-		avatar_datum.append(res as AvatarData)
 
 func _ready() -> void:
-	init_dependencies()
-	load_avatar_data()
 	
 	var party_members: Array[Actor] = battle_spawn_manager.get_party_members()
+	var avatar_datum: Array[AvatarData] = bot_inventory_systems.get_party_members()
+	
 	var enemies: Array[Actor] = battle_spawn_manager.get_enemies()
 	enemy_spawn_count = len(enemies)
 	party_member_spawn_count = len(party_members)
-	
+	assert(len(avatar_datum) == party_member_spawn_count)
+		
 	# initialize battle participants' base stats
-	for i in range(0, min(len(avatar_datum),party_member_spawn_count)):
+	for i in range(0, party_member_spawn_count):
 		var avatar_data: AvatarData = avatar_datum[i]
 		var stats = generate_random_stats()
 		
@@ -162,11 +146,11 @@ func _ready() -> void:
 	var party_line: Path2D = one_d_graph.get_node("PartyPath2D")
 	var enemy_line: Path2D = one_d_graph.get_node("EnemyPath2D")
 	
-	for i in range(len(party_members)):
+	for i in range(party_member_spawn_count):
 		var actor: Actor = party_members[i]
 		var avatar: Avatar = actor.avatar
 		var stats: BaseStats = party_member_stats[i]
-		var texture: Texture2D = party_member_textures[i]
+		var texture: Texture2D = avatar_datum[i].avatar_icon
 		
 		## Avatar Setup
 		add_to_line(avatar, party_line, stats, texture, max_battle_speed)

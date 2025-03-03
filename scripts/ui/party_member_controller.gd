@@ -1,20 +1,13 @@
 extends Control
 class_name PartyMemberController
 
-@export var utility_instance: Utility
+@export var bot_inventory_systems: BotInventorySystems = BotInventorySystems
+
 var party_member_exp_layout: Resource = preload("res://nodes/ui/party_member_exp_layout.tscn")
 var party_member_exp_views: Array[PartyMemberExpView] = []
 
-func init_dependencies():
-	utility_instance = Utility
-
 func _ready():
-	init_dependencies()
-	
-	var resources: Array[Resource] = utility_instance.load_resources_from_folder("res://resources/avatar")
-	var avatar_datum: Array[AvatarData]
-	for res in resources:
-		avatar_datum.append(res as AvatarData)
+	var avatar_datum: Array[AvatarData] = bot_inventory_systems.get_party_members()
 	
 	for i in range(len(avatar_datum)):
 		var party_member_exp_view: PartyMemberExpView = party_member_exp_layout.instantiate()

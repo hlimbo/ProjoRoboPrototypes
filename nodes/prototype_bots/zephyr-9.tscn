@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://dab73d2lfdlqc" path="res://nodes/monsters/parts/ear_types/detail_yellow_ear_round.tscn" id="8_myms8"]
 
 [node name="BaseBodyB" type="Node2D"]
+position = Vector2(0, -213)
 
 [node name="body" parent="." instance=ExtResource("1_km7go")]
 self_modulate = Color(0.180392, 0.8, 0.443137, 1)

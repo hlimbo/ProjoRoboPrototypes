@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://cqcs44t2n2mte" path="res://nodes/monsters/parts/antenna_types/detail_yellow_antenna_small.tscn" id="8_ys4jv"]
 
 [node name="BaseBodyC" type="Node2D"]
+position = Vector2(0, -181)
 
 [node name="body" parent="." instance=ExtResource("1_w0pen")]
 self_modulate = Color(1, 0.713726, 0, 1)

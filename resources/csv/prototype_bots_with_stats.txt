@@ -1,0 +1,11 @@
+Name	Type	Attribute	HP	Attack	Defense	Speed
+Pyrotron	Robot	Fire	81	76	84	96
+Verdant-07	Android	Wood	82	79	89	41
+AquaMech-X	Automaton	Water	103	113	97	91
+TerraUnit MKII	Robot	Earth	144	95	90	74
+Voltstrider	Android	Electric	110	101	86	81
+Zephyr-9	Automaton	Wind	126	57	62	107
+Aurum-Prime	Robot	Gold	148	85	58	44
+SpectraVex	Android	Supernatural	118	117	93	84
+EmberFist	Automaton	Fire	90	85	63	86
+StormChaser-5	Robot	Wind	137	94	64	108

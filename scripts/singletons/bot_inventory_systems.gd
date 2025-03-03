@@ -17,7 +17,7 @@ var party_bot_bank: BotDataContainer
 signal on_digital_bank_view_update(data_container: BotDataContainer)
 signal on_party_view_update(data_container: BotDataContainer)
 
-func _ready():
+func _init():
 	digital_bot_bank = BotDataContainer.new()
 	party_bot_bank = BotDataContainer.new()
 	
@@ -51,7 +51,20 @@ func _ready():
 		
 		digital_bot_bank.add_bot(avatar_data)
 		index += 1
+	
+	# TEMP - add in bots to party
+	for i in range(2):
+		var avatar_data: AvatarData = bots[i] as AvatarData
+		avatar_data.level = 1
+		avatar_data.max_experience_per_level = 200
+		avatar_data.current_experience = 0
+		avatar_data.ordinal = i
+		avatar_data.avatar_icon = icons[i]
+		avatar_data.avatar_preview = bot_res_map[avatar_data.avatar_name.to_lower()]
+		avatar_data.avatar_type = Constants.Avatar_Type.PARTY_MEMBER
 		
+		party_bot_bank.add_bot(avatar_data)
+	
 	# forward the signal upwards so external scripts can connect to this class's signals
 	digital_bot_bank.on_update_view.connect(func(data_container: BotDataContainer): on_digital_bank_view_update.emit(data_container))
 	party_bot_bank.on_update_view.connect(func(data_container: BotDataContainer): on_party_view_update.emit(data_container))
@@ -122,3 +135,10 @@ func get_bot(bot_name: String):
 		return digital_bot_bank.get_bot(bot_name)
 	
 	return party_bot_bank.get_bot(bot_name)
+	
+func get_party_members() -> Array[AvatarData]:
+	var arr: Array = party_bot_bank.bot_table.values()
+	var output: Array[AvatarData] = []
+	for item in arr:
+		output.append(item as AvatarData)
+	return output

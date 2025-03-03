@@ -1,14 +1,12 @@
 extends Node
 class_name BattleSpawnManager
 
-const Avatar_Type = Constants.Avatar_Type
+@export var bot_inventory_systems: BotInventorySystems = BotInventorySystems
 
 const avatar_res_path: String = "res://nodes/battle_timeline/avatar.tscn"
 const avatar_res: Resource = preload(avatar_res_path)
+const actor_res: Resource = preload("res://nodes/actors/actor.tscn")
 
-const actor_resource: Resource = preload("res://nodes/actors/actor.tscn")
-
-@export var party_member_spawn_count: int
 @export var enemy_spawn_count: int
 var avatar_datum: Array[AvatarData] = []
 
@@ -18,24 +16,23 @@ var party_members: Array[Actor] = []
 var enemies: Array[Actor] = []
 
 func _enter_tree():
-	party_members = create_actors(actor_resource, Constants.Actor_Type.PARTY_MEMBER, Avatar_Type.PARTY_MEMBER, party_member_spawn_count)
-	enemies = create_actors(actor_resource, Constants.Actor_Type.ENEMY, Avatar_Type.ENEMY, enemy_spawn_count)
-
-# may need to change function signature later if spawning in different kinds of actor nodes
-# as these can differ base on their art style... (their overall structure and function stays same)
-# but their art may be different...
-func create_actors(actor_res: Resource, actor_type: Constants.Actor_Type, avatar_type: Avatar_Type, count: int) -> Array[Actor]:
-	var actors: Array[Actor] = []
-	for i in range(count):
-		# we can maybe use this notification for _notification func to set all the values of the actor?
-		#  NOTIFICATION_SCENE_INSTANTIATED = 20
+	
+	# create party members
+	var party_member_avatar_datum: Array[AvatarData] = bot_inventory_systems.get_party_members()
+	for i in range(len(party_member_avatar_datum)):
 		var actor: Actor = actor_res.instantiate()
-		actor.actor_type = actor_type
+		actor.construct(party_member_avatar_datum[i])
 		actor.avatar = avatar_res.instantiate()
-		actor.avatar.avatar_type = avatar_type
-		actors.append(actor)
-		
-	return actors
+		actor.avatar.construct(party_member_avatar_datum[i])
+		party_members.append(actor)
+
+	# create enemies
+	for i in range(enemy_spawn_count):
+		var actor: Actor = actor_res.instantiate()
+		actor.actor_type = Constants.Actor_Type.ENEMY
+		actor.avatar = avatar_res.instantiate()
+		actor.avatar.avatar_type = Constants.Avatar_Type.ENEMY
+		enemies.append(actor)
 
 # use case for adding actors during runtime is if their are packs of enemies incoming ...
 func add_actor(actor_type: Constants.Actor_Type, avatar_type: Constants.Avatar_Type, actor_res: Resource):
@@ -44,9 +41,9 @@ func add_actor(actor_type: Constants.Actor_Type, avatar_type: Constants.Avatar_T
 	actor.actor_type = actor_type
 	actor.avatar.avatar_type = avatar_type
 	
-	if avatar_type == Avatar_Type.PARTY_MEMBER:
+	if avatar_type == Constants.Avatar_Type.PARTY_MEMBER:
 		party_members.append(actor)
-	elif avatar_type == Avatar_Type.ENEMY:
+	elif avatar_type == Constants.Avatar_Type.ENEMY:
 		enemies.append(actor)
 	
 func remove_actor_by_index(actor_type: Constants.Actor_Type, index: int) -> bool:

@@ -12,3 +12,5 @@ class_name AvatarData
 @export var avatar_icon: Texture2D
 # this is used to preview what the bot will look like in the digital bank
 @export var avatar_preview: PackedScene
+# used to detemine if avatar is an enemy or party member
+@export var avatar_type: Constants.Avatar_Type

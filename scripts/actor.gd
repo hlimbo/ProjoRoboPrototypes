@@ -5,6 +5,9 @@ class_name Actor
 const Ui_Battle_State = Constants.Battle_State
 const Active_Battle_State = Constants.Active_Battle_State
 
+### Dependencies
+@export var bot_inventory_systems: BotInventorySystems = BotInventorySystems
+
 @export var actor_type: Constants.Actor_Type
 
 # battle_manager class self-injects itself into this class as it creates Actor instances
@@ -145,7 +148,6 @@ func _ready():
 	connect_battle_signals()
 	BattleSignals.on_end_turn.connect(disable_quick_time)
 	add_child(active_battle_state_machine)
-
 
 func connect_defend_reaction_button():
 	if reaction_based_button:
@@ -585,3 +587,15 @@ func disable():
 	set_physics_process(false)
 	visible = false
 	active_battle_state_machine.disable()
+
+func construct(avatar_data: AvatarData):
+	# replace default graphics with graphics from avatar_data
+	var preview_resource: PackedScene = avatar_data.avatar_preview
+	var body: Node2D = $ArtRoot/body
+	body.queue_free()
+	
+	# wait 1 frame to delete body from ArtRoot as it takes the end of frame for queue_free() to delete a node
+	await Engine.get_main_loop().process_frame
+
+	var new_body: Node2D = preview_resource.instantiate()
+	$ArtRoot.add_child(new_body)

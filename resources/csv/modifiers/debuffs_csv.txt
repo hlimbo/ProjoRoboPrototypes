@@ -1,0 +1,3 @@
+name	description	duration_type	duration
+Slow	slows down the bot's speed on the timeline	seconds	3
+Tunnel-visioned	can only attack bot that aggro-ed it	turn	2 

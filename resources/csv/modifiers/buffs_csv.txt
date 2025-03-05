@@ -1,0 +1,2 @@
+name	description	duration_type	duration
+Thorned Armor	Deals damage back to opposing bot that attacks with a physical move	seconds	3

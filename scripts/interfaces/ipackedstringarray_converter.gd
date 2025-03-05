@@ -15,6 +15,8 @@ func read_csv_file(file_path: String, delimiter: String) -> Array:
 	while csv_file.get_position() < csv_file.get_length():
 		var line: PackedStringArray = csv_file.get_csv_line(delimiter)
 		
+		# TODO: pass in property names into another function  called on_validate()
+		# to ensure the row contains the same property values as the object
 		# skip first row assuming it is a title row
 		if is_first_row:
 			is_first_row = false

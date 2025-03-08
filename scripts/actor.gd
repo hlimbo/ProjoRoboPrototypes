@@ -25,10 +25,11 @@ var original_target: Node2D
 @export var motion_state = Active_Battle_State.NEUTRAL
 # TODO - move curr_stats and initial_stats from avatar to here
 @export var avatar: Avatar
+@export var creature_type: Constants.Creature_Type
+@export var energy_type: Constants.Energy_Type
 
 var active_battle_state_machine: Fsm = Fsm.new()
 
-@export_group("Debug Menu")
 @export var enable_debug_menu: bool
 
 var original_pos: Vector2

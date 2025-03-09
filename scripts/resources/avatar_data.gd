@@ -14,3 +14,7 @@ class_name AvatarData
 @export var avatar_preview: PackedScene
 # used to detemine if avatar is an enemy or party member
 @export var avatar_type: Constants.Avatar_Type
+# Stats at the start of battle. Readonly when Battle begins and can only be modified outside battle.
+@export var initial_stats: BaseStats = BaseStats.new()
+# Stats that can be modified during battle and is constructed as a copy of initial_stats at start of battle.
+@export var current_stats: BaseStats = BaseStats.new()

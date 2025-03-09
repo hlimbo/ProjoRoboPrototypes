@@ -74,6 +74,8 @@ var on_skill_damage_calculation: Callable
 
 @export var is_quick_time_defend: bool = false
 
+@onready var skill_system_component: SkillSystemComponent = $SkillSystemComponent
+
 #region Commands
 var attack_cmd: AttackCommand
 var defend_cmd: DefendCommand
@@ -149,6 +151,8 @@ func _ready():
 	connect_battle_signals()
 	BattleSignals.on_end_turn.connect(disable_quick_time)
 	add_child(active_battle_state_machine)
+	
+	skill_system_component.load_skills()
 
 func connect_defend_reaction_button():
 	if reaction_based_button:
@@ -280,7 +284,6 @@ func start_motion(target_actor: Actor):
 	if motion_state == Active_Battle_State.MOVING:
 		return
 		
-	print("start motion ", avatar.curr_stats.name)
 	# turn on interact area to detect when an attack animation can be simulated
 	interact_area.monitoring = true
 	motion_state = Active_Battle_State.MOVING
@@ -312,14 +315,7 @@ func on_other_entered(other: Area2D):
 	# if not target OR the other area2D isn't an actor's collision body, don't trigger the attack state
 	if !target or target.get_node("CollisionGeometry/ActorArea") != other:
 		return
-		
-	## stop moving towards actor to attack if attack is cancelled by another attack source
-	#if is_attacked:
-		#is_attacked = false
-		#print("cancelling attack for %s" % avatar.curr_stats.name)
-		#return
 	
-	print("on other entered ", avatar.curr_stats.name)
 	if motion_state == Active_Battle_State.MOVING:
 		print("entered attacking area: %s" % other.name)
 		motion_state = Active_Battle_State.ATTACK
@@ -355,7 +351,7 @@ func on_attack_end():
 	# attack should not end as it got cancelled...
 	if motion_state == Active_Battle_State.KNOCKBACK:
 		return
-	print("%s ending attack" % avatar.curr_stats.name)
+	print("%s ending attack" % avatar.avatar_data.avatar_name)
 	motion_state = Active_Battle_State.MOVING
 	target = null
 	toggle_hitbox(false)
@@ -373,7 +369,7 @@ func on_attack_connect(area: Area2D):
 		var actor_receiving_dmg: Actor = target
 		
 		if actor_receiving_dmg == null:
-			print_rich("[color=red]Unable to find actor to damage for %s[/color]" % avatar.curr_stats.name)
+			print_rich("[color=red]Unable to find actor to damage for %s[/color]" % avatar.avatar_data.avatar_name)
 			BattleSignals.on_end_turn.emit(self)
 			return
 		
@@ -382,19 +378,17 @@ func on_attack_connect(area: Area2D):
 			actor_receiving_dmg.on_disable_quick_time_defend.emit()
 			BattleSignals.on_quick_time_defend_late.emit()
 		
-		print("%s on attack connect %s" % [avatar.curr_stats.name, actor_receiving_dmg.avatar.name])
-		
 		var damage_receiver: Avatar = actor_receiving_dmg.avatar
 		var damage_dealer: Avatar = avatar
 		
 		var dmg = damage_calculator.calculate_damage(actor_receiving_dmg, self)
-		damage_receiver.curr_stats.hp = maxi(damage_receiver.curr_stats.hp - dmg, 0)
+		damage_receiver.avatar_data.current_stats.hp = maxi(damage_receiver.avatar_data.current_stats.hp - dmg, 0)
 		damage_calculator.on_damage_received.emit(actor_receiving_dmg, self, dmg)
 		
-		print("on damage received basic attack: %s atks %s for %d dmg" % [damage_dealer.curr_stats.name, damage_receiver.curr_stats.name, dmg])
+		print("on damage received basic attack: %s atks %s for %d dmg" % [damage_dealer.avatar_data.avatar_name, damage_receiver.avatar_data.avatar_name, dmg])
 		
 		# TODO: need to know what action the actor picked in order to print out the appropriate message for attack or skill
-		var text = "%s attacked %s for %d damage" % [damage_dealer.curr_stats.name, damage_receiver.curr_stats.name, dmg]
+		var text = "%s attacked %s for %d damage" % [damage_dealer.avatar_data.avatar_name, damage_receiver.avatar_data.avatar_name, dmg]
 		if !on_attack_damage_text_updated.is_null():
 			if on_attack_damage_text_updated.call(text):
 				print_rich("[color=red]on_attack_damage_text_updated has invalid function reference... ensure it is set before calling[/color]")
@@ -477,7 +471,7 @@ func pause_motion_for(seconds_to_pause: float, old_motion_state: Active_Battle_S
 	toggle_motion(true)
 	
 	var on_restore_motion = func():
-		print("resuming actor motion for ", avatar.curr_stats.name)
+		print("resuming actor motion for ", avatar.avatar_data.avatar_name)
 		toggle_motion(false)
 		# subtle bug I introduced here... if actor gets interrupted by an attack while its casting is skill
 		# it will go back to the neutral state as it hasn't done anything yet which is incorrect

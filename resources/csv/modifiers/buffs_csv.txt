@@ -1,2 +1,3 @@
 name	description	duration_type	duration
 Thorned Armor	Deals damage back to opposing bot that attacks with a physical move	seconds	3
+Goblin Punch	Adds half your Toughness to damage of this attack	instant	-1

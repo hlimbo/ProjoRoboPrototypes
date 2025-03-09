@@ -24,8 +24,9 @@ var damage_calculator: IDamageCalculator
 
 func _ready() -> void:
 	if avatar:
-		name_label.text = avatar.name
-		hp_label.text = "HP %d/%d" % [avatar.curr_stats.hp, avatar.initial_stats.hp]
+		if avatar.avatar_data and avatar.avatar_data.current_stats:
+			name_label.text = avatar.avatar_data.avatar_name
+		hp_label.text = "HP %d/%d" % [avatar.avatar_data.current_stats.hp, avatar.avatar_data.initial_stats.hp]
 
 	# for debugging purposes in isolation
 	#if damage_calculator:
@@ -45,13 +46,13 @@ func _ready() -> void:
 func on_damage_received(damage_recv: Actor, _damage_dealer: Actor, damage: int) -> void:
 	# if the receiver matches the curr avatar, then update its hp
 	if damage_recv.avatar == avatar:
-		print("%s attacks: %s" % [_damage_dealer.avatar.curr_stats.name, avatar.curr_stats.name])
-		hp_label.text = "HP %d/%d" % [avatar.curr_stats.hp, avatar.initial_stats.hp]
+		print("%s attacks: %s" % [_damage_dealer.avatar.avatar_data.avatar_name, avatar.avatar_data.avatar_name])
+		hp_label.text = "HP %d/%d" % [avatar.avatar_data.current_stats.hp, avatar.avatar_data.initial_stats.hp]
 
 #region Test Functions
 func update_labels(avatar_: Avatar):
-	hp_label.text = "HP %d/%d" % [avatar_.curr_stats.hp, avatar_.initial_stats.hp]
-	name_label.text = avatar_.curr_stats.name
+	hp_label.text = "HP %d/%d" % [avatar_.avatar_data.current_stats.hp, avatar_.avatar_data.initial_stats.hp]
+	name_label.text = avatar_.avatar_data.avatar_name
 
 func _on_init_fake_stats():
 	if damage_dealer:
@@ -62,7 +63,7 @@ func _on_damage_emit():
 	if damage_receiver and damage_dealer and damage_calculator:
 		var dmg = damage_calculator.calculate_damage(damage_receiver, damage_dealer)
 		# apply damage
-		damage_receiver.curr_stats.hp = maxi(damage_receiver.curr_stats.hp - dmg, 0)
+		damage_receiver.avatar.avatar_data.current_stats.hp = maxi(damage_receiver.avatar.avatar_data.current_stats.hp - dmg, 0)
 		damage_calculator.on_damage_received.emit(damage_receiver, damage_dealer)
 	else:
 		print_rich("[color=red]info_display debug: damage_receiver and damage_dealer null[/color]")

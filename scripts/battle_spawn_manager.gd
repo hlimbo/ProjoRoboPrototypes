@@ -3,8 +3,7 @@ class_name BattleSpawnManager
 
 @export var bot_inventory_systems: BotInventorySystems = BotInventorySystems
 
-const avatar_res_path: String = "res://nodes/battle_timeline/avatar.tscn"
-const avatar_res: Resource = preload(avatar_res_path)
+const avatar_res: Resource = preload("res://nodes/battle_timeline/avatar.tscn")
 const actor_res: Resource = preload("res://nodes/actors/actor.tscn")
 
 @export var enemy_spawn_count: int

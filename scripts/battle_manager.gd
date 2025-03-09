@@ -7,9 +7,6 @@ enum Encounter_Type {
 	AMBUSH,
 }
 
-const avatar_res_path: String = "res://nodes/battle_timeline/avatar.tscn"
-const avatar_res: Resource = preload(avatar_res_path)
-
 var enemy_spawn_count: int
 var party_member_spawn_count: int
 
@@ -91,12 +88,10 @@ func generate_random_stats() -> BaseStats:
 	var stats = BaseStats.new()
 	
 	stats.name = enemy_names[randi_range(0, len(enemy_names) - 1)]
-	stats.attack = randi_range(20,25)
+	stats.attack = randi_range(50,100)
 	stats.defense = randi_range(10,15)
-	#stats.hp = randi_range(40, 80)
-	# temp - make hp high for testing
-	stats.hp = 20
-	stats.speed = randi_range(10, 20)
+	stats.hp = 500
+	stats.speed = randi_range(50,100)
 	stats.skill_points = 100
 
 	return stats
@@ -110,8 +105,6 @@ func add_to_line(avatar: Avatar, avatar_line: Path2D, stats: BaseStats, avatar_t
 	avatar.texture = avatar_texture
 	avatar.name = stats.name
 	avatar.move_speed = (stats.speed / float(max_battle_speed)) * 0.25
-	avatar.initial_stats.set_stats(stats)
-	avatar.curr_stats.set_stats(stats)
 	avatar_line.add_child(avatar)
 
 func _ready() -> void:
@@ -127,14 +120,18 @@ func _ready() -> void:
 	# initialize battle participants' base stats
 	for i in range(0, party_member_spawn_count):
 		var avatar_data: AvatarData = avatar_datum[i]
-		var stats = generate_random_stats()
 		
-		stats.name = avatar_data.avatar_name
-		stats.level = avatar_data.level
-		stats.exp_points = avatar_data.current_experience
+		# If randomized stats desired, uncomment
+		#avatar_data.initial_stats = generate_random_stats()
+		#avatar_data.current_stats.set_stats(avatar_data.initial_stats)
 		
-		party_member_stats.append(stats)
-		max_battle_speed = maxi(max_battle_speed, stats.speed)
+		# IMPROVEMENT: Seems a bit redundant to do here and can be removed later on
+		avatar_data.initial_stats.name = avatar_data.avatar_name
+		avatar_data.initial_stats.level = avatar_data.level
+		avatar_data.initial_stats.exp_points = avatar_data.current_experience
+		
+		party_member_stats.append(avatar_data.initial_stats)
+		max_battle_speed = maxi(max_battle_speed, avatar_data.initial_stats.speed)
 	
 	for i in range(0, enemy_spawn_count):
 		var stats = generate_random_stats()
@@ -171,6 +168,10 @@ func _ready() -> void:
 		var actor: Actor = enemies[i]
 		var avatar: Avatar = actor.avatar
 		var stats: BaseStats = enemy_stats[i]
+		avatar.avatar_data = AvatarData.new()
+		avatar.avatar_data.avatar_name = stats.name
+		avatar.avatar_data.initial_stats.set_stats(stats)
+		avatar.avatar_data.current_stats.set_stats(stats)
 		
 		## Avatar Setup
 		add_to_line(avatar, enemy_line, stats, enemy_texture, max_battle_speed)

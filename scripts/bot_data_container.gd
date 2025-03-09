@@ -9,14 +9,10 @@ signal on_update_view(data_container: BotDataContainer)
 
 func load_bot_data():
 	var reader = BotCsvReader.new()
-	var bot_datum: Array = reader.read_csv_file("res://resources/csv/prototype_bots.txt", "\t")
+	var bot_datum: Array = reader.read_csv_file("res://resources/csv/prototype_bots_with_stats.txt", "\t")
 	for data in bot_datum:
 		var bot_data: AvatarData = (data as AvatarData)
 		bot_table[bot_data.avatar_name] = bot_data
-		print(bot_data.avatar_name)
-		print(bot_data.energy_type)
-		print(bot_data.bot_type)
-		print("")
 
 func get_bot(bot_name: String) -> AvatarData:
 	if bot_name not in bot_table:

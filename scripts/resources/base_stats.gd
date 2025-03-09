@@ -1,4 +1,4 @@
-extends RefCounted
+extends BaseResource
 class_name BaseStats
 
 var name: String

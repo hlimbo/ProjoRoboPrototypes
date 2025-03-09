@@ -26,7 +26,7 @@ func _init():
 	
 	# load in data into digital_bot_bank
 	var reader = BotCsvReader.new()
-	var bots: Array = reader.read_csv_file("res://resources/csv/prototype_bots.txt", "\t")
+	var bots: Array = reader.read_csv_file("res://resources/csv/prototype_bots_with_stats.txt", "\t")
 	
 	var random_icon_resources: Array = utility.pick_unique_random_elements(resources, len(bots))
 	var icons: Array[Texture2D] = []
@@ -36,6 +36,8 @@ func _init():
 	# load in placeholder bot preview art
 	var bot_resources: Array = utility.load_resources_from_folder("res://nodes/prototype_bots")
 	
+	# key - string
+	# value - PackedScene
 	var bot_res_map: Dictionary = {}
 	for bot_res in bot_resources:
 		var bot_name: String = bot_res.resource_path.get_file().to_lower().trim_suffix(".tscn")

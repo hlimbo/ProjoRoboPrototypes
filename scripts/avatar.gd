@@ -3,6 +3,7 @@ class_name Avatar
 
 @export var move_speed: float = 0.1
 var _curr_speed: float
+@export var avatar_data: AvatarData
 
 @export var texture: Texture2D
 
@@ -13,11 +14,6 @@ var _curr_speed: float
 @onready var avatar_label: Label = $AvatarLabel
 @onready var battle_timers: BattleTimers = $BattleTimers
 
-# type aliasing for convenience
-const Battle_State = Constants.Battle_State
-
-var initial_stats: BaseStats
-var curr_stats: BaseStats
 # exporting to view human readable enum strings
 @export var avatar_type: Constants.Avatar_Type
 @export var is_alive: bool = true
@@ -26,7 +22,7 @@ var curr_stats: BaseStats
 @export var resume_motion: bool = true
 # controls movement direction on timeline
 @export var is_moving_forward: bool = true
-@export var battle_state: Battle_State = Battle_State.WAITING
+@export var battle_state: Constants.Battle_State = Constants.Battle_State.WAITING
 var ui_battle_state_machine: Fsm = Fsm.new()
 
 # AI signals
@@ -49,10 +45,8 @@ const random_names: PackedStringArray = [
 	"Narise Hora",
 ]
 
-
+#region Godot callback functions
 func _init() -> void:
-	initial_stats = BaseStats.new()
-	curr_stats = BaseStats.new()
 	is_alive = true
 	ui_battle_state_machine.current_state = int(Constants.Battle_State.WAITING)
 	ui_battle_state_machine.init_state_map({
@@ -87,12 +81,15 @@ func _physics_process(delta: float) -> void:
 func _process(delta: float) -> void:
 	update_battle_state_text()
 
+#endregion
+
 func on_area_entered(_body: Node2D) -> void:
-	battle_state = Battle_State.MOVE_SELECTION
+	battle_state = Constants.Battle_State.MOVE_SELECTION
 	on_start_turn.emit()
 
 func construct(avatar_data: AvatarData):
 	avatar_type = avatar_data.avatar_type
+	self.avatar_data = avatar_data
 
 #region Timer Timeout functions
 
@@ -109,7 +106,7 @@ func on_resume_timeout():
 	
 	self._curr_speed = move_speed # restore movespeed
 	
-	battle_state = Battle_State.WAITING
+	battle_state = Constants.Battle_State.WAITING
 	ui_battle_state_machine.transition_to(Constants.Battle_State.WAITING)
 	BattleSignals.on_resume_play.emit()
 #endregion
@@ -118,33 +115,21 @@ func on_resume_timeout():
 
 func update_battle_state_text():
 	match ui_battle_state_machine.current_state:
-		Battle_State.WAITING:
+		Constants.Battle_State.WAITING:
 			battle_state_label.text = "WAITING"
-		Battle_State.MOVE_SELECTION:
+		Constants.Battle_State.MOVE_SELECTION:
 			battle_state_label.text = "MOVE_SELECTION"
-		Battle_State.PENDING_MOVE:
+		Constants.Battle_State.PENDING_MOVE:
 			battle_state_label.text = "PENDING_MOVE"
-		Battle_State.EXECUTING_MOVE:
+		Constants.Battle_State.EXECUTING_MOVE:
 			battle_state_label.text = "EXECUTING_MOVE"
-		Battle_State.MOVE_CANCELLED:
+		Constants.Battle_State.MOVE_CANCELLED:
 			battle_state_label.text = "MOVE_CANCELLED"
-		Battle_State.PAUSED:
+		Constants.Battle_State.PAUSED:
 			battle_state_label.text = "PAUSED"
-		Battle_State.KNOCKBACK:
+		Constants.Battle_State.KNOCKBACK:
 			battle_state_label.text = "KNOCKBACK"
 			
-func generate_random_stats() -> void:
-	initial_stats.name = random_names[randi_range(0, len(random_names) - 1)]
-	initial_stats.attack = randi_range(20,25)
-	initial_stats.defense = randi_range(10,15)
-	#initial_stats.hp = randi_range(40, 80)
-	# temp - make hp high for testing
-	initial_stats.hp = 20
-	initial_stats.speed = randi_range(10, 20)
-	initial_stats.skill_points = 100
-	
-	curr_stats.set_stats(initial_stats)
-
 #endregion
 
 
@@ -168,8 +153,6 @@ func on_interrupt_motion(interruptee: Avatar, new_battle_state: Constants.Battle
 	interruptee.battle_state = new_battle_state
 	interruptee.ui_battle_state_machine.transition_to(new_battle_state)
 	
-
-	
 func pause_motion_for(seconds_to_pause: float, old_battle_state: Constants.Battle_State):
 	var process_on_physics_tick: bool = true
 	# TODO: may need different levels of "pausing"
@@ -178,7 +161,6 @@ func pause_motion_for(seconds_to_pause: float, old_battle_state: Constants.Battl
 	toggle_motion(true)
 	
 	var on_restore_motion = func():
-		print("resuming avatar motion for ", curr_stats.name)
 		toggle_motion(false)
 		battle_state = old_battle_state
 		ui_battle_state_machine.transition_to(old_battle_state)
@@ -202,7 +184,6 @@ func push_back_progress(push_back_amount: float, duration_sec: float):
 	knockback_tween.tween_property(self, "progress_ratio", final_avatar_progress_ratio, duration_sec).from_current().set_ease(Tween.EASE_OUT)
 	
 	var on_finished = func():
-		print("finished pushback on ", curr_stats.name)
 		battle_state = Constants.Battle_State.WAITING
 		ui_battle_state_machine.transition_to(Constants.Battle_State.WAITING)
 		is_knocked_back = false

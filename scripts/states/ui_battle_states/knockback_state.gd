@@ -9,7 +9,7 @@ var pause_duration_sec: float = 1.0
 
 func on_enter():
 	# cancel any pending skills
-	print("move pending by %s is cancelled" % avatar.curr_stats.name)
+	print("move pending by %s is cancelled" % avatar.avatar_data.avatar_name)
 	avatar.battle_timers.skill_timer.stop()
 	Utility.disconnect_all_signal_connections(avatar.battle_timers.skill_timer.timeout)
 

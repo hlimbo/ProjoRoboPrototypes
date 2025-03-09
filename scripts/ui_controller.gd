@@ -132,7 +132,7 @@ func _on_skills_button_pressed(actor: Actor):
 
 func start_defend(actor: Actor):
 	var avatar: Avatar = actor.avatar
-	label.text = "%s is defending!" % avatar.curr_stats.name
+	label.text = "%s is defending!" % avatar.avatar_data.avatar_name
 	
 	description_panel.visible = true
 	action_layout.visible = false
@@ -393,11 +393,11 @@ func on_start_order_step(actor: Actor) -> void:
 		for party_member in party_members:
 			party_member.get_reaction_button().enable(true)
 		
-		#ai_determine_move(actor)
+		ai_determine_move(actor)
 		#ai_use_random_skill(actor)
 		#start_defend(actor)
 		#ai_flee(actor)
-		ai_attack(actor)
+		#ai_attack(actor)
 
 func display_end_battle_screen(status: Party_Battle_States):
 	match status:
@@ -510,7 +510,7 @@ func on_ai_skill_end(damage_receiver: Actor, damage_dealer: Actor) -> void:
 	
 	# TODO: check ahead of time if enemy can cast a skill, if not, don't do this action
 	var skillz: Array[Skill] = [skill1, skill2, skill3]
-	var castable_skills: Array[Skill] = skillz.filter(func(s: Skill): return s.cost <= avatar.curr_stats.skill_points)
+	var castable_skills: Array[Skill] = skillz.filter(func(s: Skill): return s.cost <= avatar.avatar_data.current_stats.skill_points)
 
 	if len(castable_skills) == 0:
 		description_panel.visible = true
@@ -558,10 +558,10 @@ func on_check_damage_receiver_is_defeated(damage_receiver: Actor, _damage_dealer
 	var dr_avatar: Avatar = damage_receiver.avatar
 	
 	# check if target is downed... no longer able to battle
-	if dr_avatar.curr_stats.hp <= 0:
-		print("damage receiver %s is defeated!" % dr_avatar.curr_stats.name)
+	if dr_avatar.avatar_data.current_stats.hp <= 0:
+		print("damage receiver %s is defeated!" % dr_avatar.avatar_data.avatar_name)
 		dr_avatar.is_alive = false
-		dr_avatar.curr_stats.hp = 0
+		dr_avatar.avatar_data.current_stats.hp = 0
 		dr_avatar.progress_ratio = 0
 		damage_receiver.toggle_motion(true)
 		dr_avatar.is_alive = false
@@ -582,13 +582,13 @@ func on_skill_damage_calculation(damage_dealer: Actor, damage_receiver: Actor, s
 	print("on party member skill end %s" % damage_dealer.name)
 	var target: Avatar = damage_receiver.avatar
 	var avatar: Avatar = damage_dealer.avatar
-	var enemy_name := target.curr_stats.name
-	var skill_name := skill.name
-	var dmg := skill.attack
+	var enemy_name: String = target.avatar_data.avatar_name
+	var skill_name: String = skill.name
+	var dmg: float = skill.attack
 
-	label.text = "%s casts %s to %s. It deals %d damage!" % [avatar.curr_stats.name, skill_name, enemy_name, dmg]
+	label.text = "%s casts %s to %s. It deals %d damage!" % [avatar.avatar_data.avatar_name, skill_name, enemy_name, dmg]
 	
-	target.curr_stats.hp = maxi(target.curr_stats.hp - dmg, 0)
+	target.avatar_data.current_stats.hp = maxi(target.avatar_data.current_stats.hp - dmg, 0)
 	battle_manager.damage_calculator.on_damage_received.emit(damage_receiver, damage_dealer, dmg)
 	on_skill_attack_damage_received(damage_receiver, damage_dealer, dmg)
 	

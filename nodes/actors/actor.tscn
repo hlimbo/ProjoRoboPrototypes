@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://bxhu5jd6fbl0w"]
+[gd_scene load_steps=18 format=3 uid="uid://bxhu5jd6fbl0w"]
 
 [ext_resource type="Shader" path="res://shaders/transparent_fade.gdshader" id="1_0fmsv"]
 [ext_resource type="PackedScene" uid="uid://cx3vhulcggapg" path="res://nodes/info_node.tscn" id="1_ktls5"]
@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://qml0ed0h5m72" path="res://nodes/battle_reaction.tscn" id="7_mxa28"]
 [ext_resource type="PackedScene" uid="uid://hqd2d6o5vprn" path="res://nodes/reaction_based_button.tscn" id="8_aid6p"]
 [ext_resource type="PackedScene" uid="uid://dmdn61yneme7o" path="res://nodes/reaction_label.tscn" id="9_5gf0v"]
+[ext_resource type="Script" path="res://scripts/skill_system_component.gd" id="11_dpaxh"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_q1dyj"]
 shader = ExtResource("1_0fmsv")
@@ -169,3 +170,6 @@ offset_left = 12.0
 offset_top = -730.0
 offset_right = 12.0
 offset_bottom = -730.0
+
+[node name="SkillSystemComponent" type="Node2D" parent="."]
+script = ExtResource("11_dpaxh")

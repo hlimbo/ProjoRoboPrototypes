@@ -126,8 +126,7 @@ func _on_skills_button_pressed(actor: Actor):
 	active_skill_menu.visible = true
 	action_layout.visible = false
 	
-	# set the correct avatar that will be executing their own skills
-	skill_controller.avatar = actor.avatar
+	skill_controller.lazy_load_skills(actor)
 	attack_type = Attack_Type.SKILL
 
 func start_defend(actor: Actor):

@@ -132,7 +132,7 @@ func _move_bot_internal2(data_src: BotDataContainer, bot_name: String, target_in
 	bot.ordinal = target_index
 	data_src.on_update_view.emit(data_src)
 	
-func get_bot(bot_name: String):
+func get_bot(bot_name: String) -> AvatarData:
 	if bot_name in digital_bot_bank.bot_table:
 		return digital_bot_bank.get_bot(bot_name)
 	

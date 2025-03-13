@@ -17,8 +17,6 @@ signal on_key_pressed(reaction_state: ReactionState)
 func _ready():
 	BattleSignals.on_start_turn.connect(on_start_turn)
 	BattleSignals.on_end_turn.connect(on_end_turn)
-	BattleSignals.on_quick_time_defend_pressed_valid.connect(on_valid_press_time)
-	BattleSignals.on_quick_time_defend_late.connect(on_late_press_time)
 
 func enable(enabled: bool):
 	is_enabled = enabled

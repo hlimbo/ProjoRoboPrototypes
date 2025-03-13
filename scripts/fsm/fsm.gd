@@ -47,21 +47,24 @@ func transition_to(new_state: int):
 func disable():
 	set_input_tick(false)
 	set_physics_process_tick(false)
-	set_process_tick(false)
+	#set_process_tick(false)
 	
 func enable():
 	set_input_tick(true)
 	set_physics_process_tick(true)
-	set_process_tick(true)
+	#set_process_tick(true)
 
 func _input(event: InputEvent):
 	var current: IState = state_map[current_state]
+	assert(is_instance_valid(current))
 	current.on_input(event)
 
 func _process(delta: float):
 	var current: IState = state_map[current_state]
+	assert(is_instance_valid(current))
 	current.on_process(delta)
 
 func _physics_process(delta: float):
 	var current: IState = state_map[current_state]
+	assert(is_instance_valid(current))
 	current.on_physics_process(delta)

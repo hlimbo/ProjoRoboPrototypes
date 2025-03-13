@@ -21,8 +21,10 @@ func _enter_tree():
 	for i in range(len(party_member_avatar_datum)):
 		var actor: Actor = actor_res.instantiate()
 		actor.construct(party_member_avatar_datum[i])
+		actor.actor_type = Constants.Actor_Type.PARTY_MEMBER
 		actor.avatar = avatar_res.instantiate()
 		actor.avatar.construct(party_member_avatar_datum[i])
+		actor.avatar.avatar_type = Constants.Avatar_Type.PARTY_MEMBER
 		party_members.append(actor)
 
 	# create enemies

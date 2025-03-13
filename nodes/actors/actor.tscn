@@ -36,8 +36,9 @@ radius = 257.381
 material = SubResource("ShaderMaterial_q1dyj")
 scale = Vector2(0.75, 0.75)
 script = ExtResource("1_m0sef")
-move_speed = 500.0
 skill_cast_range = 500.0
+move_speed = 500.0
+flee_fade_time = 1.0
 
 [node name="HUD" type="Node2D" parent="."]
 position = Vector2(0, 72)
@@ -52,6 +53,7 @@ offset_bottom = 54.0
 use_parent_material = true
 
 [node name="body" parent="ArtRoot" instance=ExtResource("2_vpq4e")]
+use_parent_material = true
 position = Vector2(0, -243)
 
 [node name="Defense" type="Node2D" parent="."]

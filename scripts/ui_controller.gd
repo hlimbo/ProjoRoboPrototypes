@@ -72,12 +72,6 @@ func on_end_turn(actor: Actor):
 	
 	# reset attack state to prevent future attacks from this actor from being cancelled
 	# actor.is_attacked = false
-	
-	# turn off reaction button for all party members
-	if actor.actor_type == Constants.Actor_Type.ENEMY:
-		var party_members: Array[Actor] = battle_spawn_manager.get_party_members()
-		for party_member in party_members:
-			party_member.get_reaction_button().enable(false)
 
 func on_resume_play():
 	resume_actors_motion()
@@ -217,7 +211,15 @@ func end_battle():
 	
 	# hide timeline
 	one_d_graph.visible = false
-	display_end_battle_screen(party_battle_state)
+	
+	var party_members: Array[Actor] = battle_spawn_manager.get_party_members()
+	assert(len(party_members) > 0)
+	
+	var delay_time_sec: float = party_members[0].flee_fade_time + 0.5
+	var delay_timer: SceneTreeTimer = get_tree().create_timer(delay_time_sec, false, true)
+	var on_display_end_battle_screen = func():
+		display_end_battle_screen(party_battle_state)
+	delay_timer.timeout.connect(on_display_end_battle_screen)
 
 func on_determine_flee_rate(actor: Actor):
 	# TODOs
@@ -387,11 +389,6 @@ func on_start_order_step(actor: Actor) -> void:
 		
 	# entry point for enemies to pick a move
 	elif avatar.avatar_type == Constants.Avatar_Type.ENEMY:
-		# on start of turn, enable all reaction buttons for party members
-		var party_members: Array[Actor] = battle_spawn_manager.get_party_members()
-		for party_member in party_members:
-			party_member.get_reaction_button().enable(true)
-		
 		ai_determine_move(actor)
 		#ai_use_random_skill(actor)
 		#start_defend(actor)
@@ -470,7 +467,6 @@ func ai_attack(actor: Actor) -> void:
 	atk_cmd.execute(actor)
 	
 func ai_flee(actor: Actor) -> void:
-	print("ai_flee will be reworked once player commands are integrated")
 	var avatar: Avatar = actor.avatar
 	description_panel.visible = true
 	label.text = "%s fled from battle" % avatar.name
@@ -583,7 +579,7 @@ func on_skill_damage_calculation(damage_dealer: Actor, damage_receiver: Actor, s
 	var avatar: Avatar = damage_dealer.avatar
 	var enemy_name: String = target.avatar_data.avatar_name
 	var skill_name: String = skill.name
-	var dmg: float = skill.attack
+	var dmg: float = skill.damage
 
 	label.text = "%s casts %s to %s. It deals %d damage!" % [avatar.avatar_data.avatar_name, skill_name, enemy_name, dmg]
 	

@@ -1,17 +1,25 @@
 extends BaseResource
 class_name Skill
 
-@export var cost: float
-@export var attack: float
 @export var name: String
+@export var cost: float
+# TODO: remove
+@export var damage: float
 @export var description: String
 @export var energy_type: String
 
-# string tags that are applied to target either as buff or debuff
-@export var target_buffs: Array[String] = []
-@export var target_debuffs: Array[String] = []
+# FUTURE CONSIDERATION
+# should there be a skill level in here?
+# would it affect the casting speed? amount of damage?
+# this would require a skill level table
 
-func _init(p_cost = 0, p_attack = 0, p_name = "skill_resource"):
+# can either apply damage or healing to hp stat
+@export var hp_modifier: Modifier
+
+# represent effects that can be given to an actor target(s)
+@export var status_effects: Array[StatusEffect] = []
+
+func _init(p_cost = 0, p_damage: float = 0, p_name = "skill_resource"):
 	cost = p_cost
-	attack = p_attack
+	damage = p_damage
 	name = p_name

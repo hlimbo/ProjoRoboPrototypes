@@ -5,10 +5,8 @@ class_name Actor
 const Ui_Battle_State = Constants.Battle_State
 const Active_Battle_State = Constants.Active_Battle_State
 
-### Dependencies
+#region Dependencies
 @export var bot_inventory_systems: BotInventorySystems = BotInventorySystems
-
-@export var actor_type: Constants.Actor_Type
 
 # battle_manager class self-injects itself into this class as it creates Actor instances
 @export var battle_manager: BattleManager
@@ -18,23 +16,18 @@ const Active_Battle_State = Constants.Active_Battle_State
 # Used when debugging in isolation
 #@onready var damage_calculator: IDamageCalculator = BattleSceneManager.damage_calculator
 
-@export var move_speed: float
-@export var target: Node2D
-var original_target: Node2D
-@export var battle_state = Ui_Battle_State.WAITING
-@export var motion_state = Active_Battle_State.NEUTRAL
-# TODO - move curr_stats and initial_stats from avatar to here
+#endregion
+
+#region Components
+
+@export var active_battle_state_machine: Fsm = Fsm.new()
+@onready var skill_system_component: SkillSystemComponent = $SkillSystemComponent
+# UI Component of actor in a battle scene
 @export var avatar: Avatar
-@export var creature_type: Constants.Creature_Type
-@export var energy_type: Constants.Energy_Type
 
-var active_battle_state_machine: Fsm = Fsm.new()
+#endregion
 
-@export var enable_debug_menu: bool
-
-var original_pos: Vector2
-# controls if movement is allowed or not
-var resume_motion: bool = true
+#region Geometry Areas and Timers
 
 # used to detect when actor can stop moving
 @onready var interact_area: Area2D = $CollisionGeometry/InteractArea
@@ -44,26 +37,19 @@ var resume_motion: bool = true
 # used to detect when actor may receive attacks or other status effects
 @onready var actor_area: Area2D = $CollisionGeometry/ActorArea
 
-# used to detect Quick Time Event (QTE) Defend
-@onready var outer_interact_area: Area2D = $CollisionGeometry/OuterInteractArea
-
 @onready var attack_timer: Timer = $Timers/AttackTimer
 # TODO: once placeholder art with frames is in... could code it to where when a frame starts
 # enable hitbox and on end frame disable hitbox
 @onready var enable_attack_timer: Timer = $Timers/EnableAttackTimer
-# used to display basict attack damage text from UI
+# used to display basic attack damage text from UI
 var on_attack_damage_text_updated: Callable
-@onready var defense_timer: Timer = $Timers/DefenseTimer
 
+@onready var defense_timer: Timer = $Timers/DefenseTimer
 @onready var defense_node: Node2D = $Defense
 
-# quick time defend
-@onready var battle_reaction: BattleReaction = $BattleReaction
-@onready var reaction_based_button: ReactionBasedButton = $ReactionBasedButton
-@onready var reaction_label: Control = $ReactionLabel
+#endregion
 
-var flee_time: float = 0.0
-@export var flee_fade_time: float = 3.0
+#region Skill Placeholder
 
 @export var skill_cast_range: float = 100.0
 var lightning_placeholder: Resource = preload("res://nodes/lightning.tscn")
@@ -72,25 +58,24 @@ var on_skill_damage_calculation: Callable
 @onready var skill_placeholder_socket: Marker2D = $Sockets/SkillPlaceholderSocket
 @export var is_skill_casted: bool = false
 
-@export var is_quick_time_defend: bool = false
-
-@onready var skill_system_component: SkillSystemComponent = $SkillSystemComponent
-
-#region Commands
-var attack_cmd: AttackCommand
-var defend_cmd: DefendCommand
-var flee_cmd: FleeCommand
 #endregion
 
-signal on_disable_quick_time_defend
+@export var actor_type: Constants.Actor_Type
+@export var creature_type: Constants.Creature_Type
+@export var energy_type: Constants.Energy_Type
+@export var battle_state = Ui_Battle_State.WAITING
+@export var motion_state = Active_Battle_State.NEUTRAL
+
+@export var move_speed: float
+@export var target: Node2D
+var original_target: Node2D
+var original_pos: Vector2
+# controls if movement is allowed or not
+var resume_motion: bool = true
+
+@export var flee_fade_time: float = 1.5 # seconds
 
 func _init():
-	# These should be created as they are issued by button presses by player controller
-	# or when AI issues these commands
-	# leaving it here to keep things simple
-	attack_cmd = AttackCommand.new()
-	defend_cmd = DefendCommand.new()
-	flee_cmd = FleeCommand.new()
 	
 	active_battle_state_machine.current_state = Constants.Active_Battle_State.NEUTRAL
 	active_battle_state_machine.init_state_map({
@@ -119,9 +104,6 @@ func _ready():
 		var hit_shape_node = get_node("CollisionGeometry/HitArea2D/CollisionShape2D")
 		(hit_shape_node as CollisionShape2D).position.x *= -1
 	
-		# disable quick time event for enemy
-		reaction_based_button.is_enabled = false
-	
 	# for some reason in between scene changes, the prev shader value persists...
 	# resetting on scene ready
 	(material as ShaderMaterial).set_shader_parameter("transparency_value", 1)
@@ -140,7 +122,6 @@ func _ready():
 	enable_attack_timer.timeout.connect(on_enable_attack_hitbox)
 	defense_timer.timeout.connect(on_defend_end)
 	
-	outer_interact_area.area_entered.connect(on_outer_area_entered)
 	interact_area.area_entered.connect(on_other_entered)
 	hit_area.area_entered.connect(on_attack_connect)
 	
@@ -149,41 +130,9 @@ func _ready():
 		info_node.update_labels(avatar)
 		
 	connect_battle_signals()
-	BattleSignals.on_end_turn.connect(disable_quick_time)
 	add_child(active_battle_state_machine)
 	
 	skill_system_component.load_skills()
-
-func connect_defend_reaction_button():
-	if reaction_based_button:
-		var on_key_pressed = func(reaction_state: ReactionBasedButton.ReactionState):
-			var label = reaction_label.get_node("Label") as Label
-			reaction_label.visible = true
-			if reaction_state == ReactionBasedButton.ReactionState.ON_TIME:
-				label.text = "Right On!"
-				is_quick_time_defend = true
-				# TODO: create a quick time defend command as it functions differently from the standard defend button command
-				var def_cmd = DefendCommand.new()
-				def_cmd.execute(self)
-			elif reaction_state == ReactionBasedButton.ReactionState.EARLY:
-				label.text = "Too Early!"
-			elif reaction_state == ReactionBasedButton.ReactionState.LATE:
-				label.text = "Too Late!"
-			else:
-				label.text = "Not Quite!"
-				
-			var hide_timer = Timer.new()
-			add_child(hide_timer)
-			hide_timer.one_shot = true
-			hide_timer.wait_time = 3
-			hide_timer.start()
-			var on_timeout = func():
-				reaction_label.visible = false
-				hide_timer.queue_free()
-			hide_timer.timeout.connect(on_timeout)
-			
-		
-		reaction_based_button.on_key_pressed.connect(on_key_pressed)
 
 func connect_battle_signals():
 	if avatar:
@@ -195,22 +144,6 @@ func move_back_to_original_position(delta_time: float) -> float:
 	position += vel * delta_time
 	var dist: float = position.distance_to(original_pos)
 	return dist
-
-func _process(delta_time: float):
-	# player controls
-	if (name == "yellow_mob2"):
-		if (Input.is_action_pressed("attack")):
-			attack_cmd.execute(self)
-		elif (Input.is_action_pressed("defend")):
-			defend_cmd.execute(self)
-		elif (Input.is_action_pressed("flee")):
-			flee_cmd.execute(self)
-	# enemy controls
-	elif (name == "enemy_placeholder"):
-		if (Input.is_action_pressed("attack2")):
-			attack_cmd.execute(self)
-		elif (Input.is_action_pressed("defend2")):
-			defend_cmd.execute(self)
 
 # GOAL: move each state specific logic into its own state class do handle its own processing there
 func _physics_process(delta_time: float):
@@ -228,13 +161,6 @@ func _physics_process(delta_time: float):
 		var dist: float = move_back_to_original_position(delta_time)
 		if dist <= 100:
 			motion_state = Active_Battle_State.NEUTRAL
-		
-	elif motion_state == Active_Battle_State.FLEE:
-		flee_time = clampf(flee_time + delta_time, flee_time, flee_fade_time)
-		var diff: float = flee_fade_time - flee_time
-		fadeout(diff)
-		if diff == 0:
-			avatar.is_alive = false
 			
 	elif motion_state == Active_Battle_State.SKILL:
 		if target:
@@ -322,31 +248,6 @@ func on_other_entered(other: Area2D):
 		# simulate attack animation delay -- timer
 		enable_attack_timer.start()
 
-# outer area - disable for now until quick time defend command is created
-func on_outer_area_entered(area: Area2D):
-	if actor_type == Constants.Actor_Type.PARTY_MEMBER:
-		print("party member entered outer area")
-	
-	var is_valid_state: bool = [Active_Battle_State.NEUTRAL, Active_Battle_State.DEFEND].has(motion_state)
-	if actor_type == Constants.Actor_Type.PARTY_MEMBER and is_valid_state:
-		battle_reaction.visible = true
-		
-		# assumption: the Actor class is attached to the root node
-		var node: Node = area
-		print("node owner?? ", node.owner)
-		# this climbs up all the way to the main node of the scene
-		while node and node is not Actor and node.get_parent() != null:
-			print("node now: ", node.name)
-			node = node.get_parent()
-			
-		if node:
-			var other_actor: Actor = node as Actor
-			# disable exclamation point at a later time
-			other_actor.on_disable_quick_time_defend.connect(disable_quick_time, ConnectFlags.CONNECT_ONE_SHOT)
-			BattleSignals.on_quick_time_defend_pressed_valid.emit()
-		else:
-			print_rich("[color=red]Could not find other actor here on_outer_area_entered[/color]")
-
 func on_attack_end():
 	# attack should not end as it got cancelled...
 	if motion_state == Active_Battle_State.KNOCKBACK:
@@ -372,11 +273,6 @@ func on_attack_connect(area: Area2D):
 			print_rich("[color=red]Unable to find actor to damage for %s[/color]" % avatar.avatar_data.avatar_name)
 			BattleSignals.on_end_turn.emit(self)
 			return
-		
-		# disable quick_time defend for party member as enemy since enemy owns their own hitbox
-		if actor_type == Constants.Actor_Type.PARTY_MEMBER:
-			actor_receiving_dmg.on_disable_quick_time_defend.emit()
-			BattleSignals.on_quick_time_defend_late.emit()
 		
 		var damage_receiver: Avatar = actor_receiving_dmg.avatar
 		var damage_dealer: Avatar = avatar
@@ -409,16 +305,14 @@ func start_defend():
 func on_defend_end():
 	motion_state = Active_Battle_State.NEUTRAL
 	active_battle_state_machine.transition_to(Constants.Active_Battle_State.NEUTRAL)
-	# hack - only end turn if not quick time defend
-	if not is_quick_time_defend:
-		BattleSignals.on_end_turn.emit(self)
+	BattleSignals.on_end_turn.emit(self)
 
 func begin_flee():
 	if motion_state == Active_Battle_State.FLEE:
 		return
 		
-	flee_time = 0.0
 	motion_state = Active_Battle_State.FLEE
+	active_battle_state_machine.transition_to(Active_Battle_State.FLEE)
 
 func get_info_display() -> InfoDisplay:
 	return get_node("HUD/InfoNode")
@@ -444,11 +338,10 @@ func toggle_timers(is_paused: bool):
 	defense_timer.paused = is_paused
 
 func fadeout(t: float):
-	(material as ShaderMaterial).set_shader_parameter("transparency_value", t)
+	var shader_mat = material as ShaderMaterial
+	assert(is_instance_valid(shader_mat))
+	shader_mat.set_shader_parameter("transparency_value", t)
 	info_node.visible = false
-
-func get_reaction_button() -> ReactionBasedButton:
-	return reaction_based_button
 	
 func on_interrupt_motion(interruptee: Actor, new_battle_state: Constants.Battle_State):
 	var old_motion_state: Active_Battle_State = interruptee.motion_state
@@ -496,11 +389,6 @@ func on_cancel_move():
 	avatar.battle_timers.skill_timer.stop()
 	Utility.disconnect_all_signal_connections(avatar.battle_timers.skill_timer.timeout)
 
-func disable_quick_time(_actor: Actor):
-	if battle_reaction:
-		battle_reaction.visible = false
-
-
 # using recursion (dfs), set all art nodes to inherit from parent material object
 # saves time needing to click on all art assets to have a shader effect enabled
 func set_descendant_material_as_root_material():
@@ -535,7 +423,6 @@ func init_collision_layer_interactions():
 	const LAYER_8: int = 0b1000_0000
 	
 	var interact_area: Area2D = get_node("CollisionGeometry/InteractArea")
-	var outer_interact_area: Area2D = get_node("CollisionGeometry/OuterInteractArea")
 	var hit_area: Area2D = get_node("CollisionGeometry/HitArea2D")
 	var actor_area: Area2D = get_node("CollisionGeometry/ActorArea")
 	var target_selection_area: Area2D = get_node("CollisionGeometry/TargetSelectionArea")
@@ -543,9 +430,6 @@ func init_collision_layer_interactions():
 	if actor_type == Constants.Actor_Type.PARTY_MEMBER:
 		interact_area.collision_layer = PLAYER_INTERACT_RANGE
 		interact_area.collision_mask = ENEMY
-		
-		outer_interact_area.collision_layer = ALL
-		outer_interact_area.collision_mask =  ALL
 		
 		hit_area.collision_layer = PLAYER_ATTACK
 		hit_area.collision_mask = ENEMY
@@ -559,9 +443,6 @@ func init_collision_layer_interactions():
 		interact_area.collision_layer = ENEMY_INTERACT_RANGE
 		interact_area.collision_mask = PLAYER
 		
-		outer_interact_area.collision_layer = ALL
-		outer_interact_area.collision_mask =  ALL
-		
 		hit_area.collision_layer = ENEMY_ATTACK
 		hit_area.collision_mask = PLAYER
 		
@@ -574,13 +455,11 @@ func init_collision_layer_interactions():
 func enable():
 	set_process(true)
 	set_physics_process(true)
-	visible = true
 	active_battle_state_machine.enable()
 
 func disable():
 	set_process(false)
 	set_physics_process(false)
-	visible = false
 	active_battle_state_machine.disable()
 
 func construct(avatar_data: AvatarData):
@@ -594,3 +473,12 @@ func construct(avatar_data: AvatarData):
 
 	var new_body: Node2D = preview_resource.instantiate()
 	$ArtRoot.add_child(new_body)
+	
+	# create new shader per instance as godot by default modifies a single shader instance for all packed scene nodes that depend on it
+	# tradeoff: costs more resources as this is creating copies of the shader
+	# https://docs.godotengine.org/en/stable/tutorials/shaders/shader_reference/shading_language.html#per-instance-uniforms
+	material = ShaderMaterial.new()
+	material.shader = load("res://shaders/transparent_fade.gdshader")
+	
+	# apply transparent shader effect on all body parts
+	set_descendant_material_as_root_material()

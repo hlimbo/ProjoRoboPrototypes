@@ -15,124 +15,165 @@
 self_modulate = Color(0.309804, 0.247059, 0.184314, 1)
 z_index = 2
 z_as_relative = false
+use_parent_material = true
 
 [node name="face" type="Node2D" parent="body"]
+use_parent_material = true
 
 [node name="config_1" type="Node2D" parent="body/face"]
+use_parent_material = true
 
 [node name="eyes" type="Node2D" parent="body/face/config_1"]
+use_parent_material = true
 
 [node name="eyes_l" type="Marker2D" parent="body/face/config_1/eyes"]
+use_parent_material = true
 position = Vector2(-30, -40)
 scale = Vector2(0.75, 0.75)
 
 [node name="eye_yellow" parent="body/face/config_1/eyes/eyes_l" instance=ExtResource("3_5dcko")]
+use_parent_material = true
 flip_h = true
 
 [node name="eyes_r" type="Marker2D" parent="body/face/config_1/eyes"]
+use_parent_material = true
 position = Vector2(30, -40)
 scale = Vector2(0.75, 0.75)
 
 [node name="eye_yellow" parent="body/face/config_1/eyes/eyes_r" instance=ExtResource("3_5dcko")]
+use_parent_material = true
 
 [node name="mouth" type="Node2D" parent="body/face/config_1"]
+use_parent_material = true
 
 [node name="Marker2D" type="Marker2D" parent="body/face/config_1/mouth"]
+use_parent_material = true
 position = Vector2(0, 40)
 gizmo_extents = 30.0
 
 [node name="mouth_closed_fangs" parent="body/face/config_1/mouth/Marker2D" instance=ExtResource("4_2s3t8")]
+use_parent_material = true
 
 [node name="nose" type="Node2D" parent="body/face/config_1"]
+use_parent_material = true
 
 [node name="Marker2D" type="Marker2D" parent="body/face/config_1/nose"]
+use_parent_material = true
 
 [node name="nose_red" parent="body/face/config_1/nose/Marker2D" instance=ExtResource("5_fdmpb")]
+use_parent_material = true
 
 [node name="limbs" type="Node2D" parent="body"]
+use_parent_material = true
 
 [node name="arms" type="Node2D" parent="body/limbs"]
 z_index = 1
 z_as_relative = false
+use_parent_material = true
 
 [node name="config_1" type="Node2D" parent="body/limbs/arms"]
+use_parent_material = true
 
 [node name="arm_l" type="Marker2D" parent="body/limbs/arms/config_1"]
+use_parent_material = true
 position = Vector2(-60, 0)
 rotation = 0.261799
 gizmo_extents = 25.0
 
 [node name="arm_whiteB" parent="body/limbs/arms/config_1/arm_l" instance=ExtResource("6_fqka4")]
 z_as_relative = false
+use_parent_material = true
 offset = Vector2(-8, 64)
 flip_h = true
 
 [node name="arm_r" type="Marker2D" parent="body/limbs/arms/config_1"]
+use_parent_material = true
 position = Vector2(60, 0)
 rotation = -0.261799
 
 [node name="arm_whiteB" parent="body/limbs/arms/config_1/arm_r" instance=ExtResource("6_fqka4")]
 z_as_relative = false
+use_parent_material = true
 
 [node name="legs" type="Node2D" parent="body/limbs"]
 z_as_relative = false
+use_parent_material = true
 
 [node name="config_1" type="Node2D" parent="body/limbs/legs"]
+use_parent_material = true
 
 [node name="leg_l" type="Marker2D" parent="body/limbs/legs/config_1"]
+use_parent_material = true
 position = Vector2(-34, 100)
 gizmo_extents = 30.0
 
 [node name="leg_redA" parent="body/limbs/legs/config_1/leg_l" instance=ExtResource("7_vsigw")]
 z_as_relative = false
+use_parent_material = true
 offset = Vector2(-10, 59)
 flip_h = true
 
 [node name="leg_r" type="Marker2D" parent="body/limbs/legs/config_1"]
+use_parent_material = true
 position = Vector2(34, 100)
 gizmo_extents = 30.0
 
 [node name="leg_redA" parent="body/limbs/legs/config_1/leg_r" instance=ExtResource("7_vsigw")]
 z_as_relative = false
+use_parent_material = true
 
 [node name="accessories" type="Node2D" parent="body"]
+use_parent_material = true
 
 [node name="config_1" type="Node2D" parent="body/accessories"]
+use_parent_material = true
 
 [node name="ears" type="Node2D" parent="body/accessories/config_1"]
+use_parent_material = true
 
 [node name="ear_l" type="Marker2D" parent="body/accessories/config_1/ears"]
 z_as_relative = false
+use_parent_material = true
 position = Vector2(-63, -48)
 
 [node name="detail_green_ear_round" parent="body/accessories/config_1/ears/ear_l" instance=ExtResource("8_c2dmb")]
 z_as_relative = false
+use_parent_material = true
 offset = Vector2(-4, -14)
 flip_h = true
 
 [node name="ear_r" type="Marker2D" parent="body/accessories/config_1/ears"]
 z_as_relative = false
+use_parent_material = true
 position = Vector2(63, -48)
 
 [node name="detail_green_ear_round" parent="body/accessories/config_1/ears/ear_r" instance=ExtResource("8_c2dmb")]
 z_as_relative = false
+use_parent_material = true
 
 [node name="antennaes" type="Node2D" parent="body/accessories/config_1"]
+use_parent_material = true
 
 [node name="antenna_l" type="Marker2D" parent="body/accessories/config_1/antennaes"]
+use_parent_material = true
 position = Vector2(-40, -76)
 
 [node name="detail_dark_antenna_large" parent="body/accessories/config_1/antennaes/antenna_l" instance=ExtResource("9_u7uxc")]
+use_parent_material = true
 offset = Vector2(-11, -26)
 flip_h = true
 
 [node name="antenna_r" type="Marker2D" parent="body/accessories/config_1/antennaes"]
+use_parent_material = true
 position = Vector2(40, -76)
 
 [node name="detail_dark_antenna_large" parent="body/accessories/config_1/antennaes/antenna_r" instance=ExtResource("9_u7uxc")]
+use_parent_material = true
 
 [node name="horns" type="Node2D" parent="body/accessories/config_1"]
+use_parent_material = true
 
 [node name="horn_r" type="Marker2D" parent="body/accessories/config_1/horns"]
+use_parent_material = true
 position = Vector2(0, -67)
 rotation = -0.785398

@@ -21,6 +21,11 @@ func get_valid_buff_test():
 	assert(modifier_data.description == "Deals damage back to opposing bot that attacks with a physical move")
 	assert(modifier_data.duration_type == "seconds")
 	assert(modifier_data.duration == 3)
+	assert(modifier_data.damage_type == "flat")
+	assert(modifier_data.damage == 10)
+	assert(modifier_data.stat_modifier_category == "no_stat")
+	assert(modifier_data.stat_modifier_type == "flat")
+	assert(modifier_data.stat_value == 0)
 	
 func get_invalid_buff_test():
 	var modifier_data: ModifierEffect = modifier_data_container.get_buff("No Name")
@@ -33,6 +38,11 @@ func get_valid_debuff_test():
 	assert(modifier_data.description == "slows down the bot's speed on the timeline")
 	assert(modifier_data.duration_type == "seconds")
 	assert(modifier_data.duration == 3)
+	assert(modifier_data.damage_type == "flat")
+	assert(modifier_data.damage == 0)
+	assert(modifier_data.stat_modifier_category == "speed")
+	assert(modifier_data.stat_modifier_type == "flat")
+	assert(modifier_data.stat_value == -10)
 	
 func get_invalid_debuff_test():
 	var modifier_data: ModifierEffect = modifier_data_container.get_debuff("No Name")

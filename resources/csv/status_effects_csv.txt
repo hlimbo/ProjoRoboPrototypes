@@ -1,0 +1,5 @@
+name	description	duration_type	duration	stat_modifier_category	stat_value_type	stat_value	effect_type
+Thorned Armor	Deals damage back to opposing bot that attacks with a physical move	seconds	3	hp	flat	-5	positive
+Goblin Punch	Adds half your Toughness to damage of this attack	instant	-1	defense	percent	50	positive
+Slow	slows down the bot's speed on the timeline	seconds	3	speed	flat	-10	negative
+Tunnel-visioned	restricted to attacking the bot that taunted it	turn	2	no_stat	flat	0	negative

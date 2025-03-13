@@ -1,3 +1,0 @@
-name	description	duration_type	duration	damage_type	damage	stat_modifier_category	stat_modifier_type	stat_value
-Slow	slows down the bot's speed on the timeline	seconds	3	flat	0	speed	flat	-10
-Tunnel-visioned	can only attack bot that aggro-ed it	turn	2	flat	0	no_stat	flat	0

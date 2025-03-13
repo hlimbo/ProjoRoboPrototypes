@@ -75,6 +75,8 @@ var resume_motion: bool = true
 
 @export var flee_fade_time: float = 1.5 # seconds
 
+@export var skills: Array[Skill] = []
+
 func _init():
 	
 	active_battle_state_machine.current_state = Constants.Active_Battle_State.NEUTRAL

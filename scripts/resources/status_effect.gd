@@ -13,3 +13,11 @@ class_name StatusEffect
 @export var duration: float
 
 @export var modifiers: Array[Modifier] = []
+
+# used to determine if the status effect is the following:
+# 1. positive
+# 2. negative
+@export var effect_type: String
+
+func get_modifiers() -> Array[Modifier]:
+	return modifiers

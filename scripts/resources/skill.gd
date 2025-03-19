@@ -19,6 +19,10 @@ class_name Skill
 # represent effects that can be given to an actor target(s)
 @export var status_effects: Array[StatusEffect] = []
 
+# represents the buffs and debuffs that can be applied to a target
+@export var buffs: Array[String] = []
+@export var debuffs: Array[String] = []
+
 func _init(p_cost = 0, p_damage: float = 0, p_name = "skill_resource"):
 	cost = p_cost
 	damage = p_damage

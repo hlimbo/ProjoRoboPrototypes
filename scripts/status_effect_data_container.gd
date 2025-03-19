@@ -6,10 +6,11 @@ class_name StatusEffectDataContainer
 var buffs: Dictionary = {}
 var debuffs: Dictionary = {}
 
-func load_modifiers():
+func load_modifiers(file_path: String):
 	var reader = StatusEffectCsvReader.new()
 	
-	var output: Array = reader.read_csv_file("res://resources/csv/status_effects_csv.txt", "\t")
+	var output: Array = reader.read_csv_file(file_path, "\t")
+	assert(len(output) > 0)
 	
 	for i in range(len(output)):
 		var status_effect = output[i] as StatusEffect

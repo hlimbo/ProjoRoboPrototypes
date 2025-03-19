@@ -3,9 +3,10 @@ extends Node
 signal on_setup_test
 
 var modifier_data_container: StatusEffectDataContainer
+var csv_file_under_test: String = "res://resources/csv/status_effects_csv.txt"
 
 func setup_test():
-	modifier_data_container.load_modifiers()
+	modifier_data_container.load_modifiers(csv_file_under_test)
 
 func load_modifiers_test():
 	var buff_count: int = modifier_data_container.buffs.size()

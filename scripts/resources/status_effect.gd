@@ -19,5 +19,10 @@ class_name StatusEffect
 # 2. negative
 @export var effect_type: String
 
+# who this status effect targets
+# 1. self = targets the actor who casts this status effect
+# 2. other = targets another actor that is not the caster of this status effect
+@export var target: String
+
 func get_modifiers() -> Array[Modifier]:
 	return modifiers

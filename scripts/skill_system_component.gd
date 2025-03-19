@@ -10,7 +10,10 @@ class_name SkillSystemComponent
 @export var skills: Dictionary = {}
 # key - skill name - String
 # value - boolean - true if activated; false otherwise
-@export var skills_activation_table = {}
+@export var skills_activation_table: Dictionary = {}
+# all possible status effects in game
+# IMPROVEMENT: load once in a singleton and reference as a dependency
+
 
 #region signals
 

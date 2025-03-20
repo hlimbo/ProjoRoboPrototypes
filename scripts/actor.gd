@@ -22,8 +22,17 @@ const Active_Battle_State = Constants.Active_Battle_State
 
 @export var active_battle_state_machine: Fsm = Fsm.new()
 @onready var skill_system_component: SkillSystemComponent = $SkillSystemComponent
+@onready var status_effects_component: StatusEffectsComponent = $StatusEffectsComponent
 # UI Component of actor in a battle scene
 @export var avatar: Avatar
+
+# These are used to reset current stat attributes back to before battle starts
+# Base hp represents max hp
+# These can be only modified when a level up occurs
+@export var base_stat_attributes: StatAttributeSet
+# These are a copy of base_stat_attributes at start of battle
+# these can be modified as long as battle is active
+@export var current_stat_attributes: StatAttributeSet
 
 #endregion
 

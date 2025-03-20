@@ -10,13 +10,12 @@ class_name Modifier
 
 # determines the denomination of the stat's value. It can be the following:
 # 1. flat
-# 2. percentage
-@export var stat_value_type: String = "flat"
-
+# 2. percent
+@export var modifier_type: String = Constants.MODIFIER_FLAT
 @export var stat_value: float = 0
 
-func _init(_stat_category_type_src: String = "hp", _stat_category_type_target = "hp", _stat_value_type: String = "flat", _stat_value: float = 0):
-	stat_category_type_src = _stat_category_type_src
-	stat_category_type_target = _stat_category_type_target
-	stat_value_type = _stat_value_type
+func _init(_src: String = Constants.STAT_HP, _target: String = Constants.STAT_HP, _modifier_type: String = Constants.MODIFIER_FLAT, _stat_value: float = 0):
+	stat_category_type_src = _src
+	stat_category_type_target = _target
+	modifier_type = _modifier_type
 	stat_value = _stat_value

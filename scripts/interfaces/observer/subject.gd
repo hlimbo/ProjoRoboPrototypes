@@ -1,9 +1,9 @@
-extends Node
+extends RefCounted
 class_name Subject
 
 # This list will receive a message from this class
 # when it does a side-effect
-@export var observers: Array[IObserver] = [] 
+var observers: Array[IObserver] = [] 
 
 func add(observer: IObserver):
 	observers.append(observer)

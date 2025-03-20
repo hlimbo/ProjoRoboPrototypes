@@ -117,3 +117,39 @@ func pick_unique_random_elements(items: Array, pick_count: int) -> Array:
 		upper_limit -= 1
 	
 	return output
+	
+func convert_percent_to_flat_modifier(stat_attr_set: StatAttributeSet, modifier: Modifier) -> Modifier:
+	const valid_modifier_types = [Constants.MODIFIER_FLAT, Constants.MODIFIER_PERCENT]
+	const valid_stat_attributes = [
+		Constants.STAT_HP, 
+		Constants.STAT_ENERGY, 
+		Constants.STAT_SPEED, 
+		Constants.STAT_STRENGTH, 
+		Constants.STAT_TOUGHNESS
+	]
+	
+	assert(valid_modifier_types.has(modifier.stat_value_type))
+	assert(valid_stat_attributes.has(modifier.stat_category_type_src))
+	
+	if modifier.modifier_type == Constants.MODIFIER_FLAT:
+		return modifier
+	
+	var flat_modifier = Modifier.new()
+	var percent: float = modifier.stat_value / 100
+	
+	match modifier.stat_category_type_src:
+		Constants.STAT_HP:
+			flat_modifier.stat_value = stat_attr_set.hp.value * percent
+		Constants.STAT_ENERGY:
+			flat_modifier.stat_value = stat_attr_set.energy.value * percent
+		Constants.STAT_STRENGTH:
+			flat_modifier.stat_value = stat_attr_set.strength.value * percent
+		Constants.STAT_TOUGHNESS:
+			flat_modifier.stat_value = stat_attr_set.toughness.value * percent
+		Constants.STAT_SPEED:
+			flat_modifier.stat_value = stat_attr_set.speed.value * percent
+		
+	flat_modifier.stat_category_type_src = modifier.stat_category_type_src
+	flat_modifier.stat_category_type_target = modifier.stat_category_type_target
+	flat_modifier.stat_value_type = Constants.MODIFIER_FLAT
+	return flat_modifier

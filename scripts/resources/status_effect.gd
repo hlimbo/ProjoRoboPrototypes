@@ -6,12 +6,13 @@ class_name StatusEffect
 @export var name: String
 @export var description: String
 # Duration types
-# 1. INFINITE - applies until battle is over
+# 1. ONE-SHOT - applies until battle is over
 # 2. TURN - applies for X number of turns
 # 3. SECONDS - applies for X seconds
 @export var duration_type: String
 @export var duration: float
 
+# list of modifiers that will change various stat attributes until end of battle
 @export var modifiers: Array[Modifier] = []
 
 # used to determine if the status effect is the following:

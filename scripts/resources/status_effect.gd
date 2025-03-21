@@ -12,7 +12,7 @@ class_name StatusEffect
 @export var duration_type: String
 @export var duration: float
 
-# list of modifiers that will change various stat attributes until end of battle
+# list of modifiers that will change various stat attributes until duration units of time is met
 @export var modifiers: Array[Modifier] = []
 
 # used to determine if the status effect is the following:
@@ -20,10 +20,11 @@ class_name StatusEffect
 # 2. negative
 @export var effect_type: String
 
-# who this status effect targets
-# 1. self = targets the actor who casts this status effect
-# 2. other = targets another actor that is not the caster of this status effect
-@export var target: String
+# max number of times the same status effect can be applied to a target
+@export var stack_cap: int
 
 func get_modifiers() -> Array[Modifier]:
 	return modifiers
+	
+func _init(name = "Placeholder Effect Name"):
+	self.name = name

@@ -6,7 +6,6 @@ class_name UIController
 @onready var battle_manager: BattleManager = owner.get_node("BattleManager")
 @export var battle_spawn_manager: BattleSpawnManager
 @export var battle_timer_manager: BattleTimerManager
-@export var status_effects_manager: StatusEffectsManager = StatusEffectsManager
 
 @onready var active_skill_menu: Control = $ActiveSkillMenu
 @onready var action_layout: Control = $ActionLayout
@@ -500,9 +499,9 @@ func on_ai_skill_end(damage_receiver: Actor, damage_dealer: Actor) -> void:
 	
 	print("avatar %s skill end at time %d" % [avatar.name, Time.get_ticks_msec()])
 	# pick random skill
-	var skill1 = Skill.new(1, 5, "Sizzle")
-	var skill2 = Skill.new(4, 10, "Spitfire")
-	var skill3 = Skill.new(8, 20, "Oven Overload")
+	var skill1 = Skill.new(1, "Sizzle")
+	var skill2 = Skill.new(4, "Spitfire")
+	var skill3 = Skill.new(8, "Oven Overload")
 	
 	# TODO: check ahead of time if enemy can cast a skill, if not, don't do this action
 	var skillz: Array[Skill] = [skill1, skill2, skill3]
@@ -581,97 +580,8 @@ func on_skill_damage_calculation(damage_dealer: Actor, damage_receiver: Actor, s
 	var enemy_name: String = target.avatar_data.avatar_name
 	var skill_name: String = skill.name
 	
-	# calculate base damage
-	var base_dmg: float = 0
-	# apply base damage based on damage_dealer's max hp
-	# this computation can be further abstracted to make more flexible
-	# but costs further code complexity
-	if skill.hp_modifier.stat_value_type == "percent":
-		base_dmg = skill.hp_modifier.stat_value * damage_dealer.avatar.avatar_data.initial_stats.hp
-	elif skill.hp_modifier.stat_value_type == "flat":
-		base_dmg = skill.hp_modifier.stat_value
-	
-	# check which status effects to apply to (apply to damage dealer or damage receiver?)
-	var target_buffs: Array[StatusEffect] = []
-	var target_debuffs: Array[StatusEffect] = []
-	var self_buffs: Array[StatusEffect] = []
-	var self_debuffs: Array[StatusEffect] = []
-	
-	for buff in skill.buffs:
-		var buff_effect: StatusEffect = status_effects_manager.status_effects.get_buff(buff)
-		assert(is_instance_valid(buff_effect))
-		if buff_effect.target == "self":
-			self_buffs.append(buff_effect)
-		else:
-			target_buffs.append(buff_effect)
-			
-	for debuff in skill.debuffs:
-		var debuff_effect: StatusEffect = status_effects_manager.status_effects.get_debuff(debuff)
-		assert(is_instance_valid(debuff_effect))
-		if debuff_effect.target == "self":
-			self_debuffs.append(debuff_effect)
-		else:
-			target_debuffs.append(debuff_effect)
-	
-	# apply buffs to self
-	for buff in self_buffs:
-		damage_dealer.skill_system_component.add_buff_tag(buff.name)
-	
-	# apply debuffs to self
-	for debuff in self_debuffs:
-		damage_dealer.skill_system_component.add_debuff_tag(debuff.name)
-	
-	# apply buffs to target
-	for buff in target_buffs:
-		damage_receiver.skill_system_component.add_buff_tag(buff.name)
-	
-	# apply debuffs to target
-	for debuff in target_debuffs:
-		damage_receiver.skill_system_component.add_debuff_tag(debuff.name)
-	
-	# represents the deltas to change to the current stats of damage receiver
-	var dmg_receiver_delta = BaseStats.new()
-	
-	# apply instant status effect -- there's probably a better way to handle this -- maybe via serialization and reflection?
-	# TODO: apply seconds and turn based status effects later on
-	# for each status effect,
-	#	for each stat modifier that is instant duration type
-	#		compute stat modifier against current stat values
-	for target_buff in target_buffs:
-		
-		# get percentage or additional flat damage applied from all modifiers attached to the skill
-		if target_buff.duration_type == "instant":
-			for modifier in target_buff.modifiers:
-				# damage dealer values
-				var modifier_value: float = 0
-				if modifier.stat_value_type == "percent":
-					var percent: float = (modifier.stat_value / 100)
-					match modifier.stat_category_type_src:
-						"hp": # current hp
-							modifier_value = damage_dealer.avatar.avatar_data.current_stats.hp * percent
-						"attack": # current attack
-							modifier_value = damage_dealer.avatar.avatar_data.current_stats.attack * percent
-						"defense":  # current defense
-							modifier_value= damage_dealer.avatar.avatar_data.current_stats.defense * percent
-						"speed": # current speed
-							modifier_value = damage_dealer.avatar.avatar_data.current_stats.speed * percent
-				else: # flat stat change
-					modifier_value = modifier.stat_value
-				
-				# damage receiver computations
-				# There's honestly probably a better way to do this per stat
-				match modifier.stat_category_type_target:
-					"hp":
-						dmg_receiver_delta.hp += modifier_value
-					"attack":
-						dmg_receiver_delta.attack += modifier_value
-					"defense":
-						dmg_receiver_delta.defense += modifier_value
-					"speed":
-						dmg_receiver_delta.speed += modifier_value
-				
-	# apply damage calculations based on stat increase/decrease computations	
-	var total_dmg: float = dmg_receiver_delta.hp + base_dmg
+	# TODO: calculate base damage
+	var total_dmg: float = 2
 	
 	label.text = "%s casts %s to %s. It deals %d damage!" % [avatar.avatar_data.avatar_name, skill_name, enemy_name, total_dmg]
 

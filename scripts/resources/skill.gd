@@ -6,9 +6,6 @@ class_name Skill
 @export var description: String
 @export var cost: float
 
-# TODO: remove
-@export var damage: float
-
 # FUTURE CONSIDERATION
 # should there be a skill level in here?
 # would it affect the casting speed? amount of damage?
@@ -24,7 +21,6 @@ class_name Skill
 @export var buffs: Array[StatusEffect] = []
 @export var debuffs: Array[StatusEffect] = []
 
-func _init(p_cost = 0, p_damage: float = 0, p_name = "skill_resource"):
+func _init(p_cost = 0, p_name = "skill_resource"):
 	cost = p_cost
-	damage = p_damage
 	name = p_name

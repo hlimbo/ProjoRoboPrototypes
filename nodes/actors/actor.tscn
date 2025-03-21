@@ -176,8 +176,6 @@ offset_bottom = -730.0
 
 [node name="SkillSystemComponent" type="Node2D" parent="."]
 script = ExtResource("11_dpaxh")
-skills = null
-skills_activation_table = null
 
 [node name="StatusEffectsComponent" type="Node2D" parent="."]
 script = ExtResource("12_fuk1k")

@@ -25,7 +25,6 @@ EnergyCreatureTypeSystem="*res://scripts/singletons/energy_creature_type_system.
 InventorySystem="*res://scripts/singletons/inventory_system.gd"
 SceneManager="*res://scripts/singletons/scene_manager.gd"
 BotInventorySystems="*res://scripts/singletons/bot_inventory_systems.gd"
-StatusEffectsManager="*res://scripts/singletons/status_effects_manager.gd"
 
 [display]
 

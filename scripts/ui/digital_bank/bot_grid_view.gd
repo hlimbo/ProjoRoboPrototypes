@@ -39,7 +39,7 @@ func init_grid_view():
 			var bot: AvatarData = (bots[bot_index] as AvatarData)
 			if ordinal_index == bot.ordinal:
 				# add bot in position specified by its ordinal value
-				cell_view.initialize(bot.avatar_data.avatar_name, bot.level, bot.bot_type, bot.energy_type, bot.avatar_icon)
+				cell_view.initialize(bot.avatar_name, bot.level, bot.bot_type, bot.energy_type, bot.avatar_icon)
 				bot_index += 1
 			else:
 				# add empty cell
@@ -84,7 +84,7 @@ func update_grid_view(bot_data_container: BotDataContainer):
 			var bot: AvatarData = (bots[bot_index] as AvatarData)
 			if ordinal_index == bot.ordinal:
 				# add bot in position specified by its ordinal value
-				cell_view.initialize(bot.avatar_data.avatar_name, bot.level, bot.bot_type, bot.energy_type, bot.avatar_icon)
+				cell_view.initialize(bot.avatar_name, bot.level, bot.bot_type, bot.energy_type, bot.avatar_icon)
 				bot_index += 1
 			else:
 				# add empty cell

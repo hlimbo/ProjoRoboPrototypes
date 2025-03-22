@@ -1,0 +1,98 @@
+[gd_scene load_steps=8 format=3 uid="uid://el00wv63mqm1"]
+
+[ext_resource type="Script" path="res://experiments/attack_experiment_controller.gd" id="1_uueov"]
+[ext_resource type="Script" path="res://experiments/punching_bag.gd" id="2_2fkv6"]
+[ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="2_et4pj"]
+[ext_resource type="Script" path="res://experiments/atk_btn_experiment.gd" id="4_44bbx"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_u4aq2"]
+radius = 89.0225
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_j7ofv"]
+radius = 60.2993
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_y4kot"]
+radius = 51.0882
+
+[node name="AttackExperiment" type="Node2D"]
+
+[node name="Player" type="Node2D" parent="." node_paths=PackedStringArray("target")]
+position = Vector2(230, 407)
+script = ExtResource("1_uueov")
+move_speed = 500.0
+target = NodePath("../PunchingBag")
+
+[node name="ColorRect" type="ColorRect" parent="Player"]
+offset_left = -32.0
+offset_top = -32.0
+offset_right = 32.0
+offset_bottom = 32.0
+color = Color(0, 1, 0.166667, 1)
+
+[node name="AttackRange" type="Area2D" parent="Player"]
+
+[node name="AttackRange" type="CollisionShape2D" parent="Player/AttackRange"]
+shape = SubResource("CircleShape2D_u4aq2")
+
+[node name="AttackArea" type="Area2D" parent="Player"]
+visible = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player/AttackArea"]
+position = Vector2(92, -24)
+shape = SubResource("CircleShape2D_j7ofv")
+debug_color = Color(0.856659, 0.365995, 0, 0.42)
+
+[node name="PunchingBag" type="Node2D" parent="."]
+position = Vector2(971, 231)
+script = ExtResource("2_2fkv6")
+min_rotation = -45.0
+max_rotation = 45.0
+
+[node name="ColorRect" type="ColorRect" parent="PunchingBag"]
+offset_left = -32.0
+offset_top = -128.0
+offset_right = 32.0
+pivot_offset = Vector2(32, 128)
+
+[node name="DamageLabel" type="Label" parent="PunchingBag"]
+modulate = Color(1, 1, 1, 0)
+offset_left = -206.0
+offset_top = -153.0
+offset_right = 10.0
+offset_bottom = -93.0
+pivot_offset = Vector2(111, 59)
+theme = ExtResource("2_et4pj")
+theme_override_colors/font_color = Color(0.889043, 2.02149e-06, 0.471187, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 16
+theme_override_font_sizes/font_size = 36
+text = "999"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HitRange" type="Area2D" parent="PunchingBag" groups=["enemy"]]
+
+[node name="HitRange" type="CollisionShape2D" parent="PunchingBag/HitRange"]
+position = Vector2(-1, 1)
+shape = SubResource("CircleShape2D_y4kot")
+debug_color = Color(0.633208, 0.392312, 0.899967, 0.42)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Button" type="Button" parent="CanvasLayer" node_paths=PackedStringArray("player")]
+anchors_preset = -1
+anchor_top = 0.711
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 150.0
+offset_top = 55.08
+offset_right = -84.0
+offset_bottom = -74.0
+grow_vertical = 0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme = ExtResource("2_et4pj")
+theme_override_font_sizes/font_size = 28
+text = "Attack!"
+script = ExtResource("4_44bbx")
+player = NodePath("../../Player")

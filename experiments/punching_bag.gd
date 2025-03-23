@@ -1,6 +1,9 @@
 extends Node2D
 class_name PunchingBag
 
+# dependencies
+@export var camera: ScreenShake
+
 # in degrees
 @export var min_rotation: float = -15.0
 @export var max_rotation: float = 15.0
@@ -30,10 +33,15 @@ func receive_damage():
 	var damage_value: int = randi_range(0, max_damage)
 	damage_label.text = "%d" % damage_value
 	
-	# IMPROVEMENTS
-	# the higher the number, the more the punching bag oscillates...
 	# on crits, have the final scale be alot higher and add an ! at end of text
-	var curr_rotation: float = (float(damage_value) / float(max_damage)) * max_rotation
+	
+	# the higher the number, the more the punching bag oscillates...
+	var str_percentage: float = (float(damage_value) / float(max_damage)) 
+	var curr_rotation: float = str_percentage * max_rotation
+	
+	var shake_strength: float = str_percentage * 50
+	var shake_duration: float = str_percentage * 0.75 # seconds
+	camera.start_shake(shake_strength, shake_duration)
 	
 	# flash red on loop for color rect
 	var tween: Tween = create_tween().set_loops(8)

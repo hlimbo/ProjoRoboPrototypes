@@ -1,9 +1,10 @@
-[gd_scene load_steps=22 format=3 uid="uid://el00wv63mqm1"]
+[gd_scene load_steps=23 format=3 uid="uid://el00wv63mqm1"]
 
 [ext_resource type="Script" path="res://experiments/attack_experiment_controller.gd" id="1_uueov"]
 [ext_resource type="Script" path="res://experiments/punching_bag.gd" id="2_2fkv6"]
 [ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="2_et4pj"]
 [ext_resource type="Script" path="res://experiments/atk_btn_experiment.gd" id="4_44bbx"]
+[ext_resource type="Script" path="res://experiments/screen_shake.gd" id="5_6ti1f"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_u4aq2"]
 radius = 89.0225
@@ -113,9 +114,10 @@ position = Vector2(92, -24)
 shape = SubResource("CircleShape2D_j7ofv")
 debug_color = Color(0.856659, 0.365995, 0, 0.42)
 
-[node name="PunchingBag" type="Node2D" parent="."]
+[node name="PunchingBag" type="Node2D" parent="." node_paths=PackedStringArray("camera")]
 position = Vector2(971, 231)
 script = ExtResource("2_2fkv6")
+camera = NodePath("../Camera2D")
 min_rotation = -45.0
 max_rotation = 45.0
 
@@ -184,3 +186,8 @@ amount = 1000
 process_material = SubResource("ParticleProcessMaterial_g1v5s")
 texture = SubResource("GradientTexture2D_12s3l")
 trail_enabled = true
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(642, 360)
+script = ExtResource("5_6ti1f")
+shake_strength = 10.0

@@ -16,19 +16,19 @@ void fragment() {
 	// https://docs.godotengine.org/en/stable/tutorials/shaders/shader_reference/canvas_item_shader.html#color-and-texture
 	// texture(TEXTURE, UV); // samples the texture's original color without modulate and self-modulate applied
 	vec4 color = COLOR;
-	
+
 	float threshold = 0.0;
 	vec2 dither_size = vec2(0.0, 0.0);
-	
+
 	if (transparency_value < 1.0) {
 		threshold = 0.5;
 		dither_size = vec2(2.0, 2.0);
 	}
-	
+
 	// Determine the pixel position in the dither matrix
     int x = int(mod(FRAGCOORD.x, dither_size.x));
     int y = int(mod(FRAGCOORD.y, dither_size.y));
-	
+
 	float dither_threshold = dither_matrix[x][y];
     // Apply dithering: compare the brightness to the threshold
 	vec3 perceived_brightness = vec3(0.299, 0.587, 0.114);
@@ -36,6 +36,6 @@ void fragment() {
     if (brightness < threshold + dither_threshold) {
         color.a = 0.0; // Make transparent if below threshold
     }
-	
+
 	COLOR = color * vec4(1.0, 1.0, 1.0, transparency_value);
 }

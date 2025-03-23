@@ -14,8 +14,10 @@ enum EXPR_STATE {
 @export var current_state: EXPR_STATE = EXPR_STATE.NEUTRAL
 @export var move_speed: float = 1000.0
 
+#region Dependencies
 @export var target: Node2D
 @export var original_position: Vector2
+#endregion
 
 # Note: drawing uses this node's canvas item's coordinate system
 # so it will be relative to this node's transform as opposed to the world's transform...

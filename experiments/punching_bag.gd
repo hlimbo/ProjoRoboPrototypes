@@ -7,7 +7,6 @@ class_name PunchingBag
 # in degrees
 @export var min_rotation: float = -15.0
 @export var max_rotation: float = 15.0
-@export var max_damage: int = 999
 
 @onready var color_rect: ColorRect = $ColorRect
 @onready var damage_label: Label = $DamageLabel
@@ -26,22 +25,16 @@ func _ready():
 	original_font_outline_color = Color(damage_label["theme_override_colors/font_outline_color"])
 
 
-func receive_damage():
+func receive_damage(damage_value: int, max_damage: int):
 	print("got hit")
-	
-	# damage label pick a random number to simulate damage
-	var damage_value: int = randi_range(0, max_damage)
-	damage_label.text = "%d" % damage_value
-	
-	# on crits, have the final scale be alot higher and add an ! at end of text
-	
 	# the higher the number, the more the punching bag oscillates...
 	var str_percentage: float = (float(damage_value) / float(max_damage)) 
+	damage_label.text = "%d" % damage_value
 	var curr_rotation: float = str_percentage * max_rotation
 	
 	var shake_strength: float = str_percentage * 50
 	var shake_duration: float = str_percentage * 0.75 # seconds
-	camera.start_shake(shake_strength, shake_duration)
+	#camera.start_shake(shake_strength, shake_duration)
 	
 	# flash red on loop for color rect
 	var tween: Tween = create_tween().set_loops(8)
@@ -94,5 +87,6 @@ func receive_damage():
 			damage_label["theme_override_colors/font_outline_color"] = original_font_outline_color
 			damage_label.modulate.a = 0
 		)
+		
 	)
 	

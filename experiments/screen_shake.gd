@@ -53,7 +53,8 @@ func shake_random():
 # samples pixels made using a pseudo randomly generated texture to offset the camera in different directions
 func shake_noise():
 	var time_since_engine_started: float = Time.get_ticks_msec()
-	self.position = _original_position + Vector2(
+	var noise_vector = Vector2(
 		_noise.get_noise_2d(self.position.x * noise_scale, time_since_engine_started * shake_frequency) * shake_strength,
 		_noise.get_noise_2d(self.position.y * noise_scale, time_since_engine_started * shake_frequency) * shake_strength
 	)
+	self.position = _original_position + noise_vector

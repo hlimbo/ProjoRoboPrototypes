@@ -1,10 +1,119 @@
-[gd_scene load_steps=23 format=3 uid="uid://el00wv63mqm1"]
+[gd_scene load_steps=27 format=3 uid="uid://el00wv63mqm1"]
 
 [ext_resource type="Script" path="res://experiments/attack_experiment_controller.gd" id="1_uueov"]
 [ext_resource type="Script" path="res://experiments/punching_bag.gd" id="2_2fkv6"]
 [ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="2_et4pj"]
 [ext_resource type="Script" path="res://experiments/atk_btn_experiment.gd" id="4_44bbx"]
 [ext_resource type="Script" path="res://experiments/screen_shake.gd" id="5_6ti1f"]
+
+[sub_resource type="Animation" id="Animation_7k77h"]
+resource_name = "starburst_vfx"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("white_starburst:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.15),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0.4, 0.4), Vector2(0.8, 0.8)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("black_starburst:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.15),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0.5, 0.5), Vector2(1, 1)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 0.24, 0.252666, 0), Color(1, 0.239216, 0.25098, 1)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".:visible")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+
+[sub_resource type="Animation" id="Animation_egwbd"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("white_starburst:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0.4, 0.4)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("black_starburst:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0.5, 0.5)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 0.24, 0.252666, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".:visible")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_jbd22"]
+_data = {
+"RESET": SubResource("Animation_egwbd"),
+"starburst_vfx": SubResource("Animation_7k77h")
+}
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_u4aq2"]
 radius = 89.0225
@@ -87,12 +196,22 @@ width = 1
 fill_from = Vector2(0.504274, 0.42735)
 fill_to = Vector2(0.504274, 1)
 
+[sub_resource type="CanvasTexture" id="CanvasTexture_84hmf"]
+
 [node name="AttackExperiment" type="Node2D"]
 
-[node name="Player" type="Node2D" parent="." node_paths=PackedStringArray("target")]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+root_node = NodePath("../Starburst")
+libraries = {
+"": SubResource("AnimationLibrary_jbd22")
+}
+
+[node name="Player" type="Node2D" parent="." node_paths=PackedStringArray("target", "vfx", "starburst")]
 position = Vector2(230, 407)
 script = ExtResource("1_uueov")
 target = NodePath("../PunchingBag")
+vfx = NodePath("../AnimationPlayer")
+starburst = NodePath("../Starburst")
 
 [node name="ColorRect" type="ColorRect" parent="Player"]
 offset_left = -32.0
@@ -107,7 +226,7 @@ color = Color(0, 1, 0.166667, 1)
 shape = SubResource("CircleShape2D_u4aq2")
 
 [node name="AttackArea" type="Area2D" parent="Player"]
-visible = false
+monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player/AttackArea"]
 position = Vector2(92, -24)
@@ -191,3 +310,50 @@ trail_enabled = true
 position = Vector2(642, 360)
 script = ExtResource("5_6ti1f")
 shake_strength = 10.0
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
+position = Vector2(66, 68)
+scale = Vector2(1, 1.17164)
+color = Color(0.982632, 3.27289e-05, 0.699095, 1)
+texture = SubResource("CanvasTexture_84hmf")
+polygon = PackedVector2Array(102, 29.8726, -23, 73, 47, 30.7261, 48, -34.5414)
+vertex_colors = PackedColorArray(1, 0.238866, 0.680622, 1)
+
+[node name="SlashEffect" type="Polygon2D" parent="."]
+position = Vector2(10, 239)
+color = Color(0.73824, 4.81307e-07, 0.41221, 1)
+polygon = PackedVector2Array(16, -67, 101, -51, 132, -28, 102, 2, 18, 69, 94, -6, 103, -29, 82, -47)
+
+[node name="Starburst2" type="Node2D" parent="."]
+visible = false
+modulate = Color(0, 0.438352, 0.995559, 1)
+position = Vector2(935, 186)
+scale = Vector2(0.5, 0.5)
+
+[node name="black_starburst2" type="Polygon2D" parent="Starburst2"]
+position = Vector2(0, -1.07265)
+scale = Vector2(1.2, 1.2)
+color = Color(0, 0, 0, 1)
+offset = Vector2(0, 13.8408)
+polygon = PackedVector2Array(0, -62.5433, -8.3045, -29.3253, -37.3702, -48.7024, -22.1453, -21.0208, -49.827, -15.4844, -19.3772, -9.9481, -40.1384, 13.5813, -9.68858, 2.50864, 0, 32.9585, 9.68858, 1.12456, 40.1384, 17.7336, 22.1453, -7.17994, 53.9792, -16.8685, 22.1453, -21.0208, 33.218, -47.3183, 6.92041, -30.7093)
+
+[node name="white_starburst" type="Polygon2D" parent="Starburst2"]
+position = Vector2(0, -2.45675)
+offset = Vector2(0, 15.4845)
+polygon = PackedVector2Array(0, -62.5433, -8.3045, -29.3253, -37.3702, -48.7024, -22.1453, -21.0208, -49.827, -15.4844, -19.3772, -9.9481, -40.1384, 13.5813, -9.68858, 2.50864, 0, 32.9585, 9.68858, 1.12456, 40.1384, 17.7336, 22.1453, -7.17994, 53.9792, -16.8685, 22.1453, -21.0208, 33.218, -47.3183, 6.92041, -30.7093)
+
+[node name="Starburst" type="Node2D" parent="."]
+modulate = Color(1, 0.24, 0.252666, 0)
+position = Vector2(933, 139)
+rotation = 0.698132
+scale = Vector2(0.85, 0.85)
+
+[node name="black_starburst" type="Polygon2D" parent="Starburst"]
+position = Vector2(4, 0)
+scale = Vector2(0.5, 0.5)
+color = Color(0, 0, 0, 1)
+polygon = PackedVector2Array(-2, -75, -7, -25, -55, -69, -17, -15, -60, -6, -16, -1, -54, 62, -8, 8, -2, 68, 8, 5, 50, 63, 15, -3, 61, -6, 15, -18, 55, -70, 6, -25)
+
+[node name="white_starburst" type="Polygon2D" parent="Starburst"]
+scale = Vector2(0.4, 0.4)
+polygon = PackedVector2Array(-2, -75, -7, -25, -55, -69, -17, -15, -60, -6, -16, -1, -54, 62, -8, 8, -2, 68, 8, 5, 50, 63, 15, -3, 61, -6, 15, -18, 55, -70, 6, -25)

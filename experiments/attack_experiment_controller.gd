@@ -5,7 +5,8 @@ enum EXPR_STATE {
 	NEUTRAL,
 	MOVING_TO_TARGET,
 	MOVING_BACK,
-	ATTACKING
+	ATTACKING,
+	ADJUST_POSITION,
 }
 
 @onready var attack_range: Area2D = $AttackRange
@@ -15,12 +16,32 @@ enum EXPR_STATE {
 @export var move_speed: float = 1000.0
 @export var max_damage: int = 999
 
+# rotations
+# lower duration thresholds causes a miss in stopping at the spot the player is supposed to rest at
+# maybe using a parametric equation may work here instead where one obtains the vector diff
+# between the current location and target location
+# after that, lerp towards the target location (everything here would be controlled in terms of time instead of speed or rate of change)
+@export var rotation_duration: float = 0.2 # second
+@export var rotation_curr_time: float = 0
+@export var angle_between: float
+@export var dist_tol: float = 0.1 # distance tolerance
+
+# parametric movement
+@export var curr_move_target_time: float = 0
+@export var move_target_duration: float = 1 # second
+
+@export var curr_move_away_time: float = 0
+@export var move_away_duration: float = 1 # second
+
 #region Dependencies
 @export var target: Node2D
 @export var original_position: Vector2
 @export var vfx: AnimationPlayer
 @export var starburst: Node2D
 #endregion
+
+var original_transform: Transform2D
+var target_transform: Transform2D
 
 # Note: drawing uses this node's canvas item's coordinate system
 # so it will be relative to this node's transform as opposed to the world's transform...
@@ -45,30 +66,69 @@ func move(delta_time: float):
 	var move_vel: Vector2 = self.transform.x * move_speed * delta_time
 	self.position = self.position + move_vel
 
+func move2(target: Vector2, curr_move_time: float, move_duration: float):
+	# ensures t does not go over 1 (interpolation only)
+	var t: float = minf(curr_move_time / move_duration, 1.0)
+	var new_position: Vector2 = lerp(position, target, t)
+	self.position = new_position
+
+func update_transform_over_time(delta_time: float, target: Transform2D):
+	# this function will rotate, scale, translate, skew under the hood
+	# transform_2d.cpp source code:
+	#Transform2D Transform2D::interpolate_with(const Transform2D &p_transform, real_t p_weight) const {
+		#return Transform2D(
+				#Math::lerp_angle(get_rotation(), p_transform.get_rotation(), p_weight),
+				#get_scale().lerp(p_transform.get_scale(), p_weight),
+				#Math::lerp_angle(get_skew(), p_transform.get_skew(), p_weight),
+				#get_origin().lerp(p_transform.get_origin(), p_weight));
+	#}
+	self.transform = self.transform.interpolate_with(target, rotation_curr_time / rotation_duration)
+	rotation_curr_time += delta_time
+	
+
 func _ready():
 	attack_range.area_entered.connect(on_area_entered)
 	attack_area.area_entered.connect(on_attack_area_entered)
-	original_position = self.position
+	original_position = Vector2(self.position)
+	original_transform = Transform2D(self.transform)
 
 func _physics_process(delta: float):
 	if current_state == EXPR_STATE.MOVING_TO_TARGET:
 		if is_instance_valid(target):
-			look_at(target.position)
-			move(delta)
+			# rotate towards the target to move towards over time
+			if rotation_curr_time < rotation_duration:
+				update_transform_over_time(delta, target_transform)
+			else:
+				move2(target.position, curr_move_target_time, move_target_duration)
+				curr_move_target_time += delta
+				#move(delta)
+				
+
 	elif current_state == EXPR_STATE.MOVING_BACK:
-		look_at(original_position)
-		move(delta)
-		
-		var dist_tol: float = 0.01
-		var distance = position.distance_to(original_position)
+		var distance: float = position.distance_to(original_position)
 		if distance <= dist_tol:
+			current_state = EXPR_STATE.ADJUST_POSITION
+			rotation_curr_time = 0
+		else:
+			# rotate towards where it came back from
+			if rotation_curr_time < rotation_duration:
+				update_transform_over_time(delta, target_transform)
+			else:
+				#move(delta)
+				move2(original_position, curr_move_away_time, move_away_duration)
+				curr_move_away_time += delta
+	elif current_state == EXPR_STATE.ADJUST_POSITION:
+		# rotate back to its original position (this may also cause it to move)
+		if rotation_curr_time < rotation_duration:
+			update_transform_over_time(delta, original_transform)
+		else:
 			current_state = EXPR_STATE.NEUTRAL
 
 func _draw():
 	draw_debug_arrows()
 
 func on_area_entered(other_area: Area2D):
-	if other_area.is_in_group("enemy"):
+	if other_area.is_in_group("enemy") and current_state == EXPR_STATE.MOVING_TO_TARGET:
 		current_state = EXPR_STATE.ATTACKING
 
 func on_attack_area_entered(other_area: Area2D):
@@ -116,12 +176,21 @@ func on_attack_area_entered(other_area: Area2D):
 				
 				# here you would add something to transition to move state once attack animation completes
 				current_state = EXPR_STATE.MOVING_BACK
+				rotation_curr_time = 0
+				curr_move_away_time = 0
+				target_transform = transform.looking_at(original_position)
 			)
 			
 			
 func start_attack():
 	if current_state == EXPR_STATE.NEUTRAL:
 		current_state = EXPR_STATE.MOVING_TO_TARGET
+		rotation_curr_time = 0
+		curr_move_target_time = 0
+		
+		# compute the angle between to rotate towards
+		target_transform = self.transform.looking_at(target.position)
+		angle_between = self.position.angle_to_point(target.position)
 
 
 # since godot doesn't have a function to lookup animation tracks by string name

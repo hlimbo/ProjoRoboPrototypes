@@ -6,6 +6,57 @@
 [ext_resource type="Script" path="res://experiments/atk_btn_experiment.gd" id="4_44bbx"]
 [ext_resource type="Script" path="res://experiments/screen_shake.gd" id="5_6ti1f"]
 
+[sub_resource type="Animation" id="Animation_egwbd"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("white_starburst:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0.4, 0.4)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("black_starburst:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0.5, 0.5)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 0.24, 0.252666, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".:visible")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
 [sub_resource type="Animation" id="Animation_7k77h"]
 resource_name = "starburst_vfx"
 length = 0.2
@@ -56,57 +107,6 @@ tracks/3/keys = {
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [true, false]
-}
-
-[sub_resource type="Animation" id="Animation_egwbd"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("white_starburst:scale")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(0.4, 0.4)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("black_starburst:scale")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(0.5, 0.5)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath(".:modulate")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Color(1, 0.24, 0.252666, 0)]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath(".:visible")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [true]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_jbd22"]
@@ -207,7 +207,7 @@ libraries = {
 }
 
 [node name="Player" type="Node2D" parent="." node_paths=PackedStringArray("target", "vfx", "starburst")]
-position = Vector2(230, 407)
+position = Vector2(237, 58)
 script = ExtResource("1_uueov")
 target = NodePath("../PunchingBag")
 vfx = NodePath("../AnimationPlayer")
@@ -234,7 +234,7 @@ shape = SubResource("CircleShape2D_j7ofv")
 debug_color = Color(0.856659, 0.365995, 0, 0.42)
 
 [node name="PunchingBag" type="Node2D" parent="." node_paths=PackedStringArray("camera")]
-position = Vector2(971, 231)
+position = Vector2(1111, 490)
 script = ExtResource("2_2fkv6")
 camera = NodePath("../Camera2D")
 min_rotation = -45.0
@@ -312,7 +312,7 @@ script = ExtResource("5_6ti1f")
 shake_strength = 10.0
 
 [node name="Polygon2D" type="Polygon2D" parent="."]
-position = Vector2(66, 68)
+position = Vector2(82, 482)
 scale = Vector2(1, 1.17164)
 color = Color(0.982632, 3.27289e-05, 0.699095, 1)
 texture = SubResource("CanvasTexture_84hmf")
@@ -320,7 +320,7 @@ polygon = PackedVector2Array(102, 29.8726, -23, 73, 47, 30.7261, 48, -34.5414)
 vertex_colors = PackedColorArray(1, 0.238866, 0.680622, 1)
 
 [node name="SlashEffect" type="Polygon2D" parent="."]
-position = Vector2(10, 239)
+position = Vector2(11, 393)
 color = Color(0.73824, 4.81307e-07, 0.41221, 1)
 polygon = PackedVector2Array(16, -67, 101, -51, 132, -28, 102, 2, 18, 69, 94, -6, 103, -29, 82, -47)
 
@@ -344,7 +344,7 @@ polygon = PackedVector2Array(0, -62.5433, -8.3045, -29.3253, -37.3702, -48.7024,
 
 [node name="Starburst" type="Node2D" parent="."]
 modulate = Color(1, 0.24, 0.252666, 0)
-position = Vector2(933, 139)
+position = Vector2(1081, 410)
 rotation = 0.698132
 scale = Vector2(0.85, 0.85)
 
@@ -357,3 +357,8 @@ polygon = PackedVector2Array(-2, -75, -7, -25, -55, -69, -17, -15, -60, -6, -16,
 [node name="white_starburst" type="Polygon2D" parent="Starburst"]
 scale = Vector2(0.4, 0.4)
 polygon = PackedVector2Array(-2, -75, -7, -25, -55, -69, -17, -15, -60, -6, -16, -1, -54, 62, -8, 8, -2, 68, 8, 5, 50, 63, 15, -3, 61, -6, 15, -18, 55, -70, 6, -25)
+
+[node name="original_spot" type="Polygon2D" parent="."]
+position = Vector2(230, 407)
+color = Color(0.809879, 0, 0.459153, 1)
+polygon = PackedVector2Array(0, -33, 8, -7, 31, 2, 8, 6, 0, 33, -8, 6, -33, 5, -6, -7)

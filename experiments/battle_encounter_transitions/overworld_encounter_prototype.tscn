@@ -1,7 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://c53jupi7wu1tv"]
+[gd_scene load_steps=8 format=3 uid="uid://c53jupi7wu1tv"]
 
 [ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="1_ygnsq"]
 [ext_resource type="Script" path="res://experiments/battle_encounter_transitions/battle_encounter_transitions.gd" id="2_6o5du"]
+[ext_resource type="Shader" path="res://experiments/battle_encounter_transitions/swirl_shader.gdshader" id="2_21u3p"]
 
 [sub_resource type="Animation" id="Animation_xfcuf"]
 resource_name = "scale_ui_transition"
@@ -111,6 +112,12 @@ _data = {
 "scale_ui_transition": SubResource("Animation_xfcuf")
 }
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hn3t0"]
+shader = ExtResource("2_21u3p")
+shader_parameter/my_color = Color(0.384, 0.668267, 0.8, 1)
+shader_parameter/percentage = 0.0
+shader_parameter/diagonal_direction = Vector2(0, 1)
+
 [node name="OverworldEncounterPrototype" type="Node2D"]
 
 [node name="Player" type="ColorRect" parent="."]
@@ -160,7 +167,6 @@ libraries = {
 }
 
 [node name="SwirlEffect" type="Control" parent="UILayer"]
-visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -169,6 +175,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="ColorRect" type="ColorRect" parent="UILayer/SwirlEffect"]
+material = SubResource("ShaderMaterial_hn3t0")
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

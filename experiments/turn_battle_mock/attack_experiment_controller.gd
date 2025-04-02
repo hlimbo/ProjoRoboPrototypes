@@ -21,7 +21,7 @@ enum EXPR_STATE {
 # maybe using a parametric equation may work here instead where one obtains the vector diff
 # between the current location and target location
 # after that, lerp towards the target location (everything here would be controlled in terms of time instead of speed or rate of change)
-@export var rotation_duration: float = 0.2 # second
+@export var rotation_duration: float = 0.1 # second
 @export var rotation_curr_time: float = 0
 @export var angle_between: float
 @export var dist_tol: float = 0.1 # distance tolerance
@@ -56,6 +56,7 @@ func draw_debug_arrows():
 	draw_line(from, to_x, Color.RED, line_width)
 	draw_line(from, to_y, Color.GREEN, line_width)
 
+# move by providing move_speed magnitude
 func move(delta_time: float):
 	# these are basis vectors that represent the axis that this node2d orients itself
 	# by default it is aligned to the global x and y axes but can be rotated, scaled and skewed
@@ -66,11 +67,23 @@ func move(delta_time: float):
 	var move_vel: Vector2 = self.transform.x * move_speed * delta_time
 	self.position = self.position + move_vel
 
+# parametric move
 func move2(target: Vector2, curr_move_time: float, move_duration: float):
 	# ensures t does not go over 1 (interpolation only)
 	var t: float = minf(curr_move_time / move_duration, 1.0)
 	var new_position: Vector2 = lerp(position, target, t)
 	self.position = new_position
+
+# move by solving for units per second
+func move3(target: Vector2, start: Vector2, move_duration: float, delta: float):
+	var diff: Vector2 = target - start
+	var distance: float = diff.length()
+	
+	var units_per_second: float = distance / move_duration
+	print("units per second: ", units_per_second)
+	
+	var units_per_frame: float = units_per_second * delta
+	self.position = self.position + units_per_frame * self.transform.x
 
 func update_transform_over_time(delta_time: float, target: Transform2D):
 	# this function will rotate, scale, translate, skew under the hood
@@ -99,9 +112,10 @@ func _physics_process(delta: float):
 			if rotation_curr_time < rotation_duration:
 				update_transform_over_time(delta, target_transform)
 			else:
+				#move(delta)
 				move2(target.position, curr_move_target_time, move_target_duration)
 				curr_move_target_time += delta
-				#move(delta)
+				#move3(target.position, self.position, move_target_duration, delta)
 				
 
 	elif current_state == EXPR_STATE.MOVING_BACK:
@@ -117,6 +131,7 @@ func _physics_process(delta: float):
 				#move(delta)
 				move2(original_position, curr_move_away_time, move_away_duration)
 				curr_move_away_time += delta
+				#move3(original_position, self.position, move_away_duration, delta)
 	elif current_state == EXPR_STATE.ADJUST_POSITION:
 		# rotate back to its original position (this may also cause it to move)
 		if rotation_curr_time < rotation_duration:
@@ -166,11 +181,7 @@ func on_attack_area_entered(other_area: Area2D):
 				print("%s finished" % anim_name)
 				set_track_key_value_by_name(anim, "white_starburst:scale", 1, original_scale1)
 				set_track_key_value_by_name(anim, "black_starburst:scale", 1, original_scale2)
-			)
-		
-			# Animation Principle: add Anticipation for player to attack
-			var attack_delay_timer: SceneTreeTimer = get_tree().create_timer(0.25)
-			attack_delay_timer.timeout.connect(func():
+			
 				var punching_bag = other_area.get_parent() as PunchingBag
 				punching_bag.receive_damage(damage_value, max_damage)
 				
@@ -179,7 +190,21 @@ func on_attack_area_entered(other_area: Area2D):
 				rotation_curr_time = 0
 				curr_move_away_time = 0
 				target_transform = transform.looking_at(original_position)
+			
 			)
+		
+			# Animation Principle: add Anticipation for player to attack
+			#var attack_delay_timer: SceneTreeTimer = get_tree().create_timer(0.25)
+			#attack_delay_timer.timeout.connect(func():
+				#var punching_bag = other_area.get_parent() as PunchingBag
+				#punching_bag.receive_damage(damage_value, max_damage)
+				#
+				## here you would add something to transition to move state once attack animation completes
+				#current_state = EXPR_STATE.MOVING_BACK
+				#rotation_curr_time = 0
+				#curr_move_away_time = 0
+				#target_transform = transform.looking_at(original_position)
+			#)
 			
 			
 func start_attack():

@@ -115,8 +115,10 @@ _data = {
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_hn3t0"]
 shader = ExtResource("2_21u3p")
 shader_parameter/my_color = Color(0.384, 0.668267, 0.8, 1)
-shader_parameter/percentage = 0.0
-shader_parameter/diagonal_direction = Vector2(0, 1)
+shader_parameter/percentage = 2.0
+shader_parameter/diagonal_direction = Vector2(0.79, 0.79)
+shader_parameter/degrees_angle = 0.0
+shader_parameter/line_thickness = 0.25
 
 [node name="OverworldEncounterPrototype" type="Node2D"]
 

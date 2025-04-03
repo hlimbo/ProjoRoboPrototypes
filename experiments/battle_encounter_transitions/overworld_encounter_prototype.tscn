@@ -1,58 +1,46 @@
-[gd_scene load_steps=8 format=3 uid="uid://c53jupi7wu1tv"]
+[gd_scene load_steps=16 format=3 uid="uid://c53jupi7wu1tv"]
 
 [ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="1_ygnsq"]
+[ext_resource type="Shader" path="res://experiments/battle_encounter_transitions/gradient_shader.gdshader" id="2_0py1n"]
 [ext_resource type="Script" path="res://experiments/battle_encounter_transitions/battle_encounter_transitions.gd" id="2_6o5du"]
-[ext_resource type="Shader" path="res://experiments/battle_encounter_transitions/swirl_shader.gdshader" id="2_21u3p"]
+[ext_resource type="Script" path="res://experiments/battle_encounter_transitions/viewport_image_loader.gd" id="2_ww8dv"]
+[ext_resource type="Texture2D" uid="uid://c5lj6bj20m4wy" path="res://experiments/battle_encounter_transitions/test-image.png" id="5_0hd6y"]
 
-[sub_resource type="Animation" id="Animation_xfcuf"]
-resource_name = "scale_ui_transition"
+[sub_resource type="Animation" id="Animation_74m0p"]
+resource_name = "green_move"
+loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("ColorRect:anchor_left")
+tracks/0/path = NodePath(".:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 1),
-"transitions": PackedFloat32Array(1, 1),
+"times": PackedFloat32Array(0, 0.233333, 0.5, 0.733333, 1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
-"values": [0.5, 0.0]
+"values": [Vector2(621, 409), Vector2(411, 409), Vector2(621, 409), Vector2(823, 409), Vector2(621, 409)]
 }
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("ColorRect:anchor_top")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 1),
-"transitions": PackedFloat32Array(1, 1),
+
+[sub_resource type="Animation" id="Animation_f458w"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [0.5, 0.0]
+"values": [Vector2(621, 409)]
 }
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("ColorRect:anchor_right")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0, 1),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [0.5, 1.0]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("ColorRect:anchor_bottom")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0, 1),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [0.5, 1.0]
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_q7ker"]
+_data = {
+"RESET": SubResource("Animation_f458w"),
+"green_move": SubResource("Animation_74m0p")
 }
 
 [sub_resource type="Animation" id="Animation_jlith"]
@@ -106,6 +94,57 @@ tracks/3/keys = {
 "values": [0.5]
 }
 
+[sub_resource type="Animation" id="Animation_xfcuf"]
+resource_name = "scale_ui_transition"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("ColorRect:anchor_left")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.5, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("ColorRect:anchor_top")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.5, 0.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("ColorRect:anchor_right")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.5, 1.0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("ColorRect:anchor_bottom")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.5, 1.0]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_2wb1r"]
 _data = {
 "RESET": SubResource("Animation_jlith"),
@@ -113,12 +152,24 @@ _data = {
 }
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_hn3t0"]
-shader = ExtResource("2_21u3p")
-shader_parameter/my_color = Color(0.384, 0.668267, 0.8, 1)
-shader_parameter/percentage = 2.0
-shader_parameter/diagonal_direction = Vector2(0.79, 0.79)
-shader_parameter/degrees_angle = 0.0
-shader_parameter/line_thickness = 0.25
+shader = ExtResource("2_0py1n")
+shader_parameter/scaler = 2.0
+shader_parameter/percent = 0.0
+shader_parameter/alpha_val = 0.1
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xijbl"]
+shader = ExtResource("2_0py1n")
+shader_parameter/scaler = 1.0
+shader_parameter/percent = 0.0
+shader_parameter/alpha_val = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_s8t5l"]
+shader = ExtResource("2_0py1n")
+shader_parameter/scaler = 1.0
+shader_parameter/percent = 0.0
+shader_parameter/alpha_val = 0.361
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_53ipx"]
 
 [node name="OverworldEncounterPrototype" type="Node2D"]
 
@@ -128,6 +179,11 @@ offset_top = 409.0
 offset_right = 661.0
 offset_bottom = 449.0
 color = Color(0, 0.7, 0.245, 1)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Player"]
+libraries = {
+"": SubResource("AnimationLibrary_q7ker")
+}
 
 [node name="Enemy" type="ColorRect" parent="."]
 offset_left = 588.0
@@ -168,7 +224,20 @@ libraries = {
 "": SubResource("AnimationLibrary_2wb1r")
 }
 
+[node name="TextureRect" type="TextureRect" parent="UILayer"]
+anchors_preset = -1
+anchor_top = 0.583
+anchor_right = 0.234
+anchor_bottom = 1.0
+offset_top = 0.23999
+offset_right = 0.47998
+grow_vertical = 0
+mouse_filter = 2
+script = ExtResource("2_ww8dv")
+shader = ExtResource("2_0py1n")
+
 [node name="SwirlEffect" type="Control" parent="UILayer"]
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -188,6 +257,7 @@ color = Color(0, 0, 0, 1)
 
 [node name="ScaleTransition" type="Control" parent="UILayer"]
 layout_mode = 3
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
@@ -206,11 +276,12 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 1)
 
-[node name="Options" type="VBoxContainer" parent="UILayer" node_paths=PackedStringArray("animation_player")]
+[node name="Options" type="VBoxContainer" parent="UILayer" node_paths=PackedStringArray("animation_player", "another_player")]
 offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("2_6o5du")
 animation_player = NodePath("../AnimationPlayer")
+another_player = NodePath("../../Player/AnimationPlayer")
 
 [node name="ResetButton" type="Button" parent="UILayer/Options"]
 layout_mode = 2
@@ -231,3 +302,31 @@ text = "After Image Transition"
 [node name="GotoSceneButton" type="Button" parent="UILayer/Options"]
 layout_mode = 2
 text = "Goto New Scene"
+
+[node name="TextureRect2" type="TextureRect" parent="UILayer"]
+visible = false
+material = SubResource("ShaderMaterial_xijbl")
+anchors_preset = -1
+anchor_right = 0.29
+anchor_bottom = 1.0
+offset_right = -0.200012
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("5_0hd6y")
+
+[node name="TextureRect3" type="TextureRect" parent="UILayer"]
+visible = false
+offset_left = 902.0
+offset_top = 301.0
+offset_right = 1211.0
+offset_bottom = 666.0
+texture = ExtResource("5_0hd6y")
+
+[node name="TextureRect4" type="TextureRect" parent="UILayer"]
+visible = false
+material = SubResource("ShaderMaterial_s8t5l")
+offset_left = 902.0
+offset_top = 301.0
+offset_right = 1211.0
+offset_bottom = 666.0
+texture = SubResource("CanvasTexture_53ipx")

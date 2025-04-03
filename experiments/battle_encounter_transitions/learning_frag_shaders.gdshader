@@ -197,6 +197,75 @@ void draw_border(inout vec4 color, vec2 uv_pos) {
 	// color = vec4(vec3(0.0, 0.0, x_width * y_height), 1.0);
 }
 
+void draw_border2(inout vec4 color, vec2 uv_pos) {
+	// start with a black canvas
+	color = vec4(0.0, 0.0, 0.0, 1.0);
+	
+	// translations -- apply color white to the neighboring pixels
+	vec2 translate = vec2(0.0, sin(TIME));
+	uv_pos += translate;
+
+	// color manipulation
+	float left = step(0.1, uv_pos.x);
+	float top = step(0.1, uv_pos.y);
+	float right = step(0.1, 1.0 - uv_pos.x);
+	float bot = step(0.1, 1.0 - uv_pos.y);
+	// painting
+	// move the absence of color from top to bottom on left edge only
+	float redness = 0.25;
+	float greenness = 0.0;
+	float blueness = 0.25;
+	
+	float red_channel = redness * left * top * right * bot;
+	float green_channel = greenness * left * top * right * bot;
+	float blue_channel = blueness * left * top * right * bot;
+	
+	color = vec4(vec3(red_channel, green_channel, blue_channel), 1.0);
+}
+
+uniform float y_mover : hint_range(-1.0, 1.0, 0.1) = 0.1;
+uniform float width : hint_range(0.0, 0.5, 0.001) = 0.1;
+uniform float height : hint_range(0.0, 0.5, 0.001) = 0.1;
+vec4 move_box(vec4 color, vec2 uv_pos) {
+	// start with a black canvas
+	color = vec4(0.0, 0.0, 0.0, 1.0);
+	vec2 center = vec2(0.5);
+	
+	
+	// translations -- apply color white to the neighboring pixels
+	// oscillates between -1 and 1 ==> sin(TIME)
+	vec2 translate = vec2(0.0, sin(y_mover));
+	uv_pos += translate;
+
+	// color manipulation - telling if this pixel can be painted or not
+	float left = step(width, uv_pos.x);
+	float top = step(height, uv_pos.y);
+	float right = step(width, 1.0 - uv_pos.x);
+	float bot = step(height, 1.0 - uv_pos.y);
+	// painting -- how to leave purple behind where it was? (scale?)
+	// move the absence of color from top to bottom on left edge only
+	float redness = 0.25;
+	float greenness = 0.0;
+	float blueness = 0.25;
+	
+	float red_channel = redness * left * top * right * bot;
+	float green_channel = greenness * left * top * right * bot;
+	float blue_channel = blueness * left * top * right * bot;
+	
+	color = vec4(vec3(redness, greenness, blueness), red_channel);
+	return color;
+}
+
+float movingLine(vec2 uv, vec2 center, float radius) {
+	float theta0 = degrees_angle;//90.0;
+	vec2 d = uv - center;
+	
+	vec2 unit_circle_vector = radius * vec2(cos(theta0 * PI/180.0), -sin(theta0*PI/180.0));
+	float vector_projection = clamp(dot(d, unit_circle_vector) / dot(unit_circle_vector, unit_circle_vector), 0.0, 1.0);
+	float line_length = length(d - vector_projection * unit_circle_vector);
+	return smoothstep(0.0, 1.0, line_length);
+}
+
 // WHY this doesn't work as intended...
 // this doesn't create a straight line because its grabbing the distance from the UV origin
 // for every pixel... this distance is like the radius of a circle which is why
@@ -246,6 +315,28 @@ void rotating_line(inout vec4 color, vec2 uv_pos) {
 	color.a = step(0.1,line);
 }
 
+// will claude3 one-shot this? no sadly not....
+void circle_swirl2(inout vec4 color, vec2 uv_pos) {
+	vec2 center = vec2(0.5, 0.5);
+    // Calculate the vector from the center to the current fragment
+    vec2 vectorToFragment = uv_pos - center;
+
+    // Calculate the angle of the vector
+    float angle = atan(vectorToFragment.y, vectorToFragment.x);
+
+    // Calculate the distance from the center
+    float dist = length(vectorToFragment);
+
+    // Calculate the spiral position
+	float turns = 3.0;
+	float radius = 0.5;
+	float thickness = 0.2;
+    float spiralPosition = dist / radius - angle / (2.0 * PI * turns);
+
+    // Calculate the alpha value based on the spiral position
+    float alpha = 1.0 - smoothstep(spiralPosition - thickness / 2.0, spiralPosition + thickness / 2.0, 1.0);
+}
+
 void polar_circle(inout vec4 color, vec2 uv_pos) {
 	vec2 center = vec2(0.5, 0.5);
 	vec2 center_to_point = center - uv_pos;
@@ -258,27 +349,12 @@ void polar_circle(inout vec4 color, vec2 uv_pos) {
 	color = vec4(color.rgb, smoothstepper);
 }
 
-void vertex() {
-	// Called for every vertex the material is visible on.
-}
-
 void fragment() {
-	// Called for every pixel the material is visible on.
-	vec2 origin = vec2(0.0, 0.0);
-	vec2 end = vec2(1.0, 1.0);
-	vec4 color = my_color;
+	 vec4 color = vec4(0.0, 0.0, 0.0, 0.0);
 	
-	//linear_gradient_vertical(color, UV.xy);
-	// linear_gradient_horizontal(color, UV.xy);
-	//linear_gradient_diagonal(color, UV.xy);
-	// circle_cutout_transition(color, UV.xy);
-	// diagonal_arc_transition(color, UV.xy);
-	// circle_swirl(color, UV.xy);
-	//rectangular_swirl(color, UV.xy);
-	// draw_border(color, UV.xy);
-	// circle(color, UV.xy);
-	// polar_circle(color, UV.xy);
-	rotating_line(color, UV.xy);
+	color += movingLine(UV.xy, vec2(0.5), 0.1) * vec4(1.0, 0.0, 0.0, 1.0); //move_box(color, UV.xy);
+	
+	//color.g = 1.0;
 	
 	// this sets the color of a pixel on the material
 	// theory runs on the GPU in parallel

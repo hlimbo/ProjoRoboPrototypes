@@ -4,6 +4,7 @@ extends Node
 @export var scene_manager: SceneManager = SceneManager
 
 @export var animation_player: AnimationPlayer
+@export var another_player: AnimationPlayer
 @export var can_goto_new_scene: bool = false
 @onready var buttons: Array[Button] = []
 
@@ -21,6 +22,8 @@ func _ready():
 	
 	for i in range(mini(len(buttons), len(funcs))):
 		buttons[i].pressed.connect(funcs[i])
+		
+	another_player.play("green_move")
 
 
 func on_scale_pressed():

@@ -5,7 +5,7 @@
 [ext_resource type="Script" path="res://experiments/battle_encounter_transitions/battle_encounter_transitions.gd" id="2_6o5du"]
 [ext_resource type="Script" path="res://experiments/battle_encounter_transitions/viewport_image_loader.gd" id="2_ww8dv"]
 [ext_resource type="Texture2D" uid="uid://c5lj6bj20m4wy" path="res://experiments/battle_encounter_transitions/test-image.png" id="5_0hd6y"]
-[ext_resource type="Shader" path="res://experiments/battle_encounter_transitions/rainbow_shader.gdshader" id="5_xk0y3"]
+[ext_resource type="Shader" path="res://experiments/battle_encounter_transitions/gradient_shader2.gdshader" id="5_7gg4m"]
 
 [sub_resource type="Animation" id="Animation_74m0p"]
 resource_name = "green_move"
@@ -159,7 +159,11 @@ shader_parameter/percent = 0.0
 shader_parameter/alpha_val = 0.1
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_xijbl"]
-shader = ExtResource("5_xk0y3")
+shader = ExtResource("5_7gg4m")
+shader_parameter/light_percentage = 0.0
+shader_parameter/alpha_val = 1.0
+shader_parameter/x_offset = 0.1
+shader_parameter/main_texture = ExtResource("5_0hd6y")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_s8t5l"]
 shader = ExtResource("2_0py1n")
@@ -302,7 +306,6 @@ layout_mode = 2
 text = "Goto New Scene"
 
 [node name="TextureRect2" type="TextureRect" parent="UILayer"]
-visible = false
 material = SubResource("ShaderMaterial_xijbl")
 anchors_preset = -1
 anchor_right = 0.29

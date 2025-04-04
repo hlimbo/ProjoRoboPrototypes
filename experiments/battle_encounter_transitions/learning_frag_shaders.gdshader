@@ -350,9 +350,11 @@ void polar_circle(inout vec4 color, vec2 uv_pos) {
 }
 
 void fragment() {
-	 vec4 color = vec4(0.0, 0.0, 0.0, 0.0);
+	// vec4 color = vec4(0.0, 0.0, 0.0, 0.0);
+	// color += movingLine(UV.xy, vec2(0.5), 0.1) * vec4(1.0, 0.0, 0.0, 1.0); //move_box(color, UV.xy);
 	
-	color += movingLine(UV.xy, vec2(0.5), 0.1) * vec4(1.0, 0.0, 0.0, 1.0); //move_box(color, UV.xy);
+	vec4 color = vec4(0.0, 1.0, 0.0, 1.0);
+	linear_gradient_diagonal(color, UV.xy);
 	
 	//color.g = 1.0;
 	
@@ -361,8 +363,3 @@ void fragment() {
 	// this returns the color for the shader to render
 	COLOR = color;
 }
-
-//void light() {
-	// Called for every pixel for every light affecting the CanvasItem.
-	// Uncomment to replace the default light processing function with this one.
-//}

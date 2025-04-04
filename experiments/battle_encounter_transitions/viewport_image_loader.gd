@@ -1,12 +1,6 @@
 extends TextureRect
 class_name ViewportImageLoader
 
-#1. Create a TextureRect Node
-#2. Set its texture property to be an ImageTexture
-#3. assign ImageTexture set_image function to be the image captured from get_viewport().get_texture().get_image()
-#4. apply Material Property found on TextureRect to be a ShaderMaterial
-#5. load shader from file (where the blur effect shader comes into play)
-#
 #6 apply uniform variables exposed from shader to update the shader per from in _process()
 
 @export var screenshot: Image
@@ -14,6 +8,7 @@ class_name ViewportImageLoader
 
 func _ready():
 	self.material = ShaderMaterial.new()
+	load_shader(shader)
 
 # capturing the image works in isolation.... maybe I need to load in the shader AFTER the image is captured?
 func capture_image():
@@ -33,7 +28,6 @@ func capture_image():
 	print("image captured")
 	
 	self.texture = image_texture
-	load_shader(shader)
 
 
 func load_shader(shader_to_load: Shader):

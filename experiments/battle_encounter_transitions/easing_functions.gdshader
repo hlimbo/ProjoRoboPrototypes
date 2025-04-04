@@ -1,5 +1,8 @@
 shader_type canvas_item;
 
+uniform sampler2D main_texture;
+uniform float line_radius : hint_range(0.001, 1.0) = 0.01;
+
 // taken and adapted from easings.net
 // these are alternative functions to step(e0, e1) and smoothstep(lower,upper, current)
 // math functions
@@ -54,8 +57,11 @@ float ease_out_circ(float x) {
 }
 
 float ease_in_out_circ(float x) {
-    return step(x, 0.5) * (1.0 - sqrt(1.0 - 4.0 * x * x) / 2.0)
-	+ step(0.5, x) * (sqrt(1.0 - pow(-2.0 * x + 2.0, 2.0)) + 1.0 / 2.0);
+	if (x < 0.5) {
+		return (1.0 - sqrt(1.0 - pow(2.0 * x, 2.0))) / 2.0;
+	}
+	
+	return (sqrt(1.0 - pow(-2.0 * x + 2.0, 2.0)) + 1.0) / 2.0;
 }
 
 float ease_in_elastic(float x) {
@@ -114,7 +120,7 @@ float ease_in_expo(float x) {
 }
 
 float ease_out_expo(float x) {
-    return step(x, 1.0) * (1.0)
+    return step(1.0, x) * (1.0)
 		+ step(0.0, x) * (1.0 - pow(2.0, -10.0 * x));
 }
 
@@ -166,6 +172,7 @@ float ease_out_bounce(float x) {
 	return n1 * j * x + 0.984375;
 }
 
+// looks like scratches...
 float ease_in_bounce(float x) {
     return 1.0 - ease_out_bounce(1.0 - x);
 }
@@ -175,7 +182,56 @@ float ease_in_out_bounce(float x) {
 		+ step(0.5, x) * ((1.0 + ease_out_bounce(2.0 * x - 1.0)) / 2.0);
 }
 
+// obtained from https://thebookofshaders.com/06/
+float plot(vec2 uv, float val) { // this is determining a pixel's channel value
+	return smoothstep(val-line_radius, val, uv.y) - 
+		smoothstep(val, val+line_radius, uv.y);
+}
 
 void fragment() {
-	// Called for every pixel the material is visible on.
+	vec4 texture_pixel = texture(main_texture, UV.xy);
+	
+	vec3 pct = vec3(UV.x);
+	
+	// TESTING OUT THE EASING FUNCTIONS //
+	// pct.b = ease_in_sine(UV.x);
+	// pct.b = ease_in_out_cubic(UV.x);
+	// pct.b = ease_in_out_sine(UV.x);
+	// pct.b = ease_in_quad(UV.x);
+	// pct.b = 1.0 - ease_out_quad(UV.x);
+	pct.b = 1.0 - ease_in_out_quad(UV.x);
+	pct.b = 1.0 - ease_in_cubic(UV.x);
+	pct.b = 1.0 - ease_out_cubic(UV.x);
+	pct.b = 1.0 - ease_in_quart(UV.x);
+	pct.b = 1.0 - ease_out_quart(UV.x);
+	pct.b = 1.0 - ease_in_out_quart(UV.x);
+	pct.b = 1.0 - ease_in_expo(UV.x);
+	pct.b = 1.0 - ease_out_expo(UV.x);
+	pct.b = 1.0 - ease_in_out_expo(UV.x);
+	pct.b = 1.0 - ease_in_circ(UV.x);
+	pct.b = 1.0 - ease_out_circ(UV.x);
+	pct.b = 1.0 - ease_in_out_circ(UV.x);
+	pct.b = 1.0 - ease_in_back(UV.x);
+	pct.b = 1.0 - ease_out_back(UV.x);
+	pct.b = 1.0 - ease_in_out_back(UV.x);
+	pct.b = ease_in_elastic(UV.x);
+	pct.b = 1.0 - ease_out_elastic(UV.x);
+	pct.b = ease_in_out_elastic(UV.x);
+	pct.b = 1.0 - ease_in_bounce(UV.x);
+	pct.b = ease_out_bounce(UV.x);
+	pct.b = ease_in_out_bounce(UV.x);
+	
+	//pct.g = ease_in_out_quart(UV.x);
+	
+	vec3 color = vec3(0.0, 0.0, 0.0);
+	float alpha = 1.0;
+	vec3 red = vec3(1.0, 0.0, 0.0);
+	vec3 green = vec3(0.0 ,1.0 , 0.0);
+	vec3 blue = vec3(0.0, 0.0, 1.0);
+	
+	// blending the colors between the texture's pixels and the color blue
+	color = mix(texture_pixel.rgb, blue, plot(UV.xy, pct.b));
+	//color = mix(color, green, plot(UV.xy, pct.g));
+	
+	COLOR = vec4(color, alpha);
 }

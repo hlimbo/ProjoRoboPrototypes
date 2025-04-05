@@ -1,11 +1,25 @@
-[gd_scene load_steps=17 format=3 uid="uid://c53jupi7wu1tv"]
+[gd_scene load_steps=13 format=3 uid="uid://c53jupi7wu1tv"]
 
 [ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="1_ygnsq"]
 [ext_resource type="Shader" path="res://experiments/battle_encounter_transitions/gradient_shader.gdshader" id="2_0py1n"]
 [ext_resource type="Script" path="res://experiments/battle_encounter_transitions/battle_encounter_transitions.gd" id="2_6o5du"]
 [ext_resource type="Script" path="res://experiments/battle_encounter_transitions/viewport_image_loader.gd" id="2_ww8dv"]
-[ext_resource type="Texture2D" uid="uid://c5lj6bj20m4wy" path="res://experiments/battle_encounter_transitions/test-image.png" id="5_0hd6y"]
 [ext_resource type="Shader" path="res://experiments/battle_encounter_transitions/cinematic_shader.gdshader" id="5_7gg4m"]
+
+[sub_resource type="Animation" id="Animation_f458w"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(621, 409)]
+}
 
 [sub_resource type="Animation" id="Animation_74m0p"]
 resource_name = "green_move"
@@ -21,21 +35,6 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
 "values": [Vector2(621, 409), Vector2(411, 409), Vector2(621, 409), Vector2(823, 409), Vector2(621, 409)]
-}
-
-[sub_resource type="Animation" id="Animation_f458w"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(621, 409)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_q7ker"]
@@ -158,21 +157,6 @@ shader_parameter/scaler = 2.0
 shader_parameter/percent = 0.0
 shader_parameter/alpha_val = 0.1
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_xijbl"]
-shader = ExtResource("5_7gg4m")
-shader_parameter/light_percentage = 0.0
-shader_parameter/pixel_offset = 0.0
-shader_parameter/fade_offset = 0.0
-shader_parameter/main_texture = ExtResource("5_0hd6y")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_s8t5l"]
-shader = ExtResource("2_0py1n")
-shader_parameter/scaler = 1.0
-shader_parameter/percent = 0.0
-shader_parameter/alpha_val = 0.361
-
-[sub_resource type="CanvasTexture" id="CanvasTexture_53ipx"]
-
 [node name="OverworldEncounterPrototype" type="Node2D"]
 
 [node name="Player" type="ColorRect" parent="."]
@@ -226,17 +210,27 @@ libraries = {
 "": SubResource("AnimationLibrary_2wb1r")
 }
 
-[node name="TextureRect" type="TextureRect" parent="UILayer"]
-anchors_preset = -1
-anchor_top = 0.583
-anchor_right = 0.234
+[node name="ScaleTransition" type="Control" parent="UILayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = 0.23999
-offset_right = 0.47998
-grow_vertical = 0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 mouse_filter = 2
-script = ExtResource("2_ww8dv")
-shader = ExtResource("2_0py1n")
+
+[node name="ColorRect" type="ColorRect" parent="UILayer/ScaleTransition"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
 
 [node name="SwirlEffect" type="Control" parent="UILayer"]
 visible = false
@@ -257,77 +251,51 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 1)
 
-[node name="ScaleTransition" type="Control" parent="UILayer"]
-layout_mode = 3
+[node name="AfterImageEffect" type="TextureRect" parent="UILayer"]
+visible = false
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
+mouse_filter = 2
+script = ExtResource("2_ww8dv")
+shader = ExtResource("5_7gg4m")
 
-[node name="ColorRect" type="ColorRect" parent="UILayer/ScaleTransition"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 1)
-
-[node name="Options" type="VBoxContainer" parent="UILayer" node_paths=PackedStringArray("animation_player", "another_player")]
-offset_right = 40.0
-offset_bottom = 40.0
+[node name="Options" type="VBoxContainer" parent="UILayer" node_paths=PackedStringArray("animation_player", "another_player", "viewport_image_loader")]
+offset_right = 319.0
+offset_bottom = 171.0
 script = ExtResource("2_6o5du")
 animation_player = NodePath("../AnimationPlayer")
 another_player = NodePath("../../Player/AnimationPlayer")
+viewport_image_loader = NodePath("../AfterImageEffect")
 
 [node name="ResetButton" type="Button" parent="UILayer/Options"]
 layout_mode = 2
+theme = ExtResource("1_ygnsq")
+theme_override_font_sizes/font_size = 18
 text = "Reset"
 
 [node name="ScaleButton" type="Button" parent="UILayer/Options"]
 layout_mode = 2
+theme = ExtResource("1_ygnsq")
+theme_override_font_sizes/font_size = 18
 text = "Scale Transition"
 
 [node name="SwirlEffectButton" type="Button" parent="UILayer/Options"]
 layout_mode = 2
+theme = ExtResource("1_ygnsq")
+theme_override_font_sizes/font_size = 18
 text = "Swirl Effect Transition"
 
 [node name="AfterImageButton" type="Button" parent="UILayer/Options"]
 layout_mode = 2
+theme = ExtResource("1_ygnsq")
+theme_override_font_sizes/font_size = 18
 text = "After Image Transition"
 
 [node name="GotoSceneButton" type="Button" parent="UILayer/Options"]
 layout_mode = 2
+theme = ExtResource("1_ygnsq")
+theme_override_font_sizes/font_size = 18
 text = "Goto New Scene"
-
-[node name="TextureRect2" type="TextureRect" parent="UILayer"]
-material = SubResource("ShaderMaterial_xijbl")
-anchors_preset = -1
-anchor_right = 0.29
-anchor_bottom = 1.0
-offset_right = 645.8
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("5_0hd6y")
-
-[node name="TextureRect3" type="TextureRect" parent="UILayer"]
-visible = false
-offset_left = 902.0
-offset_top = 301.0
-offset_right = 1211.0
-offset_bottom = 666.0
-texture = ExtResource("5_0hd6y")
-
-[node name="TextureRect4" type="TextureRect" parent="UILayer"]
-visible = false
-material = SubResource("ShaderMaterial_s8t5l")
-offset_left = 902.0
-offset_top = 301.0
-offset_right = 1211.0
-offset_bottom = 666.0
-texture = SubResource("CanvasTexture_53ipx")

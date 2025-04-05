@@ -11,7 +11,7 @@ void fragment() {
 	uv_pos = uv_pos * scaler;
 	// wrap around -- repeat square pattern for scaler times
 	uv_pos = fract(uv_pos);
-	
+
 	vec3 color = vec3(uv_pos.x, uv_pos.y, 0.0);
 	float alpha = step(percent, uv_pos.x) * smoothstep(0.0, 1.0, alpha_val);
 	// I need to multiply by the incoming color so I don't override the colors of the target image texture!

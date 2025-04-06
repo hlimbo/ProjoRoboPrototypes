@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://el00wv63mqm1"]
+[gd_scene load_steps=13 format=3 uid="uid://el00wv63mqm1"]
 
 [ext_resource type="Script" path="res://experiments/turn_battle_mock/attack_experiment_controller.gd" id="1_uueov"]
 [ext_resource type="Script" path="res://experiments/turn_battle_mock/punching_bag.gd" id="2_2fkv6"]
@@ -124,78 +124,6 @@ radius = 60.2993
 [sub_resource type="CircleShape2D" id="CircleShape2D_y4kot"]
 radius = 51.0882
 
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_ra5a2"]
-blend_mode = 1
-
-[sub_resource type="Curve" id="Curve_t3bmp"]
-_data = [Vector2(0, 0.010989), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
-point_count = 2
-
-[sub_resource type="CurveTexture" id="CurveTexture_31dcr"]
-curve = SubResource("Curve_t3bmp")
-
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_m5vrr"]
-lifetime_randomness = 0.2
-particle_flag_disable_z = true
-emission_shape = 3
-emission_box_extents = Vector3(150, 1, 1)
-direction = Vector3(0, -1, 0)
-initial_velocity_min = 100.0
-initial_velocity_max = 200.0
-gravity = Vector3(0, 0, 0)
-alpha_curve = SubResource("CurveTexture_31dcr")
-sub_emitter_mode = 2
-sub_emitter_amount_at_end = 32
-
-[sub_resource type="Gradient" id="Gradient_mgdqe"]
-offsets = PackedFloat32Array(0.19, 1)
-colors = PackedColorArray(0, 0.492274, 0.780955, 1, 1, 1, 1, 0)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_f1xac"]
-gradient = SubResource("Gradient_mgdqe")
-width = 1
-fill_from = Vector2(0.518293, 0)
-fill_to = Vector2(0.506098, 1)
-
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_l3omi"]
-blend_mode = 1
-
-[sub_resource type="Curve" id="Curve_jjeew"]
-_data = [Vector2(0.0052356, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.010989), -2.17128, 0.0, 0, 0]
-point_count = 2
-
-[sub_resource type="CurveTexture" id="CurveTexture_ni0bo"]
-curve = SubResource("Curve_jjeew")
-
-[sub_resource type="Gradient" id="Gradient_guwun"]
-offsets = PackedFloat32Array(0, 0.374233, 1)
-colors = PackedColorArray(0.787572, 0.648152, 0, 1, 0.82, 0.1394, 0.150743, 1, 0.727833, 0.29, 1, 1)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_cmc2n"]
-gradient = SubResource("Gradient_guwun")
-
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_g1v5s"]
-lifetime_randomness = 1.0
-particle_flag_disable_z = true
-direction = Vector3(1, 1, 0)
-spread = 180.0
-initial_velocity_min = 50.0
-initial_velocity_max = 150.0
-gravity = Vector3(0, 98, 0)
-damping_max = 100.0
-scale_min = 0.5
-color_initial_ramp = SubResource("GradientTexture1D_cmc2n")
-alpha_curve = SubResource("CurveTexture_ni0bo")
-
-[sub_resource type="Gradient" id="Gradient_bwlsp"]
-colors = PackedColorArray(3.17663e-06, 0.492716, 0.660769, 1, 1, 1, 1, 0)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_12s3l"]
-gradient = SubResource("Gradient_bwlsp")
-width = 1
-fill_from = Vector2(0.504274, 0.42735)
-fill_to = Vector2(0.504274, 1)
-
 [sub_resource type="CanvasTexture" id="CanvasTexture_84hmf"]
 
 [node name="AttackExperiment" type="Node2D"]
@@ -290,23 +218,6 @@ theme_override_font_sizes/font_size = 28
 text = "Attack!"
 script = ExtResource("4_44bbx")
 player = NodePath("../../Player")
-
-[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
-material = SubResource("CanvasItemMaterial_ra5a2")
-position = Vector2(481, 276)
-amount = 5
-sub_emitter = NodePath("../GPUParticles2D2")
-process_material = SubResource("ParticleProcessMaterial_m5vrr")
-texture = SubResource("GradientTexture2D_f1xac")
-trail_enabled = true
-
-[node name="GPUParticles2D2" type="GPUParticles2D" parent="."]
-material = SubResource("CanvasItemMaterial_l3omi")
-position = Vector2(-75, 186)
-amount = 1000
-process_material = SubResource("ParticleProcessMaterial_g1v5s")
-texture = SubResource("GradientTexture2D_12s3l")
-trail_enabled = true
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(642, 360)

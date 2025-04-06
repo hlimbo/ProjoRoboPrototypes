@@ -1,11 +1,13 @@
 shader_type canvas_item;
 
 // number of textures to sample for the smear/blur effect
-const int sample_count = 64;
+const int sample_count = 256;
 
 uniform float light_percentage : hint_range(0.0, 1.0) = 0.0;
 // used to obtain neighboring fragments
 uniform float pixel_offset : hint_range(0.0, 0.1) = 0.0;
+uniform float px_offset_x : hint_range(-0.01, 0.01) = 0.0;
+uniform float px_offset_y : hint_range(-0.01, 0.01) = 0.0;
 // amount of fade to apply in the UV coordinate space
 uniform float fade_offset : hint_range(0.0, 1.0) = 0.0;
 uniform sampler2D main_texture;

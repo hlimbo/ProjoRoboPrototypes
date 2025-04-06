@@ -1,10 +1,13 @@
-[gd_scene load_steps=13 format=3 uid="uid://c53jupi7wu1tv"]
+[gd_scene load_steps=17 format=3 uid="uid://c53jupi7wu1tv"]
 
 [ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="1_ygnsq"]
 [ext_resource type="Shader" path="res://experiments/battle_encounter_transitions/gradient_shader.gdshader" id="2_0py1n"]
 [ext_resource type="Script" path="res://experiments/battle_encounter_transitions/battle_encounter_transitions.gd" id="2_6o5du"]
 [ext_resource type="Script" path="res://experiments/battle_encounter_transitions/viewport_image_loader.gd" id="2_ww8dv"]
 [ext_resource type="Shader" path="res://experiments/battle_encounter_transitions/cinematic_shader.gdshader" id="5_7gg4m"]
+[ext_resource type="Texture2D" uid="uid://c5lj6bj20m4wy" path="res://experiments/battle_encounter_transitions/test-image.png" id="5_8pc31"]
+[ext_resource type="Shader" path="res://experiments/battle_encounter_transitions/polar_coordinates.gdshader" id="5_cylh0"]
+[ext_resource type="Texture2D" uid="uid://d0ttocvhpdomy" path="res://experiments/battle_encounter_transitions/ballroom1.PNG" id="6_t5qsh"]
 
 [sub_resource type="Animation" id="Animation_f458w"]
 length = 0.001
@@ -157,6 +160,10 @@ shader_parameter/scaler = 2.0
 shader_parameter/percent = 0.0
 shader_parameter/alpha_val = 0.1
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_sfs2e"]
+shader = ExtResource("5_cylh0")
+shader_parameter/main_texture = ExtResource("6_t5qsh")
+
 [node name="OverworldEncounterPrototype" type="Node2D"]
 
 [node name="Player" type="ColorRect" parent="."]
@@ -261,6 +268,17 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("2_ww8dv")
 shader = ExtResource("5_7gg4m")
+
+[node name="AfterImageEffect2" type="TextureRect" parent="UILayer"]
+material = SubResource("ShaderMaterial_sfs2e")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -2.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("5_8pc31")
 
 [node name="Options" type="VBoxContainer" parent="UILayer" node_paths=PackedStringArray("animation_player", "another_player", "viewport_image_loader")]
 offset_right = 319.0

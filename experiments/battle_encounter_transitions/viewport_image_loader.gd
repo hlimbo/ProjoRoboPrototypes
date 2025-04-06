@@ -1,4 +1,4 @@
-extends TextureRect
+extends BaseShaderController
 class_name ViewportImageLoader
 
 # shader uniform names coming from cinematic_shader.gshader
@@ -7,22 +7,14 @@ const pixel_offset = "pixel_offset"
 const fade_offset = "fade_offset"
 const main_texture = "main_texture"
 
-var shader_duration: float = 3.0
-var curr_time: float = 0.0
-
 @export var screenshot: Image
 @export var shader: Shader
-@export var screenshot_size: Vector2 = Vector2(1280, 720) # 428, 247
-
-signal on_shader_playing_finished(anim_name: String)
+@export var screenshot_size: Vector2 = Vector2(1280, 720)
 
 func _ready():
-	self.material = ShaderMaterial.new()
-	load_shader(shader)
-	self.set_process(false)
-
-func is_shader_playing() -> bool:
-	return self.is_processing() and curr_time < shader_duration
+	super()
+	shader_mat.shader = shader
+	assert(shader_mat.shader != null)
 
 # capturing the image works in isolation.... maybe I need to load in the shader AFTER the image is captured?
 func capture_image():
@@ -47,46 +39,30 @@ func capture_image():
 	
 	self.texture = image_texture
 
-
-func load_shader(shader_to_load: Shader):
-	var shader_mat = self.material as ShaderMaterial
-	shader_mat.shader = shader_to_load
-	assert(shader_mat.shader != null)
-
-func play_shader(duration_seconds: float):
-	shader_duration = duration_seconds
-	curr_time = 0.0
-	
-	self.reset_shader()
+func play(duration_seconds: float):
 	self.visible = true
-	self.set_process(true)
 	# assign the screenshot taken
-	var shader_mat = self.material as ShaderMaterial
+	await capture_image()
 	shader_mat.set_shader_parameter(main_texture, self.texture)
 	
-func reset_shader():
-	var shader_mat = self.material as ShaderMaterial
-	shader_mat.set_shader_parameter(light_percentage, 0)
-	shader_mat.set_shader_parameter(pixel_offset, 0)
-	shader_mat.set_shader_parameter(fade_offset, 0)
+	super(duration_seconds)
+	
+func reset():
+	super()
+	self.shader_mat.set_shader_parameter(light_percentage, 0)
+	self.shader_mat.set_shader_parameter(pixel_offset, 0)
+	self.shader_mat.set_shader_parameter(fade_offset, 0)
 	self.visible = false
-	self.curr_time = 0.0
 
 func _input(event: InputEvent):
 	if Input.is_action_just_pressed("screenshot"):
 		capture_image()
 		print("capturing image")
 
-func _process(delta: float):
-	if curr_time >= shader_duration:
-		on_shader_playing_finished.emit()
-		self.set_process(false)
-		return
-	
-	var shader_mat = self.material as ShaderMaterial
-	
-	var part1_duration: float = 0.25 * shader_duration
-	var part2_duration: float = 0.5 * shader_duration
+
+func on_update(_delta: float):
+	var part1_duration: float = 0.25 * play_duration
+	var part2_duration: float = 0.5 * play_duration
 	var percent1: float = curr_time / part1_duration
 	var percent2: float = (curr_time - part1_duration) / part2_duration
 	
@@ -98,5 +74,3 @@ func _process(delta: float):
 	else:
 		var fade_offset_value: float = lerpf(0.0, 1.0, percent2)
 		shader_mat.set_shader_parameter(fade_offset, fade_offset_value)
-	
-	curr_time += delta

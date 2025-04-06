@@ -7,7 +7,7 @@ extends Node
 @export var animation_player: AnimationPlayer
 @export var another_player: AnimationPlayer
 @export var viewport_image_loader: ViewportImageLoader
-@export var swirl_controller: SwirlController
+@export var swirl_controller: BaseShaderController
 @export var shader_scale_controller: BaseShaderController
 
 @export var can_goto_new_scene: bool = false
@@ -51,17 +51,15 @@ func on_swirl_pressed():
 func on_after_image_pressed():
 	assert(viewport_image_loader != null)
 	# don't play the shader if in the middle of being processed
-	if viewport_image_loader.is_shader_playing():
+	if viewport_image_loader.is_playing():
 		return
 		
 	print("after image pressed")
-	viewport_image_loader.visible = true
-	await viewport_image_loader.capture_image()
-	viewport_image_loader.play_shader(effect_duration)
+	viewport_image_loader.play(effect_duration)
 	
 func on_reset_pressed():
 	animation_player.stop()
-	viewport_image_loader.reset_shader()
+	viewport_image_loader.reset()
 	swirl_controller.reset()
 	shader_scale_controller.reset()
 	
@@ -71,14 +69,14 @@ func on_toggle_new_scene():
 	if can_goto_new_scene:
 		print("going to new scene on transition")
 		animation_player.animation_finished.connect(goto_new_scene_anim)
-		viewport_image_loader.on_shader_playing_finished.connect(goto_new_scene)
-		swirl_controller.on_shader_playing_finished.connect(goto_new_scene)
+		viewport_image_loader.on_play_finished.connect(goto_new_scene)
+		swirl_controller.on_play_finished.connect(goto_new_scene)
 		shader_scale_controller.on_play_finished.connect(goto_new_scene)
 	else:
 		print("staying on same scene on transition")
 		animation_player.animation_finished.disconnect(goto_new_scene_anim)
-		viewport_image_loader.on_shader_playing_finished.disconnect(goto_new_scene)
-		swirl_controller.on_shader_playing_finished.disconnect(goto_new_scene)
+		viewport_image_loader.on_play_finished.disconnect(goto_new_scene)
+		swirl_controller.on_play_finished.disconnect(goto_new_scene)
 		shader_scale_controller.on_play_finished.disconnect(goto_new_scene)
 		
 func goto_new_scene():

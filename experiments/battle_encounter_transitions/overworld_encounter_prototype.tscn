@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://c53jupi7wu1tv"]
+[gd_scene load_steps=20 format=3 uid="uid://c53jupi7wu1tv"]
 
 [ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="1_ygnsq"]
 [ext_resource type="Script" path="res://experiments/battle_encounter_transitions/battle_encounter_transitions.gd" id="2_6o5du"]
@@ -6,9 +6,9 @@
 [ext_resource type="Script" path="res://experiments/battle_encounter_transitions/viewport_image_loader.gd" id="2_ww8dv"]
 [ext_resource type="Script" path="res://experiments/battle_encounter_transitions/shader_scale_transition_controller.gd" id="3_4lqc0"]
 [ext_resource type="Script" path="res://experiments/battle_encounter_transitions/swirl_controller.gd" id="3_lbkh3"]
+[ext_resource type="Shader" path="res://experiments/battle_encounter_transitions/swirl_effect.gdshader" id="4_6keqw"]
 [ext_resource type="Shader" path="res://experiments/battle_encounter_transitions/cinematic_shader.gdshader" id="5_7gg4m"]
 [ext_resource type="Texture2D" uid="uid://c5lj6bj20m4wy" path="res://experiments/battle_encounter_transitions/test-image.png" id="5_8pc31"]
-[ext_resource type="Shader" path="res://experiments/battle_encounter_transitions/spiral_shader2.gdshader" id="5_kkrfl"]
 
 [sub_resource type="Animation" id="Animation_f458w"]
 length = 0.001
@@ -161,20 +161,19 @@ shader_parameter/half_box_area = 0.0
 shader_parameter/box_color = Color(0, 0, 0, 1)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_hn3t0"]
-shader = ExtResource("5_kkrfl")
-shader_parameter/resolution = Vector2(600, 400)
+shader = ExtResource("4_6keqw")
 shader_parameter/spiral_color = Color(0, 0, 0, 1)
 shader_parameter/frequency = 0.0
 shader_parameter/fun = 0.0
-shader_parameter/rot = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vdnbt"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_sfs2e"]
-shader = ExtResource("5_kkrfl")
-shader_parameter/resolution = Vector2(600, 400)
-shader_parameter/spiral_color = Color(0, 0, 0, 1)
-shader_parameter/frequency = 0.0
-shader_parameter/fun = 0.0
-shader_parameter/rot = 0.0
+shader = ExtResource("5_7gg4m")
+shader_parameter/light_percentage = 0.0
+shader_parameter/pixel_offset = 0.0
+shader_parameter/fade_offset = 0.0
+shader_parameter/main_texture = ExtResource("5_8pc31")
 
 [node name="OverworldEncounterPrototype" type="Node2D"]
 
@@ -274,6 +273,7 @@ script = ExtResource("3_lbkh3")
 
 [node name="AfterImageEffect" type="TextureRect" parent="UILayer"]
 visible = false
+material = SubResource("ShaderMaterial_vdnbt")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -284,6 +284,7 @@ script = ExtResource("2_ww8dv")
 shader = ExtResource("5_7gg4m")
 
 [node name="AfterImageEffect2" type="TextureRect" parent="UILayer"]
+visible = false
 material = SubResource("ShaderMaterial_sfs2e")
 anchors_preset = 15
 anchor_right = 1.0
@@ -303,7 +304,7 @@ another_player = NodePath("../../Player/AnimationPlayer")
 viewport_image_loader = NodePath("../AfterImageEffect")
 swirl_controller = NodePath("../SwirlEffect")
 shader_scale_controller = NodePath("../ScaleTransition2")
-effect_duration = 0.5
+effect_duration = 2.0
 
 [node name="ResetButton" type="Button" parent="UILayer/Options"]
 layout_mode = 2

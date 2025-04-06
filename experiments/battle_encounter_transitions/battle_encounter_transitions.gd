@@ -7,8 +7,11 @@ extends Node
 @export var animation_player: AnimationPlayer
 @export var another_player: AnimationPlayer
 @export var viewport_image_loader: ViewportImageLoader
+@export var swirl_controller: SwirlController
+@export var shader_scale_controller: BaseShaderController
 
 @export var can_goto_new_scene: bool = false
+@export var effect_duration: float = 3.0; # seconds
 @onready var buttons: Array[Button] = []
 
 func _ready():
@@ -25,15 +28,25 @@ func _ready():
 	
 	for i in range(mini(len(buttons), len(funcs))):
 		buttons[i].pressed.connect(funcs[i])
-		
+	
+	# used to test the after image shader effect
 	another_player.play("green_move")
 
 
 func on_scale_pressed():
-	animation_player.play("scale_ui_transition")
+	# animation player method
+	# animation_player.play("scale_ui_transition")
+	
+	# shader method
+	shader_scale_controller.play(effect_duration)
 	
 func on_swirl_pressed():
-	print("swirl pressed")
+	assert(swirl_controller != null)
+	
+	if swirl_controller.is_playing():
+		return
+		
+	swirl_controller.play(effect_duration)
 	
 func on_after_image_pressed():
 	assert(viewport_image_loader != null)
@@ -44,11 +57,13 @@ func on_after_image_pressed():
 	print("after image pressed")
 	viewport_image_loader.visible = true
 	await viewport_image_loader.capture_image()
-	viewport_image_loader.play_shader(3.0)
+	viewport_image_loader.play_shader(effect_duration)
 	
 func on_reset_pressed():
 	animation_player.stop()
 	viewport_image_loader.reset_shader()
+	swirl_controller.reset()
+	shader_scale_controller.reset()
 	
 func on_toggle_new_scene():
 	can_goto_new_scene = !can_goto_new_scene
@@ -57,10 +72,14 @@ func on_toggle_new_scene():
 		print("going to new scene on transition")
 		animation_player.animation_finished.connect(goto_new_scene_anim)
 		viewport_image_loader.on_shader_playing_finished.connect(goto_new_scene)
+		swirl_controller.on_shader_playing_finished.connect(goto_new_scene)
+		shader_scale_controller.on_play_finished.connect(goto_new_scene)
 	else:
 		print("staying on same scene on transition")
 		animation_player.animation_finished.disconnect(goto_new_scene_anim)
 		viewport_image_loader.on_shader_playing_finished.disconnect(goto_new_scene)
+		swirl_controller.on_shader_playing_finished.disconnect(goto_new_scene)
+		shader_scale_controller.on_play_finished.disconnect(goto_new_scene)
 		
 func goto_new_scene():
 	scene_manager.change_scene("res://experiments/battle_encounter_transitions/battle_encounter_prototype.tscn")

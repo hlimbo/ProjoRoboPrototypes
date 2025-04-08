@@ -1,23 +1,31 @@
-[gd_scene load_steps=15 format=3 uid="uid://predam3nnvu3"]
+[gd_scene load_steps=20 format=3 uid="uid://predam3nnvu3"]
 
 [ext_resource type="PackedScene" uid="uid://4fgdk83suvux" path="res://nodes/battle_timeline/one_d_graph.tscn" id="1_wejbx"]
 [ext_resource type="PackedScene" uid="uid://ba8b51hk4fl2p" path="res://experiments/battle_ui_transitions/ui/party_member_card.tscn" id="2_qf5xh"]
 [ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="3_uskij"]
 [ext_resource type="Texture2D" uid="uid://c4n27m1y8nuj4" path="res://assets/AttrAndElementsIcons_v1/Icons/icons/attack_icon.tres" id="4_165pl"]
 [ext_resource type="Animation" uid="uid://dldsclspf7ghu" path="res://experiments/battle_ui_transitions/animations/active_party_member/RESET.res" id="4_bsjmo"]
+[ext_resource type="Script" path="res://experiments/battle_ui_transitions/act_menu_controller.gd" id="4_hg68l"]
 [ext_resource type="Texture2D" uid="uid://bgp7ddyej8auc" path="res://assets/AttrAndElementsIcons_v1/Icons/icons/defend_icon.tres" id="5_7dvmh"]
 [ext_resource type="AnimationLibrary" uid="uid://bl1k0g1s486k6" path="res://experiments/battle_ui_transitions/animations/action_menu/action_menu_ui_animations.res" id="5_12el5"]
 [ext_resource type="AnimationLibrary" uid="uid://beo3ojbhu7443" path="res://experiments/battle_ui_transitions/animations/active_party_member/active_party_member_ui_animations.res" id="5_e7jt6"]
 [ext_resource type="Texture2D" uid="uid://b7dwxyt07vp6i" path="res://assets/AttrAndElementsIcons_v1/Icons/icons/skill_icon.tres" id="6_qsr62"]
 [ext_resource type="Texture2D" uid="uid://c0xjrjntngs4o" path="res://assets/AttrAndElementsIcons_v1/Icons/icons/flee_icon.tres" id="7_ferbd"]
-[ext_resource type="AnimationLibrary" uid="uid://02lna76c8jos" path="res://experiments/battle_ui_transitions/animations/skill_menu/skill_menu_ui_animations.res" id="7_jxxhx"]
 [ext_resource type="AnimationLibrary" uid="uid://d3dgmm6c8vq4f" path="res://experiments/battle_ui_transitions/animations/target_menu/target_menu_ui_animations.res" id="8_h3e7e"]
+[ext_resource type="AnimationLibrary" uid="uid://ox4h14lhirdg" path="res://experiments/battle_ui_transitions/animations/skill_menu/skill_menu.res" id="8_shmh4"]
 [ext_resource type="Texture2D" uid="uid://cinhe4f0yfurq" path="res://assets/kenney_fantasy-ui-borders/PNG/Default/Border/panel-border-023.png" id="8_ykkmb"]
+[ext_resource type="Script" path="res://experiments/battle_ui_transitions/ui_animation_tool.gd" id="14_5asd0"]
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_leoyl"]
 _data = {
 "RESET": ExtResource("4_bsjmo")
 }
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_u6dfk"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gnkkm"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_sskit"]
 
 [node name="BattleUiMock" type="Control"]
 layout_mode = 3
@@ -94,15 +102,26 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 offset_top = -0.160034
 grow_vertical = 0
+script = ExtResource("4_hg68l")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="ActMenu"]
+[node name="ActivePartyMemberAnimationPlayer" type="AnimationPlayer" parent="ActMenu"]
 root_node = NodePath("../PartyMemberCard")
 libraries = {
 "": SubResource("AnimationLibrary_leoyl"),
-"action_menu_ui_animations": ExtResource("5_12el5"),
-"active_party_member_ui_animations": ExtResource("5_e7jt6"),
-"skill_menu_ui_animations": ExtResource("7_jxxhx"),
-"target_menu_ui_animations": ExtResource("8_h3e7e")
+"action_menu": ExtResource("5_12el5"),
+"party_member_card": ExtResource("5_e7jt6"),
+"skill_menu": ExtResource("8_shmh4"),
+"target_menu": ExtResource("8_h3e7e")
+}
+
+[node name="SubMenuAnimationPlayer" type="AnimationPlayer" parent="ActMenu"]
+root_node = NodePath("../PartyMemberCard")
+libraries = {
+"": SubResource("AnimationLibrary_leoyl"),
+"action_menu": ExtResource("5_12el5"),
+"party_member_card": ExtResource("5_e7jt6"),
+"skill_menu": ExtResource("8_shmh4"),
+"target_menu": ExtResource("8_h3e7e")
 }
 
 [node name="PartyMemberCard" parent="ActMenu" instance=ExtResource("2_qf5xh")]
@@ -116,16 +135,15 @@ size_flags_horizontal = 6
 size_flags_vertical = 4
 
 [node name="ActionMenu" type="Control" parent="ActMenu"]
-visible = false
 layout_mode = 1
 anchor_left = 0.252
 anchor_top = 0.378
 anchor_right = 0.998
 anchor_bottom = 0.908
 offset_left = -0.559998
-offset_top = -0.0880051
+offset_top = -0.0880203
 offset_right = -0.440063
-offset_bottom = 0.0319824
+offset_bottom = 0.0319672
 grow_horizontal = 2
 grow_vertical = 0
 
@@ -149,7 +167,7 @@ custom_minimum_size = Vector2(200, 78)
 layout_mode = 2
 size_flags_horizontal = 6
 
-[node name="Button" type="Button" parent="ActMenu/ActionMenu/HBoxContainer/Control5"]
+[node name="AtkBtn" type="Button" parent="ActMenu/ActionMenu/HBoxContainer/Control5"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -179,7 +197,7 @@ custom_minimum_size = Vector2(200, 78)
 layout_mode = 2
 size_flags_horizontal = 6
 
-[node name="Button" type="Button" parent="ActMenu/ActionMenu/HBoxContainer/Control6"]
+[node name="DefendBtn" type="Button" parent="ActMenu/ActionMenu/HBoxContainer/Control6"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -208,7 +226,7 @@ custom_minimum_size = Vector2(200, 78)
 layout_mode = 2
 size_flags_horizontal = 6
 
-[node name="Button" type="Button" parent="ActMenu/ActionMenu/HBoxContainer/Control7"]
+[node name="SkillBtn" type="Button" parent="ActMenu/ActionMenu/HBoxContainer/Control7"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -237,7 +255,7 @@ custom_minimum_size = Vector2(200, 78)
 layout_mode = 2
 size_flags_horizontal = 6
 
-[node name="Button" type="Button" parent="ActMenu/ActionMenu/HBoxContainer/Control8"]
+[node name="FleeBtn" type="Button" parent="ActMenu/ActionMenu/HBoxContainer/Control8"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -269,8 +287,8 @@ anchor_left = 0.227
 anchor_top = -0.087
 anchor_right = 0.989
 anchor_bottom = 0.944
-offset_left = 0.439972
-offset_top = 0.052
+offset_left = 0.440002
+offset_top = 0.0520058
 offset_right = 0.0799561
 offset_bottom = -0.0240173
 grow_horizontal = 2
@@ -303,7 +321,7 @@ theme_override_constants/outline_size = 14
 theme_override_font_sizes/font_size = 32
 text = "Skill Name"
 
-[node name="Back" type="Button" parent="ActMenu/TargetMenu"]
+[node name="BackBtnTarget" type="Button" parent="ActMenu/TargetMenu"]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -720,16 +738,17 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="SkillMenu" type="NinePatchRect" parent="ActMenu"]
+visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.242
 anchor_top = 0.031
 anchor_right = 0.995
 anchor_bottom = 0.929
-offset_left = 0.23999
-offset_top = -0.0760002
-offset_right = 0.399902
-offset_bottom = -0.0839996
+offset_left = -18.76
+offset_top = -23.076
+offset_right = -7.59998
+offset_bottom = 2.91594
 grow_horizontal = 2
 grow_vertical = 0
 texture = ExtResource("8_ykkmb")
@@ -764,7 +783,7 @@ text = "EP"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Back" type="Button" parent="ActMenu/SkillMenu"]
+[node name="BackBtnSkill" type="Button" parent="ActMenu/SkillMenu"]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -804,12 +823,19 @@ theme_override_constants/separation = 12
 [node name="SkillRow" type="HBoxContainer" parent="ActMenu/SkillMenu/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="SkillName" type="Label" parent="ActMenu/SkillMenu/ScrollContainer/VBoxContainer/SkillRow"]
+[node name="SkillName" type="Button" parent="ActMenu/SkillMenu/ScrollContainer/VBoxContainer/SkillRow"]
 layout_mode = 2
-size_flags_horizontal = 2
+size_flags_horizontal = 3
 theme = ExtResource("3_uskij")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 8
 theme_override_font_sizes/font_size = 24
+theme_override_styles/focus = SubResource("StyleBoxEmpty_u6dfk")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_gnkkm")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_sskit")
 text = "Bad Breath"
+flat = true
+alignment = 0
 
 [node name="MarginContainer" type="MarginContainer" parent="ActMenu/SkillMenu/ScrollContainer/VBoxContainer/SkillRow"]
 layout_mode = 2
@@ -826,12 +852,16 @@ text = "32"
 [node name="SkillRow2" type="HBoxContainer" parent="ActMenu/SkillMenu/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="SkillName" type="Label" parent="ActMenu/SkillMenu/ScrollContainer/VBoxContainer/SkillRow2"]
+[node name="SkillName" type="Button" parent="ActMenu/SkillMenu/ScrollContainer/VBoxContainer/SkillRow2"]
 layout_mode = 2
-size_flags_horizontal = 2
+size_flags_horizontal = 3
 theme = ExtResource("3_uskij")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 8
 theme_override_font_sizes/font_size = 24
 text = "Bad Breath"
+flat = true
+alignment = 0
 
 [node name="MarginContainer" type="MarginContainer" parent="ActMenu/SkillMenu/ScrollContainer/VBoxContainer/SkillRow2"]
 layout_mode = 2
@@ -848,12 +878,16 @@ text = "32"
 [node name="SkillRow3" type="HBoxContainer" parent="ActMenu/SkillMenu/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="SkillName" type="Label" parent="ActMenu/SkillMenu/ScrollContainer/VBoxContainer/SkillRow3"]
+[node name="SkillName" type="Button" parent="ActMenu/SkillMenu/ScrollContainer/VBoxContainer/SkillRow3"]
 layout_mode = 2
-size_flags_horizontal = 2
+size_flags_horizontal = 3
 theme = ExtResource("3_uskij")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 8
 theme_override_font_sizes/font_size = 24
 text = "Bad Breath"
+flat = true
+alignment = 0
 
 [node name="MarginContainer" type="MarginContainer" parent="ActMenu/SkillMenu/ScrollContainer/VBoxContainer/SkillRow3"]
 layout_mode = 2
@@ -870,12 +904,16 @@ text = "32"
 [node name="SkillRow4" type="HBoxContainer" parent="ActMenu/SkillMenu/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="SkillName" type="Label" parent="ActMenu/SkillMenu/ScrollContainer/VBoxContainer/SkillRow4"]
+[node name="SkillName" type="Button" parent="ActMenu/SkillMenu/ScrollContainer/VBoxContainer/SkillRow4"]
 layout_mode = 2
-size_flags_horizontal = 2
+size_flags_horizontal = 3
 theme = ExtResource("3_uskij")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 8
 theme_override_font_sizes/font_size = 24
 text = "Bad Breath"
+flat = true
+alignment = 0
 
 [node name="MarginContainer" type="MarginContainer" parent="ActMenu/SkillMenu/ScrollContainer/VBoxContainer/SkillRow4"]
 layout_mode = 2
@@ -888,3 +926,82 @@ theme = ExtResource("3_uskij")
 theme_override_colors/font_color = Color(0.301961, 0.729412, 0.890196, 1)
 theme_override_font_sizes/font_size = 24
 text = "32"
+
+[node name="AnimationOptions" type="ScrollContainer" parent="." node_paths=PackedStringArray("act_menu_controller")]
+layout_mode = 0
+offset_left = 482.0
+offset_top = 153.0
+offset_right = 783.0
+offset_bottom = 395.0
+script = ExtResource("14_5asd0")
+act_menu_controller = NodePath("../ActMenu")
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="AnimationOptions"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Intro" type="VBoxContainer" parent="AnimationOptions/VBoxContainer2"]
+layout_mode = 2
+theme = ExtResource("3_uskij")
+
+[node name="Label" type="Label" parent="AnimationOptions/VBoxContainer2/Intro"]
+layout_mode = 2
+text = "Intro Animations"
+
+[node name="Horizontal" type="Button" parent="AnimationOptions/VBoxContainer2/Intro"]
+layout_mode = 2
+text = "Horizontal"
+
+[node name="Vertical" type="Button" parent="AnimationOptions/VBoxContainer2/Intro"]
+layout_mode = 2
+text = "Vertical"
+
+[node name="Scale" type="Button" parent="AnimationOptions/VBoxContainer2/Intro"]
+layout_mode = 2
+text = "Scale"
+
+[node name="Reset" type="Button" parent="AnimationOptions/VBoxContainer2/Intro"]
+layout_mode = 2
+text = "Reset ANIMATIONS"
+
+[node name="AnimOptions" type="VBoxContainer" parent="AnimationOptions/VBoxContainer2"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("3_uskij")
+
+[node name="Label" type="Label" parent="AnimationOptions/VBoxContainer2/AnimOptions"]
+layout_mode = 2
+text = "Transition Animations"
+
+[node name="Horizontal" type="HBoxContainer" parent="AnimationOptions/VBoxContainer2/AnimOptions"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="AnimationOptions/VBoxContainer2/AnimOptions/Horizontal"]
+layout_mode = 2
+text = "Horizontal"
+
+[node name="HorizCheck" type="CheckButton" parent="AnimationOptions/VBoxContainer2/AnimOptions/Horizontal"]
+layout_mode = 2
+
+[node name="Vertical" type="HBoxContainer" parent="AnimationOptions/VBoxContainer2/AnimOptions"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="AnimationOptions/VBoxContainer2/AnimOptions/Vertical"]
+layout_mode = 2
+text = "Vertical
+"
+
+[node name="VertCheck" type="CheckButton" parent="AnimationOptions/VBoxContainer2/AnimOptions/Vertical"]
+layout_mode = 2
+
+[node name="Scale" type="HBoxContainer" parent="AnimationOptions/VBoxContainer2/AnimOptions"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="AnimationOptions/VBoxContainer2/AnimOptions/Scale"]
+layout_mode = 2
+text = "Scale
+"
+
+[node name="ScaleCheck" type="CheckButton" parent="AnimationOptions/VBoxContainer2/AnimOptions/Scale"]
+layout_mode = 2

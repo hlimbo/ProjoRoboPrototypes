@@ -1,0 +1,126 @@
+[gd_scene load_steps=5 format=3 uid="uid://ba8b51hk4fl2p"]
+
+[ext_resource type="Texture2D" uid="uid://cinhe4f0yfurq" path="res://assets/kenney_fantasy-ui-borders/PNG/Default/Border/panel-border-023.png" id="1_363d8"]
+[ext_resource type="Texture2D" uid="uid://cnuhs5dyxvksn" path="res://assets/16x16 and 16x32 Character Templates/char_template.tres" id="1_rbejr"]
+[ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="2_ixwys"]
+[ext_resource type="PackedScene" uid="uid://bqvp1uwmeicjq" path="res://experiments/battle_ui_transitions/ui/resource_bar.tscn" id="3_ux6og"]
+
+[node name="MarginContainer" type="MarginContainer"]
+custom_minimum_size = Vector2(280, 180)
+offset_right = 280.0
+offset_bottom = 180.0
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="PartyMemberCard" type="NinePatchRect" parent="."]
+layout_mode = 2
+texture = ExtResource("1_363d8")
+patch_margin_left = 24
+patch_margin_top = 24
+patch_margin_right = 24
+patch_margin_bottom = 24
+
+[node name="PartyMemberName" type="Label" parent="PartyMemberCard"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -108.0
+offset_right = 108.0
+offset_bottom = 45.0
+grow_horizontal = 2
+theme = ExtResource("2_ixwys")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 32
+text = "Pyrotron"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PartyMemberCard"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.222
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 0.0399971
+offset_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CharacterPortrait" type="TextureRect" parent="PartyMemberCard/HBoxContainer"]
+custom_minimum_size = Vector2(88, 122)
+layout_mode = 2
+size_flags_horizontal = 6
+texture = ExtResource("1_rbejr")
+stretch_mode = 5
+
+[node name="ResourceContainer" type="VBoxContainer" parent="PartyMemberCard/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+size_flags_vertical = 0
+theme_override_constants/separation = 0
+
+[node name="HpContainer" type="VBoxContainer" parent="PartyMemberCard/HBoxContainer/ResourceContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="HP" type="Label" parent="PartyMemberCard/HBoxContainer/ResourceContainer/HpContainer"]
+layout_mode = 2
+theme = ExtResource("2_ixwys")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 26
+text = "HP"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PartyMemberCard/HBoxContainer/ResourceContainer/HpContainer"]
+layout_mode = 2
+
+[node name="HpBar" parent="PartyMemberCard/HBoxContainer/ResourceContainer/HpContainer/HBoxContainer" instance=ExtResource("3_ux6og")]
+custom_minimum_size = Vector2(75, 20)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="CurrentHP" type="Label" parent="PartyMemberCard/HBoxContainer/ResourceContainer/HpContainer/HBoxContainer"]
+custom_minimum_size = Vector2(68, 30)
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("2_ixwys")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 24
+text = "999"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="EnergyContainer" type="VBoxContainer" parent="PartyMemberCard/HBoxContainer/ResourceContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Energy" type="Label" parent="PartyMemberCard/HBoxContainer/ResourceContainer/EnergyContainer"]
+layout_mode = 2
+theme = ExtResource("2_ixwys")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 26
+text = "Energy
+"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PartyMemberCard/HBoxContainer/ResourceContainer/EnergyContainer"]
+layout_mode = 2
+
+[node name="EnergyBar" parent="PartyMemberCard/HBoxContainer/ResourceContainer/EnergyContainer/HBoxContainer" instance=ExtResource("3_ux6og")]
+custom_minimum_size = Vector2(75, 20)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+value = 44.0
+tint_progress = Color(0.30041, 0.728492, 0.890603, 1)
+
+[node name="CurrentEnergy" type="Label" parent="PartyMemberCard/HBoxContainer/ResourceContainer/EnergyContainer/HBoxContainer"]
+custom_minimum_size = Vector2(68, 30)
+layout_mode = 2
+theme = ExtResource("2_ixwys")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 24
+text = "999"
+horizontal_alignment = 1
+vertical_alignment = 1

@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://c53jupi7wu1tv"]
+[gd_scene load_steps=27 format=3 uid="uid://c53jupi7wu1tv"]
 
 [ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="1_ygnsq"]
 [ext_resource type="Script" path="res://experiments/battle_encounter_transitions/battle_encounter_transitions.gd" id="2_6o5du"]
@@ -9,7 +9,11 @@
 [ext_resource type="Shader" path="res://experiments/battle_encounter_transitions/swirl_effect.gdshader" id="4_6keqw"]
 [ext_resource type="Shader" path="res://experiments/battle_encounter_transitions/cinematic_shader.gdshader" id="5_7gg4m"]
 [ext_resource type="Texture2D" uid="uid://c5lj6bj20m4wy" path="res://experiments/battle_encounter_transitions/test-image.png" id="5_8pc31"]
+[ext_resource type="Shader" path="res://experiments/battle_encounter_transitions/polar_coordinates.gdshader" id="5_cylh0"]
+[ext_resource type="Texture2D" uid="uid://gr018a87bdam" path="res://experiments/battle_encounter_transitions/Wow202024-10-292021-05-18.png" id="6_d8rm1"]
+[ext_resource type="Texture2D" uid="uid://d0ttocvhpdomy" path="res://experiments/battle_encounter_transitions/ballroom1.PNG" id="6_t5qsh"]
 [ext_resource type="Shader" path="res://experiments/battle_encounter_transitions/flower_petal.gdshader" id="8_ud3sp"]
+[ext_resource type="Shader" path="res://experiments/battle_encounter_transitions/archimedean_spiral.gdshader" id="13_bnqnn"]
 
 [sub_resource type="Animation" id="Animation_f458w"]
 length = 0.001
@@ -166,6 +170,9 @@ shader = ExtResource("4_6keqw")
 shader_parameter/spiral_color = Color(0, 0, 0, 1)
 shader_parameter/frequency = 0.0
 shader_parameter/fun = 0.0
+shader_parameter/edge1 = 0.2
+shader_parameter/edge2 = 0.2
+shader_parameter/stuff = 0.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_vdnbt"]
 
@@ -173,9 +180,19 @@ shader_parameter/fun = 0.0
 shader = ExtResource("8_ud3sp")
 shader_parameter/petal_count = 1
 shader_parameter/petal_multiplier = 5
-shader_parameter/circle_radius = 0.104
-shader_parameter/time_scale = 0.1
-shader_parameter/bg_color = Color(0.888333, 1, 0.33, 1)
+shader_parameter/circle_radius = 0.1
+shader_parameter/time_scale = 0.0
+shader_parameter/bg_color = Color(0.901667, 1, 0.41, 1)
+shader_parameter/h = 0.676
+shader_parameter/main_texture = ExtResource("6_d8rm1")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_2ep7k"]
+shader = ExtResource("5_cylh0")
+shader_parameter/main_texture = ExtResource("6_t5qsh")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5umwf"]
+shader = ExtResource("13_bnqnn")
+shader_parameter/min_man = 0.1
 
 [node name="OverworldEncounterPrototype" type="Node2D"]
 
@@ -286,6 +303,7 @@ script = ExtResource("2_ww8dv")
 shader = ExtResource("5_7gg4m")
 
 [node name="AfterImageEffect2" type="TextureRect" parent="UILayer"]
+visible = false
 material = SubResource("ShaderMaterial_sfs2e")
 anchors_preset = 15
 anchor_right = 1.0
@@ -296,7 +314,32 @@ grow_vertical = 2
 mouse_filter = 2
 texture = ExtResource("5_8pc31")
 
+[node name="AfterImageEffect3" type="TextureRect" parent="UILayer"]
+visible = false
+material = SubResource("ShaderMaterial_2ep7k")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -2.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("5_8pc31")
+
+[node name="AfterImageEffect4" type="TextureRect" parent="UILayer"]
+visible = false
+material = SubResource("ShaderMaterial_5umwf")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -2.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("5_8pc31")
+
 [node name="Options" type="VBoxContainer" parent="UILayer" node_paths=PackedStringArray("animation_player", "another_player", "viewport_image_loader", "swirl_controller", "shader_scale_controller")]
+visible = false
 offset_right = 319.0
 offset_bottom = 171.0
 script = ExtResource("2_6o5du")

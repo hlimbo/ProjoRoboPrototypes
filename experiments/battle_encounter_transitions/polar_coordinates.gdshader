@@ -46,7 +46,11 @@ vec4 swirl_demo(in vec2 my_uv) {
 	
 	// swirls the image by remapping each pixel on screen to be located somewhere else
 	// based on the sine function
-	uv.x += sin(TIME) * uv.y * 2.0; // uv.x is theta
+	uv.x += (sin(TIME)) * uv.y * 2.0; // uv.x is theta
+	
+	// the ones with a smaller radius should have a darker color
+	vec3 color = vec3(1.0, 1.0, 1.0);
+	color = smoothstep(0.0, 0.75, uv.y) * color;
 	
 	uv = to_cartesian(uv);
 	uv += 0.5; // uv start in corner of rectangle texture
@@ -54,7 +58,7 @@ vec4 swirl_demo(in vec2 my_uv) {
 	// fract the pixel so that the texture image repeats itself as it zooms in and out
 	// uv = fract(uv);
 	
-	return texture(main_texture, uv);
+	return texture(main_texture, uv) * vec4(color, 1.0);
 }
 
 void fragment() {

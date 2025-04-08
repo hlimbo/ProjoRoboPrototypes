@@ -1,6 +1,8 @@
 // https://en.wikipedia.org/wiki/Archimedean_spiral
 shader_type canvas_item;
 
+uniform float min_man : hint_range(0.0, 1.0) = 0.2;
+
 vec2 to_polar(vec2 cartesian) {
 	float theta = atan(cartesian.y, cartesian.x);
 	float radius = length(cartesian);
@@ -40,8 +42,8 @@ void fragment() {
 	// i only have access if I can set the current pixel a specific color or not
 	float r_spiral = b * polar.x;
 	
-	float rays = 1.0;
-	float thickness = 0.0;
+	float rays = 0.5;
+	float thickness = 0.2;
 	float angle = polar.x;
 	float r = polar.y;
 	
@@ -64,12 +66,27 @@ void fragment() {
 	// smoothstep - gives the curve an area of color where -.1 and .1 are lower and upper bounds
 	
 	 float spiral_1 = smoothstep(-.1, .9, 
-                  fract((TAU*r-(angle)/PI)*rays + TIME)- thickness);
+                  fract((TAU*r-angle/PI)*rays + TIME)- thickness);
+	float spiral_2 = smoothstep(-.5, .5,
+		mod(r + TIME, 0.5));
+		
+	float spiral_3 = smoothstep(-.1, .1,
+		sin(TAU * r + TIME)
+	);
+	
+	float spiral_4 = smoothstep(-.1, .1,
+		sin(TAU * r + TIME + PI)
+	);
+	
+	// the further away it is from the center, the less channel value it has
+	float alp = step(0.01, min_man) * smoothstep(min_man, 1.0, r) * 0.9;
 	
 	//r *= 3.0;
 	//
 	//float spiral_1 = fract(r);
-	my_color.r = spiral_1;
+	//my_color.b = spiral_1;
+	my_color.g = spiral_3;// * alp;
+	my_color.b = spiral_4;
 	
-	COLOR = vec4(my_color, spiral_1);
+	COLOR = vec4(my_color, alp);
 }

@@ -1,8 +1,10 @@
-[gd_resource type="Theme" load_steps=6 format=3 uid="uid://d1stc5w463lhk"]
+[gd_resource type="Theme" load_steps=7 format=3 uid="uid://d1stc5w463lhk"]
 
 [ext_resource type="Texture2D" uid="uid://bv8dp202pelgq" path="res://assets/kenney_ui_pack/Default/slide_horizontal_color.png" id="1_24sg2"]
 [ext_resource type="FontFile" uid="uid://pr0o158yj1ul" path="res://assets/kenney_kenney-fonts/Fonts/Kenney Mini Square Mono.ttf" id="1_m4g8u"]
 [ext_resource type="Texture2D" uid="uid://b5aunwbr6d0es" path="res://assets/kenney_ui_pack/Default/slide_horizontal_grey.png" id="2_sov1i"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_um7sd"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_awg20"]
 texture = ExtResource("2_sov1i")
@@ -15,7 +17,9 @@ region_rect = Rect2(15, 0, 66, 16)
 [resource]
 /styles/Slider = null
 Button/fonts/font = ExtResource("1_m4g8u")
+Label/constants/outline_size = 8
 Label/fonts/font = ExtResource("1_m4g8u")
+Label/styles/normal = SubResource("StyleBoxEmpty_um7sd")
 ProgressBar/constants/outline_size = 10
 ProgressBar/styles/background = SubResource("StyleBoxTexture_awg20")
 ProgressBar/styles/fill = SubResource("StyleBoxTexture_mlxgl")

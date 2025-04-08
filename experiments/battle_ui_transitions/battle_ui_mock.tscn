@@ -1,0 +1,937 @@
+[gd_scene load_steps=8 format=3 uid="uid://predam3nnvu3"]
+
+[ext_resource type="PackedScene" uid="uid://4fgdk83suvux" path="res://nodes/battle_timeline/one_d_graph.tscn" id="1_wejbx"]
+[ext_resource type="PackedScene" uid="uid://ba8b51hk4fl2p" path="res://experiments/battle_ui_transitions/ui/party_member_card.tscn" id="2_qf5xh"]
+[ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="3_uskij"]
+[ext_resource type="Texture2D" uid="uid://c4n27m1y8nuj4" path="res://assets/AttrAndElementsIcons_v1/Icons/icons/attack_icon.tres" id="4_165pl"]
+[ext_resource type="Texture2D" uid="uid://bgp7ddyej8auc" path="res://assets/AttrAndElementsIcons_v1/Icons/icons/defend_icon.tres" id="5_7dvmh"]
+[ext_resource type="Texture2D" uid="uid://b7dwxyt07vp6i" path="res://assets/AttrAndElementsIcons_v1/Icons/icons/skill_icon.tres" id="6_qsr62"]
+[ext_resource type="Texture2D" uid="uid://c0xjrjntngs4o" path="res://assets/AttrAndElementsIcons_v1/Icons/icons/flee_icon.tres" id="7_ferbd"]
+
+[node name="BattleUiMock" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="OneDGraph" parent="." instance=ExtResource("1_wejbx")]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_top = 0.0
+anchor_right = 0.5
+anchor_bottom = 0.0
+offset_left = -423.0
+offset_top = -49.0
+offset_right = 427.0
+offset_bottom = 5.0
+grow_horizontal = 2
+grow_vertical = 1
+
+[node name="CharPortraits" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.717
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 3.0
+offset_top = -0.23999
+offset_right = 2.0
+grow_horizontal = 2
+grow_vertical = 0
+alignment = 2
+
+[node name="PartyMemberCard" parent="CharPortraits" instance=ExtResource("2_qf5xh")]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+
+[node name="PartyMemberCard2" parent="CharPortraits" instance=ExtResource("2_qf5xh")]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+
+[node name="PartyMemberCard3" parent="CharPortraits" instance=ExtResource("2_qf5xh")]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+
+[node name="PartyMemberCard4" parent="CharPortraits" instance=ExtResource("2_qf5xh")]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+
+[node name="ActionMenu" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchor_top = 0.717
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 3.0
+offset_top = -0.23999
+offset_right = 2.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="PartyMemberCard" parent="ActionMenu" instance=ExtResource("2_qf5xh")]
+layout_mode = 2
+offset_left = 18.0
+offset_top = 12.0
+offset_right = 298.0
+offset_bottom = 192.0
+size_flags_horizontal = 6
+size_flags_vertical = 4
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ActionMenu"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.232
+anchor_top = 0.407
+anchor_right = 0.986
+anchor_bottom = 0.789
+offset_left = 0.272003
+offset_top = -0.0279999
+offset_right = -0.0941162
+offset_bottom = 0.0439911
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_constants/separation = 24
+alignment = 1
+
+[node name="Control5" type="Control" parent="ActionMenu/HBoxContainer"]
+custom_minimum_size = Vector2(200, 78)
+layout_mode = 2
+size_flags_horizontal = 6
+
+[node name="Button" type="Button" parent="ActionMenu/HBoxContainer/Control5"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("3_uskij")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 24
+theme_override_font_sizes/font_size = 36
+text = "ATTACK"
+expand_icon = true
+
+[node name="TextureRect" type="TextureRect" parent="ActionMenu/HBoxContainer/Control5"]
+custom_minimum_size = Vector2(102, 96)
+layout_mode = 1
+offset_left = -26.0
+offset_top = -66.0
+offset_right = 76.0
+offset_bottom = 30.0
+texture = ExtResource("4_165pl")
+expand_mode = 5
+stretch_mode = 4
+
+[node name="Control6" type="Control" parent="ActionMenu/HBoxContainer"]
+custom_minimum_size = Vector2(200, 78)
+layout_mode = 2
+size_flags_horizontal = 6
+
+[node name="Button" type="Button" parent="ActionMenu/HBoxContainer/Control6"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("3_uskij")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 24
+theme_override_font_sizes/font_size = 36
+text = "DEFEND"
+expand_icon = true
+
+[node name="TextureRect" type="TextureRect" parent="ActionMenu/HBoxContainer/Control6"]
+custom_minimum_size = Vector2(102, 96)
+layout_mode = 1
+offset_left = -35.0
+offset_top = -66.0
+offset_right = 67.0
+offset_bottom = 30.0
+texture = ExtResource("5_7dvmh")
+stretch_mode = 4
+
+[node name="Control7" type="Control" parent="ActionMenu/HBoxContainer"]
+custom_minimum_size = Vector2(200, 78)
+layout_mode = 2
+size_flags_horizontal = 6
+
+[node name="Button" type="Button" parent="ActionMenu/HBoxContainer/Control7"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("3_uskij")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 24
+theme_override_font_sizes/font_size = 36
+text = "SKILL"
+expand_icon = true
+
+[node name="TextureRect" type="TextureRect" parent="ActionMenu/HBoxContainer/Control7"]
+custom_minimum_size = Vector2(102, 96)
+layout_mode = 1
+offset_left = -45.0
+offset_top = -64.0
+offset_right = 57.0
+offset_bottom = 32.0
+texture = ExtResource("6_qsr62")
+stretch_mode = 4
+
+[node name="Control8" type="Control" parent="ActionMenu/HBoxContainer"]
+custom_minimum_size = Vector2(200, 78)
+layout_mode = 2
+size_flags_horizontal = 6
+
+[node name="Button" type="Button" parent="ActionMenu/HBoxContainer/Control8"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("3_uskij")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 24
+theme_override_font_sizes/font_size = 36
+text = "FLEE"
+expand_icon = true
+
+[node name="TextureRect" type="TextureRect" parent="ActionMenu/HBoxContainer/Control8"]
+custom_minimum_size = Vector2(102, 96)
+layout_mode = 1
+offset_left = -30.0
+offset_top = -62.0
+offset_right = 72.0
+offset_bottom = 34.0
+texture = ExtResource("7_ferbd")
+stretch_mode = 5
+
+[node name="TargetMenu" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchor_top = 0.717
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 3.0
+offset_top = -0.23999
+offset_right = 2.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="PartyMemberCard" parent="TargetMenu" instance=ExtResource("2_qf5xh")]
+layout_mode = 2
+offset_left = 18.0
+offset_top = 12.0
+offset_right = 298.0
+offset_bottom = 192.0
+size_flags_horizontal = 6
+size_flags_vertical = 4
+
+[node name="Label" type="Label" parent="TargetMenu"]
+layout_mode = 0
+offset_left = 345.0
+offset_right = 723.0
+offset_bottom = 45.0
+theme = ExtResource("3_uskij")
+theme_override_constants/outline_size = 14
+theme_override_font_sizes/font_size = 36
+text = "Who to target?"
+
+[node name="Back" type="Button" parent="TargetMenu"]
+layout_mode = 0
+offset_left = 1085.0
+offset_right = 1247.0
+offset_bottom = 43.0
+theme = ExtResource("3_uskij")
+theme_override_constants/outline_size = 14
+theme_override_font_sizes/font_size = 28
+text = "Back"
+
+[node name="TargetLabel" type="Control" parent="TargetMenu"]
+anchors_preset = 0
+offset_left = 330.0
+offset_top = 34.0
+offset_right = 1262.0
+offset_bottom = 85.0
+
+[node name="Label" type="Label" parent="TargetMenu/TargetLabel"]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 21.0
+offset_right = 230.0
+offset_bottom = 51.0
+theme = ExtResource("3_uskij")
+theme_override_font_sizes/font_size = 28
+text = "Target"
+
+[node name="HP" type="Label" parent="TargetMenu/TargetLabel"]
+layout_mode = 0
+offset_left = 292.0
+offset_top = 21.0
+offset_right = 333.0
+offset_bottom = 51.0
+theme = ExtResource("3_uskij")
+theme_override_colors/font_color = Color(0.227451, 0.701961, 0.443137, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 28
+text = "hp"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Energy" type="Label" parent="TargetMenu/TargetLabel"]
+layout_mode = 0
+offset_left = 456.0
+offset_top = 21.0
+offset_right = 564.0
+offset_bottom = 51.0
+theme = ExtResource("3_uskij")
+theme_override_colors/font_color = Color(0.301961, 0.729412, 0.890196, 1)
+theme_override_font_sizes/font_size = 28
+text = "Energy"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StatusEffect" type="Label" parent="TargetMenu/TargetLabel"]
+layout_mode = 0
+offset_left = 638.0
+offset_top = 21.0
+offset_right = 872.0
+offset_bottom = 51.0
+theme = ExtResource("3_uskij")
+theme_override_font_sizes/font_size = 28
+text = "Status Effect"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="TargetMenu"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -940.0
+offset_top = -127.0
+offset_right = -32.0
+offset_bottom = -9.0
+grow_horizontal = 0
+grow_vertical = 0
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TargetMenu/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+alignment = 1
+
+[node name="TargetRow" type="Control" parent="TargetMenu/ScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(900, 50)
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+
+[node name="Label" type="Label" parent="TargetMenu/ScrollContainer/VBoxContainer/TargetRow"]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 21.0
+offset_right = 230.0
+offset_bottom = 51.0
+theme = ExtResource("3_uskij")
+theme_override_font_sizes/font_size = 24
+text = "Master Squid"
+vertical_alignment = 1
+
+[node name="HP" type="Control" parent="TargetMenu/ScrollContainer/VBoxContainer/TargetRow"]
+anchors_preset = 0
+offset_left = 323.0
+offset_top = 21.0
+offset_right = 426.0
+offset_bottom = 53.0
+
+[node name="CurrValue" type="Label" parent="TargetMenu/ScrollContainer/VBoxContainer/TargetRow/HP"]
+layout_mode = 0
+offset_right = 41.0
+offset_bottom = 30.0
+theme = ExtResource("3_uskij")
+theme_override_font_sizes/font_size = 24
+text = "18"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Slash" type="Label" parent="TargetMenu/ScrollContainer/VBoxContainer/TargetRow/HP"]
+layout_mode = 0
+offset_left = 41.0
+offset_right = 66.0
+offset_bottom = 30.0
+theme = ExtResource("3_uskij")
+theme_override_font_sizes/font_size = 24
+text = "|"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="MaxValue" type="Label" parent="TargetMenu/ScrollContainer/VBoxContainer/TargetRow/HP"]
+layout_mode = 0
+offset_left = 58.0
+offset_right = 102.0
+offset_bottom = 30.0
+theme = ExtResource("3_uskij")
+theme_override_font_sizes/font_size = 24
+text = "38"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Energy" type="Control" parent="TargetMenu/ScrollContainer/VBoxContainer/TargetRow"]
+anchors_preset = 0
+offset_left = 501.0
+offset_top = 21.0
+offset_right = 604.0
+offset_bottom = 53.0
+
+[node name="CurrValue" type="Label" parent="TargetMenu/ScrollContainer/VBoxContainer/TargetRow/Energy"]
+layout_mode = 0
+offset_right = 41.0
+offset_bottom = 30.0
+theme = ExtResource("3_uskij")
+theme_override_font_sizes/font_size = 24
+text = "18"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Slash" type="Label" parent="TargetMenu/ScrollContainer/VBoxContainer/TargetRow/Energy"]
+layout_mode = 0
+offset_left = 41.0
+offset_right = 66.0
+offset_bottom = 30.0
+theme = ExtResource("3_uskij")
+theme_override_font_sizes/font_size = 24
+text = "|"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="MaxValue" type="Label" parent="TargetMenu/ScrollContainer/VBoxContainer/TargetRow/Energy"]
+layout_mode = 0
+offset_left = 58.0
+offset_right = 102.0
+offset_bottom = 30.0
+theme = ExtResource("3_uskij")
+theme_override_font_sizes/font_size = 24
+text = "38"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StatusEffect" type="Label" parent="TargetMenu/ScrollContainer/VBoxContainer/TargetRow"]
+layout_mode = 0
+offset_left = 719.0
+offset_top = 21.0
+offset_right = 935.0
+offset_bottom = 51.0
+theme = ExtResource("3_uskij")
+theme_override_font_sizes/font_size = 24
+text = "Burn"
+vertical_alignment = 1
+
+[node name="TargetRow2" type="Control" parent="TargetMenu/ScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(900, 50)
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+
+[node name="Label" type="Label" parent="TargetMenu/ScrollContainer/VBoxContainer/TargetRow2"]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 21.0
+offset_right = 230.0
+offset_bottom = 51.0
+theme = ExtResource("3_uskij")
+theme_override_font_sizes/font_size = 24
+text = "Skeleton Soldier"
+vertical_alignment = 1
+
+[node name="HP" type="Control" parent="TargetMenu/ScrollContainer/VBoxContainer/TargetRow2"]
+anchors_preset = 0
+offset_left = 323.0
+offset_top = 21.0
+offset_right = 426.0
+offset_bottom = 53.0
+
+[node name="CurrValue" type="Label" parent="TargetMenu/ScrollContainer/VBoxContainer/TargetRow2/HP"]
+layout_mode = 0
+offset_right = 41.0
+offset_bottom = 30.0
+theme = ExtResource("3_uskij")
+theme_override_font_sizes/font_size = 24
+text = "18"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Slash" type="Label" parent="TargetMenu/ScrollContainer/VBoxContainer/TargetRow2/HP"]
+layout_mode = 0
+offset_left = 41.0
+offset_right = 66.0
+offset_bottom = 30.0
+theme = ExtResource("3_uskij")
+theme_override_font_sizes/font_size = 24
+text = "|"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="MaxValue" type="Label" parent="TargetMenu/ScrollContainer/VBoxContainer/TargetRow2/HP"]
+layout_mode = 0
+offset_left = 58.0
+offset_right = 102.0
+offset_bottom = 30.0
+theme = ExtResource("3_uskij")
+theme_override_font_sizes/font_size = 24
+text = "38"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Energy" type="Control" parent="TargetMenu/ScrollContainer/VBoxContainer/TargetRow2"]
+anchors_preset = 0
+offset_left = 501.0
+offset_top = 21.0
+offset_right = 604.0
+offset_bottom = 53.0
+
+[node name="CurrValue" type="Label" parent="TargetMenu/ScrollContainer/VBoxContainer/TargetRow2/Energy"]
+layout_mode = 0
+offset_right = 41.0
+offset_bottom = 30.0
+theme = ExtResource("3_uskij")
+theme_override_font_sizes/font_size = 24
+text = "18"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Slash" type="Label" parent="TargetMenu/ScrollContainer/VBoxContainer/TargetRow2/Energy"]
+layout_mode = 0
+offset_left = 41.0
+offset_right = 66.0
+offset_bottom = 30.0
+theme = ExtResource("3_uskij")
+theme_override_font_sizes/font_size = 24
+text = "|"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="MaxValue" type="Label" parent="TargetMenu/ScrollContainer/VBoxContainer/TargetRow2/Energy"]
+layout_mode = 0
+offset_left = 58.0
+offset_right = 102.0
+offset_bottom = 30.0
+theme = ExtResource("3_uskij")
+theme_override_font_sizes/font_size = 24
+text = "38"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StatusEffect" type="Label" parent="TargetMenu/ScrollContainer/VBoxContainer/TargetRow2"]
+layout_mode = 0
+offset_left = 719.0
+offset_top = 21.0
+offset_right = 935.0
+offset_bottom = 51.0
+theme = ExtResource("3_uskij")
+theme_override_font_sizes/font_size = 24
+text = "Burn"
+vertical_alignment = 1
+
+[node name="TargetRow3" type="Control" parent="TargetMenu/ScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(900, 50)
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+
+[node name="Label" type="Label" parent="TargetMenu/ScrollContainer/VBoxContainer/TargetRow3"]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 21.0
+offset_right = 230.0
+offset_bottom = 51.0
+theme = ExtResource("3_uskij")
+theme_override_font_sizes/font_size = 24
+text = "Dargoth"
+vertical_alignment = 1
+
+[node name="HP" type="Control" parent="TargetMenu/ScrollContainer/VBoxContainer/TargetRow3"]
+anchors_preset = 0
+offset_left = 323.0
+offset_top = 21.0
+offset_right = 426.0
+offset_bottom = 53.0
+
+[node name="CurrValue" type="Label" parent="TargetMenu/ScrollContainer/VBoxContainer/TargetRow3/HP"]
+layout_mode = 0
+offset_right = 41.0
+offset_bottom = 30.0
+theme = ExtResource("3_uskij")
+theme_override_font_sizes/font_size = 24
+text = "18"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Slash" type="Label" parent="TargetMenu/ScrollContainer/VBoxContainer/TargetRow3/HP"]
+layout_mode = 0
+offset_left = 41.0
+offset_right = 66.0
+offset_bottom = 30.0
+theme = ExtResource("3_uskij")
+theme_override_font_sizes/font_size = 24
+text = "|"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="MaxValue" type="Label" parent="TargetMenu/ScrollContainer/VBoxContainer/TargetRow3/HP"]
+layout_mode = 0
+offset_left = 58.0
+offset_right = 102.0
+offset_bottom = 30.0
+theme = ExtResource("3_uskij")
+theme_override_font_sizes/font_size = 24
+text = "38"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Energy" type="Control" parent="TargetMenu/ScrollContainer/VBoxContainer/TargetRow3"]
+anchors_preset = 0
+offset_left = 501.0
+offset_top = 21.0
+offset_right = 604.0
+offset_bottom = 53.0
+
+[node name="CurrValue" type="Label" parent="TargetMenu/ScrollContainer/VBoxContainer/TargetRow3/Energy"]
+layout_mode = 0
+offset_right = 41.0
+offset_bottom = 30.0
+theme = ExtResource("3_uskij")
+theme_override_font_sizes/font_size = 24
+text = "18"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Slash" type="Label" parent="TargetMenu/ScrollContainer/VBoxContainer/TargetRow3/Energy"]
+layout_mode = 0
+offset_left = 41.0
+offset_right = 66.0
+offset_bottom = 30.0
+theme = ExtResource("3_uskij")
+theme_override_font_sizes/font_size = 24
+text = "|"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="MaxValue" type="Label" parent="TargetMenu/ScrollContainer/VBoxContainer/TargetRow3/Energy"]
+layout_mode = 0
+offset_left = 58.0
+offset_right = 102.0
+offset_bottom = 30.0
+theme = ExtResource("3_uskij")
+theme_override_font_sizes/font_size = 24
+text = "38"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StatusEffect" type="Label" parent="TargetMenu/ScrollContainer/VBoxContainer/TargetRow3"]
+layout_mode = 0
+offset_left = 719.0
+offset_top = 21.0
+offset_right = 935.0
+offset_bottom = 51.0
+theme = ExtResource("3_uskij")
+theme_override_font_sizes/font_size = 24
+text = "Burn"
+vertical_alignment = 1
+
+[node name="TargetRow4" type="Control" parent="TargetMenu/ScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(900, 50)
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+
+[node name="Label" type="Label" parent="TargetMenu/ScrollContainer/VBoxContainer/TargetRow4"]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 21.0
+offset_right = 230.0
+offset_bottom = 51.0
+theme = ExtResource("3_uskij")
+theme_override_font_sizes/font_size = 24
+text = "Posessed Mu Young"
+vertical_alignment = 1
+
+[node name="HP" type="Control" parent="TargetMenu/ScrollContainer/VBoxContainer/TargetRow4"]
+anchors_preset = 0
+offset_left = 323.0
+offset_top = 21.0
+offset_right = 426.0
+offset_bottom = 53.0
+
+[node name="CurrValue" type="Label" parent="TargetMenu/ScrollContainer/VBoxContainer/TargetRow4/HP"]
+layout_mode = 0
+offset_right = 41.0
+offset_bottom = 30.0
+theme = ExtResource("3_uskij")
+theme_override_font_sizes/font_size = 24
+text = "18"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Slash" type="Label" parent="TargetMenu/ScrollContainer/VBoxContainer/TargetRow4/HP"]
+layout_mode = 0
+offset_left = 41.0
+offset_right = 66.0
+offset_bottom = 30.0
+theme = ExtResource("3_uskij")
+theme_override_font_sizes/font_size = 24
+text = "|"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="MaxValue" type="Label" parent="TargetMenu/ScrollContainer/VBoxContainer/TargetRow4/HP"]
+layout_mode = 0
+offset_left = 58.0
+offset_right = 102.0
+offset_bottom = 30.0
+theme = ExtResource("3_uskij")
+theme_override_font_sizes/font_size = 24
+text = "38"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Energy" type="Control" parent="TargetMenu/ScrollContainer/VBoxContainer/TargetRow4"]
+anchors_preset = 0
+offset_left = 501.0
+offset_top = 21.0
+offset_right = 604.0
+offset_bottom = 53.0
+
+[node name="CurrValue" type="Label" parent="TargetMenu/ScrollContainer/VBoxContainer/TargetRow4/Energy"]
+layout_mode = 0
+offset_right = 41.0
+offset_bottom = 30.0
+theme = ExtResource("3_uskij")
+theme_override_font_sizes/font_size = 24
+text = "18"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Slash" type="Label" parent="TargetMenu/ScrollContainer/VBoxContainer/TargetRow4/Energy"]
+layout_mode = 0
+offset_left = 41.0
+offset_right = 66.0
+offset_bottom = 30.0
+theme = ExtResource("3_uskij")
+theme_override_font_sizes/font_size = 24
+text = "|"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="MaxValue" type="Label" parent="TargetMenu/ScrollContainer/VBoxContainer/TargetRow4/Energy"]
+layout_mode = 0
+offset_left = 58.0
+offset_right = 102.0
+offset_bottom = 30.0
+theme = ExtResource("3_uskij")
+theme_override_font_sizes/font_size = 24
+text = "38"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StatusEffect" type="Label" parent="TargetMenu/ScrollContainer/VBoxContainer/TargetRow4"]
+layout_mode = 0
+offset_left = 719.0
+offset_top = 21.0
+offset_right = 935.0
+offset_bottom = 51.0
+theme = ExtResource("3_uskij")
+theme_override_font_sizes/font_size = 24
+text = "Burn"
+vertical_alignment = 1
+
+[node name="SkillMenu" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchor_top = 0.717
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 3.0
+offset_top = -0.23999
+offset_right = 2.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="PartyMemberCard" parent="SkillMenu" instance=ExtResource("2_qf5xh")]
+layout_mode = 2
+offset_left = 18.0
+offset_top = 12.0
+offset_right = 298.0
+offset_bottom = 192.0
+size_flags_horizontal = 6
+size_flags_vertical = 4
+
+[node name="SkillLabel" type="Label" parent="SkillMenu"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -292.5
+offset_top = 9.0
+offset_right = -130.5
+offset_bottom = 54.0
+grow_horizontal = 2
+theme = ExtResource("3_uskij")
+theme_override_constants/outline_size = 24
+theme_override_font_sizes/font_size = 36
+text = "Skills"
+
+[node name="EP" type="Label" parent="SkillMenu"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 277.5
+offset_top = 9.0
+offset_right = 439.5
+offset_bottom = 54.0
+grow_horizontal = 2
+theme = ExtResource("3_uskij")
+theme_override_constants/outline_size = 24
+theme_override_font_sizes/font_size = 36
+text = "EP"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Back" type="Button" parent="SkillMenu"]
+layout_mode = 0
+offset_left = 1103.0
+offset_top = 11.0
+offset_right = 1265.0
+offset_bottom = 54.0
+theme = ExtResource("3_uskij")
+theme_override_constants/outline_size = 14
+theme_override_font_sizes/font_size = 28
+text = "Back"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="SkillMenu"]
+layout_mode = 0
+offset_left = 343.0
+offset_top = 61.0
+offset_right = 1107.0
+offset_bottom = 193.0
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SkillMenu/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 12
+
+[node name="SkillRow" type="HBoxContainer" parent="SkillMenu/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="SkillName" type="Label" parent="SkillMenu/ScrollContainer/VBoxContainer/SkillRow"]
+layout_mode = 2
+size_flags_horizontal = 2
+theme = ExtResource("3_uskij")
+theme_override_font_sizes/font_size = 28
+text = "Bad Breath"
+
+[node name="MarginContainer" type="MarginContainer" parent="SkillMenu/ScrollContainer/VBoxContainer/SkillRow"]
+layout_mode = 2
+theme_override_constants/margin_right = 80
+
+[node name="Cost" type="Label" parent="SkillMenu/ScrollContainer/VBoxContainer/SkillRow/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme = ExtResource("3_uskij")
+theme_override_colors/font_color = Color(0.301961, 0.729412, 0.890196, 1)
+theme_override_font_sizes/font_size = 28
+text = "32"
+
+[node name="SkillRow2" type="HBoxContainer" parent="SkillMenu/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="SkillName" type="Label" parent="SkillMenu/ScrollContainer/VBoxContainer/SkillRow2"]
+layout_mode = 2
+size_flags_horizontal = 2
+theme = ExtResource("3_uskij")
+theme_override_font_sizes/font_size = 28
+text = "Angel Wing"
+
+[node name="MarginContainer" type="MarginContainer" parent="SkillMenu/ScrollContainer/VBoxContainer/SkillRow2"]
+layout_mode = 2
+theme_override_constants/margin_right = 80
+
+[node name="Cost" type="Label" parent="SkillMenu/ScrollContainer/VBoxContainer/SkillRow2/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme = ExtResource("3_uskij")
+theme_override_colors/font_color = Color(0.301961, 0.729412, 0.890196, 1)
+theme_override_font_sizes/font_size = 28
+text = "32"
+
+[node name="SkillRow3" type="HBoxContainer" parent="SkillMenu/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="SkillName" type="Label" parent="SkillMenu/ScrollContainer/VBoxContainer/SkillRow3"]
+layout_mode = 2
+size_flags_horizontal = 2
+theme = ExtResource("3_uskij")
+theme_override_font_sizes/font_size = 28
+text = "Sleep"
+
+[node name="MarginContainer" type="MarginContainer" parent="SkillMenu/ScrollContainer/VBoxContainer/SkillRow3"]
+layout_mode = 2
+theme_override_constants/margin_right = 80
+
+[node name="Cost" type="Label" parent="SkillMenu/ScrollContainer/VBoxContainer/SkillRow3/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme = ExtResource("3_uskij")
+theme_override_colors/font_color = Color(0.301961, 0.729412, 0.890196, 1)
+theme_override_font_sizes/font_size = 28
+text = "32"
+
+[node name="SkillRow4" type="HBoxContainer" parent="SkillMenu/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="SkillName" type="Label" parent="SkillMenu/ScrollContainer/VBoxContainer/SkillRow4"]
+layout_mode = 2
+size_flags_horizontal = 2
+theme = ExtResource("3_uskij")
+theme_override_font_sizes/font_size = 28
+text = "Revive"
+
+[node name="MarginContainer" type="MarginContainer" parent="SkillMenu/ScrollContainer/VBoxContainer/SkillRow4"]
+layout_mode = 2
+theme_override_constants/margin_right = 80
+
+[node name="Cost" type="Label" parent="SkillMenu/ScrollContainer/VBoxContainer/SkillRow4/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme = ExtResource("3_uskij")
+theme_override_colors/font_color = Color(0.301961, 0.729412, 0.890196, 1)
+theme_override_font_sizes/font_size = 28
+text = "32"
+
+[node name="PauseButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -143.0
+offset_bottom = 53.0
+grow_horizontal = 0
+theme = ExtResource("3_uskij")
+theme_override_font_sizes/font_size = 36
+text = "PAUSE"

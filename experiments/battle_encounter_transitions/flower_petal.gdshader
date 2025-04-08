@@ -5,10 +5,12 @@ uniform int petal_multiplier : hint_range(1, 10) = 2;
 uniform float circle_radius : hint_range(0.0, 1.0) = 0.1;
 uniform float time_scale : hint_range(0.0, 1.0) = 0.25;
 uniform vec3 bg_color : source_color = vec3(0.0);
+uniform float h : hint_range(0.0, 1.0) = 0.1;
+uniform sampler2D main_texture;
 
 // returns the y value that paint should be placed on
 float sine_wave(in vec2 uv) {
-	float amplitude = 0.5;
+	float amplitude = h;
 	float wave_frequency = float(petal_multiplier) * TAU;
 	float vertical_offset = 0.0;
 	float y = amplitude * sin(wave_frequency * uv.x) + vertical_offset;
@@ -46,6 +48,9 @@ void fragment() {
 	// shade_color = mix(0.0, 0.5, polar.y - y);
 	
 	float sun = 1.0 - (petal + circle);
-	COLOR = vec4(bg_color, sun);
+	vec4 texture_color = texture(main_texture,UV.xy);
+	vec3 my_color = bg_color;
+	my_color *= sun;
+	COLOR = texture_color * vec4(my_color, 1.0);
 }
 

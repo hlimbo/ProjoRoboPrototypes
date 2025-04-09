@@ -17,6 +17,9 @@ region_rect = Rect2(15, 0, 66, 16)
 [resource]
 /styles/Slider = null
 Button/fonts/font = ExtResource("1_m4g8u")
+Label/colors/font_color = Color(1, 1, 1, 1)
+Label/colors/font_outline_color = Color(0, 0, 0, 1)
+Label/colors/font_shadow_color = Color(0, 0, 0, 0)
 Label/constants/outline_size = 8
 Label/fonts/font = ExtResource("1_m4g8u")
 Label/styles/normal = SubResource("StyleBoxEmpty_um7sd")

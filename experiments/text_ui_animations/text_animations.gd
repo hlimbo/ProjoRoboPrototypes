@@ -77,7 +77,7 @@ func play_text_animation2(digit: int = 999):
 		tween.tween_property(self, "position", original_label_position - offset, tween_duration).set_trans(Tween.TRANS_SINE).set_delay(0.02)
 		tween.tween_property(self, "position", original_label_position, tween_duration).set_trans(Tween.TRANS_SINE).set_delay(0.02)
 		# .set_trans(Tween.TRANS_BACK)
-		offset.y -= 10.0
+		offset.y -= 50
 		iteration_count -= 1
 	
 	tween.tween_property(self, "modulate:a", 1.0, alpha_duration)
@@ -85,7 +85,7 @@ func play_text_animation2(digit: int = 999):
 	#tween.finished.connect(reset)
 
 # bounce once
-func play_text_animation3(digit: int = 999):
+func play_text_animation3(digit: int = 999, jump_height: float = 100.0):
 	kill_tween()
 	
 	self.add_theme_constant_override("outline_size", 16)
@@ -93,7 +93,7 @@ func play_text_animation3(digit: int = 999):
 	self.modulate.a = 1.0
 	
 	tween = create_tween()
-	var offset = Vector2(0.0, 100.0)
+	var offset = Vector2(0.0, jump_height)
 	var dur = 0.1
 	tween.tween_property(self, "position", original_label_position - offset, dur).set_trans(Tween.TRANS_SINE)
 	tween.tween_property(self, "position", original_label_position, dur).set_trans(Tween.TRANS_SINE)

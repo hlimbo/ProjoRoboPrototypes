@@ -62,6 +62,10 @@ func on_pressed5():
 func on_pressed6():
 	var d: Array[int] = pick_random_digits()
 	var delay_trail = 0.05
-	digit1.play_text_animation3(d[0])
-	get_tree().create_timer(delay_trail).timeout.connect(func(): digit2.play_text_animation3(d[1]))
-	get_tree().create_timer(delay_trail * 2.0).timeout.connect(func(): digit3.play_text_animation3(d[2]))
+	var jump_height: float = 100.0
+	# sin is used here so that we get a curvy jump between digits
+	var jump_height2: float = jump_height * sin(PI / 12.0)
+	var jump_height3: float = jump_height * sin(PI / 8.0)
+	digit1.play_text_animation3(d[0], jump_height)
+	get_tree().create_timer(delay_trail).timeout.connect(func(): digit2.play_text_animation3(d[1], jump_height + jump_height2))
+	get_tree().create_timer(delay_trail * 2.0).timeout.connect(func(): digit3.play_text_animation3(d[2], jump_height + jump_height3))

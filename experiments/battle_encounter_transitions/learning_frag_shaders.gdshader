@@ -50,6 +50,31 @@ float safe_atan(vec2 pos) {
 	return atan(pos.y, pos.x);
 }
 
+// paints a triangle using
+// 2 slope functions
+float triangle(in vec2 uv, in float size) {	
+	// remap from 0,1 to -1,1
+	vec2 p = uv * 2.0 - 1.0;
+	// invert y as y in godot glsl points down for positive
+	p *= -1.0;
+	
+	// remap x to -1,1 from 0,1
+	//vec2 p = uv;// * 2.0 - 1.0;
+	//p.x = p.x * 2.0 - 1.0;
+	//// invert y - since y points down in godot glsl
+	//p.y = 1.0 - p.y;
+	
+	float m = 0.; // approx 0
+	float l1 = m * p.x + p.y - size;
+	float l2 = m * p.x - p.y + size;
+	
+	float left = step(l1, p.x);
+	float right = step(p.x, l2);
+	float bottom = step(0.0, p.y);
+	
+	return left * right * bottom;
+}
+
 // controlled by the percentages
 void rectangular_swirl(inout vec4 color, vec2 uv_pos) {
 	vec2 up = vec2(0.0, -1.0);
@@ -352,9 +377,19 @@ void polar_circle(inout vec4 color, vec2 uv_pos) {
 void fragment() {
 	// vec4 color = vec4(0.0, 0.0, 0.0, 0.0);
 	// color += movingLine(UV.xy, vec2(0.5), 0.1) * vec4(1.0, 0.0, 0.0, 1.0); //move_box(color, UV.xy);
+	vec2 scaled = UV;
+	scaled.x *= 4.0;
+	scaled.x = fract(scaled.x);
+	
+	scaled.y = fract(scaled.y + TIME);
 	
 	vec4 color = vec4(0.0, 1.0, 0.0, 1.0);
-	linear_gradient_diagonal(color, UV.xy);
+	// linear_gradient_diagonal(color, UV.xy);
+	
+	// rectangle
+	float rectangle_shape = 0.0; step(0.5, UV.y);
+	float shading = 1.0 - smoothstep(0.5, 1.0, scaled.y);
+	color.g = (triangle(scaled, 1.) + rectangle_shape * shading) * color.g;
 	
 	//color.g = 1.0;
 	

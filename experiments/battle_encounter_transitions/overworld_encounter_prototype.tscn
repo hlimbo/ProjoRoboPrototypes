@@ -13,7 +13,7 @@
 [ext_resource type="Texture2D" uid="uid://gr018a87bdam" path="res://experiments/battle_encounter_transitions/Wow202024-10-292021-05-18.png" id="6_d8rm1"]
 [ext_resource type="Texture2D" uid="uid://d0ttocvhpdomy" path="res://experiments/battle_encounter_transitions/ballroom1.PNG" id="6_t5qsh"]
 [ext_resource type="Shader" path="res://experiments/battle_encounter_transitions/flower_petal.gdshader" id="8_ud3sp"]
-[ext_resource type="Shader" path="res://experiments/battle_encounter_transitions/archimedean_spiral.gdshader" id="13_bnqnn"]
+[ext_resource type="Shader" path="res://experiments/battle_encounter_transitions/sine_waves2.gdshader" id="13_n0x3n"]
 
 [sub_resource type="Animation" id="Animation_f458w"]
 length = 0.001
@@ -191,12 +191,12 @@ shader = ExtResource("5_cylh0")
 shader_parameter/main_texture = ExtResource("6_t5qsh")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_5umwf"]
-shader = ExtResource("13_bnqnn")
-shader_parameter/min_man = 0.1
+shader = ExtResource("13_n0x3n")
 
 [node name="OverworldEncounterPrototype" type="Node2D"]
 
 [node name="Player" type="ColorRect" parent="."]
+visible = false
 offset_left = 621.0
 offset_top = 409.0
 offset_right = 661.0
@@ -209,6 +209,7 @@ libraries = {
 }
 
 [node name="Enemy" type="ColorRect" parent="."]
+visible = false
 offset_left = 588.0
 offset_top = 155.0
 offset_right = 694.0
@@ -216,6 +217,7 @@ offset_bottom = 363.0
 color = Color(0.7, 0, 0, 1)
 
 [node name="Label" type="Label" parent="."]
+visible = false
 offset_left = 553.0
 offset_top = 86.0
 offset_right = 733.0
@@ -228,6 +230,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Label2" type="Label" parent="."]
+visible = false
 offset_left = 551.0
 offset_top = 358.0
 offset_right = 731.0
@@ -326,18 +329,6 @@ grow_vertical = 2
 mouse_filter = 2
 texture = ExtResource("5_8pc31")
 
-[node name="AfterImageEffect4" type="TextureRect" parent="UILayer"]
-visible = false
-material = SubResource("ShaderMaterial_5umwf")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = -2.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-texture = ExtResource("5_8pc31")
-
 [node name="Options" type="VBoxContainer" parent="UILayer" node_paths=PackedStringArray("animation_player", "another_player", "viewport_image_loader", "swirl_controller", "shader_scale_controller")]
 visible = false
 offset_right = 319.0
@@ -379,3 +370,21 @@ layout_mode = 2
 theme = ExtResource("1_ygnsq")
 theme_override_font_sizes/font_size = 18
 text = "Goto New Scene"
+
+[node name="AfterImageEffect4" type="TextureRect" parent="."]
+visible = false
+material = SubResource("ShaderMaterial_5umwf")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -2.0
+offset_right = 195.0
+offset_bottom = 261.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("5_8pc31")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(642, 360)
+editor_draw_drag_margin = true

@@ -1,8 +1,8 @@
 [gd_scene load_steps=6 format=3 uid="uid://b4y8uba6speb4"]
 
+[ext_resource type="PackedScene" uid="uid://3fbdpdip7o0p" path="res://experiments/battle_camera/derived_camera.tscn" id="1_4cq8m"]
 [ext_resource type="Script" path="res://experiments/battle_camera/cam_demo_controller.gd" id="1_7gwts"]
 [ext_resource type="Script" path="res://experiments/battle_camera/player_tutorial.gd" id="1_a7jf2"]
-[ext_resource type="Script" path="res://experiments/battle_camera/camera_tutorial.gd" id="2_mkuu6"]
 [ext_resource type="Shader" path="res://experiments/battle_encounter_transitions/flower_petal.gdshader" id="3_6aycb"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_mh0lh"]
@@ -16,25 +16,28 @@ shader_parameter/h = 0.497
 
 [node name="BattleSceneExperiment" type="Node2D"]
 
+[node name="DerivedCamera" parent="." instance=ExtResource("1_4cq8m")]
+position = Vector2(611, 382)
+zoom_duration = 0.5
+move_duration = 0.25
+strength = 50.0
+
 [node name="Player" type="Polygon2D" parent="."]
 position = Vector2(244, 187)
 color = Color(0, 1, 0, 1)
 polygon = PackedVector2Array(2, -45, 36, -2, 3, 35, -31, 0)
 script = ExtResource("1_a7jf2")
 
-[node name="Camera" type="Node2D" parent="." node_paths=PackedStringArray("player_tutorial")]
-script = ExtResource("2_mkuu6")
-player_tutorial = NodePath("../Player")
-
 [node name="ColorRect" type="ColorRect" parent="."]
-offset_left = 489.0
-offset_top = 238.0
-offset_right = 529.0
-offset_bottom = 278.0
+offset_left = 600.0
+offset_top = 320.0
+offset_right = 640.0
+offset_bottom = 360.0
 
 [node name="ColorRect2" type="ColorRect" parent="."]
 offset_right = 40.0
 offset_bottom = 40.0
+pivot_offset = Vector2(20, 20)
 color = Color(1, 0, 0, 1)
 
 [node name="ColorRect3" type="ColorRect" parent="."]
@@ -42,6 +45,7 @@ offset_left = 1166.0
 offset_top = 29.0
 offset_right = 1206.0
 offset_bottom = 69.0
+pivot_offset = Vector2(20, 20)
 color = Color(1, 0, 1, 1)
 
 [node name="ColorRect4" type="ColorRect" parent="."]
@@ -49,6 +53,7 @@ offset_left = 1198.0
 offset_top = 613.0
 offset_right = 1238.0
 offset_bottom = 653.0
+pivot_offset = Vector2(20, 20)
 color = Color(1, 1, 0, 1)
 
 [node name="ColorRect5" type="ColorRect" parent="."]
@@ -57,37 +62,65 @@ offset_left = 61.0
 offset_top = 629.0
 offset_right = 101.0
 offset_bottom = 669.0
+pivot_offset = Vector2(20, 20)
 color = Color(0, 1, 0, 1)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="CamDemoController" type="VBoxContainer" parent="CanvasLayer" node_paths=PackedStringArray("cam_tutorial", "targets")]
-anchors_preset = -1
-anchor_left = 0.874
-anchor_top = 0.261
+[node name="ScrollContainer" type="ScrollContainer" parent="CanvasLayer"]
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
 anchor_right = 1.0
-anchor_bottom = 0.681
-offset_left = 0.280029
-offset_top = 156.58
-offset_bottom = -114.82
+anchor_bottom = 0.5
+offset_left = -223.0
+offset_top = -87.5
+offset_bottom = 87.5
 grow_horizontal = 0
 grow_vertical = 2
-script = ExtResource("1_7gwts")
-cam_tutorial = NodePath("../../Camera")
-targets = [NodePath("../../ColorRect2"), NodePath("../../ColorRect3"), NodePath("../../ColorRect4"), NodePath("../../ColorRect5")]
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 2
 
-[node name="MoveButton" type="Button" parent="CanvasLayer/CamDemoController"]
+[node name="CamDemoController" type="VBoxContainer" parent="CanvasLayer/ScrollContainer" node_paths=PackedStringArray("cam_tutorial", "derived_cam", "targets")]
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("1_7gwts")
+cam_tutorial = NodePath("")
+derived_cam = NodePath("../../../DerivedCamera")
+targets = [NodePath("../../../ColorRect2"), NodePath("../../../ColorRect3"), NodePath("../../../ColorRect4"), NodePath("../../../ColorRect5")]
+
+[node name="MoveButton" type="Button" parent="CanvasLayer/ScrollContainer/CamDemoController"]
 layout_mode = 2
 text = "move to next target"
 
-[node name="ZoomInButton" type="Button" parent="CanvasLayer/CamDemoController"]
+[node name="ZoomInButton" type="Button" parent="CanvasLayer/ScrollContainer/CamDemoController"]
 layout_mode = 2
 text = "zoom in"
 
-[node name="ZoomOutButton" type="Button" parent="CanvasLayer/CamDemoController"]
+[node name="ZoomOutButton" type="Button" parent="CanvasLayer/ScrollContainer/CamDemoController"]
 layout_mode = 2
 text = "zoom out"
 
-[node name="ScreenshakeButton" type="Button" parent="CanvasLayer/CamDemoController"]
+[node name="ScreenshakeButton" type="Button" parent="CanvasLayer/ScrollContainer/CamDemoController"]
 layout_mode = 2
 text = "screen shake"
+
+[node name="ResetButton" type="Button" parent="CanvasLayer/ScrollContainer/CamDemoController"]
+layout_mode = 2
+text = "reset camera"
+
+[node name="MoveUp" type="Button" parent="CanvasLayer/ScrollContainer/CamDemoController"]
+layout_mode = 2
+text = "move up"
+
+[node name="MoveDown" type="Button" parent="CanvasLayer/ScrollContainer/CamDemoController"]
+layout_mode = 2
+text = "move down"
+
+[node name="MoveLeft" type="Button" parent="CanvasLayer/ScrollContainer/CamDemoController"]
+layout_mode = 2
+text = "move left"
+
+[node name="MoveRight" type="Button" parent="CanvasLayer/ScrollContainer/CamDemoController"]
+layout_mode = 2
+text = "move right"

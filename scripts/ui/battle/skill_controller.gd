@@ -11,7 +11,7 @@ var current_actor: Actor
 # value - Array[SkillView]
 @export var party_member_skills: Dictionary = {}
 
-const skill_container_view: Resource = preload("res://nodes/ui/battle/skill_container.tscn")
+const skill_container_view: Resource = preload("res://nodes/ui/battle/skill_view.tscn")
 
 
 func lazy_load_skills(party_member: Actor):

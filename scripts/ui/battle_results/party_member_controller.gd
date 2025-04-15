@@ -3,7 +3,7 @@ class_name PartyMemberController
 
 @export var bot_inventory_systems: BotInventorySystems = BotInventorySystems
 
-var party_member_exp_layout: Resource = preload("res://nodes/ui/party_member_exp_layout.tscn")
+var party_member_exp_layout: Resource = preload("res://nodes/ui/battle_results/party_member_exp_layout.tscn")
 var party_member_exp_views: Array[PartyMemberExpView] = []
 
 func _ready():

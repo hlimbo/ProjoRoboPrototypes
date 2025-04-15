@@ -1,12 +1,12 @@
 [gd_scene load_steps=2 format=3 uid="uid://dtj8tygcy3g3f"]
 
-[ext_resource type="Script" path="res://scripts/skill_view.gd" id="1_3d5gx"]
+[ext_resource type="Script" path="res://scripts/ui/battle/skill_view.gd" id="1_ymhj6"]
 
 [node name="SkillContainer" type="HBoxContainer"]
 offset_right = 432.0
 offset_bottom = 60.0
 theme_override_constants/separation = 100
-script = ExtResource("1_3d5gx")
+script = ExtResource("1_ymhj6")
 
 [node name="ButtonContainer" type="Control" parent="."]
 custom_minimum_size = Vector2(200, 60)

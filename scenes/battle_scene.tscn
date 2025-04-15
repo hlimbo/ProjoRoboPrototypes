@@ -10,7 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://ck5jcv5kq0fa8" path="res://nodes/ui/battle/active_skill_menu.tscn" id="3_cah2u"]
 [ext_resource type="Script" path="res://scripts/calculators/simple_damage_calculator.gd" id="3_ina5a"]
 [ext_resource type="PackedScene" uid="uid://4fgdk83suvux" path="res://nodes/battle_timeline/one_d_graph.tscn" id="4_rmum5"]
-[ext_resource type="PackedScene" uid="uid://dobxqawvevo1c" path="res://nodes/ui/battle_results_screen.tscn" id="5_f3g4b"]
+[ext_resource type="PackedScene" uid="uid://dobxqawvevo1c" path="res://nodes/ui/battle_results/battle_results_screen.tscn" id="5_f3g4b"]
 
 [sub_resource type="Resource" id="Resource_i4p3w"]
 script = ExtResource("3_ina5a")

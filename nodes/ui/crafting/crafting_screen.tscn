@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=3 uid="uid://df6pyo8n82i6f"]
 
 [ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="1_6a8dh"]
-[ext_resource type="Script" path="res://scripts/ui/crafting_controller.gd" id="1_cotrs"]
+[ext_resource type="Script" path="res://scripts/ui/crafting/crafting_controller.gd" id="1_cotrs"]
 [ext_resource type="Texture2D" uid="uid://cl8ualiio67lr" path="res://assets/kenney_fantasy-ui-borders/PNG/Default/Border/panel-border-030.png" id="1_f86kf"]
 [ext_resource type="Texture2D" uid="uid://bily5u0bn7omv" path="res://assets/kenney_emotes-pack/PNG/Vector/Style 2/emote_circle.png" id="1_m522m"]
 [ext_resource type="Script" path="res://scripts/ui/crafting/crafting_list_view.gd" id="4_ywm1d"]

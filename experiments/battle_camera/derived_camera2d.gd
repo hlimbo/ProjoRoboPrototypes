@@ -28,7 +28,6 @@ var target_zoom = Vector2(1.0, 1.0)
 # screenshake
 @export var strength = 100.0
 var random_vel: Vector2
-var is_random_dir_picked: bool
 var perlin_noise: Array[Vector2] = []
 var perlin_index: int = 0
 @export var noise_factor: int = 32
@@ -48,11 +47,15 @@ func move_camera(target: ColorRect):
 	target_position = target.position
 
 func pick_random_direction() -> Vector2:
-	var strength: float = 10.0
 	# pick random x value
-	var rand_x: float = 2.0 * randf() - 1.0 # go from -1 to 1
-	# pick random y value
-	var rand_y: float = 2.0 * randf() - 1.0
+	#var rand_x: float = 2.0 * randf() - 1.0 # go from -1 to 1
+	## pick random y value
+	#var rand_y: float = 2.0 * randf() - 1.0
+	var curr_time: float = float(Time.get_ticks_msec())
+	var x_sign: float = sign(cos(fmod(curr_time, TAU)))
+	var y_sign: float = sign(sin(fmod(curr_time, TAU)))
+	var rand_x: float = x_sign * randf()
+	var rand_y: float = y_sign * randf()
 	# store it in a vector2 representing direction and normalize it
 	return Vector2(rand_x, rand_y).normalized()
 
@@ -64,26 +67,14 @@ func screen_shake():
 	
 
 func apply_noise(n: int):
-	if !is_random_dir_picked:
-		var noise_value: Vector2 = perlin_noise[perlin_index]
-		random_vel = strength * noise_value
-		self.position = self.position + random_vel
-		perlin_index = (perlin_index + 1) % n
-		is_random_dir_picked = true
-	else:
-		self.position = self.position - random_vel
-		is_random_dir_picked = false
+	var noise_value: Vector2 = perlin_noise[perlin_index]
+	random_vel = strength * noise_value
+	self.position = old_position + random_vel
+	perlin_index = (perlin_index + 1) % n
 
 func cam_shake_offset():
-	if !is_random_dir_picked:
-		# pick random direction to move towards
-		random_vel = strength * pick_random_direction()
-		self.position = self.position + random_vel
-		is_random_dir_picked = true
-	else:
-		is_random_dir_picked = false
-		# move back to original position
-		self.position = self.position - random_vel
+	random_vel = strength * pick_random_direction()
+	self.position = old_position + random_vel
 
 # strength = 50
 # shake duration = 3
@@ -97,6 +88,7 @@ func cam_shake_sine(time_passed: float):
 	var y: float = amplitude * sin(time_passed * frequency + horizontal_offset)
 	var dir = Vector2(x,y).normalized()
 	random_vel = strength * dir
+	var shake_offset = Vector2(150.0, 0.0)
 	self.position = self.position + random_vel
 
 func reset():
@@ -124,7 +116,7 @@ func _process(delta: float):
 			camera_option = DerivedCameraOptions.NONE
 	elif camera_option == DerivedCameraOptions.SHAKE:
 		# perlin noise
-		#apply_noise(noise_factor)
+		# apply_noise(noise_factor)
 		# random offsets
 		cam_shake_offset()
 		# sine cos waves

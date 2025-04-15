@@ -59,15 +59,6 @@ func perlin_noise_1d(point: float, gradient_val: float) -> float:
 	# var value: float = smoothstep(left_dot, right_dot, weight)
 	return value
 
-const EAST = 0
-const NORTH_EAST = 1
-const NORTH = 2
-const NORTH_WEST = 3
-const WEST = 4
-const SOUTH_WEST = 5
-const SOUTH = 6
-const SOUTH_EAST = 7
-
 # n = row and column lengths
 # returns an NxN 2D array of Vector2D
 func generate_perlin_noise_map(n: int):
@@ -78,28 +69,15 @@ func generate_perlin_noise_map(n: int):
 	for r in range(n):
 		var row: Array[Vector2] = []
 		for c in range(n):
-			# at min, x and y maybe 0.001
-			var x: float = randf()
-			var y: float = randf()
+			# use sine and cos waves to determine what direction to apply to the x and y values
+			# of the random noise vector
+			# the effect: it gives a predictable shaking pattern centered around the point of interest
+			var one_hour_in_millis: int = 3600 * 1000
+			var x_sign: float = sign(cos(Time.get_ticks_msec() % one_hour_in_millis))
+			var y_sign: float = sign(sin(Time.get_ticks_msec() % one_hour_in_millis))
 			
-			# flip signs to create circular pattern
-			if rotation_index == EAST:
-				y = 0.0
-			elif rotation_index == NORTH:
-				x = 0.0
-			elif rotation_index == NORTH_WEST:
-				x *= -1.0
-			elif rotation_index == WEST:
-				x *= -1.0
-				y = 0.0
-			elif rotation_index == SOUTH_WEST:
-				x *= -1.0
-				y *= -1.0
-			elif rotation_index == SOUTH:
-				x = 0.0
-				y *= -1.0
-			elif rotation_index == SOUTH_EAST:
-				y *= -1.0
+			var x: float = x_sign * randf()
+			var y: float = y_sign * randf()
 			
 			var val = Vector2(x, y)
 			row.append(val)
@@ -108,9 +86,9 @@ func generate_perlin_noise_map(n: int):
 		output.append(row)
 	
 	return output
-	
-# gradient map is a 2d array of vector2
 
+# original perlin noise uses corners of a grid to compute the noise
+# whereas this one uses the 4 adjacent cells to create noise 
 func perlin_noise_2d(n: int, gradient_map) -> Array[Vector2]:
 	var output: Array[Vector2] = []
 	for r in range(n):
@@ -136,8 +114,8 @@ func perlin_noise_2d(n: int, gradient_map) -> Array[Vector2]:
 			# step 3 compute weighted sum for X and Y axes
 			# random weight is used to randomize values
 			var weight: float = 0.5 #randf()
-			var x: float = smoothstep(left_dot, right_dot, weight)
-			var y: float = smoothstep(top_dot, bot_dot, weight)
+			var x: float = lerp(left_dot, right_dot, weight)
+			var y: float = lerp(top_dot, bot_dot, weight)
 			var v = Vector2(x,y).normalized()
 			output.append(v)
 

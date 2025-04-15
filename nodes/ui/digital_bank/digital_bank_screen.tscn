@@ -1,7 +1,7 @@
 [gd_scene load_steps=11 format=3 uid="uid://b4s6jvbdljfyy"]
 
 [ext_resource type="PackedScene" uid="uid://cicxh4j1k0wp5" path="res://nodes/ui/digital_bank/bot_cell.tscn" id="1_6doak"]
-[ext_resource type="Script" path="res://scripts/ui/digital_bank_controller.gd" id="1_oachw"]
+[ext_resource type="Script" path="res://scripts/ui/digital_bank/digital_bank_controller.gd" id="1_oachw"]
 [ext_resource type="Script" path="res://scripts/ui/digital_bank/bot_grid_view.gd" id="2_7ylbr"]
 [ext_resource type="Script" path="res://scripts/ui/digital_bank/party_list_view.gd" id="3_5kg2v"]
 [ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="4_nt7rt"]

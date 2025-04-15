@@ -12,6 +12,10 @@ enum DerivedCameraOptions {
 	NONE,
 }
 
+# Dependencies
+@export var perlin_noise_generator: PerlinNoiseGenerator
+
+
 var curr_time: float = 0.0
 @export var zoom_duration: float = 2.0
 @export var move_duration: float = 2.0
@@ -25,6 +29,9 @@ var target_zoom = Vector2(1.0, 1.0)
 @export var strength = 100.0
 var random_vel: Vector2
 var is_random_dir_picked: bool
+var perlin_noise: Array[Vector2] = []
+var perlin_index: int = 0
+@export var noise_factor: int = 32
 
 var camera_option = DerivedCameraOptions.NONE
 
@@ -53,7 +60,20 @@ func screen_shake():
 	curr_time = 0.0
 	old_position = self.position
 	camera_option = DerivedCameraOptions.SHAKE
+	perlin_noise = perlin_noise_generator.get_noise_2d(noise_factor)
 	
+
+func apply_noise(n: int):
+	if !is_random_dir_picked:
+		var noise_value: Vector2 = perlin_noise[perlin_index]
+		random_vel = strength * noise_value
+		self.position = self.position + random_vel
+		perlin_index = (perlin_index + 1) % n
+		is_random_dir_picked = true
+	else:
+		self.position = self.position - random_vel
+		is_random_dir_picked = false
+
 func cam_shake_offset():
 	if !is_random_dir_picked:
 		# pick random direction to move towards
@@ -68,7 +88,7 @@ func cam_shake_offset():
 # strength = 50
 # shake duration = 3
 func cam_shake_sine(time_passed: float):
-	var amplitude: float = 1.0
+	var amplitude: float = strength
 	var frequency: float = 16.0 * TAU
 	var horizontal_offset: float = 0 # PI / 2
 	
@@ -86,6 +106,8 @@ func reset():
 	curr_time = 0.0
 
 func _process(delta: float):
+	
+	
 	if camera_option == DerivedCameraOptions.ZOOM:
 		var ratio: float = curr_time / zoom_duration
 		self.zoom = lerp(start_zoom, target_zoom, ratio)
@@ -101,7 +123,12 @@ func _process(delta: float):
 		if curr_time >= move_duration:
 			camera_option = DerivedCameraOptions.NONE
 	elif camera_option == DerivedCameraOptions.SHAKE:
+		# perlin noise
+		#apply_noise(noise_factor)
+		# random offsets
 		cam_shake_offset()
+		# sine cos waves
+		#cam_shake_sine(curr_time)
 		curr_time += delta
 		if curr_time >= shake_duration:
 			camera_option = DerivedCameraOptions.NONE

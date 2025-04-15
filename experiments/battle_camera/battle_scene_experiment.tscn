@@ -4,7 +4,7 @@
 [ext_resource type="Script" path="res://experiments/battle_camera/cam_demo_controller.gd" id="1_7gwts"]
 [ext_resource type="Script" path="res://experiments/battle_camera/player_tutorial.gd" id="1_a7jf2"]
 [ext_resource type="Shader" path="res://experiments/battle_encounter_transitions/flower_petal.gdshader" id="3_6aycb"]
-[ext_resource type="Script" path="res://experiments/battle_camera/perlin_noise_practice.gd" id="5_jeqxm"]
+[ext_resource type="Script" path="res://experiments/battle_camera/perlin_noise_generator.gd" id="5_jeqxm"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_mh0lh"]
 shader = ExtResource("3_6aycb")
@@ -17,13 +17,13 @@ shader_parameter/h = 0.497
 
 [node name="BattleSceneExperiment" type="Node2D"]
 
-[node name="DerivedCamera" parent="." instance=ExtResource("1_4cq8m")]
-position = Vector2(943, 553)
-limit_left = 0
-limit_top = 0
+[node name="DerivedCamera" parent="." node_paths=PackedStringArray("perlin_noise_generator") instance=ExtResource("1_4cq8m")]
+position = Vector2(638, 345)
+perlin_noise_generator = NodePath("../perlin_demo")
 zoom_duration = 0.5
 move_duration = 0.25
 strength = 50.0
+noise_factor = 64
 
 [node name="Player" type="Polygon2D" parent="."]
 position = Vector2(244, 187)
@@ -84,11 +84,10 @@ grow_vertical = 2
 horizontal_scroll_mode = 0
 vertical_scroll_mode = 2
 
-[node name="CamDemoController" type="VBoxContainer" parent="CanvasLayer/ScrollContainer" node_paths=PackedStringArray("cam_tutorial", "derived_cam", "targets")]
+[node name="CamDemoController" type="VBoxContainer" parent="CanvasLayer/ScrollContainer" node_paths=PackedStringArray("derived_cam", "targets")]
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("1_7gwts")
-cam_tutorial = NodePath("")
 derived_cam = NodePath("../../../DerivedCamera")
 targets = [NodePath("../../../ColorRect2"), NodePath("../../../ColorRect3"), NodePath("../../../ColorRect4"), NodePath("../../../ColorRect5")]
 

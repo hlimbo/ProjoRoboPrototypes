@@ -389,8 +389,8 @@ func on_start_order_step(actor: Actor) -> void:
 		
 	# entry point for enemies to pick a move
 	elif avatar.avatar_type == Constants.Avatar_Type.ENEMY:
-		ai_determine_move(actor)
-		#ai_use_random_skill(actor)
+		#ai_determine_move(actor)
+		ai_use_random_skill(actor)
 		#start_defend(actor)
 		#ai_flee(actor)
 		#ai_attack(actor)
@@ -588,6 +588,25 @@ func on_skill_damage_calculation(damage_dealer: Actor, damage_receiver: Actor, s
 	target.avatar_data.current_stats.hp = maxi(target.avatar_data.current_stats.hp - total_dmg, 0)
 	battle_manager.damage_calculator.on_damage_received.emit(damage_receiver, damage_dealer, total_dmg)
 	on_skill_attack_damage_received(damage_receiver, damage_dealer, total_dmg)
+	
+	# TODO: remove as this is temporary code to test buffs and debuffs
+	# give damage receiver an attack buff for 3 seconds
+	var buff = StatusEffect.new()
+	buff.name = "Strength Boost"
+	buff.duration_type = "SECONDS"
+	buff.duration = 3.0
+	var str_modifier = Modifier.new(Constants.STAT_NONE, Constants.STAT_STRENGTH, Constants.MODIFIER_FLAT, 10)
+	buff.modifiers.append(str_modifier)
+	damage_receiver.status_effects_component.add_buff(buff)
+	
+	# give damage receiver a defend debuff for 6 seconds
+	var debuff = StatusEffect.new()
+	debuff.name = "Weaken"
+	debuff.duration_type = "SECONDS"
+	debuff.duration = 6.0
+	var def_modifier = Modifier.new(Constants.STAT_NONE, Constants.STAT_TOUGHNESS, Constants.MODIFIER_FLAT, -6)
+	debuff.modifiers.append(def_modifier)
+	damage_receiver.status_effects_component.add_debuff(debuff)
 	
 	if damage_receiver.motion_state != Constants.Active_Battle_State.DEFEND:
 		damage_dealer.on_interrupt_motion(damage_receiver, Constants.Battle_State.KNOCKBACK)

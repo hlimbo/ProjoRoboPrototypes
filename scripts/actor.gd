@@ -6,8 +6,6 @@ const Ui_Battle_State = Constants.Battle_State
 const Active_Battle_State = Constants.Active_Battle_State
 
 #region Dependencies
-@export var bot_inventory_systems: BotInventorySystems = BotInventorySystems
-
 # battle_manager class self-injects itself into this class as it creates Actor instances
 @export var battle_manager: BattleManager
 @onready var damage_calculator: IDamageCalculator
@@ -144,6 +142,32 @@ func _ready():
 	add_child(active_battle_state_machine)
 	
 	skill_system_component.load_skills()
+	
+	status_effects_component.on_start_buff.connect(on_start_buff)
+	status_effects_component.on_end_buff.connect(on_end_buff)
+	
+	status_effects_component.on_start_debuff.connect(on_start_debuff)
+	status_effects_component.on_end_debuff.connect(on_end_debuff)
+
+
+var start_buff_time: float = 0.0
+var start_debuff_time: float = 0.0
+
+func on_start_buff(status_effect: StatusEffect):
+	print("applying buff: ", status_effect.name)
+	start_buff_time = Time.get_ticks_msec()
+
+func on_end_buff(status_effect: StatusEffect):
+	print("buff ending: ", status_effect.name)
+	print("duration: ", Time.get_ticks_msec() - start_buff_time)
+
+func on_start_debuff(status_effect: StatusEffect):
+	print("applying debuff: ", status_effect.name)
+	start_debuff_time = Time.get_ticks_msec()
+	
+func on_end_debuff(status_effect: StatusEffect):
+	print("ending debuff: ", status_effect.name)
+	print("duration: ", Time.get_ticks_msec() - start_debuff_time)
 
 func connect_battle_signals():
 	if avatar:

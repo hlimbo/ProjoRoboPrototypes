@@ -355,6 +355,10 @@ func on_start_order_step(actor: Actor) -> void:
 	print("entering order step %s at time: %d" % [avatar.name, Time.get_ticks_msec()])
 	avatar.progress_ratio = ORDER_STEP
 	
+	# on start of turn, apply any buffs/debuffs that this actor has and remove them
+	# when their durations are up
+	actor.status_effects_component.update_status_effects_turn_counts()
+	
 	# entry point for party member to pick a move
 	if avatar.avatar_type == Constants.Avatar_Type.PARTY_MEMBER:
 		avatar.ui_battle_state_machine.transition_to(Constants.Battle_State.MOVE_SELECTION)
@@ -390,8 +394,8 @@ func on_start_order_step(actor: Actor) -> void:
 	# entry point for enemies to pick a move
 	elif avatar.avatar_type == Constants.Avatar_Type.ENEMY:
 		#ai_determine_move(actor)
-		ai_use_random_skill(actor)
-		#start_defend(actor)
+		#ai_use_random_skill(actor)
+		start_defend(actor)
 		#ai_flee(actor)
 		#ai_attack(actor)
 
@@ -569,7 +573,7 @@ func on_skill_attack_damage_received(_damage_receiver: Actor, damage_dealer: Act
 	dd_avatar.ui_battle_state_machine.transition_to(Constants.Battle_State.EXECUTING_MOVE)
 	dd_avatar.battle_state = Constants.Battle_State.EXECUTING_MOVE
 
-# bool is returned here because Godot doesn't do null callables... so this hack is here to
+# bool is returned herBe because Godot doesn't do null callables... so this hack is here to
 # check if function reference is null
 # true == null function
 # false == valid function
@@ -591,22 +595,43 @@ func on_skill_damage_calculation(damage_dealer: Actor, damage_receiver: Actor, s
 	
 	# TODO: remove as this is temporary code to test buffs and debuffs
 	# give damage receiver an attack buff for 3 seconds
-	var buff = StatusEffect.new()
-	buff.name = "Strength Boost"
-	buff.duration_type = "SECONDS"
-	buff.duration = 3.0
-	var str_modifier = Modifier.new(Constants.STAT_NONE, Constants.STAT_STRENGTH, Constants.MODIFIER_FLAT, 10)
-	buff.modifiers.append(str_modifier)
-	damage_receiver.status_effects_component.add_buff(buff)
+	#var buff = StatusEffect.new()
+	#buff.name = "Strength Boost"
+	#buff.duration_type = "SECONDS"
+	#buff.is_applied_over_time = false
+	#buff.duration = 3.0
+	#var str_modifier = Modifier.new(Constants.STAT_NONE, Constants.STAT_STRENGTH, Constants.MODIFIER_FLAT, 10)
+	#buff.modifiers.append(str_modifier)
+	#damage_receiver.status_effects_component.add_buff(buff)
 	
 	# give damage receiver a defend debuff for 6 seconds
 	var debuff = StatusEffect.new()
 	debuff.name = "Weaken"
+	debuff.is_applied_over_time = true
 	debuff.duration_type = "SECONDS"
 	debuff.duration = 6.0
 	var def_modifier = Modifier.new(Constants.STAT_NONE, Constants.STAT_TOUGHNESS, Constants.MODIFIER_FLAT, -6)
 	debuff.modifiers.append(def_modifier)
 	damage_receiver.status_effects_component.add_debuff(debuff)
+	
+	# TODO: remove as this is temporary code to test buffs and debuffs
+	# give damage receiver an attack buff for 3 seconds
+	var buff2 = StatusEffect.new()
+	buff2.name = "Strength 2 Turns"
+	buff2.duration_type = "TURN"
+	buff2.duration = 2
+	var str_modifier2 = Modifier.new(Constants.STAT_NONE, Constants.STAT_STRENGTH, Constants.MODIFIER_FLAT, 10)
+	buff2.modifiers.append(str_modifier2)
+	damage_receiver.status_effects_component.add_buff(buff2)
+	
+	# give damage receiver a defend debuff for 6 seconds
+	var debuff2 = StatusEffect.new()
+	debuff2.name = "Weaken 4 Turns"
+	debuff2.duration_type = "TURN"
+	debuff2.duration = 4
+	var def_modifier2 = Modifier.new(Constants.STAT_NONE, Constants.STAT_TOUGHNESS, Constants.MODIFIER_FLAT, -6)
+	debuff2.modifiers.append(def_modifier2)
+	damage_receiver.status_effects_component.add_debuff(debuff2)
 	
 	if damage_receiver.motion_state != Constants.Active_Battle_State.DEFEND:
 		damage_dealer.on_interrupt_motion(damage_receiver, Constants.Battle_State.KNOCKBACK)

@@ -11,6 +11,8 @@ class_name StatusEffect
 # 3. SECONDS - applies for X seconds
 @export var duration_type: String
 @export var duration: float
+# examples include DOT damage or health regen
+@export var is_applied_over_time: bool = false
 
 # list of modifiers that will change various stat attributes until duration units of time is met
 @export var modifiers: Array[Modifier] = []

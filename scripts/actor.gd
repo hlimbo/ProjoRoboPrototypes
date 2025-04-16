@@ -148,6 +148,11 @@ func _ready():
 	
 	status_effects_component.on_start_debuff.connect(on_start_debuff)
 	status_effects_component.on_end_debuff.connect(on_end_debuff)
+	
+	status_effects_component.on_second_update_buff.connect(on_second_update_buff)
+	status_effects_component.on_turn_update_buff.connect(on_turn_update_buff)
+	status_effects_component.on_second_update_debuff.connect(on_second_update_debuff)
+	status_effects_component.on_turn_update_debuff.connect(on_turn_update_debuff)
 
 
 var start_buff_time: float = 0.0
@@ -168,6 +173,18 @@ func on_start_debuff(status_effect: StatusEffect):
 func on_end_debuff(status_effect: StatusEffect):
 	print("ending debuff: ", status_effect.name)
 	print("duration: ", Time.get_ticks_msec() - start_debuff_time)
+
+func on_second_update_buff(status_effect: StatusEffect):
+	print("being applied over time: ", status_effect.name)
+	
+func on_turn_update_buff(status_effect: StatusEffect):
+	print("on turn update for buff: ", status_effect.name)
+	
+func on_second_update_debuff(status_effect: StatusEffect):
+	print("being applied over time: ", status_effect.name)
+	
+func on_turn_update_debuff(status_effect: StatusEffect):
+	print("on turn update for debuff: ", status_effect.name)
 
 func connect_battle_signals():
 	if avatar:

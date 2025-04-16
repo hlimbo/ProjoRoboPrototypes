@@ -7,25 +7,34 @@ class_name StatusEffectsComponent
 @export var buff_tags: Dictionary = {}
 # key is buff_name string | value is number of times buff is applied
 @export var buff_stacks: Dictionary = {}
-# key is buff_name string | value is float containing the duration
+# key is buff_name string | value is float containing the current duration
+# to know the duration_type of the value, lookup the buff in buff_tags
 @export var buff_durations: Dictionary = {}
 
 # key is debuff name string | value is StatusEffect
 @export var debuff_tags: Dictionary = {}
 # key is debuff_name string | value is number of times debuff is applied
 @export var debuff_stacks: Dictionary = {}
-# key is debuff_name string | value is float containing the duration
+# key is debuff_name string | value is float containing the current duration
+# to know the duration_type of the value, lookup the debuff in debuff_tags
 @export var debuff_durations: Dictionary = {}
+
+# this is used to keep track of all active buffs / debuffs occurring every second
+var second_interval_timer: Timer
+
+var counter: int = 0
 
 #region signals
 signal on_start_buff(effect: StatusEffect)
 signal on_update_buff(effect: StatusEffect, stack_count: int)
-signal on_process_buff(effect: StatusEffect)
+signal on_second_update_buff(effect: StatusEffect)
+signal on_turn_update_buff(effect: StatusEffect)
 signal on_end_buff(effect: StatusEffect)
 
 signal on_start_debuff(effect: StatusEffect)
 signal on_update_debuff(effect: StatusEffect, stack_count: int)
-signal on_process_debuff(effect: StatusEffect)
+signal on_second_update_debuff(effect: StatusEffect)
+signal on_turn_update_debuff(effect: StatusEffect)
 signal on_end_debuff(effect: StatusEffect)
 #endregion
 
@@ -41,6 +50,11 @@ func add_buff(status_effect: StatusEffect):
 		buff_durations[buff_tag] = 0
 		on_start_buff.emit(status_effect)
 
+	# run the timer when at least 1 buff is active
+	if second_interval_timer.is_stopped():
+		second_interval_timer.start()
+		counter = 0
+
 func remove_buff(status_effect: StatusEffect) -> bool:
 	var buff_tag: String = status_effect.name
 	return self._remove_buff(buff_tag)
@@ -54,6 +68,14 @@ func _remove_buff(buff_tag: String) -> bool:
 	buff_stacks.erase(buff_tag)
 	buff_durations.erase(buff_tag)
 	on_end_buff.emit(effect)
+	
+	# stop timer if all buffs and debuffs grouped by SECONDS are inactive
+	var buffs_by_seconds_count: int = buff_tags.values().filter(func(buff: StatusEffect): return buff.duration_type == "SECONDS").size()
+	var debuffs_by_seconds_count: int = debuff_tags.values().filter(func(debuff: StatusEffect): return debuff.duration_type == "SECONDS").size()
+	var effect_count: int = buffs_by_seconds_count + debuffs_by_seconds_count
+	if effect_count == 0:
+		second_interval_timer.stop()
+	
 	return true
 	
 func add_debuff(status_effect: StatusEffect):
@@ -67,6 +89,11 @@ func add_debuff(status_effect: StatusEffect):
 		debuff_stacks[debuff_tag] = 1
 		debuff_durations[debuff_tag] = 0
 		on_start_debuff.emit(status_effect)
+		
+	# run the timer when at least 1 debuff is active
+	if second_interval_timer.is_stopped():
+		second_interval_timer.start()
+		counter = 0
 	
 func remove_debuff(status_effect: StatusEffect) -> bool:
 	var debuff_tag: String = status_effect.name
@@ -81,6 +108,14 @@ func _remove_debuff(debuff_tag: String) -> bool:
 	debuff_stacks.erase(debuff_tag)
 	debuff_durations.erase(debuff_tag)
 	on_end_debuff.emit(debuff)
+	
+	# stop timer if all buffs and debuffs grouped by SECONDS are inactive
+	var buffs_by_seconds_count: int = buff_tags.values().filter(func(buff: StatusEffect): return buff.duration_type == "SECONDS").size()
+	var debuffs_by_seconds_count: int = debuff_tags.values().filter(func(debuff: StatusEffect): return debuff.duration_type == "SECONDS").size()
+	var effect_count: int = buffs_by_seconds_count + debuffs_by_seconds_count
+	if effect_count == 0:
+		second_interval_timer.stop()
+	
 	return true
 	
 func has_buff(tag: String) -> bool:
@@ -88,51 +123,66 @@ func has_buff(tag: String) -> bool:
 	
 func has_debuff(tag: String) -> bool:
 	return debuff_tags.has(tag)
+
+# status_effects: key = string tag | value = StatusEffect
+# durations: key = string tag | value = duration value float
+# on_update: signal whose function signature accepts a StatusEffect parameter
+# time_step: used to advance time where its lower_bound > 0
+# returns a list of status effect tags that are expired
+func _update_status_effect_timer(status_effects: Dictionary, durations: Dictionary, duration_type: String, on_update: Signal, time_step: float) -> PackedStringArray:
+	var expired_tags: PackedStringArray = []
 	
-func _process(delta: float):
-	var buffs_to_remove: Array[String] = []
-	for tag in buff_tags:
-		var buff_effect: StatusEffect = buff_tags[tag]
-		on_process_buff.emit(buff_effect)
+	# filter by duration type 
+	var effect_tags: PackedStringArray = []
+	for tag in status_effects:
+		var status_effect: StatusEffect = status_effects[tag]
+		if status_effect.duration_type == duration_type:
+			effect_tags.append(tag)
+	
+	for tag in effect_tags:
+		assert(tag in status_effects)
+		assert(tag in durations)
 		
-		# check duration of buff to end
-		assert(tag in buff_durations)
-		var curr_buff_duration: float = buff_durations[tag]
-		var buff_duration: float = buff_effect.duration
-		
-		# TODO: count number of turns passed since buff started
-		if buff_effect.duration_type == "TURN":
-			pass
-		elif buff_effect.duration_type == "SECONDS":
-			var is_buff_expired: bool = curr_buff_duration >= buff_duration
-			if is_buff_expired:
-				# mark buff for removal
-				buffs_to_remove.append(tag)
-			else:
-				buff_durations[tag] += delta
-				
+		var effect: StatusEffect = status_effects[tag]
+		var curr_duration: float = durations[tag]
+		var duration: float = effect.duration
+		var is_expired: bool = curr_duration >= duration
+		if is_expired:
+			expired_tags.append(tag)
+		else:
+			durations[tag] += time_step
+			on_update.emit(effect)
+			
+	return expired_tags
+
+func update_status_effects_turn_counts():
+	var duration_type: String = "TURN"
+	var time_step: float = 1.0
+	var buffs_to_remove: PackedStringArray = _update_status_effect_timer(buff_tags, buff_durations, duration_type, on_turn_update_buff, time_step)
+	var debuffs_to_remove: PackedStringArray = _update_status_effect_timer(debuff_tags, debuff_durations, duration_type, on_turn_update_debuff, time_step)
+	
 	for tag in buffs_to_remove:
-		self._remove_buff(tag)
-	
-	var debuffs_to_remove: Array[String] = []
-	for tag in debuff_tags:
-		var debuff_effect: StatusEffect = debuff_tags[tag]
-		on_process_debuff.emit(debuff_effect)
-		
-		# check duration of debuff to end
-		assert(tag in debuff_durations)
-		var curr_debuff_duration: float = debuff_durations[tag]
-		var debuff_duration: float = debuff_effect.duration
-		
-		# TODO: count number of turns passed since debuff started
-		if debuff_effect.duration_type == "TURN":
-			pass
-		elif debuff_effect.duration_type == "SECONDS":
-			var is_debuff_expired: bool = curr_debuff_duration >= debuff_duration
-			if is_debuff_expired:
-				debuffs_to_remove.append(tag)
-			else:
-				debuff_durations[tag] += delta
-				
+		_remove_buff(tag)
 	for tag in debuffs_to_remove:
-		self._remove_debuff(tag)
+		_remove_debuff(tag)
+
+func on_second_interval_timeout():
+	counter += 1
+	print("time counter: ", counter)
+	var time_step: float = 1.0
+	var duration_type: String = "SECONDS"
+	var expired_buff_tags: PackedStringArray = _update_status_effect_timer(buff_tags, buff_durations, duration_type, on_second_update_buff, time_step)
+	var expired_debuff_tags: PackedStringArray = _update_status_effect_timer(debuff_tags, debuff_durations, duration_type, on_second_update_debuff, time_step)
+	
+	for tag in expired_buff_tags:
+		_remove_buff(tag)
+	for tag in expired_debuff_tags:
+		_remove_debuff(tag)
+
+func _ready():
+	second_interval_timer = Timer.new()
+	second_interval_timer.one_shot = false
+	second_interval_timer.wait_time = 1.0 # second
+	second_interval_timer.timeout.connect(on_second_interval_timeout)
+	# add timer to scene tree to activate timer
+	add_child(second_interval_timer)

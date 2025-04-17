@@ -395,9 +395,9 @@ func on_start_order_step(actor: Actor) -> void:
 	elif avatar.avatar_type == Constants.Avatar_Type.ENEMY:
 		#ai_determine_move(actor)
 		#ai_use_random_skill(actor)
-		start_defend(actor)
+		#start_defend(actor)
 		#ai_flee(actor)
-		#ai_attack(actor)
+		ai_attack(actor)
 
 func display_end_battle_screen(status: Party_Battle_States):
 	match status:
@@ -465,7 +465,8 @@ func ai_attack(actor: Actor) -> void:
 		return false
 	# pick random target to attack
 	var i = randi_range(0, len(live_party_members) - 1)
-	var target: Actor = live_party_members[i]
+	# TEMP: always attack the first one
+	var target: Actor = live_party_members[0]
 	atk_cmd.target = target
 	atk_cmd.on_label_text_update = wrapper
 	atk_cmd.execute(actor)
@@ -538,26 +539,72 @@ func on_party_member_skill_end(damage_receiver: Actor, damage_dealer: Actor):
 	# TODO: connect skill used to button press that has skill information
 	# var skill: Skill = pending_skill
 	# TODO: temporary code to test skill creation and execution
+	#var skill = Skill.new()
+	#skill.name = "Mighty Goblin Punch"
+	#skill.energy_type = "Electric"
+	#skill.description = "Goblin Attack Hit!"
+	#skill.cost = 12
+	#
+	#var base_dmg = Modifier.new()
+	#base_dmg.stat_category_type_src = Constants.STAT_NONE
+	#base_dmg.stat_category_type_target = Constants.STAT_HP
+	#base_dmg.modifier_type = Constants.MODIFIER_FLAT
+	#base_dmg.stat_value = -10
+	#
+	#var dmg_mod = Modifier.new()
+	#dmg_mod.stat_category_type_src = Constants.STAT_TOUGHNESS
+	#dmg_mod.stat_category_type_target = Constants.STAT_HP
+	#dmg_mod.modifier_type = Constants.MODIFIER_PERCENT
+	#dmg_mod.stat_value = -50
+	#
+	#skill.modifiers.append(base_dmg)
+	#skill.modifiers.append(dmg_mod)
+	
+	# TODO: temporary code to test different skills for ease of testing
 	var skill = Skill.new()
-	skill.name = "Mighty Goblin Punch"
-	skill.energy_type = "Electric"
-	skill.description = "Goblin Attack Hit!"
-	skill.cost = 12
+	skill.name = "Thorny Defense"
+	skill.energy_type = "Wood"
+	skill.description = "Performs guard action and deals wood damage back to opposing bot while guarding. Defense is increased and Speed is decreased while in this stance."
+	skill.cost = 4
 	
-	var base_dmg = Modifier.new()
-	base_dmg.stat_category_type_src = Constants.STAT_NONE
-	base_dmg.stat_category_type_target = Constants.STAT_HP
-	base_dmg.modifier_type = Constants.MODIFIER_FLAT
-	base_dmg.stat_value = -10
+	var thorny_effect = StatusEffect.new()
+	thorny_effect.name = "Thorny Defense"
+	thorny_effect.description = "Deals flat damage back to enemies that attack this character"
+	thorny_effect.duration_type = "SECONDS"
+	thorny_effect.duration = 30
+	thorny_effect.can_affect_self = false
 	
-	var dmg_mod = Modifier.new()
-	dmg_mod.stat_category_type_src = Constants.STAT_TOUGHNESS
-	dmg_mod.stat_category_type_target = Constants.STAT_HP
-	dmg_mod.modifier_type = Constants.MODIFIER_PERCENT
-	dmg_mod.stat_value = -50
+	var dmg_modifier = Modifier.new()
+	dmg_modifier.modifier_type = Constants.MODIFIER_FLAT
+	dmg_modifier.stat_category_type_src = Constants.STAT_NONE
+	dmg_modifier.stat_category_type_target = Constants.STAT_HP
+	dmg_modifier.stat_value = 30
+	thorny_effect.modifiers.append(dmg_modifier)
 	
-	skill.modifiers.append(base_dmg)
-	skill.modifiers.append(dmg_mod)
+	# immediate modifiers - is treated as a status effect because the stat changes are temporary
+	var thorny_effect_stat_buffs = StatusEffect.new()
+	thorny_effect_stat_buffs.name = "Thorny Defense Stat Buffs"
+	thorny_effect_stat_buffs.description = "Increases Defense but Decreases Speed temporarily"
+	thorny_effect_stat_buffs.duration_type = "SECONDS"
+	thorny_effect_stat_buffs.duration = 10
+	thorny_effect_stat_buffs.can_affect_self = true
+	
+	var def_modifier = Modifier.new()
+	def_modifier.stat_category_type_src = Constants.STAT_NONE
+	def_modifier.stat_category_type_target = Constants.STAT_TOUGHNESS
+	def_modifier.modifier_type = Constants.MODIFIER_FLAT
+	def_modifier.stat_value = 50
+	
+	var spd_modifier = Modifier.new()
+	spd_modifier.stat_category_type_src = Constants.STAT_NONE
+	spd_modifier.stat_category_type_target = Constants.STAT_SPEED
+	spd_modifier.modifier_type = Constants.MODIFIER_FLAT
+	spd_modifier.stat_value = -25
+	thorny_effect_stat_buffs.modifiers.append(def_modifier)
+	thorny_effect_stat_buffs.modifiers.append(spd_modifier)
+	
+	skill.buffs.append(thorny_effect)
+	skill.buffs.append(thorny_effect_stat_buffs)
 	
 	var wrapper = func() -> bool:
 		return on_skill_damage_calculation(damage_dealer, damage_receiver, skill)
@@ -607,12 +654,19 @@ func on_skill_damage_calculation(damage_dealer: Actor, damage_receiver: Actor, s
 	var enemy_name: String = target.avatar_data.avatar_name
 	var skill_name: String = skill.name
 	
+	
+	# Skills that damage others example
 	var total_dmg: float = 0.0
-	damage_dealer.skill_system_component.add_skill(skill)
-	var deltas: Array[float] = damage_dealer.skill_system_component.activate_skill(skill.name, damage_receiver)
-	# multiply by -1 since the value coming out from activating the skill is negative -- a bit hacky right now and a need to refactor this part of the code is
-	# greatly needed!
-	total_dmg = deltas[0] * -1
+	damage_dealer.skill_system_component.add_skill(skill) # grant skill to damage dealer
+	#var deltas: Array[float] = damage_dealer.skill_system_component.activate_skill(skill.name, damage_receiver)
+	## a bit hacky and needs to be removed from here....
+	#total_dmg = deltas[0] # hp
+	
+	# Skills that affect self example - Thorny Defense
+	# apply to self because thorny defense applied to self but affects other actors
+	# that attack it
+	damage_dealer.skill_system_component.thorny_defense(damage_dealer)
+	
 	
 	label.text = "%s casts %s to %s. It deals %d damage!" % [avatar.avatar_data.avatar_name, skill_name, enemy_name, total_dmg]
 
@@ -620,45 +674,46 @@ func on_skill_damage_calculation(damage_dealer: Actor, damage_receiver: Actor, s
 	battle_manager.damage_calculator.on_damage_received.emit(damage_receiver, damage_dealer, total_dmg)
 	on_skill_attack_damage_received(damage_receiver, damage_dealer, total_dmg)
 	
-	# TODO: remove as this is temporary code to test buffs and debuffs
-	# give damage receiver an attack buff for 3 seconds
-	#var buff = StatusEffect.new()
-	#buff.name = "Strength Boost"
-	#buff.duration_type = "SECONDS"
-	#buff.is_applied_over_time = false
-	#buff.duration = 3.0
-	#var str_modifier = Modifier.new(Constants.STAT_NONE, Constants.STAT_STRENGTH, Constants.MODIFIER_FLAT, 10)
-	#buff.modifiers.append(str_modifier)
-	#damage_receiver.status_effects_component.add_buff(buff)
-	
-	# give damage receiver a defend debuff for 6 seconds
-	var debuff = StatusEffect.new()
-	debuff.name = "Weaken"
-	debuff.is_applied_over_time = true
-	debuff.duration_type = "SECONDS"
-	debuff.duration = 6.0
-	var def_modifier = Modifier.new(Constants.STAT_NONE, Constants.STAT_TOUGHNESS, Constants.MODIFIER_FLAT, -6)
-	debuff.modifiers.append(def_modifier)
-	damage_receiver.status_effects_component.add_debuff(debuff)
-	
-	# TODO: remove as this is temporary code to test buffs and debuffs
-	# give damage receiver an attack buff for 3 seconds
-	var buff2 = StatusEffect.new()
-	buff2.name = "Strength 2 Turns"
-	buff2.duration_type = "TURN"
-	buff2.duration = 2
-	var str_modifier2 = Modifier.new(Constants.STAT_NONE, Constants.STAT_STRENGTH, Constants.MODIFIER_FLAT, 10)
-	buff2.modifiers.append(str_modifier2)
-	damage_receiver.status_effects_component.add_buff(buff2)
-	
-	# give damage receiver a defend debuff for 6 seconds
-	var debuff2 = StatusEffect.new()
-	debuff2.name = "Weaken 4 Turns"
-	debuff2.duration_type = "TURN"
-	debuff2.duration = 4
-	var def_modifier2 = Modifier.new(Constants.STAT_NONE, Constants.STAT_TOUGHNESS, Constants.MODIFIER_FLAT, -6)
-	debuff2.modifiers.append(def_modifier2)
-	damage_receiver.status_effects_component.add_debuff(debuff2)
+	#region testing status effects
+	## TODO: remove as this is temporary code to test buffs and debuffs
+	## give damage receiver an attack buff for 3 seconds
+	##var buff = StatusEffect.new()
+	##buff.name = "Strength Boost"
+	##buff.duration_type = "SECONDS"
+	##buff.is_applied_over_time = false
+	##buff.duration = 3.0
+	##var str_modifier = Modifier.new(Constants.STAT_NONE, Constants.STAT_STRENGTH, Constants.MODIFIER_FLAT, 10)
+	##buff.modifiers.append(str_modifier)
+	##damage_receiver.status_effects_component.add_buff(buff)
+	#
+	## give damage receiver a defend debuff for 6 seconds
+	#var debuff = StatusEffect.new()
+	#debuff.name = "Weaken"
+	#debuff.is_applied_over_time = true
+	#debuff.duration_type = "SECONDS"
+	#debuff.duration = 6.0
+	#var def_modifier = Modifier.new(Constants.STAT_NONE, Constants.STAT_TOUGHNESS, Constants.MODIFIER_FLAT, -6)
+	#debuff.modifiers.append(def_modifier)
+	#damage_receiver.status_effects_component.add_debuff(debuff)
+	#
+	## TODO: remove as this is temporary code to test buffs and debuffs
+	## give damage receiver an attack buff for 3 seconds
+	#var buff2 = StatusEffect.new()
+	#buff2.name = "Strength 2 Turns"
+	#buff2.duration_type = "TURN"
+	#buff2.duration = 2
+	#var str_modifier2 = Modifier.new(Constants.STAT_NONE, Constants.STAT_STRENGTH, Constants.MODIFIER_FLAT, 10)
+	#buff2.modifiers.append(str_modifier2)
+	#damage_receiver.status_effects_component.add_buff(buff2)
+	#
+	#var debuff2 = StatusEffect.new()
+	#debuff2.name = "Weaken 4 Turns"
+	#debuff2.duration_type = "TURN"
+	#debuff2.duration = 4
+	#var def_modifier2 = Modifier.new(Constants.STAT_NONE, Constants.STAT_TOUGHNESS, Constants.MODIFIER_FLAT, -6)
+	#debuff2.modifiers.append(def_modifier2)
+	#damage_receiver.status_effects_component.add_debuff(debuff2)
+	#endregion
 	
 	if damage_receiver.motion_state != Constants.Active_Battle_State.DEFEND:
 		damage_dealer.on_interrupt_motion(damage_receiver, Constants.Battle_State.KNOCKBACK)

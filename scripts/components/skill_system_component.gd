@@ -73,6 +73,14 @@ func activate_skill(skill_name: String, target: Actor) -> Array[float]:
 		target_status_effects_component.add_debuff(debuff)
 	
 	# 2. apply one-shot stat modifiers based on skill owner's current stat values
+	# TODO: FEEDBACK: this logic may need to be offloaded into a signal so other classes can
+	# compute stat values someplace else....
+	# helps with separation of concerns and prevents shoe-horning a single aspect of code to be
+	# this limiting
+	# all this function should really be doing is:
+	# 1. applying buffs and debuffs to the target actor
+	# 2. notifying of other systems that the skill has been activated
+	# 3. turning on this skill by looking up in a dictionary and setting its flag to true
 	var hp_delta: float = 0
 	var strength_delta: float = 0
 	var energy_delta: float = 0
@@ -101,7 +109,7 @@ func activate_skill(skill_name: String, target: Actor) -> Array[float]:
 	target.current_stat_attributes.hp.value += net_hp_delta
 	target.current_stat_attributes.strength.value += strength_delta
 	target.current_stat_attributes.energy.value += energy_delta
-	target.current_stat_attributes.energy.value += toughness_delta
+	target.current_stat_attributes.toughness.value += toughness_delta
 	target.current_stat_attributes.speed.value += speed_delta
 	
 	# 3. notify observers of any one-shot stat modifications made
@@ -134,3 +142,17 @@ func deactivate_skill(skill_name: String, caster: Actor, targets: Array[Actor]) 
 	var skill: Skill = skills[skill_name]
 	
 	return true
+
+# TODO: remove as skill_system_component is only responsible for turning on/off skills
+# the behaviour to apply specific stat values through modifiers should be handled somewhere else not here
+# this is done to quickly verify how some of the Skill Ideas Richie had would work out
+func thorny_defense(target: Actor):
+	var skill_name: String = "Thorny Defense"
+	assert(skill_name in skills)
+	var skill: Skill = skills[skill_name]
+	var target_status_effects_component: StatusEffectsComponent = target.status_effects_component
+	
+	for buff in skill.buffs:
+		target_status_effects_component.add_buff(buff)
+	
+	skills_activation_table[skill_name] = true

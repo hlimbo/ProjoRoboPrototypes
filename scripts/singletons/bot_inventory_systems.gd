@@ -55,7 +55,7 @@ func _init():
 		index += 1
 	
 	# TEMP - add in bots to party
-	for i in range(2):
+	for i in range(1):
 		var avatar_data: AvatarData = bots[i] as AvatarData
 		avatar_data.level = 1
 		avatar_data.max_experience_per_level = 200

@@ -1,4 +1,4 @@
 name	cost	attack	energy_type	description	buffs	debuffs
 Goblin Punch	5	50	neutral	Adds half your Toughness to damage for this attack	Toughness Modifier	
-Thorny Defense	4	3	wood	Performs the guard action. While guarding, deals damage back to opposing bot that attacks. Its movement is slowed down on timeline.	Thorned Armor	Slow
+Thorny Defensess	4	3	wood	Performs the guard action. While guarding, deals damage back to opposing bot that attacks. Its movement is slowed down on timeline.	Thorned Armor	Slow
 System Shock	6	0	ai	For next 2 turns, the target bot can only attack the bot that casts its spell to it.		Tunnel-visioned

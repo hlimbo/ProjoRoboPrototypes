@@ -4,9 +4,9 @@ extends BaseResource
 class_name Modifier
 
 # determines what stat type to modify from base_stats.gd
-@export var stat_category_type_src: String = "hp"
+@export var stat_category_type_src: String = Constants.STAT_NONE
 # determines what stat type to apply the changes to from base_stats.gd
-@export var stat_category_type_target: String = "hp"
+@export var stat_category_type_target: String = Constants.STAT_NONE
 
 # determines the denomination of the stat's value. It can be the following:
 # 1. flat

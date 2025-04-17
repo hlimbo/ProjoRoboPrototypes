@@ -13,8 +13,10 @@ class_name StatusEffect
 @export var duration: float
 # examples include DOT damage or health regen
 @export var is_applied_over_time: bool = false
+# does this affect current owner of status effect or others?
+@export var can_affect_self: bool = true
 
-# list of modifiers that will change various stat attributes until duration units of time is met
+# list of modifiers that will change various stat attributes
 @export var modifiers: Array[Modifier] = []
 
 # used to determine if the status effect is the following:

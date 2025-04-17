@@ -166,13 +166,62 @@ func _ready():
 var start_buff_time: float = 0.0
 var start_debuff_time: float = 0.0
 
+# buffs to test
+var thorny_def = "Thorny Defense"
+var thorny_def_stat_buffs = "Thorny Defense Stat Buffs"
+
 func on_start_buff(status_effect: StatusEffect):
 	print("applying buff: ", status_effect.name)
 	start_buff_time = Time.get_ticks_msec()
+	
+	if status_effect.name == thorny_def_stat_buffs:
+		print("start toughness value now: ", current_stat_attributes.toughness.value)
+		print("start speed value now: ", current_stat_attributes.speed.value)
+		
+		var toughness_delta: float = 0
+		var speed_delta: float = 0
+
+		for modifier in status_effect.modifiers:
+			match modifier.stat_category_type_target:
+				Constants.STAT_TOUGHNESS:
+					toughness_delta += modifier.stat_value
+				Constants.STAT_SPEED:
+					speed_delta += modifier.stat_value
+				
+	
+		current_stat_attributes.toughness.value += toughness_delta
+		current_stat_attributes.speed.value += speed_delta
+		
+		print("toughness value now: ", current_stat_attributes.toughness.value)
+		print("speed value now: ", current_stat_attributes.speed.value)
 
 func on_end_buff(status_effect: StatusEffect):
 	print("buff ending: ", status_effect.name)
 	print("duration: ", Time.get_ticks_msec() - start_buff_time)
+	
+	if status_effect.name == thorny_def:
+		print("no longer have thorny defense")
+	elif status_effect.name == thorny_def_stat_buffs:
+		print("restoring stats back naively")
+		var toughness_modifier: Modifier
+		var speed_modifier: Modifier
+		for modifier in status_effect.modifiers:
+			if modifier.stat_category_type_target == Constants.STAT_TOUGHNESS:
+				toughness_modifier = modifier
+			elif modifier.stat_category_type_target == Constants.STAT_SPEED:
+				speed_modifier = modifier
+		
+		assert(toughness_modifier != null)
+		assert(speed_modifier != null)
+		
+		current_stat_attributes.toughness.value += -1 * toughness_modifier.stat_value
+		current_stat_attributes.speed.value += -1 * speed_modifier.stat_value
+		
+		print("removing toughness: ", current_stat_attributes.toughness.value)
+		print("removing speed: ", current_stat_attributes.speed.value)
+		
+		current_stat_attributes.toughness.notify_all()
+		current_stat_attributes.speed.notify_all()
 
 func on_start_debuff(status_effect: StatusEffect):
 	print("applying debuff: ", status_effect.name)
@@ -271,7 +320,8 @@ func start_motion(target_actor: Actor):
 		return
 		
 	# turn on interact area to detect when an attack animation can be simulated
-	interact_area.monitoring = true
+	#interact_area.monitoring = true
+	interact_area.set_deferred("monitoring", true)
 	motion_state = Active_Battle_State.MOVING
 	target = target_actor
 
@@ -296,7 +346,8 @@ func move_to_target(target_pos: Vector2) -> Vector2:
 func on_other_entered(other: Area2D):
 	# turn off the interact area to prevent further overlap events from being triggered
 	# one event should be triggered per single target attack
-	interact_area.monitoring = false
+	#interact_area.monitoring = false
+	interact_area.set_deferred("monitoring", false)
 
 	# if not target OR the other area2D isn't an actor's collision body, don't trigger the attack state
 	if !target or target.get_node("CollisionGeometry/ActorArea") != other:
@@ -340,6 +391,25 @@ func on_attack_connect(area: Area2D):
 		var dmg = damage_calculator.calculate_damage(actor_receiving_dmg, self)
 		damage_receiver.avatar_data.current_stats.hp = maxi(damage_receiver.avatar_data.current_stats.hp - dmg, 0)
 		damage_calculator.on_damage_received.emit(actor_receiving_dmg, self, dmg)
+		
+		# TODO: temporary - check if actor receiving dmg has thorny defense status effect....
+		# in a streamlined approach, I would need to loop through all the buffs and debuffs
+		# this actor has and call a function to compute changes in stats at this point in time
+		var target_status_effects_component: StatusEffectsComponent = actor_receiving_dmg.status_effects_component
+		var thorny_def: String = "Thorny Defense"
+		if target_status_effects_component.has_buff(thorny_def):
+			var effect: StatusEffect = target_status_effects_component.buff_tags[thorny_def]
+			# assume modifier type are all flat values
+			var hp_modifier: Modifier = null
+			for modifier in effect.get_modifiers():
+				if modifier.stat_category_type_target == Constants.STAT_HP:
+					hp_modifier = modifier
+					break
+			
+			assert(hp_modifier != null)
+			print ("applying thorny defense damage of value: ", hp_modifier.stat_value)
+			damage_dealer.avatar_data.current_stats.hp = maxi(damage_dealer.avatar_data.current_stats.hp - hp_modifier.stat_value, 0)
+			damage_calculator.on_damage_received.emit(self, actor_receiving_dmg, hp_modifier.stat_value)
 		
 		print("on damage received basic attack: %s atks %s for %d dmg" % [damage_dealer.avatar_data.avatar_name, damage_receiver.avatar_data.avatar_name, dmg])
 		
@@ -390,7 +460,8 @@ func toggle_motion(is_paused: bool):
 		avatar.toggle_motion(is_paused)
 	
 func toggle_hitbox(is_enabled: bool):
-	hit_area.monitoring = is_enabled
+	#hit_area.monitoring = is_enabled
+	hit_area.set_deferred("monitoring", is_enabled)
 
 func toggle_timers(is_paused: bool):
 	attack_timer.paused = is_paused
@@ -442,7 +513,8 @@ func on_cancel_move():
 	# cancel attacks that did not connect
 	target = null
 	toggle_hitbox(false)
-	interact_area.monitoring = false
+	#interact_area.monitoring = false
+	interact_area.set_deferred("monitoring", false)
 	attack_timer.stop()
 	
 	# cancel skills that did not connect

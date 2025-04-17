@@ -142,6 +142,7 @@ func _ready():
 	add_child(active_battle_state_machine)
 	
 	skill_system_component.load_skills()
+	skill_system_component.skill_owner = self
 	
 	status_effects_component.on_start_buff.connect(on_start_buff)
 	status_effects_component.on_end_buff.connect(on_end_buff)
@@ -154,6 +155,13 @@ func _ready():
 	status_effects_component.on_second_update_debuff.connect(on_second_update_debuff)
 	status_effects_component.on_turn_update_debuff.connect(on_turn_update_debuff)
 
+	# TODO: this is temporary, remove once loading in data from csv or an outside data source is complete
+	# hp, strength, energy, toughness, speed
+	var some_stats: Array[float] = [1000, 20, 30, 15, 34]
+	base_stat_attributes = StatAttributeSet.new()
+	current_stat_attributes = StatAttributeSet.new()
+	base_stat_attributes.load_stats(some_stats)
+	current_stat_attributes.load_stats(some_stats)
 
 var start_buff_time: float = 0.0
 var start_debuff_time: float = 0.0
@@ -508,11 +516,13 @@ func enable():
 	set_process(true)
 	set_physics_process(true)
 	active_battle_state_machine.enable()
+	status_effects_component.enable()
 
 func disable():
 	set_process(false)
 	set_physics_process(false)
 	active_battle_state_machine.disable()
+	status_effects_component.disable()
 
 func construct(avatar_data: AvatarData):
 	# replace default graphics with graphics from avatar_data

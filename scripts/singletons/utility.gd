@@ -125,10 +125,11 @@ func convert_percent_to_flat_modifier(stat_attr_set: StatAttributeSet, modifier:
 		Constants.STAT_ENERGY, 
 		Constants.STAT_SPEED, 
 		Constants.STAT_STRENGTH, 
-		Constants.STAT_TOUGHNESS
+		Constants.STAT_TOUGHNESS,
+		Constants.STAT_NONE,
 	]
 	
-	assert(valid_modifier_types.has(modifier.stat_value_type))
+	assert(valid_modifier_types.has(modifier.modifier_type))
 	assert(valid_stat_attributes.has(modifier.stat_category_type_src))
 	
 	if modifier.modifier_type == Constants.MODIFIER_FLAT:
@@ -149,7 +150,7 @@ func convert_percent_to_flat_modifier(stat_attr_set: StatAttributeSet, modifier:
 		Constants.STAT_SPEED:
 			flat_modifier.stat_value = stat_attr_set.speed.value * percent
 		
-	flat_modifier.stat_category_type_src = modifier.stat_category_type_src
+	flat_modifier.stat_category_type_src = Constants.STAT_NONE
 	flat_modifier.stat_category_type_target = modifier.stat_category_type_target
-	flat_modifier.stat_value_type = Constants.MODIFIER_FLAT
+	flat_modifier.modifier_type = Constants.MODIFIER_FLAT
 	return flat_modifier

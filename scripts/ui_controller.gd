@@ -535,7 +535,30 @@ func on_party_member_skill_end(damage_receiver: Actor, damage_dealer: Actor):
 	var excluded_actors: Array[Actor] = [damage_dealer]
 	pause_actors_motion_excluding(excluded_actors)
 
-	var skill: Skill = pending_skill
+	# TODO: connect skill used to button press that has skill information
+	# var skill: Skill = pending_skill
+	# TODO: temporary code to test skill creation and execution
+	var skill = Skill.new()
+	skill.name = "Mighty Goblin Punch"
+	skill.energy_type = "Electric"
+	skill.description = "Goblin Attack Hit!"
+	skill.cost = 12
+	
+	var base_dmg = Modifier.new()
+	base_dmg.stat_category_type_src = Constants.STAT_NONE
+	base_dmg.stat_category_type_target = Constants.STAT_HP
+	base_dmg.modifier_type = Constants.MODIFIER_FLAT
+	base_dmg.stat_value = -10
+	
+	var dmg_mod = Modifier.new()
+	dmg_mod.stat_category_type_src = Constants.STAT_TOUGHNESS
+	dmg_mod.stat_category_type_target = Constants.STAT_HP
+	dmg_mod.modifier_type = Constants.MODIFIER_PERCENT
+	dmg_mod.stat_value = -50
+	
+	skill.modifiers.append(base_dmg)
+	skill.modifiers.append(dmg_mod)
+	
 	var wrapper = func() -> bool:
 		return on_skill_damage_calculation(damage_dealer, damage_receiver, skill)
 
@@ -584,8 +607,12 @@ func on_skill_damage_calculation(damage_dealer: Actor, damage_receiver: Actor, s
 	var enemy_name: String = target.avatar_data.avatar_name
 	var skill_name: String = skill.name
 	
-	# TODO: calculate base damage
-	var total_dmg: float = 2
+	var total_dmg: float = 0.0
+	damage_dealer.skill_system_component.add_skill(skill)
+	var deltas: Array[float] = damage_dealer.skill_system_component.activate_skill(skill.name, damage_receiver)
+	# multiply by -1 since the value coming out from activating the skill is negative -- a bit hacky right now and a need to refactor this part of the code is
+	# greatly needed!
+	total_dmg = deltas[0] * -1
 	
 	label.text = "%s casts %s to %s. It deals %d damage!" % [avatar.avatar_data.avatar_name, skill_name, enemy_name, total_dmg]
 

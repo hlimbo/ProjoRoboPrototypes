@@ -3,11 +3,11 @@
 extends BaseResource
 class_name StatAttributeSet
 
-@export var hp: StatAttribute
-@export var strength: StatAttribute
-@export var energy: StatAttribute
-@export var toughness: StatAttribute
-@export var speed: StatAttribute
+@export var hp: StatAttribute = StatAttribute.new()
+@export var strength: StatAttribute = StatAttribute.new()
+@export var energy: StatAttribute = StatAttribute.new()
+@export var toughness: StatAttribute = StatAttribute.new()
+@export var speed: StatAttribute = StatAttribute.new()
 
 # TODO: create a stats csv object and pass it in here instead
 func load_stats(values: Array[float]):

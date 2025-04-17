@@ -55,14 +55,14 @@ func apply_skill_cost(skill_name: String) -> bool:
 	skill_owner.current_stat_attributes.energy.notify_all()
 	return true
 
-func activate_skill(skill_name: String, target: Actor) -> bool:
+# TODO: switch back to returning a bool instead of Array[float] e.g. raw stat values
+func activate_skill(skill_name: String, target: Actor) -> Array[float]:
 	if skill_name not in skills:
-		return false
+		return []
 	
 	assert(is_instance_valid(target))
 	assert(is_instance_valid(skill_owner))
 	
-	var target_skill_system_component: SkillSystemComponent = target.skill_system_component
 	var target_status_effects_component: StatusEffectsComponent = target.status_effects_component
 	var skill: Skill = skills[skill_name]
 	
@@ -94,18 +94,21 @@ func activate_skill(skill_name: String, target: Actor) -> bool:
 			Constants.STAT_SPEED:
 				speed_delta += flat_modifier.stat_value
 	
+	# 2a. calculate net values -- these formulas can be complex!
+	# add because hp_delta is negative on dmg modifiers
+	var net_hp_delta: float = hp_delta + target.current_stat_attributes.toughness.value
 	
-	skill_owner.current_stat_attributes.hp.value += hp_delta
-	skill_owner.current_stat_attributes.strength.value += strength_delta
-	skill_owner.current_stat_attributes.energy.value += energy_delta
-	skill_owner.current_stat_attributes.energy.value += toughness_delta
-	skill_owner.current_stat_attributes.speed.value += speed_delta
+	target.current_stat_attributes.hp.value += net_hp_delta
+	target.current_stat_attributes.strength.value += strength_delta
+	target.current_stat_attributes.energy.value += energy_delta
+	target.current_stat_attributes.energy.value += toughness_delta
+	target.current_stat_attributes.speed.value += speed_delta
 	
 	# 3. notify observers of any one-shot stat modifications made
-	skill_owner.current_stat_attributes.notify_all()
+	target.current_stat_attributes.notify_all()
 	
 	skills_activation_table[skill_name] = true
-	return true
+	return [net_hp_delta, strength_delta, energy_delta, toughness_delta, speed_delta]
 
 func activate_skill_to_multiple_targets(skill_name: String, targets: Array[Actor]):
 	assert(len(targets) > 0)

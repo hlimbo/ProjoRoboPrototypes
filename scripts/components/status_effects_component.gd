@@ -18,6 +18,8 @@ class_name StatusEffectsComponent
 # key is debuff_name string | value is float containing the current duration
 # to know the duration_type of the value, lookup the debuff in debuff_tags
 @export var debuff_durations: Dictionary = {}
+# used to control if timers and turn counters should resume or be paused
+@export var is_paused: bool = false
 
 # this is used to keep track of all active buffs / debuffs occurring every second
 var second_interval_timer: Timer
@@ -156,6 +158,9 @@ func _update_status_effect_timer(status_effects: Dictionary, durations: Dictiona
 	return expired_tags
 
 func update_status_effects_turn_counts():
+	if is_paused:
+		return
+	
 	var duration_type: String = "TURN"
 	var time_step: float = 1.0
 	var buffs_to_remove: PackedStringArray = _update_status_effect_timer(buff_tags, buff_durations, duration_type, on_turn_update_buff, time_step)
@@ -178,6 +183,14 @@ func on_second_interval_timeout():
 		_remove_buff(tag)
 	for tag in expired_debuff_tags:
 		_remove_debuff(tag)
+
+func enable():
+	is_paused = false
+	second_interval_timer.paused = is_paused
+	
+func disable():
+	is_paused = true
+	second_interval_timer.paused = is_paused
 
 func _ready():
 	second_interval_timer = Timer.new()

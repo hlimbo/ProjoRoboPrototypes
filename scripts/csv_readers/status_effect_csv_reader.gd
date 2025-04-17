@@ -15,7 +15,7 @@ func on_convert(data: PackedStringArray) -> StatusEffect:
 	
 	modifier.stat_category_type_src = data[4]
 	modifier.stat_category_type_target = data[5]
-	modifier.stat_value_type = data[6]
+	modifier.modifier_type = data[6]
 	modifier.stat_value = float(data[7])
 	status_effect.modifiers.append(modifier)
 	

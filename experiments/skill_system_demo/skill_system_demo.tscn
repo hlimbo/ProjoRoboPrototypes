@@ -1,0 +1,555 @@
+[gd_scene load_steps=2 format=3 uid="uid://dimers7nekcqr"]
+
+[ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="1_cep86"]
+
+[node name="SkillSystemDemo" type="Node2D"]
+
+[node name="UILayer" type="CanvasLayer" parent="."]
+
+[node name="CharacterBlock" type="ReferenceRect" parent="UILayer"]
+offset_right = 450.0
+offset_bottom = 720.0
+border_width = 5.0
+
+[node name="CharName" type="Label" parent="UILayer/CharacterBlock"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -210.0
+offset_right = 210.0
+offset_bottom = 50.0
+grow_horizontal = 2
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 40
+text = "Character name"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StatAttributes" type="ReferenceRect" parent="UILayer/CharacterBlock"]
+offset_top = 96.0
+offset_right = 445.0
+offset_bottom = 326.0
+border_width = 5.0
+
+[node name="StatsLabel" type="Label" parent="UILayer/CharacterBlock/StatAttributes"]
+layout_mode = 0
+offset_right = 442.0
+offset_bottom = 50.0
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 36
+text = "Stats"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UILayer/CharacterBlock/StatAttributes"]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 54.0
+offset_right = 441.0
+offset_bottom = 220.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UILayer/CharacterBlock/StatAttributes/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UILayer/CharacterBlock/StatAttributes/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 24
+text = "Health"
+
+[node name="Health" type="Label" parent="UILayer/CharacterBlock/StatAttributes/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 24
+text = "100"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="UILayer/CharacterBlock/StatAttributes/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UILayer/CharacterBlock/StatAttributes/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 24
+text = "Energy"
+
+[node name="Energy" type="Label" parent="UILayer/CharacterBlock/StatAttributes/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 24
+text = "100"
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="UILayer/CharacterBlock/StatAttributes/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UILayer/CharacterBlock/StatAttributes/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 24
+text = "Strength"
+
+[node name="Strength" type="Label" parent="UILayer/CharacterBlock/StatAttributes/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 24
+text = "100"
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="UILayer/CharacterBlock/StatAttributes/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UILayer/CharacterBlock/StatAttributes/VBoxContainer/HBoxContainer4"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 24
+text = "Toughness"
+
+[node name="Toughness" type="Label" parent="UILayer/CharacterBlock/StatAttributes/VBoxContainer/HBoxContainer4"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 24
+text = "100"
+
+[node name="HBoxContainer5" type="HBoxContainer" parent="UILayer/CharacterBlock/StatAttributes/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UILayer/CharacterBlock/StatAttributes/VBoxContainer/HBoxContainer5"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 24
+text = "Speed"
+
+[node name="Speed" type="Label" parent="UILayer/CharacterBlock/StatAttributes/VBoxContainer/HBoxContainer5"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 24
+text = "100"
+
+[node name="SkillButtons" type="ReferenceRect" parent="UILayer/CharacterBlock"]
+offset_top = 377.0
+offset_right = 449.0
+offset_bottom = 721.0
+border_width = 5.0
+
+[node name="SkillsLabel" type="Label" parent="UILayer/CharacterBlock/SkillButtons"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.164
+offset_right = -2.0
+offset_bottom = -0.0200005
+grow_horizontal = 2
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 36
+text = "Skills"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="UILayer/CharacterBlock/SkillButtons"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.226
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 0.053997
+offset_right = 1.0
+offset_bottom = 2.0
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UILayer/CharacterBlock/SkillButtons/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="SkillRow" type="HBoxContainer" parent="UILayer/CharacterBlock/SkillButtons/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="SkillName" type="Label" parent="UILayer/CharacterBlock/SkillButtons/ScrollContainer/VBoxContainer/SkillRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 18
+text = "thorny defense"
+
+[node name="SkillCost" type="Label" parent="UILayer/CharacterBlock/SkillButtons/ScrollContainer/VBoxContainer/SkillRow"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 18
+text = "10"
+
+[node name="CastButton" type="Button" parent="UILayer/CharacterBlock/SkillButtons/ScrollContainer/VBoxContainer/SkillRow"]
+layout_mode = 2
+size_flags_horizontal = 8
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 18
+text = "Cast"
+
+[node name="CharacterBlock2" type="ReferenceRect" parent="UILayer"]
+offset_left = 828.0
+offset_right = 1278.0
+offset_bottom = 720.0
+border_width = 5.0
+
+[node name="CharName" type="Label" parent="UILayer/CharacterBlock2"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -210.0
+offset_right = 210.0
+offset_bottom = 50.0
+grow_horizontal = 2
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 40
+text = "Character name"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StatAttributes" type="ReferenceRect" parent="UILayer/CharacterBlock2"]
+offset_top = 96.0
+offset_right = 445.0
+offset_bottom = 326.0
+border_width = 5.0
+
+[node name="StatsLabel" type="Label" parent="UILayer/CharacterBlock2/StatAttributes"]
+layout_mode = 0
+offset_right = 442.0
+offset_bottom = 50.0
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 36
+text = "Stats"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UILayer/CharacterBlock2/StatAttributes"]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 54.0
+offset_right = 441.0
+offset_bottom = 220.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UILayer/CharacterBlock2/StatAttributes/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UILayer/CharacterBlock2/StatAttributes/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 24
+text = "Health"
+
+[node name="Health" type="Label" parent="UILayer/CharacterBlock2/StatAttributes/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 24
+text = "100"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="UILayer/CharacterBlock2/StatAttributes/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UILayer/CharacterBlock2/StatAttributes/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 24
+text = "Energy"
+
+[node name="Energy" type="Label" parent="UILayer/CharacterBlock2/StatAttributes/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 24
+text = "100"
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="UILayer/CharacterBlock2/StatAttributes/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UILayer/CharacterBlock2/StatAttributes/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 24
+text = "Strength"
+
+[node name="Strength" type="Label" parent="UILayer/CharacterBlock2/StatAttributes/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 24
+text = "100"
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="UILayer/CharacterBlock2/StatAttributes/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UILayer/CharacterBlock2/StatAttributes/VBoxContainer/HBoxContainer4"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 24
+text = "Toughness"
+
+[node name="Toughness" type="Label" parent="UILayer/CharacterBlock2/StatAttributes/VBoxContainer/HBoxContainer4"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 24
+text = "100"
+
+[node name="HBoxContainer5" type="HBoxContainer" parent="UILayer/CharacterBlock2/StatAttributes/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UILayer/CharacterBlock2/StatAttributes/VBoxContainer/HBoxContainer5"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 24
+text = "Speed"
+
+[node name="Speed" type="Label" parent="UILayer/CharacterBlock2/StatAttributes/VBoxContainer/HBoxContainer5"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 24
+text = "100"
+
+[node name="SkillButtons" type="ReferenceRect" parent="UILayer/CharacterBlock2"]
+offset_top = 377.0
+offset_right = 449.0
+offset_bottom = 721.0
+border_width = 5.0
+
+[node name="SkillsLabel" type="Label" parent="UILayer/CharacterBlock2/SkillButtons"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.164
+offset_right = -2.0
+offset_bottom = -0.0200005
+grow_horizontal = 2
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 36
+text = "Skills"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="UILayer/CharacterBlock2/SkillButtons"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.226
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 0.053997
+offset_right = 1.0
+offset_bottom = 2.0
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UILayer/CharacterBlock2/SkillButtons/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="SkillRow" type="HBoxContainer" parent="UILayer/CharacterBlock2/SkillButtons/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="SkillName" type="Label" parent="UILayer/CharacterBlock2/SkillButtons/ScrollContainer/VBoxContainer/SkillRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 18
+text = "thorny defense"
+
+[node name="SkillCost" type="Label" parent="UILayer/CharacterBlock2/SkillButtons/ScrollContainer/VBoxContainer/SkillRow"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 18
+text = "10"
+
+[node name="CastButton" type="Button" parent="UILayer/CharacterBlock2/SkillButtons/ScrollContainer/VBoxContainer/SkillRow"]
+layout_mode = 2
+size_flags_horizontal = 8
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 18
+text = "Cast"
+
+[node name="BattleConsole" type="ReferenceRect" parent="UILayer"]
+offset_left = 485.0
+offset_top = 1.0
+offset_right = 785.0
+offset_bottom = 721.0
+
+[node name="BattleConsoleLabel" type="Label" parent="UILayer/BattleConsole"]
+layout_mode = 0
+offset_top = 375.0
+offset_right = 294.0
+offset_bottom = 410.0
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 28
+text = "Battle Console"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MessageConsole" type="ScrollContainer" parent="UILayer/BattleConsole"]
+layout_mode = 0
+offset_top = 459.0
+offset_right = 300.0
+offset_bottom = 719.0
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UILayer/BattleConsole/MessageConsole"]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 3
+
+[node name="MessageSample1" type="Label" parent="UILayer/BattleConsole/MessageConsole/VBoxContainer"]
+custom_minimum_size = Vector2(300, 40)
+layout_mode = 2
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 16
+text = "1. X used [SKILL] on Y. It dealt Q [Stat_Type]. "
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="MessageSample2" type="Label" parent="UILayer/BattleConsole/MessageConsole/VBoxContainer"]
+custom_minimum_size = Vector2(300, 40)
+layout_mode = 2
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 16
+text = "2. X used [SKILL] on Y. It recovered Q [stat_type]."
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="MessageSample3" type="Label" parent="UILayer/BattleConsole/MessageConsole/VBoxContainer"]
+custom_minimum_size = Vector2(300, 40)
+layout_mode = 2
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 16
+text = "3. X used [SKILL]."
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="StatDeltas" type="Label" parent="UILayer/BattleConsole"]
+layout_mode = 0
+offset_top = 48.0
+offset_right = 297.0
+offset_bottom = 93.0
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 30
+text = "Stat Deltas"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StatDeltaContainer" type="ReferenceRect" parent="UILayer/BattleConsole"]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 111.0
+offset_right = 280.0
+offset_bottom = 285.0
+border_width = 5.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UILayer/BattleConsole/StatDeltaContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 18
+text = "Health"
+
+[node name="Health" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 18
+text = "100"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 18
+text = "Energy"
+
+[node name="Energy" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 18
+text = "100"
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 18
+text = "Strength"
+
+[node name="Strength" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 18
+text = "100"
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/HBoxContainer4"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 18
+text = "Toughness"
+
+[node name="Toughness" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/HBoxContainer4"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 18
+text = "100"
+
+[node name="HBoxContainer5" type="HBoxContainer" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/HBoxContainer5"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 18
+text = "Speed"
+
+[node name="Speed" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/HBoxContainer5"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme = ExtResource("1_cep86")
+theme_override_font_sizes/font_size = 18
+text = "100"

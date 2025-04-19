@@ -1,0 +1,111 @@
+[gd_scene load_steps=5 format=3 uid="uid://bvfgcytsh6y1s"]
+
+[ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="1_6x6jh"]
+[ext_resource type="Script" path="res://experiments/skill_system_demo/scripts/character_block.gd" id="1_gieqn"]
+[ext_resource type="PackedScene" uid="uid://b12nabo0jeyit" path="res://experiments/skill_system_demo/nodes/stat_view.tscn" id="2_0ptn6"]
+[ext_resource type="PackedScene" uid="uid://uwbdul76wa0o" path="res://experiments/skill_system_demo/nodes/skills_container.tscn" id="3_swut3"]
+
+[node name="CharacterBlock" type="ReferenceRect"]
+offset_right = 450.0
+offset_bottom = 720.0
+border_width = 5.0
+script = ExtResource("1_gieqn")
+
+[node name="CharName" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -210.0
+offset_right = 210.0
+offset_bottom = 50.0
+grow_horizontal = 2
+theme = ExtResource("1_6x6jh")
+theme_override_font_sizes/font_size = 40
+text = "Character name"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StatAttributes" type="ReferenceRect" parent="."]
+layout_mode = 0
+offset_top = 96.0
+offset_right = 445.0
+offset_bottom = 326.0
+border_width = 5.0
+
+[node name="StatsLabel" type="Label" parent="StatAttributes"]
+layout_mode = 0
+offset_right = 442.0
+offset_bottom = 50.0
+theme = ExtResource("1_6x6jh")
+theme_override_font_sizes/font_size = 36
+text = "Stats"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StatsContainer" type="VBoxContainer" parent="StatAttributes"]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 54.0
+offset_right = 441.0
+offset_bottom = 220.0
+
+[node name="Health" parent="StatAttributes/StatsContainer" instance=ExtResource("2_0ptn6")]
+layout_mode = 2
+value = 62.0
+
+[node name="Energy" parent="StatAttributes/StatsContainer" instance=ExtResource("2_0ptn6")]
+layout_mode = 2
+label = "ENERGY"
+value = 42.0
+
+[node name="Strength" parent="StatAttributes/StatsContainer" instance=ExtResource("2_0ptn6")]
+layout_mode = 2
+label = "STRENGTH"
+value = 29.0
+
+[node name="Toughness" parent="StatAttributes/StatsContainer" instance=ExtResource("2_0ptn6")]
+layout_mode = 2
+label = "TOUGHNESS"
+value = 30.0
+
+[node name="Speed" parent="StatAttributes/StatsContainer" instance=ExtResource("2_0ptn6")]
+layout_mode = 2
+label = "SPEED"
+value = 50.0
+
+[node name="SkillButtons" type="ReferenceRect" parent="."]
+layout_mode = 0
+offset_top = 377.0
+offset_right = 449.0
+offset_bottom = 721.0
+border_width = 5.0
+
+[node name="SkillsLabel" type="Label" parent="SkillButtons"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.164
+offset_right = -2.0
+offset_bottom = -0.0200005
+grow_horizontal = 2
+theme = ExtResource("1_6x6jh")
+theme_override_font_sizes/font_size = 36
+text = "Skills"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="SkillButtons"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.226
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 0.053997
+offset_right = 1.0
+offset_bottom = 2.0
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 2
+
+[node name="SkillsContainer" parent="SkillButtons/ScrollContainer" instance=ExtResource("3_swut3")]
+layout_mode = 2

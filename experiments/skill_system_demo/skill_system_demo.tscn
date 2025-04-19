@@ -1,389 +1,31 @@
-[gd_scene load_steps=2 format=3 uid="uid://dimers7nekcqr"]
+[gd_scene load_steps=8 format=3 uid="uid://dimers7nekcqr"]
 
+[ext_resource type="Script" path="res://experiments/skill_system_demo/scripts/skill_system_demo_controller.gd" id="1_agfew"]
 [ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="1_cep86"]
+[ext_resource type="PackedScene" uid="uid://bvfgcytsh6y1s" path="res://experiments/skill_system_demo/nodes/character_block.tscn" id="2_ay85b"]
+[ext_resource type="Script" path="res://experiments/skill_system_demo/scripts/stat_demo_view.gd" id="3_68o5v"]
+[ext_resource type="Script" path="res://experiments/skill_system_demo/scripts/stat_deltas.gd" id="6_3yn8w"]
+[ext_resource type="Script" path="res://experiments/skill_system_demo/scripts/console_demo_message.gd" id="6_prugn"]
+[ext_resource type="Script" path="res://experiments/skill_system_demo/scripts/console_demo_loader.gd" id="6_vl0x0"]
 
 [node name="SkillSystemDemo" type="Node2D"]
 
-[node name="UILayer" type="CanvasLayer" parent="."]
+[node name="UILayer" type="CanvasLayer" parent="." node_paths=PackedStringArray("player1", "player2", "stat_deltas", "battle_console")]
+script = ExtResource("1_agfew")
+player1 = NodePath("CharacterBlock")
+player2 = NodePath("CharacterBlock2")
+stat_deltas = NodePath("BattleConsole/StatDeltaContainer/VBoxContainer")
+battle_console = NodePath("BattleConsole/MessageConsole/Console")
 
-[node name="CharacterBlock" type="ReferenceRect" parent="UILayer"]
-offset_right = 450.0
-offset_bottom = 720.0
-border_width = 5.0
+[node name="CharacterBlock" parent="UILayer" instance=ExtResource("2_ay85b")]
 
-[node name="CharName" type="Label" parent="UILayer/CharacterBlock"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -210.0
-offset_right = 210.0
-offset_bottom = 50.0
-grow_horizontal = 2
-theme = ExtResource("1_cep86")
-theme_override_font_sizes/font_size = 40
-text = "Character name"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="StatAttributes" type="ReferenceRect" parent="UILayer/CharacterBlock"]
-offset_top = 96.0
-offset_right = 445.0
-offset_bottom = 326.0
-border_width = 5.0
-
-[node name="StatsLabel" type="Label" parent="UILayer/CharacterBlock/StatAttributes"]
-layout_mode = 0
-offset_right = 442.0
-offset_bottom = 50.0
-theme = ExtResource("1_cep86")
-theme_override_font_sizes/font_size = 36
-text = "Stats"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="VBoxContainer" type="VBoxContainer" parent="UILayer/CharacterBlock/StatAttributes"]
-layout_mode = 0
-offset_left = 8.0
-offset_top = 54.0
-offset_right = 441.0
-offset_bottom = 220.0
-
-[node name="HBoxContainer" type="HBoxContainer" parent="UILayer/CharacterBlock/StatAttributes/VBoxContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="UILayer/CharacterBlock/StatAttributes/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 0
-theme = ExtResource("1_cep86")
-theme_override_font_sizes/font_size = 24
-text = "Health"
-
-[node name="Health" type="Label" parent="UILayer/CharacterBlock/StatAttributes/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 10
-theme = ExtResource("1_cep86")
-theme_override_font_sizes/font_size = 24
-text = "100"
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="UILayer/CharacterBlock/StatAttributes/VBoxContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="UILayer/CharacterBlock/StatAttributes/VBoxContainer/HBoxContainer2"]
-layout_mode = 2
-size_flags_horizontal = 0
-theme = ExtResource("1_cep86")
-theme_override_font_sizes/font_size = 24
-text = "Energy"
-
-[node name="Energy" type="Label" parent="UILayer/CharacterBlock/StatAttributes/VBoxContainer/HBoxContainer2"]
-layout_mode = 2
-size_flags_horizontal = 10
-theme = ExtResource("1_cep86")
-theme_override_font_sizes/font_size = 24
-text = "100"
-
-[node name="HBoxContainer3" type="HBoxContainer" parent="UILayer/CharacterBlock/StatAttributes/VBoxContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="UILayer/CharacterBlock/StatAttributes/VBoxContainer/HBoxContainer3"]
-layout_mode = 2
-size_flags_horizontal = 0
-theme = ExtResource("1_cep86")
-theme_override_font_sizes/font_size = 24
-text = "Strength"
-
-[node name="Strength" type="Label" parent="UILayer/CharacterBlock/StatAttributes/VBoxContainer/HBoxContainer3"]
-layout_mode = 2
-size_flags_horizontal = 10
-theme = ExtResource("1_cep86")
-theme_override_font_sizes/font_size = 24
-text = "100"
-
-[node name="HBoxContainer4" type="HBoxContainer" parent="UILayer/CharacterBlock/StatAttributes/VBoxContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="UILayer/CharacterBlock/StatAttributes/VBoxContainer/HBoxContainer4"]
-layout_mode = 2
-size_flags_horizontal = 0
-theme = ExtResource("1_cep86")
-theme_override_font_sizes/font_size = 24
-text = "Toughness"
-
-[node name="Toughness" type="Label" parent="UILayer/CharacterBlock/StatAttributes/VBoxContainer/HBoxContainer4"]
-layout_mode = 2
-size_flags_horizontal = 10
-theme = ExtResource("1_cep86")
-theme_override_font_sizes/font_size = 24
-text = "100"
-
-[node name="HBoxContainer5" type="HBoxContainer" parent="UILayer/CharacterBlock/StatAttributes/VBoxContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="UILayer/CharacterBlock/StatAttributes/VBoxContainer/HBoxContainer5"]
-layout_mode = 2
-size_flags_horizontal = 0
-theme = ExtResource("1_cep86")
-theme_override_font_sizes/font_size = 24
-text = "Speed"
-
-[node name="Speed" type="Label" parent="UILayer/CharacterBlock/StatAttributes/VBoxContainer/HBoxContainer5"]
-layout_mode = 2
-size_flags_horizontal = 10
-theme = ExtResource("1_cep86")
-theme_override_font_sizes/font_size = 24
-text = "100"
-
-[node name="SkillButtons" type="ReferenceRect" parent="UILayer/CharacterBlock"]
-offset_top = 377.0
-offset_right = 449.0
-offset_bottom = 721.0
-border_width = 5.0
-
-[node name="SkillsLabel" type="Label" parent="UILayer/CharacterBlock/SkillButtons"]
-layout_mode = 1
-anchors_preset = -1
+[node name="CharacterBlock2" parent="UILayer" instance=ExtResource("2_ay85b")]
+anchors_preset = 1
+anchor_left = 1.0
 anchor_right = 1.0
-anchor_bottom = 0.164
-offset_right = -2.0
-offset_bottom = -0.0200005
-grow_horizontal = 2
-theme = ExtResource("1_cep86")
-theme_override_font_sizes/font_size = 36
-text = "Skills"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="ScrollContainer" type="ScrollContainer" parent="UILayer/CharacterBlock/SkillButtons"]
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 0.226
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = 0.053997
-offset_right = 1.0
-offset_bottom = 2.0
-horizontal_scroll_mode = 0
-vertical_scroll_mode = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="UILayer/CharacterBlock/SkillButtons/ScrollContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="SkillRow" type="HBoxContainer" parent="UILayer/CharacterBlock/SkillButtons/ScrollContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="SkillName" type="Label" parent="UILayer/CharacterBlock/SkillButtons/ScrollContainer/VBoxContainer/SkillRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme = ExtResource("1_cep86")
-theme_override_font_sizes/font_size = 18
-text = "thorny defense"
-
-[node name="SkillCost" type="Label" parent="UILayer/CharacterBlock/SkillButtons/ScrollContainer/VBoxContainer/SkillRow"]
-layout_mode = 2
-size_flags_horizontal = 4
-theme = ExtResource("1_cep86")
-theme_override_font_sizes/font_size = 18
-text = "10"
-
-[node name="CastButton" type="Button" parent="UILayer/CharacterBlock/SkillButtons/ScrollContainer/VBoxContainer/SkillRow"]
-layout_mode = 2
-size_flags_horizontal = 8
-theme = ExtResource("1_cep86")
-theme_override_font_sizes/font_size = 18
-text = "Cast"
-
-[node name="CharacterBlock2" type="ReferenceRect" parent="UILayer"]
-offset_left = 828.0
-offset_right = 1278.0
-offset_bottom = 720.0
-border_width = 5.0
-
-[node name="CharName" type="Label" parent="UILayer/CharacterBlock2"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -210.0
-offset_right = 210.0
-offset_bottom = 50.0
-grow_horizontal = 2
-theme = ExtResource("1_cep86")
-theme_override_font_sizes/font_size = 40
-text = "Character name"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="StatAttributes" type="ReferenceRect" parent="UILayer/CharacterBlock2"]
-offset_top = 96.0
-offset_right = 445.0
-offset_bottom = 326.0
-border_width = 5.0
-
-[node name="StatsLabel" type="Label" parent="UILayer/CharacterBlock2/StatAttributes"]
-layout_mode = 0
-offset_right = 442.0
-offset_bottom = 50.0
-theme = ExtResource("1_cep86")
-theme_override_font_sizes/font_size = 36
-text = "Stats"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="VBoxContainer" type="VBoxContainer" parent="UILayer/CharacterBlock2/StatAttributes"]
-layout_mode = 0
-offset_left = 8.0
-offset_top = 54.0
-offset_right = 441.0
-offset_bottom = 220.0
-
-[node name="HBoxContainer" type="HBoxContainer" parent="UILayer/CharacterBlock2/StatAttributes/VBoxContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="UILayer/CharacterBlock2/StatAttributes/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 0
-theme = ExtResource("1_cep86")
-theme_override_font_sizes/font_size = 24
-text = "Health"
-
-[node name="Health" type="Label" parent="UILayer/CharacterBlock2/StatAttributes/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 10
-theme = ExtResource("1_cep86")
-theme_override_font_sizes/font_size = 24
-text = "100"
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="UILayer/CharacterBlock2/StatAttributes/VBoxContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="UILayer/CharacterBlock2/StatAttributes/VBoxContainer/HBoxContainer2"]
-layout_mode = 2
-size_flags_horizontal = 0
-theme = ExtResource("1_cep86")
-theme_override_font_sizes/font_size = 24
-text = "Energy"
-
-[node name="Energy" type="Label" parent="UILayer/CharacterBlock2/StatAttributes/VBoxContainer/HBoxContainer2"]
-layout_mode = 2
-size_flags_horizontal = 10
-theme = ExtResource("1_cep86")
-theme_override_font_sizes/font_size = 24
-text = "100"
-
-[node name="HBoxContainer3" type="HBoxContainer" parent="UILayer/CharacterBlock2/StatAttributes/VBoxContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="UILayer/CharacterBlock2/StatAttributes/VBoxContainer/HBoxContainer3"]
-layout_mode = 2
-size_flags_horizontal = 0
-theme = ExtResource("1_cep86")
-theme_override_font_sizes/font_size = 24
-text = "Strength"
-
-[node name="Strength" type="Label" parent="UILayer/CharacterBlock2/StatAttributes/VBoxContainer/HBoxContainer3"]
-layout_mode = 2
-size_flags_horizontal = 10
-theme = ExtResource("1_cep86")
-theme_override_font_sizes/font_size = 24
-text = "100"
-
-[node name="HBoxContainer4" type="HBoxContainer" parent="UILayer/CharacterBlock2/StatAttributes/VBoxContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="UILayer/CharacterBlock2/StatAttributes/VBoxContainer/HBoxContainer4"]
-layout_mode = 2
-size_flags_horizontal = 0
-theme = ExtResource("1_cep86")
-theme_override_font_sizes/font_size = 24
-text = "Toughness"
-
-[node name="Toughness" type="Label" parent="UILayer/CharacterBlock2/StatAttributes/VBoxContainer/HBoxContainer4"]
-layout_mode = 2
-size_flags_horizontal = 10
-theme = ExtResource("1_cep86")
-theme_override_font_sizes/font_size = 24
-text = "100"
-
-[node name="HBoxContainer5" type="HBoxContainer" parent="UILayer/CharacterBlock2/StatAttributes/VBoxContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="UILayer/CharacterBlock2/StatAttributes/VBoxContainer/HBoxContainer5"]
-layout_mode = 2
-size_flags_horizontal = 0
-theme = ExtResource("1_cep86")
-theme_override_font_sizes/font_size = 24
-text = "Speed"
-
-[node name="Speed" type="Label" parent="UILayer/CharacterBlock2/StatAttributes/VBoxContainer/HBoxContainer5"]
-layout_mode = 2
-size_flags_horizontal = 10
-theme = ExtResource("1_cep86")
-theme_override_font_sizes/font_size = 24
-text = "100"
-
-[node name="SkillButtons" type="ReferenceRect" parent="UILayer/CharacterBlock2"]
-offset_top = 377.0
-offset_right = 449.0
-offset_bottom = 721.0
-border_width = 5.0
-
-[node name="SkillsLabel" type="Label" parent="UILayer/CharacterBlock2/SkillButtons"]
-layout_mode = 1
-anchors_preset = -1
-anchor_right = 1.0
-anchor_bottom = 0.164
-offset_right = -2.0
-offset_bottom = -0.0200005
-grow_horizontal = 2
-theme = ExtResource("1_cep86")
-theme_override_font_sizes/font_size = 36
-text = "Skills"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="ScrollContainer" type="ScrollContainer" parent="UILayer/CharacterBlock2/SkillButtons"]
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 0.226
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = 0.053997
-offset_right = 1.0
-offset_bottom = 2.0
-horizontal_scroll_mode = 0
-vertical_scroll_mode = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="UILayer/CharacterBlock2/SkillButtons/ScrollContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="SkillRow" type="HBoxContainer" parent="UILayer/CharacterBlock2/SkillButtons/ScrollContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="SkillName" type="Label" parent="UILayer/CharacterBlock2/SkillButtons/ScrollContainer/VBoxContainer/SkillRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme = ExtResource("1_cep86")
-theme_override_font_sizes/font_size = 18
-text = "thorny defense"
-
-[node name="SkillCost" type="Label" parent="UILayer/CharacterBlock2/SkillButtons/ScrollContainer/VBoxContainer/SkillRow"]
-layout_mode = 2
-size_flags_horizontal = 4
-theme = ExtResource("1_cep86")
-theme_override_font_sizes/font_size = 18
-text = "10"
-
-[node name="CastButton" type="Button" parent="UILayer/CharacterBlock2/SkillButtons/ScrollContainer/VBoxContainer/SkillRow"]
-layout_mode = 2
-size_flags_horizontal = 8
-theme = ExtResource("1_cep86")
-theme_override_font_sizes/font_size = 18
-text = "Cast"
+offset_left = -450.0
+offset_right = 0.0
+grow_horizontal = 0
 
 [node name="BattleConsole" type="ReferenceRect" parent="UILayer"]
 offset_left = 485.0
@@ -410,12 +52,13 @@ offset_bottom = 719.0
 horizontal_scroll_mode = 0
 vertical_scroll_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UILayer/BattleConsole/MessageConsole"]
+[node name="Console" type="VBoxContainer" parent="UILayer/BattleConsole/MessageConsole"]
 layout_mode = 2
 size_flags_horizontal = 6
 size_flags_vertical = 3
+script = ExtResource("6_vl0x0")
 
-[node name="MessageSample1" type="Label" parent="UILayer/BattleConsole/MessageConsole/VBoxContainer"]
+[node name="ConsoleMessage" type="Label" parent="UILayer/BattleConsole/MessageConsole/Console"]
 custom_minimum_size = Vector2(300, 40)
 layout_mode = 2
 theme = ExtResource("1_cep86")
@@ -423,8 +66,9 @@ theme_override_font_sizes/font_size = 16
 text = "1. X used [SKILL] on Y. It dealt Q [Stat_Type]. "
 vertical_alignment = 1
 autowrap_mode = 2
+script = ExtResource("6_prugn")
 
-[node name="MessageSample2" type="Label" parent="UILayer/BattleConsole/MessageConsole/VBoxContainer"]
+[node name="MessageSample2" type="Label" parent="UILayer/BattleConsole/MessageConsole/Console"]
 custom_minimum_size = Vector2(300, 40)
 layout_mode = 2
 theme = ExtResource("1_cep86")
@@ -433,7 +77,7 @@ text = "2. X used [SKILL] on Y. It recovered Q [stat_type]."
 vertical_alignment = 1
 autowrap_mode = 2
 
-[node name="MessageSample3" type="Label" parent="UILayer/BattleConsole/MessageConsole/VBoxContainer"]
+[node name="MessageSample3" type="Label" parent="UILayer/BattleConsole/MessageConsole/Console"]
 custom_minimum_size = Vector2(300, 40)
 layout_mode = 2
 theme = ExtResource("1_cep86")
@@ -468,86 +112,92 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("6_3yn8w")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer"]
+[node name="Health" type="HBoxContainer" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer"]
 layout_mode = 2
+script = ExtResource("3_68o5v")
 
-[node name="Label" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/HBoxContainer"]
+[node name="StatLabel" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/Health"]
 layout_mode = 2
 size_flags_horizontal = 0
 theme = ExtResource("1_cep86")
 theme_override_font_sizes/font_size = 18
 text = "Health"
 
-[node name="Health" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/HBoxContainer"]
+[node name="StatValue" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/Health"]
 layout_mode = 2
 size_flags_horizontal = 10
 theme = ExtResource("1_cep86")
 theme_override_font_sizes/font_size = 18
 text = "100"
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer"]
+[node name="Energy" type="HBoxContainer" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer"]
 layout_mode = 2
+script = ExtResource("3_68o5v")
 
-[node name="Label" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/HBoxContainer2"]
+[node name="Label" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/Energy"]
 layout_mode = 2
 size_flags_horizontal = 0
 theme = ExtResource("1_cep86")
 theme_override_font_sizes/font_size = 18
 text = "Energy"
 
-[node name="Energy" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/HBoxContainer2"]
+[node name="Energy" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/Energy"]
 layout_mode = 2
 size_flags_horizontal = 10
 theme = ExtResource("1_cep86")
 theme_override_font_sizes/font_size = 18
 text = "100"
 
-[node name="HBoxContainer3" type="HBoxContainer" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer"]
+[node name="Strength" type="HBoxContainer" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer"]
 layout_mode = 2
+script = ExtResource("3_68o5v")
 
-[node name="Label" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/HBoxContainer3"]
+[node name="Label" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/Strength"]
 layout_mode = 2
 size_flags_horizontal = 0
 theme = ExtResource("1_cep86")
 theme_override_font_sizes/font_size = 18
 text = "Strength"
 
-[node name="Strength" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/HBoxContainer3"]
+[node name="Strength" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/Strength"]
 layout_mode = 2
 size_flags_horizontal = 10
 theme = ExtResource("1_cep86")
 theme_override_font_sizes/font_size = 18
 text = "100"
 
-[node name="HBoxContainer4" type="HBoxContainer" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer"]
+[node name="Toughness" type="HBoxContainer" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer"]
 layout_mode = 2
+script = ExtResource("3_68o5v")
 
-[node name="Label" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/HBoxContainer4"]
+[node name="Label" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/Toughness"]
 layout_mode = 2
 size_flags_horizontal = 0
 theme = ExtResource("1_cep86")
 theme_override_font_sizes/font_size = 18
 text = "Toughness"
 
-[node name="Toughness" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/HBoxContainer4"]
+[node name="Toughness" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/Toughness"]
 layout_mode = 2
 size_flags_horizontal = 10
 theme = ExtResource("1_cep86")
 theme_override_font_sizes/font_size = 18
 text = "100"
 
-[node name="HBoxContainer5" type="HBoxContainer" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer"]
+[node name="Speed" type="HBoxContainer" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer"]
 layout_mode = 2
+script = ExtResource("3_68o5v")
 
-[node name="Label" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/HBoxContainer5"]
+[node name="Label" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/Speed"]
 layout_mode = 2
 size_flags_horizontal = 0
 theme = ExtResource("1_cep86")
 theme_override_font_sizes/font_size = 18
 text = "Speed"
 
-[node name="Speed" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/HBoxContainer5"]
+[node name="Speed" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/Speed"]
 layout_mode = 2
 size_flags_horizontal = 10
 theme = ExtResource("1_cep86")

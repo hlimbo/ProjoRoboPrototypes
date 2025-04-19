@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://b12nabo0jeyit"]
+
+[ext_resource type="Script" path="res://experiments/skill_system_demo/scripts/stat_demo_view.gd" id="1_kj5oy"]
+[ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="2_4n28m"]
+
+[node name="StatView" type="HBoxContainer"]
+script = ExtResource("1_kj5oy")
+
+[node name="StatLabel" type="Label" parent="."]
+layout_mode = 2
+size_flags_horizontal = 0
+theme = ExtResource("2_4n28m")
+theme_override_font_sizes/font_size = 24
+text = "Health"
+
+[node name="StatValue" type="Label" parent="."]
+layout_mode = 2
+size_flags_horizontal = 10
+theme = ExtResource("2_4n28m")
+theme_override_font_sizes/font_size = 24
+text = "100"

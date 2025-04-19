@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://0wmd5j87trwo"]
+
+[ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="1_rso8t"]
+[ext_resource type="Script" path="res://experiments/skill_system_demo/scripts/console_demo_message.gd" id="2_1w36g"]
+
+[node name="ConsoleMessage" type="Label"]
+custom_minimum_size = Vector2(300, 40)
+theme = ExtResource("1_rso8t")
+theme_override_font_sizes/font_size = 16
+text = "1. X used [SKILL] on Y. It dealt Q [Stat_Type]. "
+vertical_alignment = 1
+autowrap_mode = 2
+script = ExtResource("2_1w36g")

@@ -10,12 +10,12 @@ script = ExtResource("1_kj5oy")
 layout_mode = 2
 size_flags_horizontal = 0
 theme = ExtResource("2_4n28m")
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 18
 text = "Health"
 
 [node name="StatValue" type="Label" parent="."]
 layout_mode = 2
 size_flags_horizontal = 10
 theme = ExtResource("2_4n28m")
-theme_override_font_sizes/font_size = 24
-text = "100"
+theme_override_font_sizes/font_size = 18
+text = "0"

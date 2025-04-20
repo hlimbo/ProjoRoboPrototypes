@@ -1,13 +1,13 @@
 # represents the stats that a bot has
 # can be modified via level ups or when in battle
-extends BaseResource
+extends SubjectResource
 class_name StatAttributeSet
 
-@export var hp: StatAttribute = StatAttribute.new()
-@export var strength: StatAttribute = StatAttribute.new()
-@export var energy: StatAttribute = StatAttribute.new()
-@export var toughness: StatAttribute = StatAttribute.new()
-@export var speed: StatAttribute = StatAttribute.new()
+@export var hp = StatAttribute.new()
+@export var strength = StatAttribute.new()
+@export var energy = StatAttribute.new()
+@export var toughness = StatAttribute.new()
+@export var speed = StatAttribute.new()
 
 # TODO: create a stats csv object and pass it in here instead
 func load_stats(values: Array[float]):
@@ -21,21 +21,22 @@ func load_stats(values: Array[float]):
 	
 	self.notify_all()
 
-func add_listener(observer: IObserver):
-	hp.add_listener(observer)
-	strength.add_listener(observer)
-	energy.add_listener(observer)
-	toughness.add_listener(observer)
+func set_hp(value: float):
+	hp.set_value(value)
+	self.notify_all()
 	
-func remove_listener(observer: IObserver):
-	hp.remove_listener(observer)
-	strength.remove_listener(observer)
-	energy.remove_listener(observer)
-	toughness.add_listener(observer)
+func set_strength(value: float):
+	strength.set_value(value)
+	self.notify_all()
 	
-# notifies all subjects observing these stats when one of them changes
-func notify_all():
-	hp.notify_all()
-	strength.notify_all()
-	energy.notify_all()
-	toughness.notify_all()
+func set_energy(value: float):
+	energy.set_value(value)
+	self.notify_all()
+
+func set_toughness(value: float):
+	toughness.set_value(value)
+	self.notify_all()
+	
+func set_speed(value: float):
+	speed.set_value(value)
+	self.notify_all()

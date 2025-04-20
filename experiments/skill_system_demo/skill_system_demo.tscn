@@ -130,76 +130,80 @@ layout_mode = 2
 size_flags_horizontal = 10
 theme = ExtResource("1_cep86")
 theme_override_font_sizes/font_size = 18
-text = "100"
+text = "0"
 
 [node name="Energy" type="HBoxContainer" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer"]
 layout_mode = 2
 script = ExtResource("3_68o5v")
+label = "Energy"
 
-[node name="Label" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/Energy"]
+[node name="StatLabel" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/Energy"]
 layout_mode = 2
 size_flags_horizontal = 0
 theme = ExtResource("1_cep86")
 theme_override_font_sizes/font_size = 18
 text = "Energy"
 
-[node name="Energy" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/Energy"]
+[node name="StatValue" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/Energy"]
 layout_mode = 2
 size_flags_horizontal = 10
 theme = ExtResource("1_cep86")
 theme_override_font_sizes/font_size = 18
-text = "100"
+text = "0"
 
 [node name="Strength" type="HBoxContainer" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer"]
 layout_mode = 2
 script = ExtResource("3_68o5v")
+label = "Strength"
 
-[node name="Label" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/Strength"]
+[node name="StatLabel" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/Strength"]
 layout_mode = 2
 size_flags_horizontal = 0
 theme = ExtResource("1_cep86")
 theme_override_font_sizes/font_size = 18
 text = "Strength"
 
-[node name="Strength" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/Strength"]
+[node name="StatValue" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/Strength"]
 layout_mode = 2
 size_flags_horizontal = 10
 theme = ExtResource("1_cep86")
 theme_override_font_sizes/font_size = 18
-text = "100"
+text = "0"
 
 [node name="Toughness" type="HBoxContainer" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer"]
 layout_mode = 2
 script = ExtResource("3_68o5v")
+label = "Toughness"
 
-[node name="Label" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/Toughness"]
+[node name="StatLabel" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/Toughness"]
 layout_mode = 2
 size_flags_horizontal = 0
 theme = ExtResource("1_cep86")
 theme_override_font_sizes/font_size = 18
 text = "Toughness"
 
-[node name="Toughness" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/Toughness"]
+[node name="StatValue" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/Toughness"]
 layout_mode = 2
 size_flags_horizontal = 10
 theme = ExtResource("1_cep86")
 theme_override_font_sizes/font_size = 18
-text = "100"
+text = "0"
 
 [node name="Speed" type="HBoxContainer" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer"]
 layout_mode = 2
 script = ExtResource("3_68o5v")
+label = "Speed"
 
-[node name="Label" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/Speed"]
+[node name="StatLabel" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/Speed"]
 layout_mode = 2
 size_flags_horizontal = 0
 theme = ExtResource("1_cep86")
 theme_override_font_sizes/font_size = 18
 text = "Speed"
 
-[node name="Speed" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/Speed"]
+[node name="StatValue" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/Speed"]
 layout_mode = 2
 size_flags_horizontal = 10
 theme = ExtResource("1_cep86")
 theme_override_font_sizes/font_size = 18
-text = "100"
+text = "0"

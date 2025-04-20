@@ -15,6 +15,9 @@ func set_stat_value(new_value: float):
 
 # example of allowing text to be editted dynamically within godot editor
 func _process(_delta: float):
+	if !is_instance_valid(stat_value) or !is_instance_valid(stat_label):
+		return
+		
 	editor_update_fields()
 
 func editor_update_fields():

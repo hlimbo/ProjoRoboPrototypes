@@ -220,8 +220,8 @@ func on_end_buff(status_effect: StatusEffect):
 		print("removing toughness: ", current_stat_attributes.toughness.value)
 		print("removing speed: ", current_stat_attributes.speed.value)
 		
-		current_stat_attributes.toughness.notify_all()
-		current_stat_attributes.speed.notify_all()
+		#current_stat_attributes.toughness.notify_all()
+		#current_stat_attributes.speed.notify_all()
 
 func on_start_debuff(status_effect: StatusEffect):
 	print("applying debuff: ", status_effect.name)

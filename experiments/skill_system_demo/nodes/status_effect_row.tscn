@@ -1,0 +1,24 @@
+[gd_scene load_steps=3 format=3 uid="uid://daandjufytals"]
+
+[ext_resource type="Script" path="res://experiments/skill_system_demo/scripts/status_effect_row.gd" id="1_devvt"]
+[ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="2_gxq4l"]
+
+[node name="StatusEffectRow" type="HBoxContainer"]
+size_flags_vertical = 3
+script = ExtResource("1_devvt")
+
+[node name="StatusEffectLabel" type="Label" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_gxq4l")
+text = "Thorny Defense"
+
+[node name="DurationLabel" type="Label" parent="."]
+layout_mode = 2
+theme = ExtResource("2_gxq4l")
+text = "20"
+
+[node name="DurationTypeLabel" type="Label" parent="."]
+layout_mode = 2
+theme = ExtResource("2_gxq4l")
+text = "Seconds"

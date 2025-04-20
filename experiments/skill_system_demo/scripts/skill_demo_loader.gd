@@ -11,9 +11,11 @@ func load_skills(_skills: Array[Skill]):
 	skills = _skills
 	for skill in skills:
 		var view = skill_demo_view.instantiate() as SkillDemoView
+		var result = view.on_cast_pressed.connect(_on_cast_pressed.bind(skill))
+		print("result?? ", result)
 		self.add_child(view)
 		view.set_fields(skill.name, skill.cost)
-		view.on_cast_pressed.connect(func(): _on_cast_pressed(skill))
-		
+
 func _on_cast_pressed(skill: Skill):
+	print("pressed: ", skill.name)
 	on_cast_pressed.emit(skill)

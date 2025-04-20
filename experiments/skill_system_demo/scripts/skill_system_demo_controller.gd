@@ -1,4 +1,4 @@
-extends Node
+extends IObserverResource
 class_name SkillSystemDemoController
 
 
@@ -7,20 +7,15 @@ class_name SkillSystemDemoController
 @export var stat_deltas: StatDeltas
 @export var battle_console: ConsoleDemoLoader
 
+var p1_stat_attributes: StatAttributeSet = StatAttributeSet.new()
+var p2_stat_attributes: StatAttributeSet = StatAttributeSet.new()
+
 # operations needed - button press
 # * when a skill is casted, 
 #    - it should do p1 modifies stat values to p2 and vice versa
 #    - it should notify battle console of skill being casted
 #    - it should notify stat attributes that its value changed
 #	 - it should notify stat deltas of the calculations it made
-
-func load_random_stats(player: CharacterBlock):
-	var hp: float = randf_range(20, 100)
-	var energy: float = randf_range(20, 100)
-	var str: float = randf_range(20, 100)
-	var tou: float = randf_range(20, 100)
-	var spd: float = randf_range(20, 100)
-	player.set_stats(hp, energy, str, tou, spd)
 
 #region Hardcoded Skills that should be pre-configured in a separate file....
 func goblin_punch() -> Skill:
@@ -182,10 +177,29 @@ func load_skills(player: CharacterBlock):
 func on_cast_pressed1(skill: Skill):
 	print("handling skill: ", skill.name)
 	# deduct energy points
-	player1.energy.set_stat_value(player1.energy.value - skill.cost)
+	# 1. calculate new energy value
+	var new_energy_value: float = p1_stat_attributes.energy.value - skill.cost
+	# 2. set energy to new value
+	#		2a. internally in the setter, call notify_all() so that view components
+	#		can respond to the change in the value -- decouples computation with the view
+	p1_stat_attributes.set_energy(new_energy_value)
+	
+	# player1.energy.set_stat_value(player1.energy.value - skill.cost)
 	
 	# challenge: many different ways to implement skill cast behaviour....
 	# create an interface whose sole job is to serve as a framework of defining skill behaviours?
+
+# IObserverResource function
+# gets called when StatAttributesSet gets updated
+func notify(subject: SubjectResource):
+	var stat_attributes: StatAttributeSet = subject as StatAttributeSet
+	
+	# get the view components
+	player1.health.set_stat_value(stat_attributes.hp.value)
+	player1.energy.set_stat_value(stat_attributes.energy.value)
+	player1.strength.set_stat_value(stat_attributes.strength.value)
+	player1.toughness.set_stat_value(stat_attributes.toughness.value)
+	player1.speed.set_stat_value(stat_attributes.speed.value)
 
 func update_battle_console(player: CharacterBlock):
 	pass
@@ -209,8 +223,59 @@ func calc_speed_delta() -> float:
 func update_stats(player: CharacterBlock):
 	var hp: float = player.health.value + calc_health_delta()
 	var energy: float = player.energy.value + calc_energy_delta()
-	var str: float = player.strength.value + calc_strength_delta()
+	var strength: float = player.strength.value + calc_strength_delta()
 	var toughness: float = player.toughness.value + calc_toughness_delta()
 	var speed: float = player.speed.value + calc_speed_delta()
 
-	player.set_stats(hp, energy, str, toughness, speed)
+	player.set_stats(hp, energy, strength, toughness, speed)
+	
+func _ready():
+	load_skills(player1)
+	
+	p1_stat_attributes.add_listener(self)
+	p1_stat_attributes.load_stats([100, 200, 300, 400, 500])
+	
+	# calculate buff modifier -- flat example
+	var apply_str_speed_buffs = func(fx: StatusEffect):
+		print("applying buffs")
+		for md in fx.get_modifiers():
+			if md.stat_category_type_target == Constants.STAT_STRENGTH:
+				var new_val: float = p1_stat_attributes.strength.value + md.stat_value
+				p1_stat_attributes.set_strength(new_val)
+			elif md.stat_category_type_target == Constants.STAT_SPEED:
+				var new_val: float = p1_stat_attributes.speed.value + md.stat_value
+				p1_stat_attributes.set_speed(new_val)
+	
+	var undo_str_speed_buffs = func(fx: StatusEffect):
+		print("undoing buffs")
+		for md in fx.get_modifiers():
+			if md.stat_category_type_target == Constants.STAT_STRENGTH:
+				var new_val: float = p1_stat_attributes.strength.value - md.stat_value
+				p1_stat_attributes.set_strength(new_val)
+			elif md.stat_category_type_target == Constants.STAT_SPEED:
+				var new_val: float = p1_stat_attributes.speed.value - md.stat_value
+				p1_stat_attributes.set_speed(new_val)
+	
+	player1.status_effect_loader.status_effects_component.on_start_buff.connect(apply_str_speed_buffs)
+	player1.status_effect_loader.status_effects_component.on_end_buff.connect(undo_str_speed_buffs)
+
+	# zero modifiers
+	var buff = StatusEffect.new()
+	buff.name = "Thorny Defense"
+	buff.duration_type = "SECONDS"
+	buff.duration = 4
+	buff.can_affect_self = false
+	
+	# 2 modifiers
+	var effect = StatusEffect.new()
+	effect.name = "Strength up/Spd Down"
+	effect.duration_type = "SECONDS"
+	effect.duration = 3
+	var mod1 = Modifier.new(Constants.STAT_NONE, Constants.STAT_STRENGTH, Constants.MODIFIER_FLAT, 20)
+	var mod2 = Modifier.new(Constants.STAT_NONE, Constants.STAT_SPEED, Constants.MODIFIER_FLAT, -5)
+	effect.modifiers.append(mod1)
+	effect.modifiers.append(mod2)
+	
+	# add to keep track of buff lifetime
+	player1.status_effect_loader.add_buff(buff)
+	player1.status_effect_loader.add_buff(effect)

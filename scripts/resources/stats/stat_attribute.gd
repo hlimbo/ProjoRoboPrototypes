@@ -4,17 +4,10 @@
 extends BaseResource
 class_name StatAttribute
 
-var subject: Subject
+signal on_value_changed(new_value: float)
+
 @export var value: float = 0.0
 
-func _init():
-	subject = Subject.new()
-	
-func add_listener(observer: IObserver):
-	subject.add(observer)
-	
-func remove_listener(observer: IObserver):
-	subject.remove(observer)
-
-func notify_all():
-	subject.notify_all()
+func set_value(new_value: float):
+	value = new_value
+	on_value_changed.emit(value)

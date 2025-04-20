@@ -1,0 +1,13 @@
+[gd_scene load_steps=4 format=3 uid="uid://cic7ggn4leeqb"]
+
+[ext_resource type="Script" path="res://experiments/skill_system_demo/scripts/status_effect_loader.gd" id="1_o7yjk"]
+[ext_resource type="PackedScene" uid="uid://daandjufytals" path="res://experiments/skill_system_demo/nodes/status_effect_row.tscn" id="2_8tgdq"]
+[ext_resource type="Script" path="res://scripts/components/status_effects_component.gd" id="3_cs8bg"]
+
+[node name="StatusEffectLoader" type="VBoxContainer"]
+size_flags_horizontal = 3
+script = ExtResource("1_o7yjk")
+status_effect_row = ExtResource("2_8tgdq")
+
+[node name="StatusEffectsComponent" type="Node" parent="."]
+script = ExtResource("3_cs8bg")

@@ -14,8 +14,8 @@ func load_stats(values: Array[float]):
 	assert(len(values) == 5)
 	
 	hp.value = values[0]
-	strength.value = values[1]
-	energy.value = values[2]
+	energy.value = values[1]
+	strength.value = values[2]
 	toughness.value = values[3]
 	speed.value = values[4]
 	

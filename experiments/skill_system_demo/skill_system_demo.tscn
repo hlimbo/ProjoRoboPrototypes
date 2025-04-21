@@ -33,15 +33,17 @@ player2_view = NodePath("CharacterBlock2")
 battle_console = NodePath("BattleConsole/MessageConsole/Console")
 stat_deltas = NodePath("BattleConsole/StatDeltaContainer/StatDeltas")
 
-[node name="CharacterBlock" parent="UILayer" instance=ExtResource("2_ay85b")]
+[node name="CharacterBlock" parent="UILayer" node_paths=PackedStringArray("player") instance=ExtResource("2_ay85b")]
+player = NodePath("../../Player1")
 
-[node name="CharacterBlock2" parent="UILayer" instance=ExtResource("2_ay85b")]
+[node name="CharacterBlock2" parent="UILayer" node_paths=PackedStringArray("player") instance=ExtResource("2_ay85b")]
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
 offset_left = -450.0
 offset_right = 0.0
 grow_horizontal = 0
+player = NodePath("../../Player2")
 
 [node name="BattleConsole" type="ReferenceRect" parent="UILayer"]
 offset_left = 485.0
@@ -129,6 +131,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("6_3yn8w")
+metadata/_edit_use_anchors_ = true
 
 [node name="Health" type="HBoxContainer" parent="UILayer/BattleConsole/StatDeltaContainer/StatDeltas"]
 layout_mode = 2

@@ -135,7 +135,7 @@ func convert_percent_to_flat_modifier(stat_attr_set: StatAttributeSet, modifier:
 	if modifier.modifier_type == Constants.MODIFIER_FLAT:
 		return modifier
 	
-	var flat_modifier = Modifier.new()
+	var flat_modifier = Modifier.new(Constants.STAT_NONE, modifier.stat_category_type_target, Constants.MODIFIER_FLAT, 0)
 	var percent: float = modifier.stat_value / 100
 	
 	match modifier.stat_category_type_src:
@@ -150,7 +150,4 @@ func convert_percent_to_flat_modifier(stat_attr_set: StatAttributeSet, modifier:
 		Constants.STAT_SPEED:
 			flat_modifier.stat_value = stat_attr_set.speed.value * percent
 		
-	flat_modifier.stat_category_type_src = Constants.STAT_NONE
-	flat_modifier.stat_category_type_target = modifier.stat_category_type_target
-	flat_modifier.modifier_type = Constants.MODIFIER_FLAT
 	return flat_modifier

@@ -1,13 +1,34 @@
 extends Node
 class_name SkillBehavior
 
-# Try this out with Goblin Punch
+var buff_behaviors: Array[StatusEffectBehavior] = []
+var debuff_behaviors: Array[StatusEffectBehavior] = []
+
+#region NON-overridable functions
 func apply_cost(caster: LiteActor, skill: Skill):
 	var energy: float = caster.stat_attributes.energy.value - skill.cost
 	caster.stat_attributes.set_energy(energy)
 
-func process_stat_changes(caster: LiteActor, target: LiteActor, skill: Skill) -> ModifierDelta:
-	# 1. Calculate raw stat value changes (accumulators)
+func add_status_effects(target: LiteActor, skill: Skill, buffs: Array[StatusEffectBehavior] = [], debuffs: Array[StatusEffectBehavior] = []):
+	assert(len(skill.buffs) == len(buffs))
+	assert(len(skill.debuffs) == len(debuffs))
+	
+	for i in range(len(skill.buffs)):
+		var effect: StatusEffect = skill.buffs[i]
+		var behavior: StatusEffectBehavior = buffs[i]
+		behavior.initialize(effect, target.status_effects)
+		target.status_effects.add_buff(effect)
+	
+	for i in range(len(skill.debuffs)):
+		var effect: StatusEffect = skill.debuffs[i]
+		var behavior: StatusEffectBehavior = debuffs[i]
+		behavior.initialize(effect, target.status_effects)
+		target.status_effects.add_debuff(effect)
+#endregion
+
+# process changes to stats gets executed as soon as the skill triggers on a given frame in the game loop
+func accumulate_raw_stat_changes(caster: LiteActor, target: LiteActor, skill: Skill) -> ModifierDelta:
+	# Calculate raw stat value changes (accumulators)
 	var hp_modifier = Modifier.create_hp()
 	var energy_modifier = Modifier.create_energy()
 	var strength_modifier = Modifier.create_strength()
@@ -28,21 +49,19 @@ func process_stat_changes(caster: LiteActor, target: LiteActor, skill: Skill) ->
 				toughness_modifier.stat_value += flat_modifier.stat_value
 			Constants.STAT_SPEED:
 				speed_modifier.stat_value += flat_modifier.stat_value
-				
-	# 2. Obtain net stat value by calculating raw stat values against p2 resistances
-	# Could be more complicated than this and require an interface function to compute this value...
-	var dmg: float = hp_modifier.stat_value - target.stat_attributes.toughness.value
-	var net_hp = Modifier.create_hp(dmg)
-	var net_energy = Modifier.create_energy()
-	var net_strength = Modifier.create_strength()
-	var net_toughness = Modifier.create_toughness()
-	var net_speed = Modifier.create_speed()
 
-	return ModifierDelta.new(net_hp)
-	
-	## 3. apply stat changes
-	#target.stat_attributes.set_hp(net_hp)
-	
-func process_status_effects(caster: LiteActor, target: LiteActor, skill: Skill):
-	for effect in skill.buffs:
-		pass
+	return ModifierDelta.new(hp_modifier, energy_modifier, strength_modifier, toughness_modifier, speed_modifier)
+
+func compute_stat_changes(target: LiteActor, raw_deltas: ModifierDelta) -> ModifierDelta:
+	assert(raw_deltas.hp.modifier_type == Constants.MODIFIER_FLAT)
+	assert(raw_deltas.energy.modifier_type == Constants.MODIFIER_FLAT)
+	assert(raw_deltas.strength.modifier_type == Constants.MODIFIER_FLAT)
+	assert(raw_deltas.toughness.modifier_type == Constants.MODIFIER_FLAT)
+	assert(raw_deltas.speed.modifier_type == Constants.MODIFIER_FLAT)
+	return ModifierDelta.new()
+
+# this is where you can deviate from the base implementation
+# by writing your own calculations to modify stat changes APPLIED
+# to the target
+func apply_stat_changes(target: LiteActor, deltas: ModifierDelta):
+	pass

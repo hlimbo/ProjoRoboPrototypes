@@ -1,6 +1,5 @@
-extends IObserverResource
+extends Node
 class_name SkillSystemDemoController
-
 
 @export var player1: LiteActor
 @export var player2: LiteActor
@@ -8,8 +7,6 @@ class_name SkillSystemDemoController
 @export var player2_view: CharacterBlock
 @export var battle_console: ConsoleDemoLoader
 @export var stat_deltas: StatDeltas
-# used to identify if its player 1 or 2 in notify() function
-var player_tag: String = "player1"
 
 # operations needed - button press
 # * when a skill is casted, 
@@ -33,7 +30,7 @@ func goblin_punch() -> Skill:
 	var gob_modifier2 = Modifier.new()
 	gob_modifier2.stat_category_type_src = Constants.STAT_STRENGTH
 	gob_modifier2.stat_category_type_target = Constants.STAT_HP
-	gob_modifier2.stat_value = 10
+	gob_modifier2.stat_value = 80
 	gob_modifier2.modifier_type = Constants.MODIFIER_PERCENT
 	skill.modifiers.append(gob_modifier)
 	skill.modifiers.append(gob_modifier2)
@@ -112,7 +109,8 @@ func burn() -> Skill:
 	skill.description = "Applies burn to a single target"
 	skill.cost = 8
 	
-	var dmg_mod = Modifier.new(Constants.STAT_NONE, Constants.STAT_HP, Constants.MODIFIER_FLAT, -6)
+	var dmg_mod = Modifier.new(Constants.STAT_NONE, Constants.STAT_HP, Constants.MODIFIER_FLAT, 6)
+	dmg_mod.is_positive = false
 	skill.modifiers.append(dmg_mod)
 	
 	var debuff = StatusEffect.new()
@@ -120,7 +118,8 @@ func burn() -> Skill:
 	debuff.duration_type = "SECONDS"
 	debuff.duration = 20
 	debuff.is_applied_over_time = true
-	var burn_mod = Modifier.new(Constants.STAT_NONE, Constants.STAT_HP, Constants.MODIFIER_FLAT, -1)
+	var burn_mod = Modifier.new(Constants.STAT_NONE, Constants.STAT_HP, Constants.MODIFIER_FLAT, 1)
+	burn_mod.is_positive = false
 	debuff.modifiers.append(burn_mod)
 	skill.debuffs.append(debuff)
 	
@@ -155,7 +154,7 @@ func corkscrew_slash() -> Skill:
 	skill.description = "Applies a whimsical slash"
 	skill.cost = 4
 	
-	var dmg_mod = Modifier.new(Constants.STAT_NONE, Constants.STAT_HP, Constants.MODIFIER_FLAT, -36)
+	var dmg_mod = Modifier.new(Constants.STAT_NONE, Constants.STAT_HP, Constants.MODIFIER_FLAT, 36)
 	skill.modifiers.append(dmg_mod)
 	return skill
 
@@ -178,138 +177,75 @@ func load_skills(player: CharacterBlock):
 func on_cast_pressed1(skill: Skill):
 	print("handling skill: ", skill.name)
 	
-	# B. Skill Effects - Immediate changes to stats that are permanent until end of battle or until someone undoes it
-	# 1. Calculate raw stat value changes (accumulators)
-	# 2. Obtain net stat value by calculating raw stat values against p2 resistances
-	# 3. Assign net stat values to p2 stat attributes
+	# Goblin Punch
+	var goblin_punch = GoblinPunchBehavior.new()
+	goblin_punch.apply_cost(player1, skill)
+	var raw_deltas: ModifierDelta = goblin_punch.accumulate_raw_stat_changes(player1, player2, skill)
+	var net_deltas: ModifierDelta = goblin_punch.compute_stat_changes(player2, raw_deltas)
+	goblin_punch.apply_stat_changes(player2, net_deltas)
+	goblin_punch.add_status_effects(player2, skill)
 	
-	# C. Status Effects
-	# 1. Add effects as tags when effect starts
-	# 1b. Calculate immdediate stat changes (Option 1)
-	# 2. Calculate raw stat value changes (accumulators) on update (Option 2)
-	# 3. Calculate net stat value by calculating raw stat value against p2 resistances on update
-	# 4. Assign net stat values on update --> Repeat 2-4 until effect duration expires
-	# 5. Remove effects using tags when effect ends
-	
-	
-	# challenge: many different ways to implement skill cast behaviour....
-	# create an interface whose sole job is to serve as a framework of defining skill behaviours?
-	
-	var behavior = SkillBehavior.new()
-	player_tag = "player1" # a bit hacky as I use this to determine which player_view to update in the notify() function...
-	behavior.apply_cost(player1, skill)
-	player_tag = "player2"
-	var deltas: ModifierDelta = behavior.process_stat_changes(player1, player2, skill)
-	stat_deltas.set_deltas(deltas.hp.stat_value, deltas.energy.stat_value, deltas.strength.stat_value, deltas.toughness.stat_value, deltas.speed.stat_value)
-	behavior.process_status_effects(player1, player2, skill)
-	
-
-
-# IObserverResource function
-# gets called when StatAttributesSet gets updated
-func notify(subject: SubjectResource):
-	var stat_attributes: StatAttributeSet = subject as StatAttributeSet
-	
-	if player_tag == "player1":
-		player1_view.health.set_stat_value(stat_attributes.hp.value)
-		player1_view.energy.set_stat_value(stat_attributes.energy.value)
-		player1_view.strength.set_stat_value(stat_attributes.strength.value)
-		player1_view.toughness.set_stat_value(stat_attributes.toughness.value)
-		player1_view.speed.set_stat_value(stat_attributes.speed.value)
-	elif player_tag == "player2":
-		player2_view.health.set_stat_value(stat_attributes.hp.value)
-		player2_view.energy.set_stat_value(stat_attributes.energy.value)
-		player2_view.strength.set_stat_value(stat_attributes.strength.value)
-		player2_view.toughness.set_stat_value(stat_attributes.toughness.value)
-		player2_view.speed.set_stat_value(stat_attributes.speed.value)
+	# update stat deltas
+	stat_deltas.set_deltas(net_deltas.hp.get_value(), net_deltas.energy.get_value(), net_deltas.strength.get_value(), net_deltas.toughness.get_value(), net_deltas.speed.get_value())
 
 func update_battle_console(player: CharacterBlock):
 	pass
 
-func calc_health_delta() -> float:
-	return 0.0
 
-func calc_energy_delta() -> float:
-	return 0.0
-
-func calc_strength_delta() -> float:
-	return 0.0
-
-func calc_toughness_delta() -> float:
-	return 0.0
-
-func calc_speed_delta() -> float:
-	return 0.0
-
-
-func update_stats(player: CharacterBlock):
-	var hp: float = player.health.value + calc_health_delta()
-	var energy: float = player.energy.value + calc_energy_delta()
-	var strength: float = player.strength.value + calc_strength_delta()
-	var toughness: float = player.toughness.value + calc_toughness_delta()
-	var speed: float = player.speed.value + calc_speed_delta()
-
-	player.set_stats(hp, energy, strength, toughness, speed)
-	
 func _ready():
 	load_skills(player1_view)
 	load_skills(player2_view)
 	
-	player1.stat_attributes.add_listener(self)
-	player_tag = "player1"
-	player1.stat_attributes.load_stats([100, 200, 300, 400, 500])
+	player1.stat_attributes.load_stats([999, 400, 100, 100, 100])
+	player2.stat_attributes.load_stats([998, 404, 100, 100, 100])
 	
-	player2.stat_attributes.add_listener(self)
-	player_tag = "player2"
-	player2.stat_attributes.load_stats([100, 200, 300, 404, 503])
-	
-	# calculate buff modifier -- flat example
-	var apply_str_speed_buffs = func(fx: StatusEffect):
-		print("applying buffs")
-		player_tag = "player1"
-		for md in fx.get_modifiers():
-			if md.stat_category_type_target == Constants.STAT_STRENGTH:
-				var new_val: float = player1.stat_attributes.strength.value + md.stat_value
-				player1.stat_attributes.set_strength(new_val)
-			elif md.stat_category_type_target == Constants.STAT_SPEED:
-				var new_val: float = player1.stat_attributes.speed.value + md.stat_value
-				player1.stat_attributes.set_speed(new_val)
-	
-	var undo_str_speed_buffs = func(fx: StatusEffect):
-		print("undoing buffs")
-		player_tag = "player1"
-		for md in fx.get_modifiers():
-			if md.stat_category_type_target == Constants.STAT_STRENGTH:
-				var new_val: float = player1.stat_attributes.strength.value - md.stat_value
-				player1.stat_attributes.set_strength(new_val)
-			elif md.stat_category_type_target == Constants.STAT_SPEED:
-				var new_val: float = player1.stat_attributes.speed.value - md.stat_value
-				player1.stat_attributes.set_speed(new_val)
-	
-	player1.status_effects.on_start_buff.connect(apply_str_speed_buffs)
-	player1.status_effects.on_end_buff.connect(undo_str_speed_buffs)
-
-	# zero modifiers
-	var buff = StatusEffect.new()
-	buff.name = "Thorny Defense"
-	buff.duration_type = "SECONDS"
-	buff.duration = 4
-	buff.can_affect_self = false
-	
-	# 2 modifiers
-	var effect = StatusEffect.new()
-	effect.name = "Strength up/Spd Down"
-	effect.duration_type = "SECONDS"
-	effect.duration = 3
-	var mod1 = Modifier.new(Constants.STAT_NONE, Constants.STAT_STRENGTH, Constants.MODIFIER_FLAT, 20)
-	var mod2 = Modifier.new(Constants.STAT_NONE, Constants.STAT_SPEED, Constants.MODIFIER_FLAT, -5)
-	effect.modifiers.append(mod1)
-	effect.modifiers.append(mod2)
-	
-	# add to keep track of buff lifetime
-	player1.status_effects.on_start_buff.connect(player1_view.status_effect_loader.on_add_buff)
-	player1.status_effects.on_start_debuff.connect(player1_view.status_effect_loader.on_add_debuff)
-	player1.status_effects.on_end_buff.connect(player1_view.status_effect_loader.on_remove_buff)
-	player1.status_effects.on_end_debuff.connect(player1_view.status_effect_loader.on_remove_debuff)
-	player1.status_effects.add_buff(buff)
-	player1.status_effects.add_buff(effect)
+	## calculate buff modifier -- flat example
+	#var apply_str_speed_buffs = func(fx: StatusEffect):
+		#print("applying buffs")
+		#player_tag = "player1"
+		#for md in fx.get_modifiers():
+			#if md.stat_category_type_target == Constants.STAT_STRENGTH:
+				#var new_val: float = player1.stat_attributes.strength.value + md.stat_value
+				#player1.stat_attributes.set_strength(new_val)
+			#elif md.stat_category_type_target == Constants.STAT_SPEED:
+				#var new_val: float = player1.stat_attributes.speed.value + md.stat_value
+				#player1.stat_attributes.set_speed(new_val)
+	#
+	#var undo_str_speed_buffs = func(fx: StatusEffect):
+		#print("undoing buffs")
+		#player_tag = "player1"
+		#for md in fx.get_modifiers():
+			#if md.stat_category_type_target == Constants.STAT_STRENGTH:
+				#var new_val: float = player1.stat_attributes.strength.value - md.stat_value
+				#player1.stat_attributes.set_strength(new_val)
+			#elif md.stat_category_type_target == Constants.STAT_SPEED:
+				#var new_val: float = player1.stat_attributes.speed.value - md.stat_value
+				#player1.stat_attributes.set_speed(new_val)
+	#
+	#player1.status_effects.on_start_buff.connect(apply_str_speed_buffs)
+	#player1.status_effects.on_end_buff.connect(undo_str_speed_buffs)
+#
+	## zero modifiers
+	#var buff = StatusEffect.new()
+	#buff.name = "Thorny Defense"
+	#buff.duration_type = "SECONDS"
+	#buff.duration = 4
+	#buff.can_affect_self = false
+	#
+	## 2 modifiers
+	#var effect = StatusEffect.new()
+	#effect.name = "Strength up/Spd Down"
+	#effect.duration_type = "SECONDS"
+	#effect.duration = 3
+	#var mod1 = Modifier.new(Constants.STAT_NONE, Constants.STAT_STRENGTH, Constants.MODIFIER_FLAT, 20)
+	#var mod2 = Modifier.new(Constants.STAT_NONE, Constants.STAT_SPEED, Constants.MODIFIER_FLAT, 5)
+	#effect.modifiers.append(mod1)
+	#effect.modifiers.append(mod2)
+	#
+	## add to keep track of buff lifetime
+	#player1.status_effects.on_start_buff.connect(player1_view.status_effect_loader.on_add_buff)
+	#player1.status_effects.on_start_debuff.connect(player1_view.status_effect_loader.on_add_debuff)
+	#player1.status_effects.on_end_buff.connect(player1_view.status_effect_loader.on_remove_buff)
+	#player1.status_effects.on_end_debuff.connect(player1_view.status_effect_loader.on_remove_debuff)
+	#player1.status_effects.add_buff(buff)
+	#player1.status_effects.add_buff(effect)

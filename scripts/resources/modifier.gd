@@ -12,13 +12,22 @@ class_name Modifier
 # 1. flat
 # 2. percent
 @export var modifier_type: String = Constants.MODIFIER_FLAT
+# used to determine the stat value's sign for proper calculations
+@export var is_positive: bool = true
+# non-negative value
 @export var stat_value: float = 0
 
 func _init(_src: String = Constants.STAT_NONE, _target: String = Constants.STAT_HP, _modifier_type: String = Constants.MODIFIER_FLAT, _stat_value: float = 0):
+	assert(_stat_value >= 0)
+	
 	stat_category_type_src = _src
 	stat_category_type_target = _target
 	modifier_type = _modifier_type
 	stat_value = _stat_value
+
+# obtains the signed value of the stat
+func get_value() -> float:
+	return stat_value if is_positive else -stat_value
 
 #region Static Functions to create flat modifiers
 static func create_hp(value: float = 0) -> Modifier:

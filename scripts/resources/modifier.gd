@@ -19,3 +19,20 @@ func _init(_src: String = Constants.STAT_NONE, _target: String = Constants.STAT_
 	stat_category_type_target = _target
 	modifier_type = _modifier_type
 	stat_value = _stat_value
+
+#region Static Functions to create flat modifiers
+static func create_hp(value: float = 0) -> Modifier:
+	return Modifier.new(Constants.STAT_NONE, Constants.STAT_HP, Constants.MODIFIER_FLAT, value)
+
+static func create_energy(value: float = 0) -> Modifier:
+	return Modifier.new(Constants.STAT_NONE, Constants.STAT_ENERGY, Constants.MODIFIER_FLAT, value)
+
+static func create_strength(value: float = 0) -> Modifier:
+	return Modifier.new(Constants.STAT_NONE, Constants.STAT_STRENGTH, Constants.MODIFIER_FLAT, value)
+
+static func create_toughness(value: float = 0) -> Modifier:
+	return Modifier.new(Constants.STAT_NONE, Constants.STAT_TOUGHNESS, Constants.MODIFIER_FLAT, value)
+	
+static func create_speed(value: float = 0) -> Modifier:
+	return Modifier.new(Constants.STAT_NONE, Constants.STAT_SPEED, Constants.MODIFIER_FLAT, value)
+#endregion

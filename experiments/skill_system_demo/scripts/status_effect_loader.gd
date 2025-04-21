@@ -5,21 +5,6 @@ class_name StatusEffectLoader
 # key = status effect name string | value StatusEffectRow
 @export var status_effects: Dictionary = {}
 
-# manage status effects lifecycle
-@onready var status_effects_component: StatusEffectsComponent = $StatusEffectsComponent
-
-func add_buff(effect: StatusEffect):
-	status_effects_component.add_buff(effect)
-
-func add_debuff(effect: StatusEffect):
-	status_effects_component.add_debuff(effect)
-	
-func remove_buff(effect: StatusEffect):
-	status_effects_component.remove_buff(effect)
-
-func remove_debuff(effect: StatusEffect):
-	status_effects_component.remove_debuff(effect)
-	
 func _on_add_status_effect(effect: StatusEffect):
 	var row = status_effect_row.instantiate() as StatusEffectRow
 	self.add_child(row)
@@ -46,9 +31,3 @@ func on_remove_buff(effect: StatusEffect):
 
 func on_remove_debuff(effect: StatusEffect):
 	_on_remove_status_effect(effect)
-	
-func _ready():
-	status_effects_component.on_start_buff.connect(on_add_buff)
-	status_effects_component.on_end_buff.connect(on_remove_buff)
-	status_effects_component.on_start_debuff.connect(on_add_debuff)
-	status_effects_component.on_end_debuff.connect(on_remove_debuff)

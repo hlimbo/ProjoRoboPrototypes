@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://dimers7nekcqr"]
+[gd_scene load_steps=10 format=3 uid="uid://dimers7nekcqr"]
 
 [ext_resource type="Script" path="res://experiments/skill_system_demo/scripts/skill_system_demo_controller.gd" id="1_agfew"]
 [ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="1_cep86"]
@@ -7,15 +7,31 @@
 [ext_resource type="Script" path="res://experiments/skill_system_demo/scripts/stat_deltas.gd" id="6_3yn8w"]
 [ext_resource type="Script" path="res://experiments/skill_system_demo/scripts/console_demo_message.gd" id="6_prugn"]
 [ext_resource type="Script" path="res://experiments/skill_system_demo/scripts/console_demo_loader.gd" id="6_vl0x0"]
+[ext_resource type="Script" path="res://experiments/skill_system_demo/scripts/lite_actor.gd" id="8_tgvue"]
+[ext_resource type="Script" path="res://scripts/components/status_effects_component.gd" id="9_o4chb"]
 
 [node name="SkillSystemDemo" type="Node2D"]
 
-[node name="UILayer" type="CanvasLayer" parent="." node_paths=PackedStringArray("player1", "player2", "stat_deltas", "battle_console")]
+[node name="Player1" type="Node" parent="."]
+script = ExtResource("8_tgvue")
+
+[node name="StatusEffects" type="Node" parent="Player1"]
+script = ExtResource("9_o4chb")
+
+[node name="Player2" type="Node" parent="."]
+script = ExtResource("8_tgvue")
+
+[node name="StatusEffects" type="Node" parent="Player2"]
+script = ExtResource("9_o4chb")
+
+[node name="UILayer" type="CanvasLayer" parent="." node_paths=PackedStringArray("player1", "player2", "player1_view", "player2_view", "battle_console", "stat_deltas")]
 script = ExtResource("1_agfew")
-player1 = NodePath("CharacterBlock")
-player2 = NodePath("CharacterBlock2")
-stat_deltas = NodePath("BattleConsole/StatDeltaContainer/VBoxContainer")
+player1 = NodePath("../Player1")
+player2 = NodePath("../Player2")
+player1_view = NodePath("CharacterBlock")
+player2_view = NodePath("CharacterBlock2")
 battle_console = NodePath("BattleConsole/MessageConsole/Console")
+stat_deltas = NodePath("BattleConsole/StatDeltaContainer/StatDeltas")
 
 [node name="CharacterBlock" parent="UILayer" instance=ExtResource("2_ay85b")]
 
@@ -105,7 +121,7 @@ offset_right = 280.0
 offset_bottom = 285.0
 border_width = 5.0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UILayer/BattleConsole/StatDeltaContainer"]
+[node name="StatDeltas" type="VBoxContainer" parent="UILayer/BattleConsole/StatDeltaContainer"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -114,94 +130,94 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("6_3yn8w")
 
-[node name="Health" type="HBoxContainer" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer"]
+[node name="Health" type="HBoxContainer" parent="UILayer/BattleConsole/StatDeltaContainer/StatDeltas"]
 layout_mode = 2
 script = ExtResource("3_68o5v")
 
-[node name="StatLabel" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/Health"]
+[node name="StatLabel" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/StatDeltas/Health"]
 layout_mode = 2
 size_flags_horizontal = 0
 theme = ExtResource("1_cep86")
 theme_override_font_sizes/font_size = 18
 text = "Health"
 
-[node name="StatValue" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/Health"]
+[node name="StatValue" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/StatDeltas/Health"]
 layout_mode = 2
 size_flags_horizontal = 10
 theme = ExtResource("1_cep86")
 theme_override_font_sizes/font_size = 18
 text = "0"
 
-[node name="Energy" type="HBoxContainer" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer"]
+[node name="Energy" type="HBoxContainer" parent="UILayer/BattleConsole/StatDeltaContainer/StatDeltas"]
 layout_mode = 2
 script = ExtResource("3_68o5v")
 label = "Energy"
 
-[node name="StatLabel" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/Energy"]
+[node name="StatLabel" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/StatDeltas/Energy"]
 layout_mode = 2
 size_flags_horizontal = 0
 theme = ExtResource("1_cep86")
 theme_override_font_sizes/font_size = 18
 text = "Energy"
 
-[node name="StatValue" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/Energy"]
+[node name="StatValue" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/StatDeltas/Energy"]
 layout_mode = 2
 size_flags_horizontal = 10
 theme = ExtResource("1_cep86")
 theme_override_font_sizes/font_size = 18
 text = "0"
 
-[node name="Strength" type="HBoxContainer" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer"]
+[node name="Strength" type="HBoxContainer" parent="UILayer/BattleConsole/StatDeltaContainer/StatDeltas"]
 layout_mode = 2
 script = ExtResource("3_68o5v")
 label = "Strength"
 
-[node name="StatLabel" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/Strength"]
+[node name="StatLabel" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/StatDeltas/Strength"]
 layout_mode = 2
 size_flags_horizontal = 0
 theme = ExtResource("1_cep86")
 theme_override_font_sizes/font_size = 18
 text = "Strength"
 
-[node name="StatValue" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/Strength"]
+[node name="StatValue" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/StatDeltas/Strength"]
 layout_mode = 2
 size_flags_horizontal = 10
 theme = ExtResource("1_cep86")
 theme_override_font_sizes/font_size = 18
 text = "0"
 
-[node name="Toughness" type="HBoxContainer" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer"]
+[node name="Toughness" type="HBoxContainer" parent="UILayer/BattleConsole/StatDeltaContainer/StatDeltas"]
 layout_mode = 2
 script = ExtResource("3_68o5v")
 label = "Toughness"
 
-[node name="StatLabel" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/Toughness"]
+[node name="StatLabel" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/StatDeltas/Toughness"]
 layout_mode = 2
 size_flags_horizontal = 0
 theme = ExtResource("1_cep86")
 theme_override_font_sizes/font_size = 18
 text = "Toughness"
 
-[node name="StatValue" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/Toughness"]
+[node name="StatValue" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/StatDeltas/Toughness"]
 layout_mode = 2
 size_flags_horizontal = 10
 theme = ExtResource("1_cep86")
 theme_override_font_sizes/font_size = 18
 text = "0"
 
-[node name="Speed" type="HBoxContainer" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer"]
+[node name="Speed" type="HBoxContainer" parent="UILayer/BattleConsole/StatDeltaContainer/StatDeltas"]
 layout_mode = 2
 script = ExtResource("3_68o5v")
 label = "Speed"
 
-[node name="StatLabel" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/Speed"]
+[node name="StatLabel" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/StatDeltas/Speed"]
 layout_mode = 2
 size_flags_horizontal = 0
 theme = ExtResource("1_cep86")
 theme_override_font_sizes/font_size = 18
 text = "Speed"
 
-[node name="StatValue" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/VBoxContainer/Speed"]
+[node name="StatValue" type="Label" parent="UILayer/BattleConsole/StatDeltaContainer/StatDeltas/Speed"]
 layout_mode = 2
 size_flags_horizontal = 10
 theme = ExtResource("1_cep86")

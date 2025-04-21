@@ -172,8 +172,8 @@ func update_status_effects_turn_counts():
 		_remove_debuff(tag)
 
 func on_second_interval_timeout():
-	counter += 1
 	print("time counter: ", counter)
+	counter += 1
 	var time_step: float = 1.0
 	var duration_type: String = "SECONDS"
 	var expired_buff_tags: PackedStringArray = _update_status_effect_timer(buff_tags, buff_durations, duration_type, on_second_update_buff, time_step)

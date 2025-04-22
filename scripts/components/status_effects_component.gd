@@ -66,13 +66,11 @@ func _remove_buff(buff_tag: String) -> bool:
 		return false
 	
 	var effect: StatusEffect = buff_tags[buff_tag]
+	on_end_buff.emit(effect)
+	
 	buff_tags.erase(buff_tag)
 	buff_stacks.erase(buff_tag)
 	buff_durations.erase(buff_tag)
-	print("address on remove buff: ", self)
-	var connections = on_end_buff.get_connections()
-	print("connections yes: ", connections)
-	on_end_buff.emit(effect)
 	
 	# stop timer if all buffs and debuffs grouped by SECONDS are inactive
 	var buffs_by_seconds_count: int = buff_tags.values().filter(func(buff: StatusEffect): return buff.duration_type == "SECONDS").size()
@@ -195,7 +193,7 @@ func disable():
 	is_paused = true
 	second_interval_timer.paused = is_paused
 
-func _ready():
+func _init():
 	second_interval_timer = Timer.new()
 	second_interval_timer.one_shot = false
 	second_interval_timer.wait_time = 1.0 # second

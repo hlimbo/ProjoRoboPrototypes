@@ -7,6 +7,10 @@ class_name StatusEffectBehavior
 var status_effect_name: String
 var target: LiteActor
 
+func _notification(what: int):
+	if what == NOTIFICATION_PREDELETE:
+		print("StatusEffectBehavior: %s is going to be deleted" % status_effect_name)
+
 func initialize(status_effect: StatusEffect, _target: LiteActor):
 	status_effect_name = status_effect.name
 	target = _target
@@ -15,11 +19,8 @@ func initialize(status_effect: StatusEffect, _target: LiteActor):
 	# One Shot Status Effects can be defined in on_start callback
 	if status_effect.effect_type == "positive":
 		status_effects_component.on_start_buff.connect(on_start)
-		# why does this only work with a lambda function but can't be used directly?????
-		status_effects_component.on_end_buff.connect(func(effect: StatusEffect): 
-			on_end(effect)
-		)
-		# status_effects_component.on_end_buff.connect(on_end) # there is something wrong with this one...
+		status_effects_component.on_end_buff.connect(on_end)
+		
 	elif status_effect.effect_type == "negative":
 		status_effects_component.on_start_debuff.connect(on_start)
 		status_effects_component.on_end_debuff.connect(on_end)
@@ -38,10 +39,12 @@ func initialize(status_effect: StatusEffect, _target: LiteActor):
 func on_start(effect: StatusEffect):
 	if effect.name == status_effect_name:
 		on_start_effect(effect)
+		#on_start_effect2.emit(effect)
 	
 func on_end(effect: StatusEffect):
 	if effect.name == status_effect_name:
 		on_end_effect(effect)
+		#on_end_effect2.emit(effect)
 
 func process_stat_changes(effect: StatusEffect):
 	if effect.name == status_effect_name:
@@ -51,7 +54,7 @@ func process_stat_changes(effect: StatusEffect):
 # Can manipulate stat values here that are expected to only change once here
 func on_start_effect(effect: StatusEffect):
 	pass
-	
+
 func on_end_effect(effect: StatusEffect):
 	pass
 

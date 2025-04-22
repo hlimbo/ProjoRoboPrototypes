@@ -2,13 +2,18 @@ extends RefCounted
 class_name SkillBehavior
 
 var buff_behaviors: Array[StatusEffectBehavior] = []
-var debuff_behaviors: Array[StatusEffectBehavior] = []
+
+func _notification(what: int):
+	if what == NOTIFICATION_PREDELETE:
+		print("I am being deleted!")
+		buff_behaviors.clear()
 
 #region NON-overridable functions
 func apply_cost(caster: LiteActor, skill: Skill):
 	var energy: float = caster.stat_attributes.energy.value - skill.cost
 	caster.stat_attributes.set_energy(energy)
 
+# binding the functions to the data
 func add_status_effects(target: LiteActor, skill: Skill, buffs: Array[StatusEffectBehavior] = [], debuffs: Array[StatusEffectBehavior] = []):
 	assert(len(skill.buffs) == len(buffs))
 	assert(len(skill.debuffs) == len(debuffs))
@@ -17,15 +22,20 @@ func add_status_effects(target: LiteActor, skill: Skill, buffs: Array[StatusEffe
 		var effect: StatusEffect = skill.buffs[i]
 		var behavior: StatusEffectBehavior = buffs[i]
 		behavior.initialize(effect, target)
-		target.status_effects.add_buff(effect)
+		buff_behaviors.append(behavior)
+		#target.status_effects.add_buff(effect)
 		
 	
 	for i in range(len(skill.debuffs)):
 		var effect: StatusEffect = skill.debuffs[i]
 		var behavior: StatusEffectBehavior = debuffs[i]
 		behavior.initialize(effect, target)
-		target.status_effects.add_debuff(effect)
+		#target.status_effects.add_debuff(effect)
 #endregion
+
+func start_status_effects(target: LiteActor, skill: Skill):
+	for i in range(len(skill.buffs)):
+		target.status_effects.add_buff(skill.buffs[i])
 
 # process changes to stats gets executed as soon as the skill triggers on a given frame in the game loop
 func accumulate_raw_stat_changes(caster: LiteActor, target: LiteActor, skill: Skill) -> ModifierDelta:

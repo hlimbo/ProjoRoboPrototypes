@@ -1,6 +1,10 @@
 extends StatusEffectBehavior
 class_name ThornyDefenseEffect2
 
+#func _init():
+	#self.on_start_effect2.connect(on_start_effect222)
+	#self.on_end_effect2.connect(on_end_effect222)
+
 # example of applying an effect
 func on_start_effect(effect: StatusEffect):
 	print("2. starting: ", effect.name)
@@ -14,9 +18,6 @@ func on_start_effect(effect: StatusEffect):
 	self.target.stat_attributes.toughness.set_value(new_toughness)
 	self.target.stat_attributes.speed.set_value(new_speed)
 	self.target.stat_attributes.notify_all()
-	
-	# self.target.stat_attributes.toughness.value + effect.modifiers["toughness"].stat_value
-	# self.target.stat_attributes.speed.value - effect.modifiers["speed"].stat_value
 
 # example of undoing an effect
 func on_end_effect(effect: StatusEffect):
@@ -31,6 +32,6 @@ func on_end_effect(effect: StatusEffect):
 	self.target.stat_attributes.toughness.set_value(new_toughness)
 	self.target.stat_attributes.speed.set_value(new_speed)
 	self.target.stat_attributes.notify_all()
-
-func on_process_effect(effect: StatusEffect):
-	pass
+	
+	## disconnect to cleanup
+	#self.on_end_effect2.disconnect(on_end_effect222)

@@ -191,29 +191,55 @@ func execute_goblin_punch(skill: Skill) -> ModifierDelta:
 	
 	return net_deltas
 
-func execute_thorny_defense(skill: Skill) -> ModifierDelta:
+#var thorny_def = ThornyDefenseBehavior.new()
+#var thorny_def_effect = ThornyDefenseEffect.new()
+#var thorny_def_effect2 = ThornyDefenseEffect2.new()
+
+# 1. Construction Phase <- all the dependencies of the object go here
+func thorny_defense_skill(skill: Skill) -> ThornyDefenseBehavior:
 	var thorny_def = ThornyDefenseBehavior.new()
-	thorny_def.apply_cost(player1, skill)
-	var raw_deltas: ModifierDelta = thorny_def.accumulate_raw_stat_changes(player1, player2, skill)
-	var net_deltas: ModifierDelta = thorny_def.compute_stat_changes(player2, raw_deltas)
-	thorny_def.apply_stat_changes(player2, net_deltas)
-	
 	var thorny_def_effect = ThornyDefenseEffect.new()
 	var thorny_def_effect2 = ThornyDefenseEffect2.new()
-	var effects: Array[StatusEffectBehavior] = [thorny_def_effect, thorny_def_effect2]
-	thorny_def.add_status_effects(player2, skill, effects)
 	
-	return net_deltas
+	var effects: Array[StatusEffectBehavior] = [thorny_def_effect, thorny_def_effect2]
+	thorny_def.add_status_effects(player1, skill, effects)
+	
+	return thorny_def
+
+# 2. Operation Phase <- when object is ready to be manipulated with
+
+#func execute_thorny_defense(skill: Skill) -> ModifierDelta:
+	#thorny_def.apply_cost(player1, skill)
+	#var raw_deltas: ModifierDelta = thorny_def.accumulate_raw_stat_changes(player1, player2, skill)
+	#var net_deltas: ModifierDelta = thorny_def.compute_stat_changes(player2, raw_deltas)
+	#thorny_def.apply_stat_changes(player2, net_deltas)
+	#
+	#var effects: Array[StatusEffectBehavior] = [thorny_def_effect, thorny_def_effect2]
+	#thorny_def.add_status_effects(player2, skill, effects)
+	#
+	#return net_deltas
+
+var thorny_defense_be: ThornyDefenseBehavior
 
 # caster, target, skill
 func on_cast_pressed1(skill: Skill):
 	print("handling skill: ", skill.name)
 	
 	# var net_deltas: ModifierDelta = execute_goblin_punch(skill)
-	var net_deltas: ModifierDelta = execute_thorny_defense(skill)
+	thorny_defense_be = thorny_defense_skill(skill)
+	# var net_deltas: ModifierDelta = execute_thorny_defense(skill)
+	
+	var conn = player1.status_effects.on_start_buff.get_connections()
+	var conn2 = player1.status_effects.on_end_buff.get_connections()
+	print("len conn: ", len(conn))
+	print("len conn2: ", len(conn2))
+	print(conn)
+	print(conn2)
+	
+	thorny_defense_be.start_status_effects(player1, skill)
 	
 	# update stat deltas
-	stat_deltas.set_deltas(net_deltas.hp.get_value(), net_deltas.energy.get_value(), net_deltas.strength.get_value(), net_deltas.toughness.get_value(), net_deltas.speed.get_value())
+	# stat_deltas.set_deltas(net_deltas.hp.get_value(), net_deltas.energy.get_value(), net_deltas.strength.get_value(), net_deltas.toughness.get_value(), net_deltas.speed.get_value())
 
 func update_battle_console(player: CharacterBlock):
 	pass
@@ -226,8 +252,11 @@ func _ready():
 	player1.stat_attributes.load_stats([999, 400, 100, 100, 100])
 	player2.stat_attributes.load_stats([998, 404, 100, 100, 100])
 	
-	player2.status_effects.on_end_buff.connect(on_end_buff)
+	# player2.status_effects.on_end_buff.connect(on_end_buff)
 	
-
+# Signal leak..... every time you click on the button to
+# activate thorny defense a new signal connection is created
+# on a status effect.......
+# Need to remove it......
 func on_end_buff(effect: StatusEffect):
 	print("buff ended: ", effect.name)

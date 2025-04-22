@@ -47,7 +47,8 @@ func thorny_defense() -> Skill:
 	thorny_effect.name = "Thorny Defense"
 	thorny_effect.description = "Deals flat damage back to enemies that attack this character"
 	thorny_effect.duration_type = "SECONDS"
-	thorny_effect.duration = 30
+	thorny_effect.duration = 3
+	thorny_effect.effect_type = "positive"
 	thorny_effect.can_affect_self = false
 	
 	var dmg_modifier = Modifier.new()
@@ -62,7 +63,8 @@ func thorny_defense() -> Skill:
 	thorny_effect_stat_buffs.name = "Thorny Defense Stat Buffs"
 	thorny_effect_stat_buffs.description = "Increases Defense but Decreases Speed temporarily"
 	thorny_effect_stat_buffs.duration_type = "SECONDS"
-	thorny_effect_stat_buffs.duration = 10
+	thorny_effect_stat_buffs.duration = 5
+	thorny_effect_stat_buffs.effect_type = "positive"
 	thorny_effect_stat_buffs.can_affect_self = true
 	
 	var def_modifier = Modifier.new()
@@ -98,6 +100,7 @@ func system_shock() -> Skill:
 	debuff.name = "System Shock"
 	debuff.duration_type = "TURN"
 	debuff.duration = 2.0
+	debuff.effect_type = "negative"
 	skill.debuffs.append(debuff)
 	
 	return skill
@@ -118,6 +121,7 @@ func burn() -> Skill:
 	debuff.duration_type = "SECONDS"
 	debuff.duration = 20
 	debuff.is_applied_over_time = true
+	debuff.effect_type = "negative"
 	var burn_mod = Modifier.new(Constants.STAT_NONE, Constants.STAT_HP, Constants.MODIFIER_FLAT, 1)
 	burn_mod.is_positive = false
 	debuff.modifiers.append(burn_mod)
@@ -142,6 +146,7 @@ func health_regen() -> Skill:
 	health_regen.name = "Health Regen"
 	health_regen.duration_type = "SECONDS"
 	health_regen.duration = 30
+	health_regen.effect_type = "positive"
 	var heal_mod = Modifier.new(Constants.STAT_SPEED, Constants.STAT_HP, Constants.MODIFIER_PERCENT, 2)
 	health_regen.modifiers.append(heal_mod)
 	skill.buffs.append(health_regen)
@@ -173,17 +178,35 @@ func load_skills(player: CharacterBlock):
 	player.skills_container.load_skills(skills)
 	player.skills_container.on_cast_pressed.connect(on_cast_pressed1)
 
-# caster, target, skill
-func on_cast_pressed1(skill: Skill):
-	print("handling skill: ", skill.name)
-	
+func execute_goblin_punch(skill: Skill) -> ModifierDelta:
 	# Goblin Punch
 	var goblin_punch = GoblinPunchBehavior.new()
 	goblin_punch.apply_cost(player1, skill)
 	var raw_deltas: ModifierDelta = goblin_punch.accumulate_raw_stat_changes(player1, player2, skill)
 	var net_deltas: ModifierDelta = goblin_punch.compute_stat_changes(player2, raw_deltas)
 	goblin_punch.apply_stat_changes(player2, net_deltas)
-	goblin_punch.add_status_effects(player2, skill)
+	
+	return net_deltas
+
+func execute_thorny_defense(skill: Skill) -> ModifierDelta:
+	var thorny_def = ThornyDefenseBehavior.new()
+	thorny_def.apply_cost(player1, skill)
+	var raw_deltas: ModifierDelta = thorny_def.accumulate_raw_stat_changes(player1, player2, skill)
+	var net_deltas: ModifierDelta = thorny_def.compute_stat_changes(player2, raw_deltas)
+	thorny_def.apply_stat_changes(player2, net_deltas)
+	
+	var thorny_def_effect = ThornyDefenseEffect.new()
+	var thorny_def_effect2 = ThornyDefenseEffect2.new()
+	thorny_def.add_status_effects(player2, skill, [thorny_def_effect, thorny_def_effect2])
+	
+	return net_deltas
+
+# caster, target, skill
+func on_cast_pressed1(skill: Skill):
+	print("handling skill: ", skill.name)
+	
+	# var net_deltas: ModifierDelta = execute_goblin_punch(skill)
+	var net_deltas: ModifierDelta = execute_thorny_defense(skill)
 	
 	# update stat deltas
 	stat_deltas.set_deltas(net_deltas.hp.get_value(), net_deltas.energy.get_value(), net_deltas.strength.get_value(), net_deltas.toughness.get_value(), net_deltas.speed.get_value())

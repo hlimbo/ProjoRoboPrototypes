@@ -58,7 +58,7 @@ func compute_stat_changes(target: LiteActor, raw_deltas: ModifierDelta) -> Modif
 	assert(raw_deltas.strength.modifier_type == Constants.MODIFIER_FLAT)
 	assert(raw_deltas.toughness.modifier_type == Constants.MODIFIER_FLAT)
 	assert(raw_deltas.speed.modifier_type == Constants.MODIFIER_FLAT)
-	return ModifierDelta.new()
+	return raw_deltas
 
 # this is where you can deviate from the base implementation
 # by writing your own calculations to modify stat changes APPLIED

@@ -29,14 +29,14 @@ var counter: int = 0
 #region signals
 signal on_start_buff(effect: StatusEffect)
 signal on_update_buff(effect: StatusEffect, stack_count: int)
-signal on_second_update_buff()
-signal on_turn_update_buff()
+signal on_second_update_buff(effect: StatusEffect)
+signal on_turn_update_buff(effect: StatusEffect)
 signal on_end_buff(effect: StatusEffect)
 
 signal on_start_debuff(effect: StatusEffect)
 signal on_update_debuff(effect: StatusEffect, stack_count: int)
-signal on_second_update_debuff()
-signal on_turn_update_debuff()
+signal on_second_update_debuff(effect: StatusEffect)
+signal on_turn_update_debuff(effect: StatusEffect)
 signal on_end_debuff(effect: StatusEffect)
 #endregion
 

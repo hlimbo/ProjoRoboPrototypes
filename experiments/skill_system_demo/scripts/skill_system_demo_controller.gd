@@ -281,14 +281,14 @@ func on_cast_pressed1(skill: Skill):
 	#burn_be.apply_stat_changes(player2, net_deltas)
 	#burn_be.start_status_effects(player2, skill)
 	
-	# Corkscrew Slash
-	corkscrew_slash_be = corkscrew_slash_skill(skill)
-	var raw_deltas: ModifierDelta = corkscrew_slash_be.accumulate_raw_stat_changes(player1, player2, skill)
-	var net_deltas: ModifierDelta = corkscrew_slash_be.compute_stat_changes(player2, raw_deltas)
-	corkscrew_slash_be.apply_stat_changes(player2, net_deltas)
+	## Corkscrew Slash
+	#corkscrew_slash_be = corkscrew_slash_skill(skill)
+	#var raw_deltas: ModifierDelta = corkscrew_slash_be.accumulate_raw_stat_changes(player1, player2, skill)
+	#var net_deltas: ModifierDelta = corkscrew_slash_be.compute_stat_changes(player2, raw_deltas)
+	#corkscrew_slash_be.apply_stat_changes(player2, net_deltas)
 	
 	# update stat deltas
-	stat_deltas.set_deltas(net_deltas.hp.get_value(), net_deltas.energy.get_value(), net_deltas.strength.get_value(), net_deltas.toughness.get_value(), net_deltas.speed.get_value())
+	#stat_deltas.set_deltas(net_deltas.hp.get_value(), net_deltas.energy.get_value(), net_deltas.strength.get_value(), net_deltas.toughness.get_value(), net_deltas.speed.get_value())
 
 func update_battle_console(player: CharacterBlock):
 	pass
@@ -301,11 +301,8 @@ func _ready():
 	player1.stat_attributes.load_stats([999, 400, 100, 100, 100])
 	player2.stat_attributes.load_stats([998, 404, 100, 100, 150])
 	
-	# player2.status_effects.on_end_buff.connect(on_end_buff)
-	
-# Signal leak..... every time you click on the button to
-# activate thorny defense a new signal connection is created
-# on a status effect.......
-# Need to remove it......
-func on_end_buff(effect: StatusEffect):
-	print("buff ended: ", effect.name)
+	# connect status effects to display on player_view UI example
+	player2.status_effects.on_start_buff.connect(player2_view.status_effect_loader.on_add_buff)
+	player2.status_effects.on_end_buff.connect(player2_view.status_effect_loader.on_remove_buff)
+	player2.status_effects.on_start_debuff.connect(player2_view.status_effect_loader.on_add_debuff)
+	player2.status_effects.on_end_debuff.connect(player2_view.status_effect_loader.on_remove_buff)

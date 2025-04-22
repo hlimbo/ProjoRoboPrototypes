@@ -69,6 +69,9 @@ func _remove_buff(buff_tag: String) -> bool:
 	buff_tags.erase(buff_tag)
 	buff_stacks.erase(buff_tag)
 	buff_durations.erase(buff_tag)
+	print("address on remove buff: ", self)
+	var connections = on_end_buff.get_connections()
+	print("connections yes: ", connections)
 	on_end_buff.emit(effect)
 	
 	# stop timer if all buffs and debuffs grouped by SECONDS are inactive

@@ -6,7 +6,7 @@ func on_convert(data: PackedStringArray) -> Skill:
 	skill.name = data[0]
 	skill.cost = float(data[1])
 	var damage_modifier = Modifier.new("no_stat", "hp", "flat", float(data[2]))
-	skill.modifiers.append(damage_modifier)
+	skill.modifiers["dmg-mod"] = damage_modifier
 	skill.energy_type = data[3]
 	skill.description = data[4]
 	

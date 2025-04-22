@@ -12,10 +12,8 @@ class_name Skill
 # this would require a skill level table
 
 # these will apply stat modifications as soon as this skill is applied to a target
-@export var modifiers: Array[Modifier] = []
-
-# represent effects that can be given to an actor target(s)
-@export var status_effects: Array[StatusEffect] = []
+# key - modifier name string | value - Modifier reference
+@export var modifiers: Dictionary = {}
 
 # represents the buffs and debuffs that can be applied to a target
 @export var buffs: Array[StatusEffect] = []
@@ -24,3 +22,10 @@ class_name Skill
 func _init(p_cost = 0, p_name = "skill_resource"):
 	cost = p_cost
 	name = p_name
+
+func get_modifiers() -> Array[Modifier]:
+	var mods: Array[Modifier]
+	# odd way of ensuring these get converted to the type of element this array supports...
+	mods.assign(modifiers.values())
+	assert(mods != null)
+	return mods

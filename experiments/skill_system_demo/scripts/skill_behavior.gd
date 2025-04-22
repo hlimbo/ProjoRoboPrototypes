@@ -1,4 +1,4 @@
-extends Node
+extends RefCounted
 class_name SkillBehavior
 
 var buff_behaviors: Array[StatusEffectBehavior] = []
@@ -16,13 +16,14 @@ func add_status_effects(target: LiteActor, skill: Skill, buffs: Array[StatusEffe
 	for i in range(len(skill.buffs)):
 		var effect: StatusEffect = skill.buffs[i]
 		var behavior: StatusEffectBehavior = buffs[i]
-		behavior.initialize(effect, target.status_effects)
+		behavior.initialize(effect, target)
 		target.status_effects.add_buff(effect)
+		
 	
 	for i in range(len(skill.debuffs)):
 		var effect: StatusEffect = skill.debuffs[i]
 		var behavior: StatusEffectBehavior = debuffs[i]
-		behavior.initialize(effect, target.status_effects)
+		behavior.initialize(effect, target)
 		target.status_effects.add_debuff(effect)
 #endregion
 
@@ -35,7 +36,7 @@ func accumulate_raw_stat_changes(caster: LiteActor, target: LiteActor, skill: Sk
 	var toughness_modifier = Modifier.create_toughness()
 	var speed_modifier = Modifier.create_speed()
 	
-	for modifier in skill.modifiers:
+	for modifier in skill.get_modifiers():
 		var flat_modifier: Modifier = Utility.convert_percent_to_flat_modifier(caster.stat_attributes, modifier)
 		
 		match flat_modifier.stat_category_type_target:

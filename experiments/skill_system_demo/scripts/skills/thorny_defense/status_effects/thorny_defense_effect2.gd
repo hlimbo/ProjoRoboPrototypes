@@ -1,11 +1,36 @@
 extends StatusEffectBehavior
 class_name ThornyDefenseEffect2
 
+# example of applying an effect
 func on_start_effect(effect: StatusEffect):
-	print("starting: ", effect.name)
+	print("2. starting: ", effect.name)
 	
+	var tough_mod: Modifier = effect.get_modifier("toughness-mod")
+	var speed_mod: Modifier = effect.get_modifier("speed-mod")
+	
+	var new_toughness: float = self.target.stat_attributes.toughness.value + tough_mod.get_value()
+	var new_speed: float = self.target.stat_attributes.speed.value + speed_mod.get_value()
+	
+	self.target.stat_attributes.toughness.set_value(new_toughness)
+	self.target.stat_attributes.speed.set_value(new_speed)
+	self.target.stat_attributes.notify_all()
+	
+	# self.target.stat_attributes.toughness.value + effect.modifiers["toughness"].stat_value
+	# self.target.stat_attributes.speed.value - effect.modifiers["speed"].stat_value
+
+# example of undoing an effect
 func on_end_effect(effect: StatusEffect):
-	print("ending: ", effect.name)
+	print("2. ending: ", effect.name)
+	
+	var tough_mod: Modifier = effect.get_modifier("toughness-mod")
+	var speed_mod: Modifier = effect.get_modifier("speed-mod")
+	
+	var new_toughness: float = self.target.stat_attributes.toughness.value - tough_mod.get_value()
+	var new_speed: float = self.target.stat_attributes.speed.value - speed_mod.get_value()
+	
+	self.target.stat_attributes.toughness.set_value(new_toughness)
+	self.target.stat_attributes.speed.set_value(new_speed)
+	self.target.stat_attributes.notify_all()
 
 func on_process_effect(effect: StatusEffect):
 	pass

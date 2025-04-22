@@ -32,8 +32,8 @@ func goblin_punch() -> Skill:
 	gob_modifier2.stat_category_type_target = Constants.STAT_HP
 	gob_modifier2.stat_value = 80
 	gob_modifier2.modifier_type = Constants.MODIFIER_PERCENT
-	skill.modifiers.append(gob_modifier)
-	skill.modifiers.append(gob_modifier2)
+	skill.modifiers["gob-mod1"] = gob_modifier
+	skill.modifiers["gob-mod2"] = gob_modifier2
 	return skill
 
 func thorny_defense() -> Skill:
@@ -56,7 +56,8 @@ func thorny_defense() -> Skill:
 	dmg_modifier.stat_category_type_src = Constants.STAT_NONE
 	dmg_modifier.stat_category_type_target = Constants.STAT_HP
 	dmg_modifier.stat_value = 30
-	thorny_effect.modifiers.append(dmg_modifier)
+	dmg_modifier.is_positive = false
+	thorny_effect.modifiers["hp-flat-dmg"] = dmg_modifier
 	
 	# immediate modifiers - is treated as a status effect because the stat changes are temporary
 	var thorny_effect_stat_buffs = StatusEffect.new()
@@ -72,14 +73,16 @@ func thorny_defense() -> Skill:
 	def_modifier.stat_category_type_target = Constants.STAT_TOUGHNESS
 	def_modifier.modifier_type = Constants.MODIFIER_FLAT
 	def_modifier.stat_value = 50
+	def_modifier.is_positive = true
 	
 	var spd_modifier = Modifier.new()
 	spd_modifier.stat_category_type_src = Constants.STAT_NONE
 	spd_modifier.stat_category_type_target = Constants.STAT_SPEED
 	spd_modifier.modifier_type = Constants.MODIFIER_FLAT
-	spd_modifier.stat_value = -25
-	thorny_effect_stat_buffs.modifiers.append(def_modifier)
-	thorny_effect_stat_buffs.modifiers.append(spd_modifier)
+	spd_modifier.stat_value = 25
+	spd_modifier.is_positive = false
+	thorny_effect_stat_buffs.modifiers["toughness-mod"] = def_modifier
+	thorny_effect_stat_buffs.modifiers["speed-mod"] = spd_modifier
 	
 	skill.buffs.append(thorny_effect)
 	skill.buffs.append(thorny_effect_stat_buffs)
@@ -94,7 +97,7 @@ func system_shock() -> Skill:
 	skill.cost = 12
 	
 	var dmg_mod = Modifier.new(Constants.STAT_NONE, Constants.STAT_HP, Constants.MODIFIER_FLAT, -12)
-	skill.modifiers.append(dmg_mod)
+	skill.modifiers["dmg"] = dmg_mod
 	
 	var debuff = StatusEffect.new()
 	debuff.name = "System Shock"
@@ -114,7 +117,7 @@ func burn() -> Skill:
 	
 	var dmg_mod = Modifier.new(Constants.STAT_NONE, Constants.STAT_HP, Constants.MODIFIER_FLAT, 6)
 	dmg_mod.is_positive = false
-	skill.modifiers.append(dmg_mod)
+	skill.modifiers["dmg-mod"] = dmg_mod
 	
 	var debuff = StatusEffect.new()
 	debuff.name = "Burn"
@@ -124,7 +127,7 @@ func burn() -> Skill:
 	debuff.effect_type = "negative"
 	var burn_mod = Modifier.new(Constants.STAT_NONE, Constants.STAT_HP, Constants.MODIFIER_FLAT, 1)
 	burn_mod.is_positive = false
-	debuff.modifiers.append(burn_mod)
+	debuff.modifiers["burn-mod"] = burn_mod
 	skill.debuffs.append(debuff)
 	
 	return skill
@@ -134,7 +137,7 @@ func heal() -> Skill:
 	skill.name = "Heal"
 	skill.cost = 6
 	var heal_mod = Modifier.new(Constants.STAT_NONE, Constants.STAT_HP, Constants.MODIFIER_FLAT, 20)
-	skill.modifiers.append(heal_mod)
+	skill.modifiers["heal-mod"] = heal_mod
 	
 	return skill 
 	
@@ -148,7 +151,7 @@ func health_regen() -> Skill:
 	health_regen.duration = 30
 	health_regen.effect_type = "positive"
 	var heal_mod = Modifier.new(Constants.STAT_SPEED, Constants.STAT_HP, Constants.MODIFIER_PERCENT, 2)
-	health_regen.modifiers.append(heal_mod)
+	health_regen.modifiers["heal-mod"] = heal_mod
 	skill.buffs.append(health_regen)
 	return skill
 
@@ -160,7 +163,7 @@ func corkscrew_slash() -> Skill:
 	skill.cost = 4
 	
 	var dmg_mod = Modifier.new(Constants.STAT_NONE, Constants.STAT_HP, Constants.MODIFIER_FLAT, 36)
-	skill.modifiers.append(dmg_mod)
+	skill.modifiers["dmg-mod"] = dmg_mod
 	return skill
 
 #endregion
@@ -197,7 +200,8 @@ func execute_thorny_defense(skill: Skill) -> ModifierDelta:
 	
 	var thorny_def_effect = ThornyDefenseEffect.new()
 	var thorny_def_effect2 = ThornyDefenseEffect2.new()
-	thorny_def.add_status_effects(player2, skill, [thorny_def_effect, thorny_def_effect2])
+	var effects: Array[StatusEffectBehavior] = [thorny_def_effect, thorny_def_effect2]
+	thorny_def.add_status_effects(player2, skill, effects)
 	
 	return net_deltas
 
@@ -222,53 +226,8 @@ func _ready():
 	player1.stat_attributes.load_stats([999, 400, 100, 100, 100])
 	player2.stat_attributes.load_stats([998, 404, 100, 100, 100])
 	
-	## calculate buff modifier -- flat example
-	#var apply_str_speed_buffs = func(fx: StatusEffect):
-		#print("applying buffs")
-		#player_tag = "player1"
-		#for md in fx.get_modifiers():
-			#if md.stat_category_type_target == Constants.STAT_STRENGTH:
-				#var new_val: float = player1.stat_attributes.strength.value + md.stat_value
-				#player1.stat_attributes.set_strength(new_val)
-			#elif md.stat_category_type_target == Constants.STAT_SPEED:
-				#var new_val: float = player1.stat_attributes.speed.value + md.stat_value
-				#player1.stat_attributes.set_speed(new_val)
-	#
-	#var undo_str_speed_buffs = func(fx: StatusEffect):
-		#print("undoing buffs")
-		#player_tag = "player1"
-		#for md in fx.get_modifiers():
-			#if md.stat_category_type_target == Constants.STAT_STRENGTH:
-				#var new_val: float = player1.stat_attributes.strength.value - md.stat_value
-				#player1.stat_attributes.set_strength(new_val)
-			#elif md.stat_category_type_target == Constants.STAT_SPEED:
-				#var new_val: float = player1.stat_attributes.speed.value - md.stat_value
-				#player1.stat_attributes.set_speed(new_val)
-	#
-	#player1.status_effects.on_start_buff.connect(apply_str_speed_buffs)
-	#player1.status_effects.on_end_buff.connect(undo_str_speed_buffs)
-#
-	## zero modifiers
-	#var buff = StatusEffect.new()
-	#buff.name = "Thorny Defense"
-	#buff.duration_type = "SECONDS"
-	#buff.duration = 4
-	#buff.can_affect_self = false
-	#
-	## 2 modifiers
-	#var effect = StatusEffect.new()
-	#effect.name = "Strength up/Spd Down"
-	#effect.duration_type = "SECONDS"
-	#effect.duration = 3
-	#var mod1 = Modifier.new(Constants.STAT_NONE, Constants.STAT_STRENGTH, Constants.MODIFIER_FLAT, 20)
-	#var mod2 = Modifier.new(Constants.STAT_NONE, Constants.STAT_SPEED, Constants.MODIFIER_FLAT, 5)
-	#effect.modifiers.append(mod1)
-	#effect.modifiers.append(mod2)
-	#
-	## add to keep track of buff lifetime
-	#player1.status_effects.on_start_buff.connect(player1_view.status_effect_loader.on_add_buff)
-	#player1.status_effects.on_start_debuff.connect(player1_view.status_effect_loader.on_add_debuff)
-	#player1.status_effects.on_end_buff.connect(player1_view.status_effect_loader.on_remove_buff)
-	#player1.status_effects.on_end_debuff.connect(player1_view.status_effect_loader.on_remove_debuff)
-	#player1.status_effects.add_buff(buff)
-	#player1.status_effects.add_buff(effect)
+	player2.status_effects.on_end_buff.connect(on_end_buff)
+	
+
+func on_end_buff(effect: StatusEffect):
+	print("buff ended: ", effect.name)

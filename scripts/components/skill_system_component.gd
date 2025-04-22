@@ -87,7 +87,7 @@ func activate_skill(skill_name: String, target: Actor) -> Array[float]:
 	var toughness_delta: float = 0
 	var speed_delta: float = 0
 
-	for modifier in skill.modifiers:
+	for modifier in skill.get_modifiers():
 		var flat_modifier: Modifier = Utility.convert_percent_to_flat_modifier(skill_owner.current_stat_attributes, modifier)
 		
 		match modifier.stat_category_type_target:

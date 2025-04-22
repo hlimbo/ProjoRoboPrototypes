@@ -1,34 +1,25 @@
-extends Node
+# Base class that is used as a framework to help define
+# how different kinds of status effects should behave
+extends RefCounted
 class_name StatusEffectBehavior
-# purpose -> to process any kind of status effect
-# so that more can be pumped out quickly in an organized fashion
-
-# what we need
-# status effect
-# target affected by the status
-#   -> stats
-
-# logic
-# if effect matches the name we look for process it
-# otherwise ignore it....
-# can I do better?
-# can polymorphism be used here to handle process any kind of effects?
-
-# zoom in
-# status effect
-# status_effects_component - to connect whichever
-# signal that this status effect will handle
 
 # used to identify which status_effect to handle
 var status_effect_name: String
+var target: LiteActor
 
-func initialize(status_effect: StatusEffect, status_effects_component: StatusEffectsComponent):
+func initialize(status_effect: StatusEffect, _target: LiteActor):
 	status_effect_name = status_effect.name
+	target = _target
+	var status_effects_component = target.status_effects
 	
 	# One Shot Status Effects can be defined in on_start callback
 	if status_effect.effect_type == "positive":
 		status_effects_component.on_start_buff.connect(on_start)
-		status_effects_component.on_end_buff.connect(on_end)
+		# why does this only work with a lambda function but can't be used directly?????
+		status_effects_component.on_end_buff.connect(func(effect: StatusEffect): 
+			on_end(effect)
+		)
+		# status_effects_component.on_end_buff.connect(on_end) # there is something wrong with this one...
 	elif status_effect.effect_type == "negative":
 		status_effects_component.on_start_debuff.connect(on_start)
 		status_effects_component.on_end_debuff.connect(on_end)
@@ -56,6 +47,7 @@ func process_stat_changes(effect: StatusEffect):
 	if effect.name == status_effect_name:
 		on_process_effect(effect)
 
+#region overridable functions for classes that will derive from this class
 # Can manipulate stat values here that are expected to only change once here
 func on_start_effect(effect: StatusEffect):
 	pass
@@ -68,3 +60,5 @@ func on_end_effect(effect: StatusEffect):
 # if duration_type == SECONDS, this code will process once per second
 func on_process_effect(effect: StatusEffect):
 	pass
+	
+#endregion

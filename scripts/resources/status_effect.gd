@@ -16,8 +16,8 @@ class_name StatusEffect
 # does this affect current owner of status effect or others?
 @export var can_affect_self: bool = true
 
-# list of modifiers that will change various stat attributes
-@export var modifiers: Array[Modifier] = []
+# key - modifier name string | value - Modifier reference
+@export var modifiers: Dictionary = {}
 
 # used to determine if the status effect is the following:
 # 1. positive
@@ -28,7 +28,14 @@ class_name StatusEffect
 @export var stack_cap: int
 
 func get_modifiers() -> Array[Modifier]:
-	return modifiers
-	
+	var mods = modifiers.values() as Array[Modifier]
+	assert(mods != null)
+	return mods
+
+func get_modifier(mod_name: String) -> Modifier:
+	var modifier = modifiers[mod_name] as Modifier
+	assert(modifier != null)
+	return modifier
+
 func _init(name = "Placeholder Effect Name"):
 	self.name = name

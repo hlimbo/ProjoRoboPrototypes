@@ -176,7 +176,7 @@ func on_start_buff(status_effect: StatusEffect):
 		var toughness_delta: float = 0
 		var speed_delta: float = 0
 
-		for modifier in status_effect.modifiers:
+		for modifier in status_effect.get_modifiers():
 			match modifier.stat_category_type_target:
 				Constants.STAT_TOUGHNESS:
 					toughness_delta += modifier.stat_value
@@ -200,7 +200,7 @@ func on_end_buff(status_effect: StatusEffect):
 		print("restoring stats back naively")
 		var toughness_modifier: Modifier
 		var speed_modifier: Modifier
-		for modifier in status_effect.modifiers:
+		for modifier in status_effect.get_modifiers():
 			if modifier.stat_category_type_target == Constants.STAT_TOUGHNESS:
 				toughness_modifier = modifier
 			elif modifier.stat_category_type_target == Constants.STAT_SPEED:

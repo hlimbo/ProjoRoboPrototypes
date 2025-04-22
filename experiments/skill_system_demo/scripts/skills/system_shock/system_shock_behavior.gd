@@ -1,0 +1,2 @@
+extends SkillBehavior
+class_name SystemShockBehavior

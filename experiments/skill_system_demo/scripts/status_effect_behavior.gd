@@ -7,9 +7,10 @@ class_name StatusEffectBehavior
 var status_effect_name: String
 var target: LiteActor
 
-func _notification(what: int):
-	if what == NOTIFICATION_PREDELETE:
-		print("StatusEffectBehavior: %s is going to be deleted" % status_effect_name)
+# Uncomment to verify if the StatusEffectBehavior is being freed up
+#func _notification(what: int):
+	#if what == NOTIFICATION_PREDELETE:
+		#print("StatusEffectBehavior: %s is going to be deleted" % status_effect_name)
 
 func initialize(status_effect: StatusEffect, _target: LiteActor):
 	status_effect_name = status_effect.name
@@ -20,7 +21,6 @@ func initialize(status_effect: StatusEffect, _target: LiteActor):
 	if status_effect.effect_type == "positive":
 		status_effects_component.on_start_buff.connect(on_start)
 		status_effects_component.on_end_buff.connect(on_end)
-		
 	elif status_effect.effect_type == "negative":
 		status_effects_component.on_start_debuff.connect(on_start)
 		status_effects_component.on_end_debuff.connect(on_end)
@@ -39,12 +39,10 @@ func initialize(status_effect: StatusEffect, _target: LiteActor):
 func on_start(effect: StatusEffect):
 	if effect.name == status_effect_name:
 		on_start_effect(effect)
-		#on_start_effect2.emit(effect)
 	
 func on_end(effect: StatusEffect):
 	if effect.name == status_effect_name:
 		on_end_effect(effect)
-		#on_end_effect2.emit(effect)
 
 func process_stat_changes(effect: StatusEffect):
 	if effect.name == status_effect_name:

@@ -1,11 +1,8 @@
 extends StatusEffectBehavior
 class_name BurnEffect
 
-func on_start_effect(effect: StatusEffect):
-	print("starting: ", effect.name)
-	
-func on_end_effect(effect: StatusEffect):
-	print("ending: ", effect.name)
-	
 func on_process_effect(effect: StatusEffect):
-	pass
+	var dmg_mod: Modifier = effect.get_modifier("burn-mod")
+	print("burn effect applied dealing %f dmg" % dmg_mod.stat_value)
+	var new_hp = target.stat_attributes.hp.value + dmg_mod.get_value()
+	target.stat_attributes.set_hp(new_hp)

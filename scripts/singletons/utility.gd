@@ -136,6 +136,7 @@ func convert_percent_to_flat_modifier(stat_attr_set: StatAttributeSet, modifier:
 		return modifier
 	
 	var flat_modifier = Modifier.new(Constants.STAT_NONE, modifier.stat_category_type_target, Constants.MODIFIER_FLAT, 0)
+	flat_modifier.is_positive = modifier.is_positive
 	var percent: float = modifier.stat_value / 100
 	
 	match modifier.stat_category_type_src:

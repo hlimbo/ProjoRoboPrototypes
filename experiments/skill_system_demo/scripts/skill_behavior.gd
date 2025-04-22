@@ -2,19 +2,23 @@ extends RefCounted
 class_name SkillBehavior
 
 var buff_behaviors: Array[StatusEffectBehavior] = []
+var debuff_behaviors: Array[StatusEffectBehavior] = []
 
 func _notification(what: int):
+	# equivalent to a deconstructor in C++
+	# gets called when all references to this object reaches 0
 	if what == NOTIFICATION_PREDELETE:
-		print("I am being deleted!")
+		# used to remove references for buff behaviors to ensure
+		# their NOTIFICATION_PREDELETE event gets called
 		buff_behaviors.clear()
+		debuff_behaviors.clear()
 
-#region NON-overridable functions
 func apply_cost(caster: LiteActor, skill: Skill):
 	var energy: float = caster.stat_attributes.energy.value - skill.cost
 	caster.stat_attributes.set_energy(energy)
 
 # binding the functions to the data
-func add_status_effects(target: LiteActor, skill: Skill, buffs: Array[StatusEffectBehavior] = [], debuffs: Array[StatusEffectBehavior] = []):
+func bind_status_effects(target: LiteActor, skill: Skill, buffs: Array[StatusEffectBehavior] = [], debuffs: Array[StatusEffectBehavior] = []):
 	assert(len(skill.buffs) == len(buffs))
 	assert(len(skill.debuffs) == len(debuffs))
 	
@@ -23,19 +27,27 @@ func add_status_effects(target: LiteActor, skill: Skill, buffs: Array[StatusEffe
 		var behavior: StatusEffectBehavior = buffs[i]
 		behavior.initialize(effect, target)
 		buff_behaviors.append(behavior)
-		#target.status_effects.add_buff(effect)
 		
 	
 	for i in range(len(skill.debuffs)):
 		var effect: StatusEffect = skill.debuffs[i]
 		var behavior: StatusEffectBehavior = debuffs[i]
 		behavior.initialize(effect, target)
-		#target.status_effects.add_debuff(effect)
-#endregion
+		debuff_behaviors.append(behavior)
 
 func start_status_effects(target: LiteActor, skill: Skill):
-	for i in range(len(skill.buffs)):
-		target.status_effects.add_buff(skill.buffs[i])
+	for buff in skill.buffs:
+		target.status_effects.add_buff(buff)
+	
+	for debuff in skill.debuffs:
+		target.status_effects.add_debuff(debuff)
+	
+func end_status_effects(target: LiteActor, skill: Skill):
+	for buff in skill.buffs:
+		target.status_effects.remove_buff(buff)
+	
+	for debuff in skill.debuffs:
+		target.status_effects.remove_debuff(debuff)
 
 # process changes to stats gets executed as soon as the skill triggers on a given frame in the game loop
 func accumulate_raw_stat_changes(caster: LiteActor, target: LiteActor, skill: Skill) -> ModifierDelta:
@@ -51,17 +63,33 @@ func accumulate_raw_stat_changes(caster: LiteActor, target: LiteActor, skill: Sk
 		
 		match flat_modifier.stat_category_type_target:
 			Constants.STAT_HP:
-				hp_modifier.stat_value += flat_modifier.stat_value
+				hp_modifier.stat_value += flat_modifier.get_value()
 			Constants.STAT_ENERGY:
-				energy_modifier.stat_value += flat_modifier.stat_value
+				energy_modifier.stat_value += flat_modifier.get_value()
 			Constants.STAT_STRENGTH:
-				strength_modifier.stat_value += flat_modifier.stat_value
+				strength_modifier.stat_value += flat_modifier.get_value()
 			Constants.STAT_TOUGHNESS:
-				toughness_modifier.stat_value += flat_modifier.stat_value
+				toughness_modifier.stat_value += flat_modifier.get_value()
 			Constants.STAT_SPEED:
-				speed_modifier.stat_value += flat_modifier.stat_value
+				speed_modifier.stat_value += flat_modifier.get_value()
+	
+	# check signs of each attribute to ensure the correct addition/subtraction operation can be made later down the line
+	hp_modifier = convert_to_absolute_value(hp_modifier)
+	energy_modifier = convert_to_absolute_value(energy_modifier)
+	strength_modifier = convert_to_absolute_value(strength_modifier)
+	toughness_modifier = convert_to_absolute_value(toughness_modifier)
+	speed_modifier = convert_to_absolute_value(speed_modifier)
 
 	return ModifierDelta.new(hp_modifier, energy_modifier, strength_modifier, toughness_modifier, speed_modifier)
+
+func convert_to_absolute_value(modifier: Modifier) -> Modifier:
+	if modifier.stat_value > 0:
+		modifier.is_positive = true
+	else:
+		modifier.is_positive = false
+		modifier.stat_value = absf(modifier.stat_value)
+		
+	return modifier
 
 func compute_stat_changes(target: LiteActor, raw_deltas: ModifierDelta) -> ModifierDelta:
 	assert(raw_deltas.hp.modifier_type == Constants.MODIFIER_FLAT)

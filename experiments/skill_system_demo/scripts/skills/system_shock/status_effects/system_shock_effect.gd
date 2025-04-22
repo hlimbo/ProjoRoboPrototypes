@@ -1,0 +1,2 @@
+extends StatusEffectBehavior
+class_name SystemShockEffect

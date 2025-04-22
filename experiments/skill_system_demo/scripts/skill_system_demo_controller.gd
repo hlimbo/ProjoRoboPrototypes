@@ -162,7 +162,7 @@ func corkscrew_slash() -> Skill:
 	skill.description = "Applies a whimsical slash"
 	skill.cost = 4
 	
-	var dmg_mod = Modifier.new(Constants.STAT_NONE, Constants.STAT_HP, Constants.MODIFIER_FLAT, 36)
+	var dmg_mod = Modifier.new(Constants.STAT_NONE, Constants.STAT_HP, Constants.MODIFIER_FLAT, 126)
 	skill.modifiers["dmg-mod"] = dmg_mod
 	return skill
 
@@ -181,65 +181,114 @@ func load_skills(player: CharacterBlock):
 	player.skills_container.load_skills(skills)
 	player.skills_container.on_cast_pressed.connect(on_cast_pressed1)
 
-func execute_goblin_punch(skill: Skill) -> ModifierDelta:
-	# Goblin Punch
+
+# 1. Construction Phase
+func goblin_punch_skill(skill: Skill) -> GoblinPunchBehavior:
 	var goblin_punch = GoblinPunchBehavior.new()
-	goblin_punch.apply_cost(player1, skill)
-	var raw_deltas: ModifierDelta = goblin_punch.accumulate_raw_stat_changes(player1, player2, skill)
-	var net_deltas: ModifierDelta = goblin_punch.compute_stat_changes(player2, raw_deltas)
-	goblin_punch.apply_stat_changes(player2, net_deltas)
-	
-	return net_deltas
+	# bind any status effects that this skill will operate on
+	return goblin_punch
 
-#var thorny_def = ThornyDefenseBehavior.new()
-#var thorny_def_effect = ThornyDefenseEffect.new()
-#var thorny_def_effect2 = ThornyDefenseEffect2.new()
-
-# 1. Construction Phase <- all the dependencies of the object go here
 func thorny_defense_skill(skill: Skill) -> ThornyDefenseBehavior:
 	var thorny_def = ThornyDefenseBehavior.new()
 	var thorny_def_effect = ThornyDefenseEffect.new()
 	var thorny_def_effect2 = ThornyDefenseEffect2.new()
 	
 	var effects: Array[StatusEffectBehavior] = [thorny_def_effect, thorny_def_effect2]
-	thorny_def.add_status_effects(player1, skill, effects)
+	thorny_def.bind_status_effects(player1, skill, effects)
 	
 	return thorny_def
 
-# 2. Operation Phase <- when object is ready to be manipulated with
+func system_shock_skill(skill: Skill) -> SystemShockBehavior:
+	var system_shock = SystemShockBehavior.new()
+	var system_shock_effect = SystemShockEffect.new()
+	system_shock.bind_status_effects(player1, skill, [], [system_shock_effect])
+	return system_shock
 
-#func execute_thorny_defense(skill: Skill) -> ModifierDelta:
-	#thorny_def.apply_cost(player1, skill)
-	#var raw_deltas: ModifierDelta = thorny_def.accumulate_raw_stat_changes(player1, player2, skill)
-	#var net_deltas: ModifierDelta = thorny_def.compute_stat_changes(player2, raw_deltas)
-	#thorny_def.apply_stat_changes(player2, net_deltas)
-	#
-	#var effects: Array[StatusEffectBehavior] = [thorny_def_effect, thorny_def_effect2]
-	#thorny_def.add_status_effects(player2, skill, effects)
-	#
-	#return net_deltas
+func heal_skill(skill: Skill) -> HealBehavior:
+	var heal = HealBehavior.new()
+	
+	return heal
+	
+func heal_regen_skill(skill: Skill) -> HealRegenBehavior:
+	var heal_regen = HealRegenBehavior.new()
+	var heal_regen_effect = HealRegenEffect.new()	
+	heal_regen.bind_status_effects(player2, skill, [heal_regen_effect])
+	
+	return heal_regen
+	
+func burn_skill(skill: Skill) -> BurnBehavior:
+	var burn = BurnBehavior.new()
+	var burn_effect = BurnEffect.new()
+	burn.bind_status_effects(player2, skill, [], [burn_effect])
+	
+	return burn
+	
+func corkscrew_slash_skill(skill: Skill) -> CorkscrewSlashBehavior:
+	var css = CorkscrewSlashBehavior.new()
+	return css
 
+# can be stored in a skill registry of some sort e.g. dictionary 
+# whose job is to instantiate new skills during runtime to get processed
 var thorny_defense_be: ThornyDefenseBehavior
+var goblin_punch_be: GoblinPunchBehavior
+var system_shock_be: SystemShockBehavior
+var heal_be: HealBehavior
+var heal_regen_be: HealRegenBehavior
+var burn_be: BurnBehavior
+var corkscrew_slash_be: CorkscrewSlashBehavior
 
 # caster, target, skill
 func on_cast_pressed1(skill: Skill):
 	print("handling skill: ", skill.name)
 	
-	# var net_deltas: ModifierDelta = execute_goblin_punch(skill)
-	thorny_defense_be = thorny_defense_skill(skill)
-	# var net_deltas: ModifierDelta = execute_thorny_defense(skill)
+	## Goblin Punch
+	#goblin_punch_be = goblin_punch_skill(skill)
+	#goblin_punch_be.apply_cost(player1, skill)
+	#var raw_deltas: ModifierDelta = goblin_punch_be.accumulate_raw_stat_changes(player1, player2, skill)
+	#var net_deltas: ModifierDelta = goblin_punch_be.compute_stat_changes(player2, raw_deltas)
+	#goblin_punch_be.apply_stat_changes(player2, net_deltas)
 	
-	var conn = player1.status_effects.on_start_buff.get_connections()
-	var conn2 = player1.status_effects.on_end_buff.get_connections()
-	print("len conn: ", len(conn))
-	print("len conn2: ", len(conn2))
-	print(conn)
-	print(conn2)
+	## Thorny Defense
+	#thorny_defense_be = thorny_defense_skill(skill)
+	#var raw_deltas: ModifierDelta = thorny_defense_be.accumulate_raw_stat_changes(player1, player1, skill)
+	#var net_deltas: ModifierDelta = thorny_defense_be.compute_stat_changes(player1, raw_deltas)
+	#thorny_defense_be.apply_stat_changes(player1, net_deltas)
+	#thorny_defense_be.start_status_effects(player1, skill)
 	
-	thorny_defense_be.start_status_effects(player1, skill)
+	## System Shock
+	#system_shock_be = system_shock_skill(skill)
+	#var raw_deltas: ModifierDelta = system_shock_be.accumulate_raw_stat_changes(player1, player2, skill)
+	#var net_deltas: ModifierDelta = system_shock_be.compute_stat_changes(player2, raw_deltas)
+	#system_shock_be.apply_stat_changes(player2, net_deltas)
+	
+	## Heal
+	#heal_be = heal_skill(skill)
+	#var raw_deltas: ModifierDelta = heal_be.accumulate_raw_stat_changes(player1, player2, skill)
+	#var net_deltas: ModifierDelta = raw_deltas
+	#heal_be.apply_stat_changes(player2, raw_deltas)
+	
+	## Heal Regen
+	#heal_regen_be = heal_regen_skill(skill)
+	#var raw_deltas: ModifierDelta = heal_regen_be.accumulate_raw_stat_changes(player1, player2, skill)
+	#var net_deltas: ModifierDelta = raw_deltas
+	#heal_regen_be.apply_stat_changes(player2, net_deltas)
+	#heal_regen_be.start_status_effects(player2, skill)
+	
+	## Burn
+	#burn_be = burn_skill(skill)
+	#var raw_deltas: ModifierDelta = burn_be.accumulate_raw_stat_changes(player1, player2, skill)
+	#var net_deltas: ModifierDelta = burn_be.compute_stat_changes(player2, raw_deltas)
+	#burn_be.apply_stat_changes(player2, net_deltas)
+	#burn_be.start_status_effects(player2, skill)
+	
+	# Corkscrew Slash
+	corkscrew_slash_be = corkscrew_slash_skill(skill)
+	var raw_deltas: ModifierDelta = corkscrew_slash_be.accumulate_raw_stat_changes(player1, player2, skill)
+	var net_deltas: ModifierDelta = corkscrew_slash_be.compute_stat_changes(player2, raw_deltas)
+	corkscrew_slash_be.apply_stat_changes(player2, net_deltas)
 	
 	# update stat deltas
-	# stat_deltas.set_deltas(net_deltas.hp.get_value(), net_deltas.energy.get_value(), net_deltas.strength.get_value(), net_deltas.toughness.get_value(), net_deltas.speed.get_value())
+	stat_deltas.set_deltas(net_deltas.hp.get_value(), net_deltas.energy.get_value(), net_deltas.strength.get_value(), net_deltas.toughness.get_value(), net_deltas.speed.get_value())
 
 func update_battle_console(player: CharacterBlock):
 	pass
@@ -250,7 +299,7 @@ func _ready():
 	load_skills(player2_view)
 	
 	player1.stat_attributes.load_stats([999, 400, 100, 100, 100])
-	player2.stat_attributes.load_stats([998, 404, 100, 100, 100])
+	player2.stat_attributes.load_stats([998, 404, 100, 100, 150])
 	
 	# player2.status_effects.on_end_buff.connect(on_end_buff)
 	

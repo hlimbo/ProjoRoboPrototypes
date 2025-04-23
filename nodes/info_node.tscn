@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://cx3vhulcggapg"]
 
-[ext_resource type="Script" path="res://scripts/info_display.gd" id="1_cgbj1"]
+[ext_resource type="Script" uid="uid://cs2g5k501ftul" path="res://scripts/info_display.gd" id="1_cgbj1"]
 
 [node name="InfoNode" type="VBoxContainer"]
 anchors_preset = 5

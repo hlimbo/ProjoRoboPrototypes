@@ -1,19 +1,19 @@
 [gd_scene load_steps=27 format=3 uid="uid://c53jupi7wu1tv"]
 
 [ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="1_ygnsq"]
-[ext_resource type="Script" path="res://experiments/battle_encounter_transitions/battle_encounter_transitions.gd" id="2_6o5du"]
-[ext_resource type="Shader" path="res://experiments/battle_encounter_transitions/scale_rect_transition.gdshader" id="2_moes1"]
-[ext_resource type="Script" path="res://experiments/battle_encounter_transitions/viewport_image_loader.gd" id="2_ww8dv"]
-[ext_resource type="Script" path="res://experiments/battle_encounter_transitions/shader_scale_transition_controller.gd" id="3_4lqc0"]
-[ext_resource type="Script" path="res://experiments/battle_encounter_transitions/swirl_controller.gd" id="3_lbkh3"]
-[ext_resource type="Shader" path="res://experiments/battle_encounter_transitions/swirl_effect.gdshader" id="4_6keqw"]
-[ext_resource type="Shader" path="res://experiments/battle_encounter_transitions/cinematic_shader.gdshader" id="5_7gg4m"]
+[ext_resource type="Script" uid="uid://c0feiokwaq4m1" path="res://experiments/battle_encounter_transitions/battle_encounter_transitions.gd" id="2_6o5du"]
+[ext_resource type="Shader" uid="uid://bjhw0aphnrpvq" path="res://experiments/battle_encounter_transitions/scale_rect_transition.gdshader" id="2_moes1"]
+[ext_resource type="Script" uid="uid://q5qjqlgm64vc" path="res://experiments/battle_encounter_transitions/viewport_image_loader.gd" id="2_ww8dv"]
+[ext_resource type="Script" uid="uid://cesrx82w2rkab" path="res://experiments/battle_encounter_transitions/shader_scale_transition_controller.gd" id="3_4lqc0"]
+[ext_resource type="Script" uid="uid://cklhurferyxjd" path="res://experiments/battle_encounter_transitions/swirl_controller.gd" id="3_lbkh3"]
+[ext_resource type="Shader" uid="uid://duxvlnrf78bxf" path="res://experiments/battle_encounter_transitions/swirl_effect.gdshader" id="4_6keqw"]
+[ext_resource type="Shader" uid="uid://d0hx0tftx3nlo" path="res://experiments/battle_encounter_transitions/cinematic_shader.gdshader" id="5_7gg4m"]
 [ext_resource type="Texture2D" uid="uid://c5lj6bj20m4wy" path="res://experiments/battle_encounter_transitions/test-image.png" id="5_8pc31"]
-[ext_resource type="Shader" path="res://experiments/battle_encounter_transitions/polar_coordinates.gdshader" id="5_cylh0"]
+[ext_resource type="Shader" uid="uid://dblnyf1chf8ak" path="res://experiments/battle_encounter_transitions/polar_coordinates.gdshader" id="5_cylh0"]
 [ext_resource type="Texture2D" uid="uid://gr018a87bdam" path="res://experiments/battle_encounter_transitions/Wow202024-10-292021-05-18.png" id="6_d8rm1"]
 [ext_resource type="Texture2D" uid="uid://d0ttocvhpdomy" path="res://experiments/battle_encounter_transitions/ballroom1.PNG" id="6_t5qsh"]
-[ext_resource type="Shader" path="res://experiments/battle_encounter_transitions/flower_petal.gdshader" id="8_ud3sp"]
-[ext_resource type="Shader" path="res://experiments/battle_encounter_transitions/sine_waves2.gdshader" id="13_n0x3n"]
+[ext_resource type="Shader" uid="uid://cg1e5fhjmkd5e" path="res://experiments/battle_encounter_transitions/flower_petal.gdshader" id="8_ud3sp"]
+[ext_resource type="Shader" uid="uid://dy2rgn33spl0r" path="res://experiments/battle_encounter_transitions/sine_waves2.gdshader" id="13_n0x3n"]
 
 [sub_resource type="Animation" id="Animation_f458w"]
 length = 0.001
@@ -48,8 +48,8 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_q7ker"]
 _data = {
-"RESET": SubResource("Animation_f458w"),
-"green_move": SubResource("Animation_74m0p")
+&"RESET": SubResource("Animation_f458w"),
+&"green_move": SubResource("Animation_74m0p")
 }
 
 [sub_resource type="Animation" id="Animation_jlith"]
@@ -156,8 +156,8 @@ tracks/3/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_2wb1r"]
 _data = {
-"RESET": SubResource("Animation_jlith"),
-"scale_ui_transition": SubResource("Animation_xfcuf")
+&"RESET": SubResource("Animation_jlith"),
+&"scale_ui_transition": SubResource("Animation_xfcuf")
 }
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_873e1"]

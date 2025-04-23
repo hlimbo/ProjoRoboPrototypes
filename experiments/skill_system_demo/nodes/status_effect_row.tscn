@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://daandjufytals"]
 
-[ext_resource type="Script" path="res://experiments/skill_system_demo/scripts/status_effect_row.gd" id="1_devvt"]
+[ext_resource type="Script" uid="uid://chm75ndom1rmr" path="res://experiments/skill_system_demo/scripts/status_effect_row.gd" id="1_devvt"]
 [ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="2_gxq4l"]
 
 [node name="StatusEffectRow" type="HBoxContainer"]

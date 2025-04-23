@@ -5,7 +5,7 @@
 [ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="3_uskij"]
 [ext_resource type="Texture2D" uid="uid://c4n27m1y8nuj4" path="res://assets/AttrAndElementsIcons_v1/Icons/icons/attack_icon.tres" id="4_165pl"]
 [ext_resource type="Animation" uid="uid://dldsclspf7ghu" path="res://experiments/battle_ui_transitions/animations/active_party_member/RESET.res" id="4_bsjmo"]
-[ext_resource type="Script" path="res://experiments/battle_ui_transitions/act_menu_controller.gd" id="4_hg68l"]
+[ext_resource type="Script" uid="uid://cmlqs1jqpnkpe" path="res://experiments/battle_ui_transitions/act_menu_controller.gd" id="4_hg68l"]
 [ext_resource type="Texture2D" uid="uid://bgp7ddyej8auc" path="res://assets/AttrAndElementsIcons_v1/Icons/icons/defend_icon.tres" id="5_7dvmh"]
 [ext_resource type="AnimationLibrary" uid="uid://bl1k0g1s486k6" path="res://experiments/battle_ui_transitions/animations/action_menu/action_menu_ui_animations.res" id="5_12el5"]
 [ext_resource type="AnimationLibrary" uid="uid://beo3ojbhu7443" path="res://experiments/battle_ui_transitions/animations/active_party_member/active_party_member_ui_animations.res" id="5_e7jt6"]
@@ -14,11 +14,11 @@
 [ext_resource type="AnimationLibrary" uid="uid://d3dgmm6c8vq4f" path="res://experiments/battle_ui_transitions/animations/target_menu/target_menu_ui_animations.res" id="8_h3e7e"]
 [ext_resource type="AnimationLibrary" uid="uid://ox4h14lhirdg" path="res://experiments/battle_ui_transitions/animations/skill_menu/skill_menu.res" id="8_shmh4"]
 [ext_resource type="Texture2D" uid="uid://cinhe4f0yfurq" path="res://assets/kenney_fantasy-ui-borders/PNG/Default/Border/panel-border-023.png" id="8_ykkmb"]
-[ext_resource type="Script" path="res://experiments/battle_ui_transitions/ui_animation_tool.gd" id="14_5asd0"]
+[ext_resource type="Script" uid="uid://bsw7xd6364da4" path="res://experiments/battle_ui_transitions/ui_animation_tool.gd" id="14_5asd0"]
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_leoyl"]
 _data = {
-"RESET": ExtResource("4_bsjmo")
+&"RESET": ExtResource("4_bsjmo")
 }
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_u6dfk"]

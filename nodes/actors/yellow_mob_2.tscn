@@ -1,7 +1,7 @@
 [gd_scene load_steps=20 format=3 uid="uid://blks44s8mvnag"]
 
-[ext_resource type="Shader" path="res://shaders/transparent_fade.gdshader" id="1_ydi0w"]
-[ext_resource type="Script" path="res://scripts/actor.gd" id="2_5ud6m"]
+[ext_resource type="Shader" uid="uid://d3muq3lhqa4dk" path="res://shaders/transparent_fade.gdshader" id="1_ydi0w"]
+[ext_resource type="Script" uid="uid://brmton2cko0la" path="res://scripts/actor.gd" id="2_5ud6m"]
 [ext_resource type="PackedScene" uid="uid://b6jorugo4ilds" path="res://nodes/monsters/parts/arm_types/arm_yellowE.tscn" id="3_x4dlr"]
 [ext_resource type="PackedScene" uid="uid://m8aj8e6g21ni" path="res://nodes/monsters/parts/leg_types/leg_yellowA.tscn" id="4_2l2ad"]
 [ext_resource type="PackedScene" uid="uid://dab73d2lfdlqc" path="res://nodes/monsters/parts/ear_types/detail_yellow_ear_round.tscn" id="5_svlnf"]

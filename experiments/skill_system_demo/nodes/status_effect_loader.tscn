@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://cic7ggn4leeqb"]
 
-[ext_resource type="Script" path="res://experiments/skill_system_demo/scripts/status_effect_loader.gd" id="1_o7yjk"]
+[ext_resource type="Script" uid="uid://cfgr0j5uu4crj" path="res://experiments/skill_system_demo/scripts/status_effect_loader.gd" id="1_o7yjk"]
 [ext_resource type="PackedScene" uid="uid://daandjufytals" path="res://experiments/skill_system_demo/nodes/status_effect_row.tscn" id="2_8tgdq"]
 
 [node name="StatusEffectLoader" type="VBoxContainer"]

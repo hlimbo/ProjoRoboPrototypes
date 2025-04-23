@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://denv6vgruxvrc"]
 
-[ext_resource type="Shader" path="res://shaders/2d-lightining-vfx.gdshader" id="1_r8od2"]
+[ext_resource type="Shader" uid="uid://pjfopcm6jt0t" path="res://shaders/2d-lightining-vfx.gdshader" id="1_r8od2"]
 
 [sub_resource type="Gradient" id="Gradient_0c4l7"]
 offsets = PackedFloat32Array(0, 0.555046, 1)
@@ -19,16 +19,16 @@ noise = SubResource("FastNoiseLite_ntdx0")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_v0imk"]
 shader = ExtResource("1_r8od2")
+shader_parameter/line_gradient = SubResource("GradientTexture1D_dp23x")
 shader_parameter/width = 0.182
 shader_parameter/fix_start = false
 shader_parameter/fix_end = false
 shader_parameter/inverted = false
-shader_parameter/line_gradient = SubResource("GradientTexture1D_dp23x")
+shader_parameter/noise_texture = SubResource("NoiseTexture2D_4qrmr")
 shader_parameter/speed = 1.5
 shader_parameter/variation = 0.255
 shader_parameter/scale = 2.0
 shader_parameter/repeats = 8.0
-shader_parameter/noise_texture = SubResource("NoiseTexture2D_4qrmr")
 
 [sub_resource type="CanvasTexture" id="CanvasTexture_g06sx"]
 

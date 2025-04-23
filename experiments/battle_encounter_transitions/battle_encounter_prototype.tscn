@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cxy8idnpws4an"]
 
 [ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="1_dtgbf"]
-[ext_resource type="Script" path="res://experiments/battle_encounter_transitions/go_back.gd" id="2_4fgju"]
+[ext_resource type="Script" uid="uid://ijt67yh5hecs" path="res://experiments/battle_encounter_transitions/go_back.gd" id="2_4fgju"]
 
 [node name="BattleEncounterPrototype" type="Node2D"]
 

@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://by8g0yvkqnaa2"]
 
-[ext_resource type="Script" path="res://scripts/ui/battle_results/party_member_exp_view.gd" id="1_du3i4"]
+[ext_resource type="Script" uid="uid://bj4xffmf8l74r" path="res://scripts/ui/battle_results/party_member_exp_view.gd" id="1_du3i4"]
 [ext_resource type="Texture2D" uid="uid://l5nje6fpe8f3" path="res://icon.svg" id="2_c6wsi"]
 [ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="3_hw0rk"]
 

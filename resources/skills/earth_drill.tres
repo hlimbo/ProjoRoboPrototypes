@@ -1,10 +1,14 @@
-[gd_resource type="Resource" script_class="Skill" load_steps=2 format=3 uid="uid://bgbuqgqyx0rc6"]
+[gd_resource type="Resource" script_class="Skill" load_steps=3 format=3 uid="uid://bgbuqgqyx0rc6"]
 
-[ext_resource type="Script" path="res://scripts/resources/skill.gd" id="1_2486x"]
+[ext_resource type="Script" uid="uid://blew4xi2wumue" path="res://scripts/resources/status_effect.gd" id="1_1qs0v"]
+[ext_resource type="Script" uid="uid://cyg5gs2pni83c" path="res://scripts/resources/skill.gd" id="1_2486x"]
 
 [resource]
 script = ExtResource("1_2486x")
-cost = 12
-attack = 8
 name = "Earth Drill"
+energy_type = ""
 description = ""
+cost = 12
+modifiers = {}
+buffs = Array[ExtResource("1_1qs0v")]([])
+debuffs = Array[ExtResource("1_1qs0v")]([])

@@ -1,13 +1,13 @@
 [gd_scene load_steps=10 format=3 uid="uid://dx4mxgvlir7xh"]
 
 [ext_resource type="PackedScene" uid="uid://db40v3vl0mg3f" path="res://nodes/monsters/parts/arm_types/arm_whiteD.tscn" id="1_8mvto"]
-[ext_resource type="Script" path="res://scripts/battle_participant.gd" id="1_ssov7"]
+[ext_resource type="Script" uid="uid://cmbmdd5faa215" path="res://scripts/battle_participant.gd" id="1_ssov7"]
 [ext_resource type="PackedScene" uid="uid://dufl31v1fytcj" path="res://nodes/monsters/parts/leg_types/leg_redD.tscn" id="2_r0mqo"]
 [ext_resource type="PackedScene" uid="uid://4et0y711whwe" path="res://nodes/monsters/parts/horn_types/detail_red_horn_small.tscn" id="3_nkv8m"]
 [ext_resource type="PackedScene" uid="uid://dbkv3lbny26p5" path="res://nodes/monsters/parts/body_types/typeE/body_redE.tscn" id="4_nqidm"]
 [ext_resource type="PackedScene" uid="uid://dau5ljlwfj3km" path="res://nodes/monsters/parts/eye_types/eye_psycho_dark.tscn" id="5_6xbwx"]
 [ext_resource type="PackedScene" uid="uid://c7mbux0kqq7as" path="res://nodes/monsters/parts/mouth_types/mouth_closed_fangs.tscn" id="6_63o0m"]
-[ext_resource type="Script" path="res://scripts/mob_selection.gd" id="7_wharc"]
+[ext_resource type="Script" uid="uid://b7to3aii76iba" path="res://scripts/mob_selection.gd" id="7_wharc"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wt40x"]
 size = Vector2(210.667, 341.333)

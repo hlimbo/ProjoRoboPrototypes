@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://3fbdpdip7o0p"]
 
-[ext_resource type="Script" path="res://experiments/battle_camera/derived_camera2d.gd" id="1_t6tng"]
+[ext_resource type="Script" uid="uid://bpf5f7qveoq1" path="res://experiments/battle_camera/derived_camera2d.gd" id="1_t6tng"]
 
 [node name="DerivedCamera" type="Camera2D"]
 position_smoothing_enabled = true

@@ -1,6 +1,6 @@
 [gd_scene load_steps=12 format=3 uid="uid://c04tslpsf0jc7"]
 
-[ext_resource type="Script" path="res://scripts/battle_participant.gd" id="1_fc3nr"]
+[ext_resource type="Script" uid="uid://cmbmdd5faa215" path="res://scripts/battle_participant.gd" id="1_fc3nr"]
 [ext_resource type="PackedScene" uid="uid://ti26h74qsvmt" path="res://nodes/monsters/parts/detail_blue_eye.tscn" id="1_j0m4v"]
 [ext_resource type="PackedScene" uid="uid://cebp4rjwoqoj8" path="res://nodes/monsters/parts/leg_types/leg_blueB.tscn" id="2_ff2sj"]
 [ext_resource type="PackedScene" uid="uid://1yhl2kdb2xs5" path="res://nodes/monsters/parts/arm_types/arm_blueA.tscn" id="3_4ulcx"]
@@ -8,8 +8,8 @@
 [ext_resource type="PackedScene" uid="uid://djwavxs5iuasx" path="res://nodes/monsters/parts/eye_types/eye_yellow.tscn" id="5_fqvxo"]
 [ext_resource type="PackedScene" uid="uid://b2j6tefj046j1" path="res://nodes/monsters/parts/nose_types/nose_brown.tscn" id="6_j5hi1"]
 [ext_resource type="PackedScene" uid="uid://bvcylvrfxyo8d" path="res://nodes/monsters/parts/mouth_types/mouth_closed_teeth.tscn" id="7_6o2k0"]
-[ext_resource type="Script" path="res://scripts/mob_selection.gd" id="8_cfwpe"]
-[ext_resource type="Script" path="res://scripts/info_display.gd" id="10_no1m6"]
+[ext_resource type="Script" uid="uid://b7to3aii76iba" path="res://scripts/mob_selection.gd" id="8_cfwpe"]
+[ext_resource type="Script" uid="uid://cs2g5k501ftul" path="res://scripts/info_display.gd" id="10_no1m6"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wt40x"]
 size = Vector2(368, 442)

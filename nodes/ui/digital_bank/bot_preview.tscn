@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://clnk1s48rehjr" path="res://assets/kenney_fantasy-ui-borders/Vector/fantasy-ui-borders.svg" id="1_qjmvo"]
 [ext_resource type="PackedScene" uid="uid://badvhoswodfcv" path="res://nodes/monsters/hairy_nocturnal.tscn" id="2_jpn7q"]
-[ext_resource type="Script" path="res://scripts/ui/digital_bank/bot_preview_view.gd" id="2_kw3xn"]
+[ext_resource type="Script" uid="uid://c8sts2qkl07xg" path="res://scripts/ui/digital_bank/bot_preview_view.gd" id="2_kw3xn"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_f4bc6"]
 atlas = ExtResource("1_qjmvo")

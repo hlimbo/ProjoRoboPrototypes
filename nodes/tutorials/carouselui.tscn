@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://de2e411xdc1dl"]
 
-[ext_resource type="Script" path="res://scripts/tutorials/carousel_ui.gd" id="1_lxlfm"]
+[ext_resource type="Script" uid="uid://c1pqshp5xjc6u" path="res://scripts/tutorials/carousel_ui.gd" id="1_lxlfm"]
 
 [node name="Carouselui" type="Control"]
 layout_mode = 3

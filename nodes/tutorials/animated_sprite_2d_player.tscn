@@ -1,6 +1,6 @@
 [gd_scene load_steps=30 format=3 uid="uid://dh67eoaydioxr"]
 
-[ext_resource type="Script" path="res://scripts/tutorials/basic_movement.gd" id="1_wy0v0"]
+[ext_resource type="Script" uid="uid://cb8ytpw6i7ql5" path="res://scripts/tutorials/basic_movement.gd" id="1_wy0v0"]
 [ext_resource type="Texture2D" uid="uid://ddfibdcxyp6n1" path="res://assets/Pixel Adventure 1/Free/Main Characters/Pink Man/Idle (32x32).png" id="2_ddpxb"]
 [ext_resource type="Texture2D" uid="uid://dvoprewv1nttk" path="res://assets/Pixel Adventure 1/Free/Main Characters/Pink Man/Jump (32x32).png" id="3_3qwfk"]
 [ext_resource type="Texture2D" uid="uid://ddfe4na5kdpgs" path="res://assets/Pixel Adventure 1/Free/Main Characters/Pink Man/Run (32x32).png" id="4_svkym"]

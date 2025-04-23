@@ -12,8 +12,7 @@ class_name Skill
 # this would require a skill level table
 
 # these will apply stat modifications as soon as this skill is applied to a target
-# key - modifier name string | value - Modifier reference
-@export var modifiers: Dictionary = {}
+@export var modifiers: Dictionary[String, Modifier] = {}
 
 # represents the buffs and debuffs that can be applied to a target
 @export var buffs: Array[StatusEffect] = []

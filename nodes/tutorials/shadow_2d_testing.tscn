@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://c08hu8fdfb5or"]
 
-[ext_resource type="Script" path="res://nodes/tutorials/shadow_2d_testing.gd" id="1_p555d"]
-[ext_resource type="Script" path="res://nodes/tutorials/mover.gd" id="2_3841g"]
+[ext_resource type="Script" uid="uid://cvmx4xvbwpu32" path="res://nodes/tutorials/shadow_2d_testing.gd" id="1_p555d"]
+[ext_resource type="Script" uid="uid://cf36bi2kly4qi" path="res://nodes/tutorials/mover.gd" id="2_3841g"]
 
 [node name="Shadow2dTesting" type="Node2D"]
 script = ExtResource("1_p555d")

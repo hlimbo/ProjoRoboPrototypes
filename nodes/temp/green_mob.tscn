@@ -1,12 +1,12 @@
 [gd_scene load_steps=9 format=3 uid="uid://1ow6pmgdpc8k"]
 
-[ext_resource type="Script" path="res://scripts/battle_participant.gd" id="1_clnbm"]
+[ext_resource type="Script" uid="uid://cmbmdd5faa215" path="res://scripts/battle_participant.gd" id="1_clnbm"]
 [ext_resource type="PackedScene" uid="uid://b7cwbxvrd0en7" path="res://nodes/monsters/parts/arm_types/arm_greenB.tscn" id="1_msosb"]
 [ext_resource type="PackedScene" uid="uid://b0ao2bu4nka3i" path="res://nodes/monsters/parts/leg_types/leg_greenC.tscn" id="2_4nbk3"]
 [ext_resource type="PackedScene" uid="uid://cmsn42vf5pqrv" path="res://nodes/monsters/parts/body_types/typeF/body_greenF.tscn" id="3_4n811"]
 [ext_resource type="PackedScene" uid="uid://bwflxx8tda7ts" path="res://nodes/monsters/parts/eye_types/eye_human_red.tscn" id="4_uhk0l"]
 [ext_resource type="PackedScene" uid="uid://c0g4pxojf6cdo" path="res://nodes/monsters/parts/mouth_types/mouthB.tscn" id="5_skh47"]
-[ext_resource type="Script" path="res://scripts/mob_selection.gd" id="6_6gi5g"]
+[ext_resource type="Script" uid="uid://b7to3aii76iba" path="res://scripts/mob_selection.gd" id="6_6gi5g"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wt40x"]
 size = Vector2(210.667, 341.333)

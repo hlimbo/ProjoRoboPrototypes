@@ -1,9 +1,9 @@
 [gd_scene load_steps=20 format=3 uid="uid://d07n6ni2r73e1"]
 
-[ext_resource type="Script" path="res://scripts/actor.gd" id="1_iwbjg"]
+[ext_resource type="Script" uid="uid://brmton2cko0la" path="res://scripts/actor.gd" id="1_iwbjg"]
 [ext_resource type="PackedScene" uid="uid://cx3vhulcggapg" path="res://nodes/info_node.tscn" id="2_w0tf0"]
 [ext_resource type="PackedScene" uid="uid://cwta2763wqy3y" path="res://nodes/monsters/parts/body_types/body_whiteE.tscn" id="3_bisbi"]
-[ext_resource type="Shader" path="res://shaders/transparent_fade.gdshader" id="4_5sjon"]
+[ext_resource type="Shader" uid="uid://d3muq3lhqa4dk" path="res://shaders/transparent_fade.gdshader" id="4_5sjon"]
 [ext_resource type="PackedScene" uid="uid://dau5ljlwfj3km" path="res://nodes/monsters/parts/eye_types/eye_psycho_dark.tscn" id="4_45xcr"]
 [ext_resource type="PackedScene" uid="uid://bglnbhk5i6221" path="res://nodes/monsters/parts/mouth_types/mouthH.tscn" id="5_7tetp"]
 [ext_resource type="PackedScene" uid="uid://db40v3vl0mg3f" path="res://nodes/monsters/parts/arm_types/arm_whiteD.tscn" id="6_hfix3"]
@@ -11,7 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://4j6hujkvddhm" path="res://nodes/monsters/parts/ear_types/detail_blue_ear.tscn" id="8_pixyd"]
 [ext_resource type="PackedScene" uid="uid://dpot30rtha5yi" path="res://nodes/monsters/parts/horn_types/detail_dark_horn_small.tscn" id="9_rxj02"]
 [ext_resource type="PackedScene" uid="uid://de228clgk2wkw" path="res://nodes/ui/status_effect_layout.tscn" id="10_hx63x"]
-[ext_resource type="Script" path="res://scripts/mob_selection.gd" id="10_sihkc"]
+[ext_resource type="Script" uid="uid://b7to3aii76iba" path="res://scripts/mob_selection.gd" id="10_sihkc"]
 [ext_resource type="Texture2D" uid="uid://dcv61ts3lojeo" path="res://assets/kenney-board-game-icons/Tilesheet/iconsDouble.png" id="11_368f0"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_cvdjs"]

@@ -1,10 +1,10 @@
 [gd_scene load_steps=7 format=3 uid="uid://b4y8uba6speb4"]
 
 [ext_resource type="PackedScene" uid="uid://3fbdpdip7o0p" path="res://experiments/battle_camera/derived_camera.tscn" id="1_4cq8m"]
-[ext_resource type="Script" path="res://experiments/battle_camera/cam_demo_controller.gd" id="1_7gwts"]
-[ext_resource type="Script" path="res://experiments/battle_camera/player_tutorial.gd" id="1_a7jf2"]
-[ext_resource type="Shader" path="res://experiments/battle_encounter_transitions/flower_petal.gdshader" id="3_6aycb"]
-[ext_resource type="Script" path="res://experiments/battle_camera/perlin_noise_generator.gd" id="5_jeqxm"]
+[ext_resource type="Script" uid="uid://bwg7kn37je1ab" path="res://experiments/battle_camera/cam_demo_controller.gd" id="1_7gwts"]
+[ext_resource type="Script" uid="uid://begniqfbuuo8o" path="res://experiments/battle_camera/player_tutorial.gd" id="1_a7jf2"]
+[ext_resource type="Shader" uid="uid://cg1e5fhjmkd5e" path="res://experiments/battle_encounter_transitions/flower_petal.gdshader" id="3_6aycb"]
+[ext_resource type="Script" uid="uid://cahgqlb5feasy" path="res://experiments/battle_camera/perlin_noise_generator.gd" id="5_jeqxm"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_mh0lh"]
 shader = ExtResource("3_6aycb")

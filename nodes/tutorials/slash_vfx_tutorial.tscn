@@ -1,9 +1,9 @@
 [gd_scene load_steps=9 format=3 uid="uid://deel17myjppt8"]
 
-[ext_resource type="Script" path="res://nodes/tutorials/slash_vfx_tutorial.gd" id="1_2a3v0"]
+[ext_resource type="Script" uid="uid://bb8u77sx3ina3" path="res://nodes/tutorials/slash_vfx_tutorial.gd" id="1_2a3v0"]
 [ext_resource type="ArrayMesh" uid="uid://cdv5yyvtojkyt" path="res://assets/vfx_slash_tut/slash.obj" id="1_ilbl2"]
 [ext_resource type="Shader" uid="uid://dfngxrdh0bg86" path="res://assets/vfx_slash_tut/slash_vfx_tutorial.tres" id="2_5sldq"]
-[ext_resource type="Script" path="res://assets/vfx_slash_tut/slash_button.gd" id="4_qprqf"]
+[ext_resource type="Script" uid="uid://u847fefgejsd" path="res://assets/vfx_slash_tut/slash_button.gd" id="4_qprqf"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_1eta5"]
 resource_local_to_scene = true
@@ -96,8 +96,8 @@ tracks/2/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_mbupq"]
 _data = {
-"RESET": SubResource("Animation_56xby"),
-"slash": SubResource("Animation_h3mm4")
+&"RESET": SubResource("Animation_56xby"),
+&"slash": SubResource("Animation_h3mm4")
 }
 
 [node name="Root" type="Node3D"]

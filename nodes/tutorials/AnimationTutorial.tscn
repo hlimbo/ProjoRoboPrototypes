@@ -422,8 +422,8 @@ tracks/11/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_lu3w4"]
 _data = {
-"RESET": SubResource("Animation_yrc0f"),
-"walk": SubResource("Animation_2gbef")
+&"RESET": SubResource("Animation_yrc0f"),
+&"walk": SubResource("Animation_2gbef")
 }
 
 [node name="AnimationTutorial" type="Node2D"]

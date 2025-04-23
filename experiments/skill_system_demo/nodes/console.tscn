@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://swi6kvuffgpc"]
 
-[ext_resource type="Script" path="res://experiments/skill_system_demo/scripts/console_demo_loader.gd" id="1_15o5a"]
+[ext_resource type="Script" uid="uid://oqt27ys6g5qi" path="res://experiments/skill_system_demo/scripts/console_demo_loader.gd" id="1_15o5a"]
 [ext_resource type="PackedScene" uid="uid://0wmd5j87trwo" path="res://experiments/skill_system_demo/nodes/console_message.tscn" id="2_xod1h"]
 [ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="3_mro5k"]
 

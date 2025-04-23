@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://b3dswrnglrvbo"]
 
 [ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="1_r5wdv"]
-[ext_resource type="Script" path="res://experiments/text_ui_animations/text_animations.gd" id="2_v7sp7"]
-[ext_resource type="Script" path="res://experiments/text_ui_animations/text_animate_controller.gd" id="3_m8cgf"]
+[ext_resource type="Script" uid="uid://cknie72d4dsor" path="res://experiments/text_ui_animations/text_animations.gd" id="2_v7sp7"]
+[ext_resource type="Script" uid="uid://bam6h3v3nay62" path="res://experiments/text_ui_animations/text_animate_controller.gd" id="3_m8cgf"]
 
 [node name="TextUiAnimations" type="Control"]
 layout_mode = 3

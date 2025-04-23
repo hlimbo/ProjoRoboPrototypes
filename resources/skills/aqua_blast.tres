@@ -1,10 +1,14 @@
-[gd_resource type="Resource" script_class="Skill" load_steps=2 format=3 uid="uid://cvlxo8s3jaft2"]
+[gd_resource type="Resource" script_class="Skill" load_steps=3 format=3 uid="uid://cvlxo8s3jaft2"]
 
-[ext_resource type="Script" path="res://scripts/resources/skill.gd" id="1_be1uw"]
+[ext_resource type="Script" uid="uid://cyg5gs2pni83c" path="res://scripts/resources/skill.gd" id="1_be1uw"]
+[ext_resource type="Script" uid="uid://blew4xi2wumue" path="res://scripts/resources/status_effect.gd" id="1_skan5"]
 
 [resource]
 script = ExtResource("1_be1uw")
-cost = 5
-attack = 2
 name = "Aqua Blast"
+energy_type = ""
 description = ""
+cost = 5
+modifiers = {}
+buffs = Array[ExtResource("1_skan5")]([])
+debuffs = Array[ExtResource("1_skan5")]([])

@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://uwbdul76wa0o"]
 
-[ext_resource type="Script" path="res://experiments/skill_system_demo/scripts/skill_demo_loader.gd" id="1_3q3i4"]
+[ext_resource type="Script" uid="uid://bapc426eevuye" path="res://experiments/skill_system_demo/scripts/skill_demo_loader.gd" id="1_3q3i4"]
 [ext_resource type="PackedScene" uid="uid://c280vvvxte3nh" path="res://experiments/skill_system_demo/nodes/skill_view.tscn" id="2_k8crp"]
 
 [node name="SkillsContainer" type="VBoxContainer"]

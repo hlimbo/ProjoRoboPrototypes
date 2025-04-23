@@ -18,10 +18,10 @@
 [ext_resource type="PackedScene" uid="uid://blks44s8mvnag" path="res://nodes/actors/yellow_mob_2.tscn" id="16_ylfpt"]
 [ext_resource type="PackedScene" uid="uid://d07n6ni2r73e1" path="res://nodes/actors/enemy_placeholder.tscn" id="17_4gojv"]
 [ext_resource type="PackedScene" uid="uid://wlrgdq8ncg46" path="res://nodes/battle_timeline/avatar.tscn" id="18_hrobm"]
-[ext_resource type="Script" path="res://scripts/move_styles.gd" id="20_1jo0f"]
-[ext_resource type="Script" path="res://scripts/battle_spawn_manager.gd" id="21_ktyip"]
+[ext_resource type="Script" uid="uid://2oc8mhjeypto" path="res://scripts/move_styles.gd" id="20_1jo0f"]
+[ext_resource type="Script" uid="uid://qtqdfykyl6mf" path="res://scripts/battle_spawn_manager.gd" id="21_ktyip"]
 [ext_resource type="PackedScene" uid="uid://denv6vgruxvrc" path="res://nodes/lightning.tscn" id="23_p1t4h"]
-[ext_resource type="Script" path="res://scripts/battle_controller.gd" id="35_s55f0"]
+[ext_resource type="Script" uid="uid://drt115ue7mbkq" path="res://scripts/battle_controller.gd" id="35_s55f0"]
 
 [sub_resource type="Animation" id="Animation_g13a0"]
 length = 0.001
@@ -40,7 +40,7 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_2rcdu"]
 _data = {
-"RESET": SubResource("Animation_g13a0")
+&"RESET": SubResource("Animation_g13a0")
 }
 
 [sub_resource type="Curve2D" id="Curve2D_uete5"]

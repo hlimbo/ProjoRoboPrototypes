@@ -1,10 +1,14 @@
-[gd_resource type="Resource" script_class="Skill" load_steps=2 format=3 uid="uid://b7aut3ebra4j3"]
+[gd_resource type="Resource" script_class="Skill" load_steps=3 format=3 uid="uid://b7aut3ebra4j3"]
 
-[ext_resource type="Script" path="res://scripts/resources/skill.gd" id="1_a6tx4"]
+[ext_resource type="Script" uid="uid://cyg5gs2pni83c" path="res://scripts/resources/skill.gd" id="1_a6tx4"]
+[ext_resource type="Script" uid="uid://blew4xi2wumue" path="res://scripts/resources/status_effect.gd" id="1_qmx6l"]
 
 [resource]
 script = ExtResource("1_a6tx4")
-cost = 8
-attack = 4
 name = "Thunder Blast"
+energy_type = ""
 description = ""
+cost = 8
+modifiers = {}
+buffs = Array[ExtResource("1_qmx6l")]([])
+debuffs = Array[ExtResource("1_qmx6l")]([])

@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://bftapi8vom3x7"]
 
-[ext_resource type="Script" path="res://scripts/ui/crafting/crafting_row_view.gd" id="1_1n8qx"]
+[ext_resource type="Script" uid="uid://d3hdeq0clkg0f" path="res://scripts/ui/crafting/crafting_row_view.gd" id="1_1n8qx"]
 [ext_resource type="Texture2D" uid="uid://bily5u0bn7omv" path="res://assets/kenney_emotes-pack/PNG/Vector/Style 2/emote_circle.png" id="1_x6ued"]
 [ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="2_ym3w2"]
 

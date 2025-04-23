@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://bi3i6677le32t"]
 
-[ext_resource type="Script" path="res://scripts/singletons/battle_scene_manager.gd" id="1_al37f"]
-[ext_resource type="Script" path="res://scripts/calculators/simple_damage_calculator.gd" id="2_kawxr"]
+[ext_resource type="Script" uid="uid://cc3ujm4850nvl" path="res://scripts/singletons/battle_scene_manager.gd" id="1_al37f"]
+[ext_resource type="Script" uid="uid://blytp44d1w7mp" path="res://scripts/calculators/simple_damage_calculator.gd" id="2_kawxr"]
 
 [sub_resource type="Resource" id="Resource_r7yw6"]
 script = ExtResource("2_kawxr")

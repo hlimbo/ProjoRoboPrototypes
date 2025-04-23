@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://bvfgcytsh6y1s"]
 
 [ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="1_6x6jh"]
-[ext_resource type="Script" path="res://experiments/skill_system_demo/scripts/character_block.gd" id="1_gieqn"]
+[ext_resource type="Script" uid="uid://co7544usdk1gb" path="res://experiments/skill_system_demo/scripts/character_block.gd" id="1_gieqn"]
 [ext_resource type="PackedScene" uid="uid://b12nabo0jeyit" path="res://experiments/skill_system_demo/nodes/stat_view.tscn" id="2_0ptn6"]
 [ext_resource type="PackedScene" uid="uid://uwbdul76wa0o" path="res://experiments/skill_system_demo/nodes/skills_container.tscn" id="3_swut3"]
 [ext_resource type="PackedScene" uid="uid://cic7ggn4leeqb" path="res://experiments/skill_system_demo/nodes/status_effect_loader.tscn" id="5_qnr8e"]

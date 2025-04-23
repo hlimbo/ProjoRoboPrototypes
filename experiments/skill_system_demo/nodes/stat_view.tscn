@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://b12nabo0jeyit"]
 
-[ext_resource type="Script" path="res://experiments/skill_system_demo/scripts/stat_demo_view.gd" id="1_kj5oy"]
+[ext_resource type="Script" uid="uid://dqbrkw30u0e20" path="res://experiments/skill_system_demo/scripts/stat_demo_view.gd" id="1_kj5oy"]
 [ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="2_4n28m"]
 
 [node name="StatView" type="HBoxContainer"]

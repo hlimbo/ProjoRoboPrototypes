@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://5hcous0cjeie"]
 
-[ext_resource type="Script" path="res://scripts/ui/transition_fade.gd" id="1_qmr83"]
+[ext_resource type="Script" uid="uid://cw0q70lbkjq51" path="res://scripts/ui/transition_fade.gd" id="1_qmr83"]
 
 [node name="TransitionLayer" type="ColorRect"]
 anchors_preset = 15

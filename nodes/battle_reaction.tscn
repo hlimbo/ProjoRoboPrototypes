@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://qml0ed0h5m72"]
 
-[ext_resource type="Script" path="res://scripts/battle_reaction.gd" id="1_olkry"]
+[ext_resource type="Script" uid="uid://c6d4ve3pq8ot3" path="res://scripts/battle_reaction.gd" id="1_olkry"]
 [ext_resource type="Texture2D" uid="uid://nxddqhwjhu2g" path="res://assets/kenney_emotes-pack/PNG/Vector/Style 2/emote_exclamation.png" id="2_u7pln"]
 
 [node name="BattleReaction" type="HBoxContainer"]

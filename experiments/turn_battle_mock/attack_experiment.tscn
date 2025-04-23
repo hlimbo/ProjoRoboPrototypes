@@ -1,10 +1,10 @@
 [gd_scene load_steps=13 format=3 uid="uid://el00wv63mqm1"]
 
-[ext_resource type="Script" path="res://experiments/turn_battle_mock/attack_experiment_controller.gd" id="1_uueov"]
-[ext_resource type="Script" path="res://experiments/turn_battle_mock/punching_bag.gd" id="2_2fkv6"]
+[ext_resource type="Script" uid="uid://dhi0awfhc8fqr" path="res://experiments/turn_battle_mock/attack_experiment_controller.gd" id="1_uueov"]
+[ext_resource type="Script" uid="uid://blbk44htmrfbk" path="res://experiments/turn_battle_mock/punching_bag.gd" id="2_2fkv6"]
 [ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="2_et4pj"]
-[ext_resource type="Script" path="res://experiments/turn_battle_mock/atk_btn_experiment.gd" id="4_44bbx"]
-[ext_resource type="Script" path="res://experiments/turn_battle_mock/screen_shake.gd" id="5_6ti1f"]
+[ext_resource type="Script" uid="uid://ca5i74jdosh3i" path="res://experiments/turn_battle_mock/atk_btn_experiment.gd" id="4_44bbx"]
+[ext_resource type="Script" uid="uid://dq7cbh6exc702" path="res://experiments/turn_battle_mock/screen_shake.gd" id="5_6ti1f"]
 
 [sub_resource type="Animation" id="Animation_egwbd"]
 length = 0.001
@@ -111,8 +111,8 @@ tracks/3/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_jbd22"]
 _data = {
-"RESET": SubResource("Animation_egwbd"),
-"starburst_vfx": SubResource("Animation_7k77h")
+&"RESET": SubResource("Animation_egwbd"),
+&"starburst_vfx": SubResource("Animation_7k77h")
 }
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_u4aq2"]

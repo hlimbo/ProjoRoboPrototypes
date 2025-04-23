@@ -4,14 +4,15 @@ extends BaseResource
 class_name Modifier
 
 # determines what stat type to modify from base_stats.gd
-@export var stat_category_type_src: String = Constants.STAT_NONE
+@export_enum(Constants.STAT_HP, Constants.STAT_ENERGY, Constants.STAT_STRENGTH, Constants.STAT_TOUGHNESS, Constants.STAT_SPEED)
+var stat_category_type_src: String = Constants.STAT_NONE
 # determines what stat type to apply the changes to from base_stats.gd
-@export var stat_category_type_target: String = Constants.STAT_NONE
+@export_enum(Constants.STAT_HP, Constants.STAT_ENERGY, Constants.STAT_STRENGTH, Constants.STAT_TOUGHNESS, Constants.STAT_SPEED)
+var stat_category_type_target: String = Constants.STAT_NONE
 
 # determines the denomination of the stat's value. It can be the following:
-# 1. flat
-# 2. percent
-@export var modifier_type: String = Constants.MODIFIER_FLAT
+@export_enum(Constants.MODIFIER_FLAT, Constants.MODIFIER_PERCENT)
+var modifier_type: String = Constants.MODIFIER_FLAT
 # used to determine the stat value's sign for proper calculations
 @export var is_positive: bool = true
 # non-negative value

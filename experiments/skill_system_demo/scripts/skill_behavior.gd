@@ -1,8 +1,23 @@
 extends RefCounted
 class_name SkillBehavior
 
+var skill: Skill
 var buff_behaviors: Array[StatusEffectBehavior] = []
 var debuff_behaviors: Array[StatusEffectBehavior] = []
+
+func _init(new_skill: Skill, buffs: Array[StatusEffectBehavior] = [], debuffs: Array[StatusEffectBehavior] = []):
+	assert(len(new_skill.buffs) == len(buffs))
+	assert(len(new_skill.debuffs) == len(debuffs))
+	
+	skill = new_skill
+	buff_behaviors.append_array(buffs)
+	debuff_behaviors.append_array(debuffs)
+	
+	for i in range(len(skill.buffs)):
+		buff_behaviors[i].init_effect(skill.buffs[i])
+	
+	for i in range(len(skill.debuffs)):
+		debuff_behaviors[i].init_effect(skill.debuffs[i])
 
 func _notification(what: int):
 	# equivalent to a deconstructor in C++
@@ -18,22 +33,19 @@ func apply_cost(caster: LiteActor, skill: Skill):
 	caster.stat_attributes.set_energy(energy)
 
 # binding the functions to the data
-func bind_status_effects(target: LiteActor, skill: Skill, buffs: Array[StatusEffectBehavior] = [], debuffs: Array[StatusEffectBehavior] = []):
-	assert(len(skill.buffs) == len(buffs))
-	assert(len(skill.debuffs) == len(debuffs))
+func bind_status_effects(caster: LiteActor, target: LiteActor):
+	assert(len(skill.buffs) == len(buff_behaviors))
+	assert(len(skill.debuffs) == len(debuff_behaviors))
 	
 	for i in range(len(skill.buffs)):
 		var effect: StatusEffect = skill.buffs[i]
-		var behavior: StatusEffectBehavior = buffs[i]
-		behavior.initialize(effect, target)
-		buff_behaviors.append(behavior)
+		var behavior: StatusEffectBehavior = buff_behaviors[i]
+		behavior.initialize(caster, target)
 		
-	
 	for i in range(len(skill.debuffs)):
 		var effect: StatusEffect = skill.debuffs[i]
-		var behavior: StatusEffectBehavior = debuffs[i]
-		behavior.initialize(effect, target)
-		debuff_behaviors.append(behavior)
+		var behavior: StatusEffectBehavior = debuff_behaviors[i]
+		behavior.initialize(caster, target)
 
 func start_status_effects(target: LiteActor, skill: Skill):
 	for buff in skill.buffs:

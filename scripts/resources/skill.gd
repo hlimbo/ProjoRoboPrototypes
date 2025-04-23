@@ -29,3 +29,7 @@ func get_modifiers() -> Array[Modifier]:
 	mods.assign(modifiers.values())
 	assert(mods != null)
 	return mods
+	
+func get_modifier(mod_name: String) -> Modifier:
+	assert(mod_name in modifiers)
+	return modifiers[mod_name]

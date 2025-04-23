@@ -4,7 +4,8 @@ extends RefCounted
 class_name StatusEffectBehavior
 
 # used to identify which status_effect to handle
-var status_effect_name: String
+var status_effect: StatusEffect
+var caster: LiteActor
 var target: LiteActor
 
 # Uncomment to verify if the StatusEffectBehavior is being freed up
@@ -12,8 +13,11 @@ var target: LiteActor
 	#if what == NOTIFICATION_PREDELETE:
 		#print("StatusEffectBehavior: %s is going to be deleted" % status_effect_name)
 
-func initialize(status_effect: StatusEffect, _target: LiteActor):
-	status_effect_name = status_effect.name
+func init_effect(_status_effect: StatusEffect):
+	status_effect = _status_effect
+
+func initialize(_caster: LiteActor, _target: LiteActor):
+	caster = _caster
 	target = _target
 	var status_effects_component = target.status_effects
 	
@@ -37,15 +41,15 @@ func initialize(status_effect: StatusEffect, _target: LiteActor):
 			status_effects_component.on_second_update_debuff.connect(process_stat_changes)
 
 func on_start(effect: StatusEffect):
-	if effect.name == status_effect_name:
+	if effect.name == status_effect.name:
 		on_start_effect(effect)
 	
 func on_end(effect: StatusEffect):
-	if effect.name == status_effect_name:
+	if effect.name == status_effect.name:
 		on_end_effect(effect)
 
 func process_stat_changes(effect: StatusEffect):
-	if effect.name == status_effect_name:
+	if effect.name == status_effect.name:
 		on_process_effect(effect)
 
 #region overridable functions for classes that will derive from this class

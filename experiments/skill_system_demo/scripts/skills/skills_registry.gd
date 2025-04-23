@@ -1,6 +1,6 @@
 # Follows ideas from: https://refactoring.guru/design-patterns/factory-method
 extends Node
-class_name SkillsRegistry
+# class_name SkillsRegistry
 
 #region Skill Names
 const GOBLIN_PUNCH = "goblin punch"
@@ -52,7 +52,7 @@ func _corkscrew_slash(skill: Skill) -> SkillBehavior:
 
 # Key - behavior name string
 # Value - function that returns a new SkillBehavior reference
-var behaviors_factory: Dictionary = {
+var behaviors_factory: Dictionary[String, Callable] = {
 	GOBLIN_PUNCH: _goblin_punch,
 	THORNY_DEFENSE: _thorny_defense,
 	SYSTEM_SHOCK: _system_shock,
@@ -61,3 +61,9 @@ var behaviors_factory: Dictionary = {
 	BURN: _burn,
 	CORKSCREW_SLASH: _corkscrew_slash,
 }
+
+func create_skill_behavior(name: String, skill: Skill) -> SkillBehavior:
+	assert(name in behaviors_factory)
+	var creator_function: Callable = behaviors_factory[name]
+	assert(creator_function.get_argument_count() == 1)
+	return creator_function.call(skill)

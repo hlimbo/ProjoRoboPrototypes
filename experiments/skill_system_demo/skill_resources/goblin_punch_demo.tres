@@ -1,13 +1,13 @@
 [gd_resource type="Resource" script_class="Skill" load_steps=4 format=3 uid="uid://cp7afyx20hq1c"]
 
 [ext_resource type="Script" uid="uid://blew4xi2wumue" path="res://scripts/resources/status_effect.gd" id="1_gttnj"]
-[ext_resource type="Resource" uid="uid://cyqwdn88mpusa" path="res://experiments/skill_system_demo/skill_resources/goblin_punch_mod_demo.tres" id="2_ctpti"]
+[ext_resource type="Resource" uid="uid://cyqwdn88mpusa" path="res://experiments/skill_system_demo/skill_resources/modifier_resources/goblin_punch_mod_demo.tres" id="2_ctpti"]
 [ext_resource type="Script" uid="uid://cyg5gs2pni83c" path="res://scripts/resources/skill.gd" id="2_fawai"]
 
 [resource]
 script = ExtResource("2_fawai")
 name = "goblin punch"
-energy_type = "Neutral"
+energy_type = "WOOD"
 description = "Adds half your Toughness to the raw damage of this attack"
 cost = 10.0
 modifiers = {

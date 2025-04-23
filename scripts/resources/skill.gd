@@ -2,7 +2,8 @@ extends BaseResource
 class_name Skill
 
 @export var name: String
-@export var energy_type: String
+@export_enum("FIRE", "WOOD", "WATER", "EARTH", "ELECTRIC", "WIND", "AU", "AI")
+var energy_type: String
 @export var description: String
 @export var cost: float
 

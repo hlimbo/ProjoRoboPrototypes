@@ -67,6 +67,7 @@ func run_weighted_rng_sim(items: Array, weights: Array[float], sim_count: int):
 	for item in expected_item_averages:
 		expected_total += expected_item_averages[item]
 
+# assumes folder contains all files and not nested folders
 func load_resources_from_folder(folder_path: String) -> Array[Resource]:
 	var resources: Array[Resource] = []
 	var dir = DirAccess.open(folder_path)
@@ -77,7 +78,7 @@ func load_resources_from_folder(folder_path: String) -> Array[Resource]:
 
 		while file_name != "":
 			# exclude .import files as those are internal to godot engine
-			if !file_name.ends_with(".import"):
+			if !dir.current_is_dir() and !file_name.ends_with(".import"):
 				var resource_path = folder_path + "/" + file_name
 				var resource = load(resource_path)
 				resources.append(resource)

@@ -504,13 +504,13 @@ func on_ai_skill_end(damage_receiver: Actor, damage_dealer: Actor) -> void:
 	
 	print("avatar %s skill end at time %d" % [avatar.name, Time.get_ticks_msec()])
 	# pick random skill
-	var skill1 = Skill.new(1, "Sizzle")
-	var skill2 = Skill.new(4, "Spitfire")
-	var skill3 = Skill.new(8, "Oven Overload")
+	var skill1 = Skill.new("Sizzle")
+	var skill2 = Skill.new("Spitfire")
+	var skill3 = Skill.new("Oven Overload")
 	
 	# TODO: check ahead of time if enemy can cast a skill, if not, don't do this action
 	var skillz: Array[Skill] = [skill1, skill2, skill3]
-	var castable_skills: Array[Skill] = skillz.filter(func(s: Skill): return s.cost <= avatar.avatar_data.current_stats.skill_points)
+	var castable_skills: Array[Skill] = skillz.filter(func(s: Skill): return s.get_modifier("energy-cost").stat_value <= avatar.avatar_data.current_stats.skill_points)
 
 	if len(castable_skills) == 0:
 		description_panel.visible = true

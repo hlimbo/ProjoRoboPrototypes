@@ -28,10 +28,6 @@ func _notification(what: int):
 		buff_behaviors.clear()
 		debuff_behaviors.clear()
 
-func apply_cost(caster: LiteActor, skill: Skill):
-	var energy: float = caster.stat_attributes.energy.value - skill.cost
-	caster.stat_attributes.set_energy(energy)
-
 # binding the functions to the data
 func bind_status_effects(caster: LiteActor, target: LiteActor):
 	assert(len(skill.buffs) == len(buff_behaviors))
@@ -114,5 +110,7 @@ func compute_stat_changes(target: LiteActor, raw_deltas: ModifierDelta) -> Modif
 # this is where you can deviate from the base implementation
 # by writing your own calculations to modify stat changes APPLIED
 # to the target
-func apply_stat_changes(target: LiteActor, deltas: ModifierDelta):
-	pass
+func apply_stat_changes(caster: LiteActor, target: LiteActor, deltas: ModifierDelta):
+	# apply energy reduction here - all skills should cost energy to cast
+	var new_energy: float = caster.stat_attributes.energy.value + deltas.energy.get_value()
+	caster.stat_attributes.set_energy(new_energy)

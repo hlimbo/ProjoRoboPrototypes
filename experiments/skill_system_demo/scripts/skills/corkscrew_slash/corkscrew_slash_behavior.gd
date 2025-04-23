@@ -2,8 +2,7 @@ extends SkillBehavior
 class_name CorkscrewSlashBehavior
 
 func compute_stat_changes(target: LiteActor, raw_deltas: ModifierDelta) -> ModifierDelta:
-	super.compute_stat_changes(target, raw_deltas)
-	var net_deltas = ModifierDelta.new()
+	var net_deltas = super.compute_stat_changes(target, raw_deltas)
 	
 	var net_dmg: float = maxf(0.0, raw_deltas.hp.stat_value - target.stat_attributes.toughness.value)
 	var net_hp = Modifier.create_hp(net_dmg)
@@ -15,7 +14,8 @@ func compute_stat_changes(target: LiteActor, raw_deltas: ModifierDelta) -> Modif
 # this is where you can deviate from the base implementation
 # by writing your own calculations to modify stat changes APPLIED
 # to the target
-func apply_stat_changes(target: LiteActor, deltas: ModifierDelta):
+func apply_stat_changes(caster: LiteActor, target: LiteActor, deltas: ModifierDelta):
+	super.apply_stat_changes(caster, target, deltas)
 	var dmg: float = deltas.hp.stat_value
 	print("corkscrew slash deals %f damage!" % dmg)
 	var new_hp: float = target.stat_attributes.hp.value + deltas.hp.get_value()

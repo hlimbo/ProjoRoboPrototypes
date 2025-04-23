@@ -8,7 +8,9 @@ func compute_stat_changes(target: LiteActor, raw_deltas: ModifierDelta) -> Modif
 	var net_dmg: float = maxf(raw_dmg- target.stat_attributes.toughness.value, 0.0)
 	return ModifierDelta.new(Modifier.create_hp(net_dmg))
 
-func apply_stat_changes(target: LiteActor, deltas: ModifierDelta):
+func apply_stat_changes(caster: LiteActor, target: LiteActor, deltas: ModifierDelta):
+	super.apply_stat_changes(caster, target, deltas)
+
 	# final damage calculations
 	var dmg: float = deltas.hp.stat_value
 	var new_hp: float = maxf(target.stat_attributes.hp.value - dmg, 0.0)

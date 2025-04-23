@@ -5,7 +5,6 @@ class_name Skill
 @export_enum("FIRE", "WOOD", "WATER", "EARTH", "ELECTRIC", "WIND", "AU", "AI")
 var energy_type: String
 @export var description: String
-@export var cost: float
 
 # FUTURE CONSIDERATION
 # should there be a skill level in here?
@@ -13,14 +12,14 @@ var energy_type: String
 # this would require a skill level table
 
 # these will apply stat modifications as soon as this skill is applied to a target
+# things like energy cost can be added here
 @export var modifiers: Dictionary[String, Modifier] = {}
 
 # represents the buffs and debuffs that can be applied to a target
 @export var buffs: Array[StatusEffect] = []
 @export var debuffs: Array[StatusEffect] = []
 
-func _init(p_cost = 0, p_name = "skill_resource"):
-	cost = p_cost
+func _init(p_name = "skill_resource"):
 	name = p_name
 
 func get_modifiers() -> Array[Modifier]:

@@ -4,7 +4,9 @@ class_name SkillsCsvReader
 func on_convert(data: PackedStringArray) -> Skill:
 	var skill = Skill.new()
 	skill.name = data[0]
-	skill.cost = float(data[1])
+	skill.modifiers["energy-cost"] = Modifier.new("no_stat", "hp", "flat", float(data[1]))
+	skill.modifiers["energy-cost"].is_positive = false
+	
 	var damage_modifier = Modifier.new("no_stat", "hp", "flat", float(data[2]))
 	skill.modifiers["dmg-mod"] = damage_modifier
 	skill.energy_type = data[3]

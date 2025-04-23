@@ -43,18 +43,6 @@ func clear() -> bool:
 	skills.clear()
 	return skills.is_empty()
 
-func apply_skill_cost(skill_name: String) -> bool:
-	if skill_name not in skills:
-		return false
-		
-	assert(is_instance_valid(skill_owner.current_stat_attributes))
-	assert(skill_name in skills)
-	
-	var skill: Skill = skills[skill_name]
-	skill_owner.current_stat_attributes.energy.value -= skill.cost
-	skill_owner.current_stat_attributes.energy.notify_all()
-	return true
-
 # TODO: switch back to returning a bool instead of Array[float] e.g. raw stat values
 func activate_skill(skill_name: String, target: Actor) -> Array[float]:
 	if skill_name not in skills:
@@ -129,7 +117,7 @@ func can_activate_skill(skill_name: String) -> bool:
 		return false
 		
 	var skill: Skill = skills[skill_name]
-	if skill.cost > skill_owner.current_stat_attributes.energy.value:
+	if skill.get_modifier("energy-cost").stat_value > skill_owner.current_stat_attributes.energy.value:
 		return false
 		
 	return skills_activation_table[skill_name]

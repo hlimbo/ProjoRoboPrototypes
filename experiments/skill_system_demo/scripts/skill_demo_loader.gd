@@ -8,12 +8,12 @@ class_name SkillDemoLoader
 signal on_cast_pressed(skill: Skill)
 
 func load_skills(_skills: Array[Skill]):
-	skills = _skills
+	skills.append_array(_skills)
 	for skill in skills:
 		var view = skill_demo_view.instantiate() as SkillDemoView
 		var result = view.on_cast_pressed.connect(_on_cast_pressed.bind(skill))
 		self.add_child(view)
-		view.set_fields(skill.name, skill.cost)
+		view.set_fields(skill.name, skill.get_modifier("energy-cost").stat_value)
 
 func _on_cast_pressed(skill: Skill):
 	print("pressed: ", skill.name)

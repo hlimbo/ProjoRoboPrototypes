@@ -10,7 +10,7 @@ var skill: Skill
 
 func init(new_skill: Skill):
 	button.text = new_skill.name
-	cost_label.text = str(new_skill.cost) + " SRP"
+	cost_label.text = str(new_skill.get_modifier("energy-cost").stat_value) + " SRP"
 	self.skill = new_skill
 
 func connect_button(btn_pressed: Callable):

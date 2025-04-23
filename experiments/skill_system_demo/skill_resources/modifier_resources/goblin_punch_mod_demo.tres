@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="Modifier" load_steps=2 format=3 uid="uid://cyqwdn88mpusa"]
+
+[ext_resource type="Script" uid="uid://dk5fa08oarqhj" path="res://scripts/resources/modifier.gd" id="1_wsatt"]
+
+[resource]
+script = ExtResource("1_wsatt")
+stat_category_type_src = "toughness"
+stat_category_type_target = "hp"
+modifier_type = "percent"
+is_positive = false
+stat_value = 50.0

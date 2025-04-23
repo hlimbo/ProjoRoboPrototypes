@@ -43,14 +43,14 @@ func bind_status_effects(caster: LiteActor, target: LiteActor):
 		var behavior: StatusEffectBehavior = debuff_behaviors[i]
 		behavior.initialize(caster, target)
 
-func start_status_effects(target: LiteActor, skill: Skill):
+func start_status_effects(target: LiteActor):
 	for buff in skill.buffs:
 		target.status_effects.add_buff(buff)
 	
 	for debuff in skill.debuffs:
 		target.status_effects.add_debuff(debuff)
 	
-func end_status_effects(target: LiteActor, skill: Skill):
+func end_status_effects(target: LiteActor):
 	for buff in skill.buffs:
 		target.status_effects.remove_buff(buff)
 	
@@ -58,7 +58,7 @@ func end_status_effects(target: LiteActor, skill: Skill):
 		target.status_effects.remove_debuff(debuff)
 
 # process changes to stats gets executed as soon as the skill triggers on a given frame in the game loop
-func accumulate_raw_stat_changes(caster: LiteActor, target: LiteActor, skill: Skill) -> ModifierDelta:
+func accumulate_raw_stat_changes(caster: LiteActor, target: LiteActor) -> ModifierDelta:
 	# Calculate raw stat value changes (accumulators)
 	var hp_modifier = Modifier.create_hp()
 	var energy_modifier = Modifier.create_energy()

@@ -10,7 +10,7 @@ func on_start_effect(effect: StatusEffect):
 	print("2. starting: ", effect.name)
 	
 	var tough_mod: Modifier = effect.get_modifier("toughness-mod")
-	var speed_mod: Modifier = effect.get_modifier("speed-mod")
+	var speed_mod: Modifier = effect.get_modifier("slow-mod")
 	
 	var new_toughness: float = self.target.stat_attributes.toughness.value + tough_mod.get_value()
 	var new_speed: float = self.target.stat_attributes.speed.value + speed_mod.get_value()
@@ -24,7 +24,7 @@ func on_end_effect(effect: StatusEffect):
 	print("2. ending: ", effect.name)
 	
 	var tough_mod: Modifier = effect.get_modifier("toughness-mod")
-	var speed_mod: Modifier = effect.get_modifier("speed-mod")
+	var speed_mod: Modifier = effect.get_modifier("slow-mod")
 	
 	var new_toughness: float = self.target.stat_attributes.toughness.value - tough_mod.get_value()
 	var new_speed: float = self.target.stat_attributes.speed.value - speed_mod.get_value()

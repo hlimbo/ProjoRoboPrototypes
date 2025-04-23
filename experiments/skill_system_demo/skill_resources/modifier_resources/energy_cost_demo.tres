@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="Modifier" load_steps=2 format=3 uid="uid://bms5y6g324c6v"]
+
+[ext_resource type="Script" uid="uid://dk5fa08oarqhj" path="res://scripts/resources/modifier.gd" id="1_th1wc"]
+
+[resource]
+script = ExtResource("1_th1wc")
+stat_category_type_src = "no_stat"
+stat_category_type_target = "energy"
+modifier_type = "flat"
+is_positive = false
+stat_value = 5.0
+metadata/_custom_type_script = "uid://dk5fa08oarqhj"

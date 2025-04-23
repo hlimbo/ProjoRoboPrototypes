@@ -1,0 +1,52 @@
+[gd_resource type="Resource" script_class="Skill" load_steps=8 format=3 uid="uid://focdxmewcesi"]
+
+[ext_resource type="Script" uid="uid://blew4xi2wumue" path="res://scripts/resources/status_effect.gd" id="1_yx6w3"]
+[ext_resource type="Script" uid="uid://dk5fa08oarqhj" path="res://scripts/resources/modifier.gd" id="2_vq0p3"]
+[ext_resource type="Script" uid="uid://cyg5gs2pni83c" path="res://scripts/resources/skill.gd" id="3_pmxc3"]
+[ext_resource type="Resource" uid="uid://bms5y6g324c6v" path="res://experiments/skill_system_demo/skill_resources/modifier_resources/energy_cost_demo.tres" id="3_vq0p3"]
+
+[sub_resource type="Resource" id="Resource_yx6w3"]
+script = ExtResource("2_vq0p3")
+stat_category_type_src = "no_stat"
+stat_category_type_target = "hp"
+modifier_type = "flat"
+is_positive = false
+stat_value = 5.0
+metadata/_custom_type_script = "uid://dk5fa08oarqhj"
+
+[sub_resource type="Resource" id="Resource_vq0p3"]
+script = ExtResource("1_yx6w3")
+name = "burn-effect"
+description = "Burn effect inflicts burn to target every 1 second"
+duration_type = "SECONDS"
+duration = 10.0
+is_applied_over_time = true
+can_affect_self = false
+modifiers = Dictionary[String, ExtResource("2_vq0p3")]({
+"burn-mod": SubResource("Resource_yx6w3")
+})
+effect_type = "negative"
+stack_cap = 0
+metadata/_custom_type_script = "uid://blew4xi2wumue"
+
+[sub_resource type="Resource" id="Resource_pmxc3"]
+script = ExtResource("2_vq0p3")
+stat_category_type_src = "no_stat"
+stat_category_type_target = "hp"
+modifier_type = "flat"
+is_positive = false
+stat_value = 165.0
+metadata/_custom_type_script = "uid://dk5fa08oarqhj"
+
+[resource]
+script = ExtResource("3_pmxc3")
+name = "burn"
+energy_type = "FIRE"
+description = ""
+modifiers = Dictionary[String, ExtResource("2_vq0p3")]({
+"burn-dmg": SubResource("Resource_pmxc3"),
+"energy-cost": ExtResource("3_vq0p3")
+})
+buffs = Array[ExtResource("1_yx6w3")]([])
+debuffs = Array[ExtResource("1_yx6w3")]([SubResource("Resource_vq0p3")])
+metadata/_custom_type_script = "uid://cyg5gs2pni83c"

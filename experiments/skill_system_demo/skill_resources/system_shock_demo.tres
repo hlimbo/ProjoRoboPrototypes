@@ -1,0 +1,42 @@
+[gd_resource type="Resource" script_class="Skill" load_steps=7 format=3 uid="uid://b4eic7j461246"]
+
+[ext_resource type="Script" uid="uid://blew4xi2wumue" path="res://scripts/resources/status_effect.gd" id="1_vxadf"]
+[ext_resource type="Script" uid="uid://dk5fa08oarqhj" path="res://scripts/resources/modifier.gd" id="2_fuvff"]
+[ext_resource type="Script" uid="uid://cyg5gs2pni83c" path="res://scripts/resources/skill.gd" id="3_74oim"]
+[ext_resource type="Resource" uid="uid://bms5y6g324c6v" path="res://experiments/skill_system_demo/skill_resources/modifier_resources/energy_cost_demo.tres" id="3_fuvff"]
+
+[sub_resource type="Resource" id="Resource_vxadf"]
+script = ExtResource("1_vxadf")
+name = "system-shock"
+description = "For the next 2 turns the target bot can only attack the user."
+duration_type = "SECONDS"
+duration = 2.0
+is_applied_over_time = false
+can_affect_self = false
+modifiers = Dictionary[String, ExtResource("2_fuvff")]({})
+effect_type = "negative"
+stack_cap = 0
+metadata/_custom_type_script = "uid://blew4xi2wumue"
+
+[sub_resource type="Resource" id="Resource_fuvff"]
+script = ExtResource("2_fuvff")
+stat_category_type_src = "no_stat"
+stat_category_type_target = "hp"
+modifier_type = "flat"
+is_positive = false
+stat_value = 120.0
+metadata/_custom_type_script = "uid://dk5fa08oarqhj"
+
+[resource]
+script = ExtResource("3_74oim")
+name = "system shock"
+energy_type = "AI"
+description = "For the next 2 turns the target bot can only attack the user."
+cost = 10.0
+modifiers = Dictionary[String, ExtResource("2_fuvff")]({
+"energy-cost": ExtResource("3_fuvff"),
+"system-shock": SubResource("Resource_fuvff")
+})
+buffs = Array[ExtResource("1_vxadf")]([])
+debuffs = Array[ExtResource("1_vxadf")]([SubResource("Resource_vxadf")])
+metadata/_custom_type_script = "uid://cyg5gs2pni83c"

@@ -1,0 +1,65 @@
+[gd_resource type="Resource" script_class="Skill" load_steps=9 format=3 uid="uid://bjvm4ssyal1rh"]
+
+[ext_resource type="Script" uid="uid://blew4xi2wumue" path="res://scripts/resources/status_effect.gd" id="1_cx2ui"]
+[ext_resource type="Script" uid="uid://dk5fa08oarqhj" path="res://scripts/resources/modifier.gd" id="2_5fv56"]
+[ext_resource type="Resource" uid="uid://bms5y6g324c6v" path="res://experiments/skill_system_demo/skill_resources/modifier_resources/energy_cost_demo.tres" id="3_5fv56"]
+[ext_resource type="Script" uid="uid://cyg5gs2pni83c" path="res://scripts/resources/skill.gd" id="3_7l7gx"]
+
+[sub_resource type="Resource" id="Resource_cx2ui"]
+script = ExtResource("1_cx2ui")
+name = "thorny-defense"
+description = ""
+duration_type = "SECONDS"
+duration = 2.0
+is_applied_over_time = false
+can_affect_self = false
+modifiers = Dictionary[String, ExtResource("2_5fv56")]({})
+effect_type = ""
+stack_cap = 0
+metadata/_custom_type_script = "uid://blew4xi2wumue"
+
+[sub_resource type="Resource" id="Resource_7l7gx"]
+script = ExtResource("2_5fv56")
+stat_category_type_src = "no_stat"
+stat_category_type_target = "speed"
+modifier_type = "flat"
+is_positive = false
+stat_value = 25.0
+metadata/_custom_type_script = "uid://dk5fa08oarqhj"
+
+[sub_resource type="Resource" id="Resource_j4gh3"]
+script = ExtResource("2_5fv56")
+stat_category_type_src = "no_stat"
+stat_category_type_target = "toughness"
+modifier_type = "flat"
+is_positive = true
+stat_value = 50.0
+metadata/_custom_type_script = "uid://dk5fa08oarqhj"
+
+[sub_resource type="Resource" id="Resource_5fv56"]
+script = ExtResource("1_cx2ui")
+name = "thorny-defense2"
+description = "adds slow and increases toughness temporarily"
+duration_type = "SECONDS"
+duration = 2.0
+is_applied_over_time = true
+can_affect_self = true
+modifiers = Dictionary[String, ExtResource("2_5fv56")]({
+"slow-mod": SubResource("Resource_7l7gx"),
+"toughness-mod": SubResource("Resource_j4gh3")
+})
+effect_type = "positive"
+stack_cap = 0
+metadata/_custom_type_script = "uid://blew4xi2wumue"
+
+[resource]
+script = ExtResource("3_7l7gx")
+name = "thorny defense"
+energy_type = "WOOD"
+description = " Performs the Guard action. While guarding deals wood damage back to opposing bot that attacks with a physical move, also slows the bot’s(The one using this move) progress bar"
+modifiers = Dictionary[String, ExtResource("2_5fv56")]({
+"energy-cost": ExtResource("3_5fv56")
+})
+buffs = Array[ExtResource("1_cx2ui")]([SubResource("Resource_cx2ui"), SubResource("Resource_5fv56")])
+debuffs = Array[ExtResource("1_cx2ui")]([])
+metadata/_custom_type_script = "uid://cyg5gs2pni83c"

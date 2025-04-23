@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="Skill" load_steps=6 format=3 uid="uid://cjaknwp1a4st3"]
+
+[ext_resource type="Script" uid="uid://blew4xi2wumue" path="res://scripts/resources/status_effect.gd" id="1_0q7t4"]
+[ext_resource type="Script" uid="uid://dk5fa08oarqhj" path="res://scripts/resources/modifier.gd" id="2_4yryo"]
+[ext_resource type="Resource" uid="uid://bms5y6g324c6v" path="res://experiments/skill_system_demo/skill_resources/modifier_resources/energy_cost_demo.tres" id="3_4yryo"]
+[ext_resource type="Script" uid="uid://cyg5gs2pni83c" path="res://scripts/resources/skill.gd" id="3_ddhpx"]
+
+[sub_resource type="Resource" id="Resource_0q7t4"]
+script = ExtResource("2_4yryo")
+stat_category_type_src = "no_stat"
+stat_category_type_target = "hp"
+modifier_type = "flat"
+is_positive = false
+stat_value = 210.0
+metadata/_custom_type_script = "uid://dk5fa08oarqhj"
+
+[resource]
+script = ExtResource("3_ddhpx")
+name = "corkscrew slash"
+energy_type = "WIND"
+description = "Do a whimsical slash"
+cost = 8.0
+modifiers = Dictionary[String, ExtResource("2_4yryo")]({
+"dmg-mod": SubResource("Resource_0q7t4"),
+"energy-cost": ExtResource("3_4yryo")
+})
+buffs = Array[ExtResource("1_0q7t4")]([])
+debuffs = Array[ExtResource("1_0q7t4")]([])
+metadata/_custom_type_script = "uid://cyg5gs2pni83c"

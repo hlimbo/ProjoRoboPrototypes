@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="Skill" load_steps=6 format=3 uid="uid://dbd07auhe63ce"]
+
+[ext_resource type="Script" uid="uid://blew4xi2wumue" path="res://scripts/resources/status_effect.gd" id="1_uwo83"]
+[ext_resource type="Script" uid="uid://dk5fa08oarqhj" path="res://scripts/resources/modifier.gd" id="2_0lxm2"]
+[ext_resource type="Resource" uid="uid://bms5y6g324c6v" path="res://experiments/skill_system_demo/skill_resources/modifier_resources/energy_cost_demo.tres" id="3_0lxm2"]
+[ext_resource type="Script" uid="uid://cyg5gs2pni83c" path="res://scripts/resources/skill.gd" id="3_ftvrc"]
+
+[sub_resource type="Resource" id="Resource_uwo83"]
+script = ExtResource("2_0lxm2")
+stat_category_type_src = "speed"
+stat_category_type_target = "hp"
+modifier_type = "percent"
+is_positive = true
+stat_value = 18.0
+metadata/_custom_type_script = "uid://dk5fa08oarqhj"
+
+[resource]
+script = ExtResource("3_ftvrc")
+name = "heal"
+energy_type = "WATER"
+description = "Heal based on percentage of speed stat"
+cost = 12.0
+modifiers = Dictionary[String, ExtResource("2_0lxm2")]({
+"energy-cost": ExtResource("3_0lxm2"),
+"heal-mod": SubResource("Resource_uwo83")
+})
+buffs = Array[ExtResource("1_uwo83")]([])
+debuffs = Array[ExtResource("1_uwo83")]([])
+metadata/_custom_type_script = "uid://cyg5gs2pni83c"

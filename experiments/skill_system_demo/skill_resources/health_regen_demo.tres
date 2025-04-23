@@ -1,0 +1,53 @@
+[gd_resource type="Resource" script_class="Skill" load_steps=8 format=3 uid="uid://bsj788l0recae"]
+
+[ext_resource type="Script" uid="uid://blew4xi2wumue" path="res://scripts/resources/status_effect.gd" id="1_rib8b"]
+[ext_resource type="Script" uid="uid://dk5fa08oarqhj" path="res://scripts/resources/modifier.gd" id="2_1bulj"]
+[ext_resource type="Resource" uid="uid://bms5y6g324c6v" path="res://experiments/skill_system_demo/skill_resources/modifier_resources/energy_cost_demo.tres" id="3_1bulj"]
+[ext_resource type="Script" uid="uid://cyg5gs2pni83c" path="res://scripts/resources/skill.gd" id="3_bqc3c"]
+
+[sub_resource type="Resource" id="Resource_rib8b"]
+script = ExtResource("2_1bulj")
+stat_category_type_src = "no_stat"
+stat_category_type_target = "hp"
+modifier_type = "flat"
+is_positive = true
+stat_value = 3.0
+metadata/_custom_type_script = "uid://dk5fa08oarqhj"
+
+[sub_resource type="Resource" id="Resource_1bulj"]
+script = ExtResource("1_rib8b")
+name = "health-regen"
+description = "heal for every second"
+duration_type = "SECONDS"
+duration = 15.0
+is_applied_over_time = true
+can_affect_self = false
+modifiers = Dictionary[String, ExtResource("2_1bulj")]({
+"heal-regen-mod": SubResource("Resource_rib8b")
+})
+effect_type = "positive"
+stack_cap = 0
+metadata/_custom_type_script = "uid://blew4xi2wumue"
+
+[sub_resource type="Resource" id="Resource_bqc3c"]
+script = ExtResource("2_1bulj")
+stat_category_type_src = "no_stat"
+stat_category_type_target = "hp"
+modifier_type = "flat"
+is_positive = true
+stat_value = 20.0
+metadata/_custom_type_script = "uid://dk5fa08oarqhj"
+
+[resource]
+script = ExtResource("3_bqc3c")
+name = "health regen"
+energy_type = "WATER"
+description = "heal for every second"
+cost = 8.0
+modifiers = Dictionary[String, ExtResource("2_1bulj")]({
+"energy-cost": ExtResource("3_1bulj"),
+"heal-mod": SubResource("Resource_bqc3c")
+})
+buffs = Array[ExtResource("1_rib8b")]([SubResource("Resource_1bulj")])
+debuffs = Array[ExtResource("1_rib8b")]([])
+metadata/_custom_type_script = "uid://cyg5gs2pni83c"

@@ -5,8 +5,8 @@
 [ext_resource type="PackedScene" uid="uid://bvfgcytsh6y1s" path="res://experiments/skill_system_demo/nodes/character_block.tscn" id="2_ay85b"]
 [ext_resource type="Script" uid="uid://dqbrkw30u0e20" path="res://experiments/skill_system_demo/scripts/stat_demo_view.gd" id="3_68o5v"]
 [ext_resource type="Script" uid="uid://berwwfn76bufp" path="res://experiments/skill_system_demo/scripts/stat_deltas.gd" id="6_3yn8w"]
-[ext_resource type="Script" uid="uid://c87uxutdh035f" path="res://experiments/skill_system_demo/scripts/console_demo_message.gd" id="6_prugn"]
 [ext_resource type="Script" uid="uid://oqt27ys6g5qi" path="res://experiments/skill_system_demo/scripts/console_demo_loader.gd" id="6_vl0x0"]
+[ext_resource type="PackedScene" uid="uid://0wmd5j87trwo" path="res://experiments/skill_system_demo/nodes/console_message.tscn" id="7_3531b"]
 [ext_resource type="Script" uid="uid://bj030bqi0wg43" path="res://experiments/skill_system_demo/scripts/lite_actor.gd" id="8_tgvue"]
 [ext_resource type="Script" uid="uid://bkeufmeeudo56" path="res://scripts/components/status_effects_component.gd" id="9_o4chb"]
 
@@ -75,34 +75,7 @@ layout_mode = 2
 size_flags_horizontal = 6
 size_flags_vertical = 3
 script = ExtResource("6_vl0x0")
-
-[node name="ConsoleMessage" type="Label" parent="UILayer/BattleConsole/MessageConsole/Console"]
-custom_minimum_size = Vector2(300, 40)
-layout_mode = 2
-theme = ExtResource("1_cep86")
-theme_override_font_sizes/font_size = 16
-text = "1. X used [SKILL] on Y. It dealt Q [Stat_Type]. "
-vertical_alignment = 1
-autowrap_mode = 2
-script = ExtResource("6_prugn")
-
-[node name="MessageSample2" type="Label" parent="UILayer/BattleConsole/MessageConsole/Console"]
-custom_minimum_size = Vector2(300, 40)
-layout_mode = 2
-theme = ExtResource("1_cep86")
-theme_override_font_sizes/font_size = 16
-text = "2. X used [SKILL] on Y. It recovered Q [stat_type]."
-vertical_alignment = 1
-autowrap_mode = 2
-
-[node name="MessageSample3" type="Label" parent="UILayer/BattleConsole/MessageConsole/Console"]
-custom_minimum_size = Vector2(300, 40)
-layout_mode = 2
-theme = ExtResource("1_cep86")
-theme_override_font_sizes/font_size = 16
-text = "3. X used [SKILL]."
-vertical_alignment = 1
-autowrap_mode = 2
+message_node = ExtResource("7_3531b")
 
 [node name="StatDeltas" type="Label" parent="UILayer/BattleConsole"]
 layout_mode = 0

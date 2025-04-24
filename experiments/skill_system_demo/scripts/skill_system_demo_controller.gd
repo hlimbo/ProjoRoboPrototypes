@@ -55,6 +55,11 @@ func on_cast_pressed1(skill: Skill, caster: LiteActor, target: LiteActor):
 	
 	# update stat deltas
 	stat_deltas.set_deltas(net_deltas.hp.get_value(), net_deltas.energy.get_value(), net_deltas.strength.get_value(), net_deltas.toughness.get_value(), net_deltas.speed.get_value())
+	
+	# update battle console text
+	var battle_text: String = "%s used %s on %s" % [caster.name, skill.name, target.name]
+	battle_console.create_new_message(battle_text)
+	
 
 func update_battle_console(player: CharacterBlock):
 	pass

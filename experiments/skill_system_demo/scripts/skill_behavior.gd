@@ -82,22 +82,13 @@ func accumulate_raw_stat_changes(caster: LiteActor, target: LiteActor) -> Modifi
 				speed_modifier.stat_value += flat_modifier.get_value()
 	
 	# check signs of each attribute to ensure the correct addition/subtraction operation can be made later down the line
-	hp_modifier = convert_to_absolute_value(hp_modifier)
-	energy_modifier = convert_to_absolute_value(energy_modifier)
-	strength_modifier = convert_to_absolute_value(strength_modifier)
-	toughness_modifier = convert_to_absolute_value(toughness_modifier)
-	speed_modifier = convert_to_absolute_value(speed_modifier)
+	hp_modifier = Utility.convert_to_absolute_value(hp_modifier)
+	energy_modifier = Utility.convert_to_absolute_value(energy_modifier)
+	strength_modifier = Utility.convert_to_absolute_value(strength_modifier)
+	toughness_modifier = Utility.convert_to_absolute_value(toughness_modifier)
+	speed_modifier = Utility.convert_to_absolute_value(speed_modifier)
 
 	return ModifierDelta.new(hp_modifier, energy_modifier, strength_modifier, toughness_modifier, speed_modifier)
-
-func convert_to_absolute_value(modifier: Modifier) -> Modifier:
-	if modifier.stat_value > 0:
-		modifier.is_positive = true
-	else:
-		modifier.is_positive = false
-		modifier.stat_value = absf(modifier.stat_value)
-		
-	return modifier
 
 func compute_stat_changes(target: LiteActor, raw_deltas: ModifierDelta) -> ModifierDelta:
 	assert(raw_deltas.hp.modifier_type == Constants.MODIFIER_FLAT)

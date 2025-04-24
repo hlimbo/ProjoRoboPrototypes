@@ -153,3 +153,12 @@ func convert_percent_to_flat_modifier(stat_attr_set: StatAttributeSet, modifier:
 			flat_modifier.stat_value = stat_attr_set.speed.value * percent
 		
 	return flat_modifier
+	
+func convert_to_absolute_value(modifier: Modifier) -> Modifier:
+	if modifier.stat_value > 0:
+		modifier.is_positive = true
+	else:
+		modifier.is_positive = false
+		modifier.stat_value = absf(modifier.stat_value)
+		
+	return modifier

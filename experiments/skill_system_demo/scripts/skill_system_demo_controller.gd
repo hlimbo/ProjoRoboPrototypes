@@ -34,6 +34,60 @@ func load_skills(caster_view: CharacterBlock, caster: LiteActor, target: LiteAct
 # lingering status effects will prematurely end as a new one is used in its place
 var skill_behavior: SkillBehavior
 
+func accumulate_modifier_deltas(target: LiteActor, modifiers: Array[Modifier]) -> ModifierDelta:
+	var output = ModifierDelta.new()
+	for mod in modifiers:
+		var flat_mod = Utility.convert_percent_to_flat_modifier(target.stat_attributes, mod)
+		
+		match flat_mod.stat_category_type_target:
+			Constants.STAT_HP:
+				output.hp.stat_value += flat_mod.get_value()
+			Constants.STAT_ENERGY:
+				output.energy.stat_value += flat_mod.get_value()
+			Constants.STAT_STRENGTH:
+				output.strength.stat_value += flat_mod.get_value()
+			Constants.STAT_TOUGHNESS:
+				output.toughness.stat_value += flat_mod.get_value()
+			Constants.STAT_SPEED:
+				output.speed.stat_value += flat_mod.get_value()
+				
+	# convert to absolute values and store sign data in separate variable
+	output.hp = Utility.convert_to_absolute_value(output.hp)
+	output.energy = Utility.convert_to_absolute_value(output.energy)
+	output.strength = Utility.convert_to_absolute_value(output.strength)
+	output.toughness = Utility.convert_to_absolute_value(output.toughness)
+	output.speed = Utility.convert_to_absolute_value(output.speed)
+	
+	return output
+
+func accumulate_status_effect_deltas(target: LiteActor, status_effects: Array[StatusEffect]) -> ModifierDelta:
+	var output = ModifierDelta.new()
+	
+	for effect in status_effects:
+		for mod in effect.get_modifiers():
+			var flat_mod = Utility.convert_percent_to_flat_modifier(target.stat_attributes, mod)
+			
+			match flat_mod.stat_category_type_target:
+				Constants.STAT_HP:
+					output.hp.stat_value += flat_mod.get_value()
+				Constants.STAT_ENERGY:
+					output.energy.stat_value += flat_mod.get_value()
+				Constants.STAT_STRENGTH:
+					output.strength.stat_value += flat_mod.get_value()
+				Constants.STAT_TOUGHNESS:
+					output.toughness.stat_value += flat_mod.get_value()
+				Constants.STAT_SPEED:
+					output.speed.stat_value += flat_mod.get_value()
+					
+	# convert to absolute values and store sign data in separate variable
+	output.hp = Utility.convert_to_absolute_value(output.hp)
+	output.energy = Utility.convert_to_absolute_value(output.energy)
+	output.strength = Utility.convert_to_absolute_value(output.strength)
+	output.toughness = Utility.convert_to_absolute_value(output.toughness)
+	output.speed = Utility.convert_to_absolute_value(output.speed)
+	
+	return output
+
 # the limitation with this design is that it treats ALL 
 # skills as something that always applies it to a different target other than the caster
 # to support different skill behavior during runtime, one would need to 
@@ -53,9 +107,30 @@ func on_cast_pressed1(skill: Skill, caster: LiteActor, target: LiteActor):
 		skill_behavior.bind_status_effects(caster, target)
 		skill_behavior.start_status_effects(target)
 	
-	# update stat deltas
-	stat_deltas.set_deltas(net_deltas.hp.get_value(), net_deltas.energy.get_value(), net_deltas.strength.get_value(), net_deltas.toughness.get_value(), net_deltas.speed.get_value())
+	# combine skill net deltas with status effect deltas to get overall stat changes
+	var mod_deltas = ModifierDelta.new()
 	
+	# accumulate buff and debuff deltas
+	var buff_deltas: ModifierDelta = accumulate_status_effect_deltas(target, target.status_effects.get_buffs())
+	var debuff_deltas: ModifierDelta = accumulate_status_effect_deltas(target, target.status_effects.get_debuffs())
+	
+	var final_deltas = ModifierDelta.new()
+	final_deltas.hp.stat_value = net_deltas.hp.get_value() + buff_deltas.hp.get_value() + debuff_deltas.hp.get_value()
+	final_deltas.energy.stat_value = net_deltas.energy.get_value() + buff_deltas.energy.get_value() + debuff_deltas.energy.get_value()
+	final_deltas.strength.stat_value = net_deltas.strength.get_value() + buff_deltas.strength.get_value() + debuff_deltas.strength.get_value()
+	final_deltas.toughness.stat_value = net_deltas.toughness.get_value() + buff_deltas.toughness.get_value() + debuff_deltas.toughness.get_value()
+	final_deltas.speed.stat_value = net_deltas.speed.get_value() + buff_deltas.speed.get_value() + debuff_deltas.speed.get_value()
+
+	# convert to absolute values
+	final_deltas.hp = Utility.convert_to_absolute_value(final_deltas.hp)
+	final_deltas.energy = Utility.convert_to_absolute_value(final_deltas.energy)
+	final_deltas.strength = Utility.convert_to_absolute_value(final_deltas.strength)
+	final_deltas.toughness = Utility.convert_to_absolute_value(final_deltas.toughness)
+	final_deltas.speed = Utility.convert_to_absolute_value(final_deltas.speed)
+
+	# update stat deltas - skill modifiers
+	stat_deltas.set_deltas(final_deltas.hp.get_value(), final_deltas.energy.get_value(), final_deltas.strength.get_value(), final_deltas.toughness.get_value(), final_deltas.speed.get_value())
+
 	# update battle console text
 	var battle_text: String = "%s used %s on %s" % [caster.name, skill.name, target.name]
 	battle_console.create_new_message(battle_text)
@@ -82,3 +157,22 @@ func _ready():
 	player2.status_effects.on_end_buff.connect(player2_view.status_effect_loader.on_remove_buff)
 	player2.status_effects.on_start_debuff.connect(player2_view.status_effect_loader.on_add_debuff)
 	player2.status_effects.on_end_debuff.connect(player2_view.status_effect_loader.on_remove_buff)
+	
+	# whenever a status effect ticks, display the amount of stat value change will be applied
+	player1.status_effects.on_second_update_buff.connect(on_buff_update.bind(player1))
+	player1.status_effects.on_second_update_debuff.connect(on_debuff_update.bind(player1))
+	
+	player2.status_effects.on_second_update_buff.connect(on_buff_update.bind(player2))
+	player2.status_effects.on_second_update_debuff.connect(on_debuff_update.bind(player2))
+
+func on_buff_update(effect: StatusEffect, target: LiteActor):
+	var mod_deltas: ModifierDelta = accumulate_modifier_deltas(target, effect.get_modifiers())
+	var string_variables: Array = [target.name, effect.name, mod_deltas.hp.stat_value, mod_deltas.energy.stat_value, mod_deltas.strength.stat_value, mod_deltas.toughness.stat_value, mod_deltas.speed.stat_value]
+	var msg: String = "%s has %s.It applies hp: %d, energy: %d, strength: %d, toughness: %d, speed: %d bonus!" % string_variables
+	battle_console.create_new_message(msg)
+	
+func on_debuff_update(effect: StatusEffect, target: LiteActor):
+	var mod_deltas: ModifierDelta = accumulate_modifier_deltas(target, effect.get_modifiers())
+	var string_variables: Array = [target.name, effect.name, mod_deltas.hp.stat_value, mod_deltas.energy.stat_value, mod_deltas.strength.stat_value, mod_deltas.toughness.stat_value, mod_deltas.speed.stat_value]
+	var msg: String = "%s has %s.It applies hp: %d, energy: %d, strength: %d, toughness: %d, speed: %d debuffs!" % string_variables
+	battle_console.create_new_message(msg)

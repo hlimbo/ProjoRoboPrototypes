@@ -193,6 +193,16 @@ func disable():
 	is_paused = true
 	second_interval_timer.paused = is_paused
 
+func get_buffs() -> Array[StatusEffect]:
+	var buffs: Array[StatusEffect]
+	buffs.assign(buff_tags.values())
+	return buffs
+	
+func get_debuffs() -> Array[StatusEffect]:
+	var debuffs: Array[StatusEffect]
+	debuffs.assign(debuff_tags.values())
+	return debuffs
+
 func _init():
 	second_interval_timer = Timer.new()
 	second_interval_timer.one_shot = false

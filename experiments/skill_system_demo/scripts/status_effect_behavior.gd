@@ -11,7 +11,7 @@ var target: LiteActor
 # Uncomment to verify if the StatusEffectBehavior is being freed up
 #func _notification(what: int):
 	#if what == NOTIFICATION_PREDELETE:
-		#print("StatusEffectBehavior: %s is going to be deleted" % status_effect_name)
+		#print("StatusEffectBehavior: %s is going to be deleted" % status_effect.name)
 
 func init_effect(_status_effect: StatusEffect):
 	status_effect = _status_effect

@@ -14,19 +14,17 @@ func _init(new_skill: Skill, buffs: Array[StatusEffectBehavior] = [], debuffs: A
 	debuff_behaviors.append_array(debuffs)
 	
 	for i in range(len(skill.buffs)):
-		buff_behaviors[i].init_effect(skill.buffs[i])
+		buffs[i].init_effect(skill.buffs[i])
 	
 	for i in range(len(skill.debuffs)):
-		debuff_behaviors[i].init_effect(skill.debuffs[i])
+		debuffs[i].init_effect(skill.debuffs[i])
 
-func _notification(what: int):
-	# equivalent to a deconstructor in C++
-	# gets called when all references to this object reaches 0
-	if what == NOTIFICATION_PREDELETE:
-		# used to remove references for buff behaviors to ensure
-		# their NOTIFICATION_PREDELETE event gets called
-		buff_behaviors.clear()
-		debuff_behaviors.clear()
+# uncomment to verify this instance is being deleted
+#func _notification(what: int):
+	## equivalent to a deconstructor in C++
+	## gets called when all references to this object reaches 0
+	#if what == NOTIFICATION_PREDELETE:
+		#print("deleting this SkillBehavior: %s" % skill.name)
 
 # binding the functions to the data
 func bind_status_effects(caster: LiteActor, target: LiteActor):
@@ -42,6 +40,11 @@ func bind_status_effects(caster: LiteActor, target: LiteActor):
 		var effect: StatusEffect = skill.debuffs[i]
 		var behavior: StatusEffectBehavior = debuff_behaviors[i]
 		behavior.initialize(caster, target)
+	
+	# remove buff_behaviors and debuff_behaviors as its lifetime will be managed
+	# by status_effect_behavior_manager.gd
+	buff_behaviors.clear()
+	debuff_behaviors.clear()
 
 func start_status_effects(target: LiteActor):
 	for buff in skill.buffs:

@@ -10,7 +10,7 @@ script = ExtResource("1_vxadf")
 name = "system-shock"
 description = "For the next 2 turns the target bot can only attack the user."
 duration_type = "SECONDS"
-duration = 2.0
+duration = 5.0
 is_applied_over_time = false
 can_affect_self = false
 modifiers = Dictionary[String, ExtResource("2_fuvff")]({})
@@ -32,7 +32,6 @@ script = ExtResource("3_74oim")
 name = "system shock"
 energy_type = "AI"
 description = "For the next 2 turns the target bot can only attack the user."
-cost = 10.0
 modifiers = Dictionary[String, ExtResource("2_fuvff")]({
 "energy-cost": ExtResource("3_fuvff"),
 "system-shock": SubResource("Resource_fuvff")

@@ -3,21 +3,15 @@ extends Node
 class_name StatusEffectsComponent
 
 # This describes what status effects this component currently has
-# key is buff name string | value is StatusEffect
-@export var buff_tags: Dictionary = {}
-# key is buff_name string | value is number of times buff is applied
-@export var buff_stacks: Dictionary = {}
-# key is buff_name string | value is float containing the current duration
+@export var buff_tags: Dictionary[String, StatusEffect]= {}
+@export var buff_stacks: Dictionary[String, int] = {}
 # to know the duration_type of the value, lookup the buff in buff_tags
-@export var buff_durations: Dictionary = {}
+@export var buff_durations: Dictionary[String, float] = {}
 
-# key is debuff name string | value is StatusEffect
-@export var debuff_tags: Dictionary = {}
-# key is debuff_name string | value is number of times debuff is applied
-@export var debuff_stacks: Dictionary = {}
-# key is debuff_name string | value is float containing the current duration
+@export var debuff_tags: Dictionary[String, StatusEffect] = {}
+@export var debuff_stacks: Dictionary[String, int] = {}
 # to know the duration_type of the value, lookup the debuff in debuff_tags
-@export var debuff_durations: Dictionary = {}
+@export var debuff_durations: Dictionary[String, float] = {}
 # used to control if timers and turn counters should resume or be paused
 @export var is_paused: bool = false
 

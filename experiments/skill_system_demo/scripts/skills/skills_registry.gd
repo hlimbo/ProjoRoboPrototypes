@@ -2,6 +2,9 @@
 extends Node
 # class_name SkillsRegistry
 
+# dependencies
+var status_effect_behavior_manager: StatusEffectBehaviorManager = StatusEffectBehaviorManager
+
 #region Skill Names
 const GOBLIN_PUNCH = "goblin punch"
 const THORNY_DEFENSE = "thorny defense"
@@ -22,12 +25,19 @@ func _thorny_defense(skill: Skill) -> SkillBehavior:
 		ThornyDefenseEffect.new(), 
 		ThornyDefenseEffect2.new()
 	]
+	
+	status_effect_behavior_manager.add_effect(buffs[0])
+	status_effect_behavior_manager.add_effect(buffs[1])
+	
 	var thorny_def = ThornyDefenseBehavior.new(skill, buffs)
 	
 	return thorny_def
 
 func _system_shock(skill: Skill) -> SkillBehavior:
 	var debuffs: Array[StatusEffectBehavior] = [SystemShockEffect.new()]
+	
+	status_effect_behavior_manager.add_effect(debuffs[0])
+	
 	var system_shock = SystemShockBehavior.new(skill, [], debuffs)
 	return system_shock
 	

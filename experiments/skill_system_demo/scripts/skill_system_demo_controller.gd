@@ -2,7 +2,12 @@ extends Node
 class_name SkillSystemDemoController
 
 # dependencies
+@export var status_effect_behavior_manager: StatusEffectBehaviorManager = StatusEffectBehaviorManager
 @export var skills_registry: SkillsRegistry = SkillsRegistry
+
+# Turn Simulator
+var turn_count_timer: Timer = Timer.new()
+var turn_counter: int = 1
 
 @export var player1: LiteActor
 @export var player2: LiteActor
@@ -33,6 +38,13 @@ func load_skills(caster_view: CharacterBlock, caster: LiteActor, target: LiteAct
 # Limitation: if player decides to press another skill button, any
 # lingering status effects will prematurely end as a new one is used in its place
 var skill_behavior: SkillBehavior
+
+# New Problem ^
+# How to manage skill_behaviors in the middle of being processed
+# according to Unreal's definition, abilities are async by nature
+# so how do I ensure they last in memory?
+
+# how about for status effects?
 
 func accumulate_modifier_deltas(target: LiteActor, modifiers: Array[Modifier]) -> ModifierDelta:
 	var output = ModifierDelta.new()
@@ -97,12 +109,21 @@ func on_cast_pressed1(skill: Skill, caster: LiteActor, target: LiteActor):
 	print("handling skill: ", skill.name)
 	
 	skill_behavior = skills_registry.create_skill_behavior(skill.name, skill)
+	
 	var raw_deltas: ModifierDelta = skill_behavior.accumulate_raw_stat_changes(caster, target)
 	var net_deltas: ModifierDelta = skill_behavior.compute_stat_changes(target, raw_deltas)
 	skill_behavior.apply_stat_changes(caster, target, net_deltas)
 	
 	# There may or may not be status effects bound to this skill
 	# Starting them on cast is optional if no status effects are bound
+	var current_time: float = Time.get_ticks_msec()
+	var current_turn: int = turn_counter
+	for buff in skill.buffs:
+		status_effect_behavior_manager.start_effect(buff, current_time, current_turn)
+	
+	for debuff in skill.debuffs:
+		status_effect_behavior_manager.start_effect(debuff, current_time, current_turn)
+	
 	if len(skill.buffs) + len(skill.debuffs) > 0:
 		skill_behavior.bind_status_effects(caster, target)
 		skill_behavior.start_status_effects(target)
@@ -139,8 +160,21 @@ func on_cast_pressed1(skill: Skill, caster: LiteActor, target: LiteActor):
 func update_battle_console(player: CharacterBlock):
 	pass
 
+func _init():
+	turn_count_timer.one_shot = false
+	turn_count_timer.wait_time = 2.0
+	turn_count_timer.timeout.connect(on_turn_update)
+
+func on_turn_update():
+	var current_time: float = Time.get_ticks_msec()
+	var current_turn: int = turn_counter
+	status_effect_behavior_manager.check_effect_removal(current_time, current_turn)	
+	turn_counter += 1
 
 func _ready():
+	self.add_child(turn_count_timer)
+	turn_count_timer.start()
+	
 	load_skills(player1_view, player1, player2)
 	load_skills(player2_view, player2, player1)
 	
@@ -164,6 +198,7 @@ func _ready():
 	
 	player2.status_effects.on_second_update_buff.connect(on_buff_update.bind(player2))
 	player2.status_effects.on_second_update_debuff.connect(on_debuff_update.bind(player2))
+
 
 func on_buff_update(effect: StatusEffect, target: LiteActor):
 	var mod_deltas: ModifierDelta = accumulate_modifier_deltas(target, effect.get_modifiers())

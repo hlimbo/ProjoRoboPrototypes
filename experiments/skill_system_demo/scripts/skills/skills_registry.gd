@@ -13,6 +13,7 @@ const HEAL = "heal"
 const HEALTH_REGEN = "health regen"
 const BURN = "burn"
 const CORKSCREW_SLASH = "corkscrew slash"
+const SHOCK_PUNCH = "shock punch"
 #endregion
 
 #region Skill Behavior Creators
@@ -26,9 +27,7 @@ func _thorny_defense(skill: Skill) -> SkillBehavior:
 		ThornyDefenseEffect2.new()
 	]
 	
-	status_effect_behavior_manager.add_effect(buffs[0])
-	status_effect_behavior_manager.add_effect(buffs[1])
-	
+	self.add_effects(buffs)
 	var thorny_def = ThornyDefenseBehavior.new(skill, buffs)
 	
 	return thorny_def
@@ -36,8 +35,7 @@ func _thorny_defense(skill: Skill) -> SkillBehavior:
 func _system_shock(skill: Skill) -> SkillBehavior:
 	var debuffs: Array[StatusEffectBehavior] = [SystemShockEffect.new()]
 	
-	status_effect_behavior_manager.add_effect(debuffs[0])
-	
+	self.add_effects(debuffs)
 	var system_shock = SystemShockBehavior.new(skill, [], debuffs)
 	return system_shock
 	
@@ -47,17 +45,26 @@ func _heal(skill: Skill) -> SkillBehavior:
 	
 func _health_regen(skill: Skill) -> SkillBehavior:
 	var buffs: Array[StatusEffectBehavior] = [HealRegenEffect.new()]
+	self.add_effects(buffs)
 	var health_regen = HealRegenBehavior.new(skill, buffs)
 	return health_regen
 	
 func _burn(skill: Skill) -> SkillBehavior:
 	var debuffs: Array[StatusEffectBehavior] = [BurnEffect.new()]
+	self.add_effects(debuffs)
 	var burn = BurnBehavior.new(skill, [], debuffs)
 	return burn
 	
 func _corkscrew_slash(skill: Skill) -> SkillBehavior:
 	var corkscrew_slash = CorkscrewSlashBehavior.new(skill)
 	return corkscrew_slash
+
+func _shock_punch(skill: Skill) -> SkillBehavior:
+	var debuffs: Array[StatusEffectBehavior] = [ParalyzeEffect.new()]
+	self.add_effects(debuffs)
+	var shock_punch = ShockPunchBehavior.new(skill,[], debuffs)
+	return shock_punch
+
 #endregion
 
 # Key - behavior name string
@@ -70,6 +77,7 @@ var behaviors_factory: Dictionary[String, Callable] = {
 	HEALTH_REGEN: _health_regen,
 	BURN: _burn,
 	CORKSCREW_SLASH: _corkscrew_slash,
+	SHOCK_PUNCH: _shock_punch
 }
 
 func create_skill_behavior(name: String, skill: Skill) -> SkillBehavior:
@@ -77,3 +85,7 @@ func create_skill_behavior(name: String, skill: Skill) -> SkillBehavior:
 	var creator_function: Callable = behaviors_factory[name]
 	assert(creator_function.get_argument_count() == 1)
 	return creator_function.call(skill)
+
+func add_effects(effects: Array[StatusEffectBehavior]):
+	for effect in effects:
+		status_effect_behavior_manager.add_effect(effect)

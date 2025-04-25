@@ -47,10 +47,10 @@ func check_effect_removal(current_time: float, current_turn: int):
 			var millis_to_secs: float = 1000.0
 			var time_diff: float = (current_time - effect_start_times[effect_name]) / millis_to_secs
 			if time_diff >= effect.status_effect.duration:
-				print("time diff: ", time_diff)
+				print("%s time diff: %f seconds elapsed" % [effect.status_effect.name, effect.status_effect.duration])
 				behaviors_to_remove.append(i)
 				effect_start_times.erase(effect_name)
-				
+	
 	for behavior_index in behaviors_to_remove:
 		effects.remove_at(behavior_index)
 			

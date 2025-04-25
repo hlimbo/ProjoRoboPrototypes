@@ -118,11 +118,11 @@ func on_cast_pressed1(skill: Skill, caster: LiteActor, target: LiteActor):
 	# Starting them on cast is optional if no status effects are bound
 	var current_time: float = Time.get_ticks_msec()
 	var current_turn: int = turn_counter
-	for buff in skill.buffs:
-		status_effect_behavior_manager.start_effect(buff, current_time, current_turn)
-	
-	for debuff in skill.debuffs:
-		status_effect_behavior_manager.start_effect(debuff, current_time, current_turn)
+	var effects: Array[StatusEffect] = []
+	effects.append_array(skill.buffs)
+	effects.append_array(skill.debuffs)
+	for effect in effects:
+		status_effect_behavior_manager.start_effect(effect, current_time, current_turn)
 	
 	if len(skill.buffs) + len(skill.debuffs) > 0:
 		skill_behavior.bind_status_effects(caster, target)

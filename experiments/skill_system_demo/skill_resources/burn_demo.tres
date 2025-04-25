@@ -11,7 +11,7 @@ stat_category_type_src = "no_stat"
 stat_category_type_target = "hp"
 modifier_type = "flat"
 is_positive = false
-stat_value = 5.0
+stat_value = 3.0
 metadata/_custom_type_script = "uid://dk5fa08oarqhj"
 
 [sub_resource type="Resource" id="Resource_vq0p3"]

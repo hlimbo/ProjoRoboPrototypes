@@ -1,7 +1,7 @@
 extends Resource
 class_name RuleJsonObject
 
-#region Operators
+#region Operators - TODO: move these out of here and put it Constants file
 const AND = "AND"
 const OR = "OR"
 const NOT = "NOT"
@@ -13,7 +13,7 @@ const GTE = ">="
 const LTE = "<="
 #endregion
 
-#region Simple Data Types
+#region Simple Data Types - TODO: move these out of here and put it Constants file
 const FLOAT = "float"
 const INT = "int"
 const BOOL = "bool"
@@ -34,3 +34,55 @@ var variable_name: String
 @export var string_value: String
 
 @export var rules: Array[RuleJsonObject]
+
+# IMPROVEMENT: can set a depth recursive restriction to prevent infinite recursion for malformed rule json data
+static func parse_from_json_recursive(json_data: Dictionary) -> RuleJsonObject:
+	assert("operator" in json_data)
+	
+	var rule_object = RuleJsonObject.new()
+	rule_object.operator = json_data["operator"]
+	# recursive step
+	if [Rule.AND, Rule.OR, Rule.NOT].has(json_data["operator"]):
+		var rule_objects: Array[RuleJsonObject] = []
+		var rules: Array = json_data["rules"]
+		for rule in rules:
+			var sub_rule_object: RuleJsonObject = parse_from_json_recursive(rule)
+			rule_objects.append(sub_rule_object)
+	
+		rule_object.rules.assign(rule_objects)
+		return rule_object
+		
+	# base case
+	assert("variable" in json_data)
+	assert("value" in json_data)
+	
+	rule_object.variable_name = json_data["variable"]
+	var value = json_data["value"]
+	if value is float:
+		rule_object.data_type = Rule.FLOAT
+		rule_object.float_value = value
+	elif value is int:
+		rule_object.data_type = Rule.INT
+		rule_object.int_value = value
+	elif value is bool:
+		rule_object.data_type = Rule.BOOL
+		rule_object.bool_value = value
+	elif value is String:
+		rule_object.data_type = Rule.STRING
+		rule_object.string_value = value
+	
+	return rule_object
+
+static func parse_from_json(json_file_path: String) -> RuleJsonObject:
+	var file = FileAccess.open(json_file_path, FileAccess.READ)
+	if file.get_open_error() != OK:
+		print_rich("[color=red]Failed to open file at %s[/color]" % json_file_path)
+		assert(false)
+	
+	var json_string: String = file.get_as_text()
+	var json_data: Dictionary = JSON.parse_string(json_string)
+	assert(json_data != null)
+	
+	var rule_json: RuleJsonObject = parse_from_json_recursive(json_data)
+	
+	return rule_json

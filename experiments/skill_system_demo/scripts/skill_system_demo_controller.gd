@@ -108,6 +108,8 @@ func accumulate_status_effect_deltas(target: LiteActor, status_effects: Array[St
 func on_cast_pressed1(skill: Skill, caster: LiteActor, target: LiteActor):
 	print("handling skill: ", skill.name)
 	
+	var some = RuleJsonObject.parse_from_json("res://experiments/skill_system_demo/scripts/rules_engine/rule-example.json")
+	
 	skill_behavior = skills_registry.create_skill_behavior(skill.name, skill)
 	
 	var raw_deltas: ModifierDelta = skill_behavior.accumulate_raw_stat_changes(caster, target)

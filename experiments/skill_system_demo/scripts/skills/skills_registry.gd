@@ -60,33 +60,6 @@ func _corkscrew_slash(skill: Skill) -> SkillBehavior:
 	return corkscrew_slash
 
 func _shock_punch(skill: Skill) -> SkillBehavior:
-	
-	# the conditionals will be constructed here in the registry
-	# Steps
-	# 1. deserialize json data into Resource Data Object
-	# 2. read variables specified from json for comparison*** (most challenging part....)
-	#          -> replace variables mentioned in the rule object with variables read from code
-	#		   -> substitution step
-	#          -> return Resource Data Object containing only primitive values to compare against
-	#			-> String, float, bool, int
-	# 3. rules engine then parses the rule tree (recursive)
-	# 4. return true if condition read from file is true; false otherwise
-	# 5. another system will handle the effects of the code.... (pass it over)
-	
-	# JSON structure
-	# a. logical operator, AND, OR, NOT 
-	#       -> contain an rules array to loop through
-	# b. operators: ==, >, <, >=, <= 
-	#		- must contain value and variable fields (base case)
-	# c. is recursive by nature for logical operators
-	# --- can have an AND within an AND.... the inner and would need to evaluate first before
-	# evaluating the outer AND
-	
-	# data structures
-	# Rule Object
-	# operator: AND, OR, NOT | ==, >, <, >=, <=, !=
-	# variable:
-	
 	var debuffs: Array[StatusEffectBehavior] = [ParalyzeEffect.new()]
 	self.add_effects(debuffs)
 	var shock_punch = ShockPunchBehavior.new(skill,[], debuffs)

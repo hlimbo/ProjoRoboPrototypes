@@ -1,0 +1,30 @@
+{
+	"operator": "OR",
+	"rules": [
+		{
+			"operator": "AND",
+			"rules": [
+				{
+					"operator": "==",
+					"variable": "target_size",
+					"value": "large"
+				},
+				{
+					"operator": ">",
+					"variable": "damage",
+					"value": 0
+				}
+			]
+		},
+		{
+			"operator": ">",
+			"variable": "player_health",
+			"value": 50.0
+		},
+		{
+			"operator": "==",
+			"variable": "is_player_alive",
+			"value": true
+		}
+	]
+}

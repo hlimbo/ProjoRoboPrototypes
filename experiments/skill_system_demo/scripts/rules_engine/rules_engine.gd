@@ -49,14 +49,10 @@ var operator_table: Dictionary[String, Callable] = {
 	Rule.LESS: self.less,
 	Rule.GTE: self.gte,
 	Rule.LTE: self.lte,
-	#Rule.AND: self.and_check,
-	#Rule.OR: self.or_check,
-	#Rule.NOT: self.not_check,
 }
 
 func evaluate(rule: Rule) -> bool:
 	# recursive steps
-
 	if rule.operator == Rule.AND:
 		assert(len(rule.rules) > 0)
 		var flags: Array[bool] = []
@@ -79,7 +75,8 @@ func evaluate(rule: Rule) -> bool:
 		for sub_rule in rule.rules:
 			var flag: bool = evaluate(sub_rule)
 			flags.append(flag)
-		return not_check(flag)
+		return not_check(flags)
+	
 	# base case
 	var evaluator: Callable = operator_table[rule.operator]
 	

@@ -1,0 +1,49 @@
+[gd_resource type="Resource" script_class="Skill" load_steps=7 format=3 uid="uid://dnks8wcfdxhyd"]
+
+[ext_resource type="Script" uid="uid://blew4xi2wumue" path="res://scripts/resources/status_effect.gd" id="1_331jw"]
+[ext_resource type="Script" uid="uid://dk5fa08oarqhj" path="res://scripts/resources/modifier.gd" id="2_66t6l"]
+[ext_resource type="Script" uid="uid://cyg5gs2pni83c" path="res://scripts/resources/skill.gd" id="3_vqtg3"]
+
+[sub_resource type="Resource" id="Resource_331jw"]
+script = ExtResource("1_331jw")
+name = "paralyze"
+description = "prevents bot from making an action"
+duration_type = "SECONDS"
+duration = 8.0
+is_applied_over_time = true
+can_affect_self = false
+modifiers = Dictionary[String, ExtResource("2_66t6l")]({})
+effect_type = "negative"
+stack_cap = 0
+metadata/_custom_type_script = "uid://blew4xi2wumue"
+
+[sub_resource type="Resource" id="Resource_66t6l"]
+script = ExtResource("2_66t6l")
+stat_category_type_src = "no_stat"
+stat_category_type_target = "hp"
+modifier_type = "flat"
+is_positive = false
+stat_value = 188.0
+metadata/_custom_type_script = "uid://dk5fa08oarqhj"
+
+[sub_resource type="Resource" id="Resource_vqtg3"]
+script = ExtResource("2_66t6l")
+stat_category_type_src = "no_stat"
+stat_category_type_target = "energy"
+modifier_type = "flat"
+is_positive = false
+stat_value = 20.0
+metadata/_custom_type_script = "uid://dk5fa08oarqhj"
+
+[resource]
+script = ExtResource("3_vqtg3")
+name = "shock punch"
+energy_type = "ELECTRIC"
+description = "Deals an electrifying punch! May paralyze on contact..."
+modifiers = Dictionary[String, ExtResource("2_66t6l")]({
+"dmg-mod": SubResource("Resource_66t6l"),
+"energy-cost": SubResource("Resource_vqtg3")
+})
+buffs = Array[ExtResource("1_331jw")]([])
+debuffs = Array[ExtResource("1_331jw")]([SubResource("Resource_331jw")])
+metadata/_custom_type_script = "uid://cyg5gs2pni83c"

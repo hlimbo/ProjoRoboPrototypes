@@ -35,18 +35,25 @@ var variable_name: String
 
 @export var rules: Array[RuleJsonObject]
 
-# IMPROVEMENT: can set a depth recursive restriction to prevent infinite recursion for malformed rule json data
-static func parse_from_json_recursive(json_data: Dictionary) -> RuleJsonObject:
+# max number of nested sub rules to prevent infinite recursion
+static var MAX_PARSE_DEPTH: int = 4
+
+static func parse_from_json_recursive(json_data: Dictionary, curr_depth: int, max_depth: int) -> RuleJsonObject:
+	var rule_object = RuleJsonObject.new()
+	if curr_depth >= max_depth:
+		print_rich("[color=yellow]Warning! Reached max recursion depth of %d. Will return a default RuleJsonObject instance[/color]" % max_depth)
+		print_stack()
+		return rule_object
+	
 	assert("operator" in json_data)
 	
-	var rule_object = RuleJsonObject.new()
 	rule_object.operator = json_data["operator"]
 	# recursive step
 	if [Rule.AND, Rule.OR, Rule.NOT].has(json_data["operator"]):
 		var rule_objects: Array[RuleJsonObject] = []
 		var rules: Array = json_data["rules"]
 		for rule in rules:
-			var sub_rule_object: RuleJsonObject = parse_from_json_recursive(rule)
+			var sub_rule_object: RuleJsonObject = parse_from_json_recursive(rule, curr_depth + 1, max_depth)
 			rule_objects.append(sub_rule_object)
 	
 		rule_object.rules.assign(rule_objects)
@@ -83,6 +90,6 @@ static func parse_from_json(json_file_path: String) -> RuleJsonObject:
 	var json_data: Dictionary = JSON.parse_string(json_string)
 	assert(json_data != null)
 	
-	var rule_json: RuleJsonObject = parse_from_json_recursive(json_data)
+	var rule_json: RuleJsonObject = parse_from_json_recursive(json_data, 0, MAX_PARSE_DEPTH)
 	
 	return rule_json

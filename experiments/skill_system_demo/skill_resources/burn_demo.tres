@@ -1,9 +1,10 @@
-[gd_resource type="Resource" script_class="Skill" load_steps=8 format=3 uid="uid://focdxmewcesi"]
+[gd_resource type="Resource" script_class="Skill" load_steps=10 format=3 uid="uid://focdxmewcesi"]
 
 [ext_resource type="Script" uid="uid://blew4xi2wumue" path="res://scripts/resources/status_effect.gd" id="1_yx6w3"]
 [ext_resource type="Script" uid="uid://dk5fa08oarqhj" path="res://scripts/resources/modifier.gd" id="2_vq0p3"]
 [ext_resource type="Script" uid="uid://cyg5gs2pni83c" path="res://scripts/resources/skill.gd" id="3_pmxc3"]
 [ext_resource type="Resource" uid="uid://bms5y6g324c6v" path="res://experiments/skill_system_demo/skill_resources/modifier_resources/energy_cost_demo.tres" id="3_vq0p3"]
+[ext_resource type="Script" uid="uid://ec14yto75bf6" path="res://experiments/skill_system_demo/scripts/rules_engine/rule_json_object.gd" id="4_pmxc3"]
 
 [sub_resource type="Resource" id="Resource_yx6w3"]
 script = ExtResource("2_vq0p3")
@@ -27,6 +28,7 @@ modifiers = Dictionary[String, ExtResource("2_vq0p3")]({
 })
 effect_type = "negative"
 stack_cap = 0
+rules = Array[ExtResource("4_pmxc3")]([])
 metadata/_custom_type_script = "uid://blew4xi2wumue"
 
 [sub_resource type="Resource" id="Resource_pmxc3"]
@@ -37,6 +39,17 @@ modifier_type = "flat"
 is_positive = false
 stat_value = 165.0
 metadata/_custom_type_script = "uid://dk5fa08oarqhj"
+
+[sub_resource type="Resource" id="Resource_6vqd1"]
+script = ExtResource("4_pmxc3")
+operator = "=="
+variable_name = ""
+float_value = 0.0
+int_value = 0
+bool_value = false
+string_value = ""
+rules = Array[ExtResource("4_pmxc3")]([])
+metadata/_custom_type_script = "uid://ec14yto75bf6"
 
 [resource]
 script = ExtResource("3_pmxc3")
@@ -49,4 +62,5 @@ modifiers = Dictionary[String, ExtResource("2_vq0p3")]({
 })
 buffs = Array[ExtResource("1_yx6w3")]([])
 debuffs = Array[ExtResource("1_yx6w3")]([SubResource("Resource_vq0p3")])
+rules = Array[ExtResource("4_pmxc3")]([SubResource("Resource_6vqd1")])
 metadata/_custom_type_script = "uid://cyg5gs2pni83c"

@@ -19,6 +19,12 @@ var energy_type: String
 @export var buffs: Array[StatusEffect] = []
 @export var debuffs: Array[StatusEffect] = []
 
+#  These represent the "if conditions" in code that has a few use cases:
+# 1. whether or not to activate this skill
+# 2. whether or not to apply stat bonuses
+# 3. whether or not to apply stat penalties
+@export var rules: Array[RuleJsonObject] = []
+
 func _init(p_name = "skill_resource"):
 	name = p_name
 

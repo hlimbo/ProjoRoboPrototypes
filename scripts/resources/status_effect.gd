@@ -28,6 +28,12 @@ var effect_type: String
 # max number of times the same status effect can be applied to a target
 @export var stack_cap: int
 
+#  These represent the "if conditions" in code that has a few use cases:
+# 1. whether or not to activate this skill
+# 2. whether or not to apply stat bonuses
+# 3. whether or not to apply stat penalties
+@export var rules: Array[RuleJsonObject] = []
+
 func get_modifiers() -> Array[Modifier]:
 	var mods = modifiers.values() as Array[Modifier]
 	assert(mods != null)

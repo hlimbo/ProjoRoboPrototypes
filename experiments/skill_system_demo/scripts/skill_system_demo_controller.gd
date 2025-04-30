@@ -39,13 +39,6 @@ func load_skills(caster_view: CharacterBlock, caster: LiteActor, target: LiteAct
 # lingering status effects will prematurely end as a new one is used in its place
 var skill_behavior: SkillBehavior
 
-# New Problem ^
-# How to manage skill_behaviors in the middle of being processed
-# according to Unreal's definition, abilities are async by nature
-# so how do I ensure they last in memory?
-
-# how about for status effects?
-
 func accumulate_modifier_deltas(target: LiteActor, modifiers: Array[Modifier]) -> ModifierDelta:
 	var output = ModifierDelta.new()
 	for mod in modifiers:
@@ -118,16 +111,17 @@ func on_cast_pressed1(skill: Skill, caster: LiteActor, target: LiteActor):
 	
 	# There may or may not be status effects bound to this skill
 	# Starting them on cast is optional if no status effects are bound
-	var current_time: float = Time.get_ticks_msec()
-	var current_turn: int = turn_counter
-	var effects: Array[StatusEffect] = []
-	effects.append_array(skill.buffs)
-	effects.append_array(skill.debuffs)
-	for effect in effects:
-		status_effect_behavior_manager.start_effect(effect, current_time, current_turn)
-	
 	if len(skill.buffs) + len(skill.debuffs) > 0:
 		skill_behavior.bind_status_effects(caster, target)
+		
+		var current_time: float = Time.get_ticks_msec()
+		var current_turn: int = turn_counter
+		var effects: Array[StatusEffect] = []
+		effects.append_array(skill.buffs)
+		effects.append_array(skill.debuffs)
+		for effect in effects:
+			status_effect_behavior_manager.start_effect(effect, current_time, current_turn)
+		
 		skill_behavior.start_status_effects(target)
 	
 	# combine skill net deltas with status effect deltas to get overall stat changes
@@ -170,7 +164,7 @@ func _init():
 func on_turn_update():
 	var current_time: float = Time.get_ticks_msec()
 	var current_turn: int = turn_counter
-	status_effect_behavior_manager.check_effect_removal(current_time, current_turn)	
+	status_effect_behavior_manager.check_effect_removal(current_time, current_turn)
 	turn_counter += 1
 
 func _ready():

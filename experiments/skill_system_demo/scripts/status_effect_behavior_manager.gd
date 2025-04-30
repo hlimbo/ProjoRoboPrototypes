@@ -9,11 +9,6 @@ var effects: Array[StatusEffectBehavior] = []
 var effect_start_times: Dictionary[String, float] = {}
 
 func add_effect(effect: StatusEffectBehavior):
-	#if effect.status_effect.name not in effect_start_times:
-		#if effect.status_effect.duration_type == "TURN":
-			#effect_start_times[effect.status_effect.name] = current_turn
-		#elif effect.status_effect.duration_type == "SECONDS":
-			#effect_start_times[effect.status_effect.name] = current_time
 	effects.append(effect)
 
 func start_effect(effect: StatusEffect, current_time: float, current_turn: int):

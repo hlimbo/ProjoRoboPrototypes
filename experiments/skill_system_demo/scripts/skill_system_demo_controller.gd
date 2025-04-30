@@ -109,6 +109,16 @@ func on_cast_pressed1(skill: Skill, caster: LiteActor, target: LiteActor):
 	var net_deltas: ModifierDelta = skill_behavior.compute_stat_changes(target, raw_deltas)
 	skill_behavior.apply_stat_changes(caster, target, net_deltas)
 	
+	# Temp code to understand how using the Rule Engine may work in 1 scenario
+	var burn_behavior = skill_behavior as BurnBehavior
+	if burn_behavior != null:
+		var the_rule = Rule.convert_to_rule(skill.rule_set)
+		var can_apply_burn_debuff: bool = RuleEngine.evaluate(the_rule)
+		if can_apply_burn_debuff:
+			print("burn debuff can be applied")
+		else:
+			print("burn debuff cannot be applied")
+	
 	# There may or may not be status effects bound to this skill
 	# Starting them on cast is optional if no status effects are bound
 	if len(skill.buffs) + len(skill.debuffs) > 0:

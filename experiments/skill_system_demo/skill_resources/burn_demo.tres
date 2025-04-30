@@ -28,7 +28,6 @@ modifiers = Dictionary[String, ExtResource("2_vq0p3")]({
 })
 effect_type = "negative"
 stack_cap = 0
-rules = Array[ExtResource("4_pmxc3")]([])
 metadata/_custom_type_script = "uid://blew4xi2wumue"
 
 [sub_resource type="Resource" id="Resource_pmxc3"]
@@ -42,9 +41,9 @@ metadata/_custom_type_script = "uid://dk5fa08oarqhj"
 
 [sub_resource type="Resource" id="Resource_6vqd1"]
 script = ExtResource("4_pmxc3")
-operator = "=="
-variable_name = ""
-float_value = 0.0
+operator = ">"
+variable_name = "random"
+float_value = 0.5
 int_value = 0
 bool_value = false
 string_value = ""
@@ -62,5 +61,5 @@ modifiers = Dictionary[String, ExtResource("2_vq0p3")]({
 })
 buffs = Array[ExtResource("1_yx6w3")]([])
 debuffs = Array[ExtResource("1_yx6w3")]([SubResource("Resource_vq0p3")])
-rules = Array[ExtResource("4_pmxc3")]([SubResource("Resource_6vqd1")])
+rule_set = SubResource("Resource_6vqd1")
 metadata/_custom_type_script = "uid://cyg5gs2pni83c"

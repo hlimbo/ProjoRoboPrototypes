@@ -2,26 +2,26 @@ extends Node
 class_name RuleEngine
 
 #region Operator Functions
-func equals(val1, val2) -> bool:
+static func equals(val1, val2) -> bool:
 	return val1 == val2
 
-func not_equals(val1, val2) -> bool:
+static func not_equals(val1, val2) -> bool:
 	return val1 != val2
 	
-func greater(val1, val2) -> bool:
+static func greater(val1, val2) -> bool:
 	return val1 > val2
 
-func less(val1, val2) -> bool:
+static func less(val1, val2) -> bool:
 	return val1 < val2
 	
-func gte(val1, val2) -> bool:
+static func gte(val1, val2) -> bool:
 	return val1 >= val2
 	
-func lte(val1, val2) -> bool:
+static func lte(val1, val2) -> bool:
 	return val1 <= val2
 	
 # AND
-func and_check(rule_flags: Array[bool]) -> bool:
+static func and_check(rule_flags: Array[bool]) -> bool:
 	for flag in rule_flags:
 		if flag == false:
 			return false
@@ -29,7 +29,7 @@ func and_check(rule_flags: Array[bool]) -> bool:
 	return true
 	
 # OR
-func or_check(rule_flags: Array[bool]) -> bool:
+static func or_check(rule_flags: Array[bool]) -> bool:
 	for flag in rule_flags:
 		if flag == true:
 			return true
@@ -38,20 +38,20 @@ func or_check(rule_flags: Array[bool]) -> bool:
 	
 # NOT
 # not AND
-func not_check(rule_flags: Array[bool]) -> bool:
+static func not_check(rule_flags: Array[bool]) -> bool:
 	return not and_check(rule_flags)
 #endregion
 
-var operator_table: Dictionary[String, Callable] = {
-	Rule.EQUAL: self.equals,
-	Rule.NOT_EQUAL: self.not_equals,
-	Rule.GREATER: self.greater,
-	Rule.LESS: self.less,
-	Rule.GTE: self.gte,
-	Rule.LTE: self.lte,
+static var operator_table: Dictionary[String, Callable] = {
+	Rule.EQUAL: equals,
+	Rule.NOT_EQUAL: not_equals,
+	Rule.GREATER: greater,
+	Rule.LESS: less,
+	Rule.GTE: gte,
+	Rule.LTE: lte,
 }
 
-func evaluate(rule: Rule) -> bool:
+static func evaluate(rule: Rule) -> bool:
 	# recursive steps
 	if rule.operator == Rule.AND:
 		assert(len(rule.rules) > 0)

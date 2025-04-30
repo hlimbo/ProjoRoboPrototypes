@@ -72,6 +72,7 @@ static func convert_to_rule_recursive(rule_json: RuleJsonObject, node: Node, cur
 		assert(rule_json.float_value >= 0.0 and rule_json.float_value <= 1.0, "rule float value must be between 0 and 1")
 		rule.float_value2 = rule_json.float_value 
 	else:
+		assert(node != null)
 		# TODO: IMPROVEMENT: support dot notation to obtain properties within properties
 		# may require more recursion to solve
 		# example string format = status_effects.duration OR player.stat_attributes.speed
@@ -104,5 +105,5 @@ static func convert_to_rule_recursive(rule_json: RuleJsonObject, node: Node, cur
 	
 	return rule
 
-static func convert_to_rule(rule_json: RuleJsonObject, node: Node) -> Rule:
+static func convert_to_rule(rule_json: RuleJsonObject, node: Node = null) -> Rule:
 	return convert_to_rule_recursive(rule_json, node, 0, MAX_RECUR_DEPTH)

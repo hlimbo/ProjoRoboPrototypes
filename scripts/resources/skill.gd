@@ -23,7 +23,7 @@ var energy_type: String
 # 1. whether or not to activate this skill
 # 2. whether or not to apply stat bonuses
 # 3. whether or not to apply stat penalties
-@export var rules: Array[RuleJsonObject] = []
+@export var rule_set: RuleJsonObject
 
 func _init(p_name = "skill_resource"):
 	name = p_name

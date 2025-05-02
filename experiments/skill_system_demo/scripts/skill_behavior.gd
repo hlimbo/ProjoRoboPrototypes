@@ -5,6 +5,11 @@ var skill: Skill
 var buff_behaviors: Array[StatusEffectBehavior] = []
 var debuff_behaviors: Array[StatusEffectBehavior] = []
 
+# Skill Lifecycle
+# on skill begin
+# on skill apply
+# on skill end
+
 func _init(new_skill: Skill, buffs: Array[StatusEffectBehavior] = [], debuffs: Array[StatusEffectBehavior] = []):
 	assert(len(new_skill.buffs) == len(buffs))
 	assert(len(new_skill.debuffs) == len(debuffs))

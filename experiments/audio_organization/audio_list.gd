@@ -9,7 +9,6 @@ enum Play_Mode {
 
 @export var play_mode: Play_Mode = Play_Mode.FORWARD
 @export var audio_player: AudioStreamPlayer
-# can swap out audio streams for 1 player for UI elements
 @export var audio_streams: Array[AudioStream] = []
 
 var play_index: int = 0

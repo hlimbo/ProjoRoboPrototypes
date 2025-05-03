@@ -135,7 +135,7 @@ func deactivate_skill(skill_name: String, caster: Actor, targets: Array[Actor]) 
 # the behaviour to apply specific stat values through modifiers should be handled somewhere else not here
 # this is done to quickly verify how some of the Skill Ideas Richie had would work out
 func thorny_defense(target: Actor):
-	var skill_name: String = "Thorny Defense"
+	var skill_name: String = "Goblin Punch"
 	assert(skill_name in skills)
 	var skill: Skill = skills[skill_name]
 	var target_status_effects_component: StatusEffectsComponent = target.status_effects_component

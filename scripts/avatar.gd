@@ -73,9 +73,10 @@ func _ready() -> void:
 	battle_timers.resume_delay_timer.timeout.connect(on_resume_timeout)
 	area_2d.body_entered.connect(on_area_entered)
 
-
 func _physics_process(delta: float) -> void:
-	var delta_move: float = _curr_speed * delta * int(resume_motion) * (1 if is_moving_forward else -1)
+	# remap bool => 0 OR 1 => -1 OR 1
+	var move_direction: int = 2 * int(is_moving_forward) - 1
+	var delta_move: float = _curr_speed * delta * int(resume_motion) * move_direction
 	path_follow_2d.progress_ratio += delta_move
 
 func _process(delta: float) -> void:
@@ -166,34 +167,6 @@ func pause_motion_for(seconds_to_pause: float, old_battle_state: Constants.Battl
 		ui_battle_state_machine.transition_to(old_battle_state)
 	
 	pause_timer.timeout.connect(on_restore_motion)
-
-# push_back_amount must be a value between 0 and 1.0
-func push_back_progress(push_back_amount: float, duration_sec: float):
-	toggle_motion(true)
-	is_knocked_back = true
-	# disable monitoring so that it does not trigger a start turn signal event
-	area_2d.monitoring = false
-	is_moving_forward = false
-	
-	# instead of tweening this can be put in a ui knockback state's on_physics_update
-	# where it checks when it can exit out of the state
-	# TODO(Polish): knockback visually doesn't look quite right... maybe use a different easing function or use the _physics_process() loop to move avatar along path
-	var knockback_tween: Tween = create_tween()
-	knockback_tween.set_process_mode(Tween.TWEEN_PROCESS_PHYSICS)
-	var final_avatar_progress_ratio: float = maxf(progress_ratio - push_back_amount, 0.0)
-	knockback_tween.tween_property(self, "progress_ratio", final_avatar_progress_ratio, duration_sec).from_current().set_ease(Tween.EASE_OUT)
-	
-	var on_finished = func():
-		battle_state = Constants.Battle_State.WAITING
-		ui_battle_state_machine.transition_to(Constants.Battle_State.WAITING)
-		is_knocked_back = false
-		# re-enable this so avatar can start their turn -- assuming you get pushed out of the exe rectangle
-		area_2d.monitoring = true
-		# assuming avatar gets pushed out of pending move or starting turn... reset movement speed back to waiting speed
-		_curr_speed = move_speed
-	
-	knockback_tween.finished.connect(on_finished)
-	knockback_tween.play()
 
 func enable():
 	visible = true

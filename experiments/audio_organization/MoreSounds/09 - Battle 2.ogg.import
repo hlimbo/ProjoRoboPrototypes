@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://b4ul3vja1xux6"
+path="res://.godot/imported/09 - Battle 2.ogg-41791ea2b20ce7a11c6089ac47b37757.oggvorbisstr"
+
+[deps]
+
+source_file="res://experiments/audio_organization/MoreSounds/09 - Battle 2.ogg"
+dest_files=["res://.godot/imported/09 - Battle 2.ogg-41791ea2b20ce7a11c6089ac47b37757.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

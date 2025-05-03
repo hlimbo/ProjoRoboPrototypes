@@ -1,0 +1,184 @@
+[gd_scene load_steps=45 format=3 uid="uid://mgewgtmjrsjq"]
+
+[ext_resource type="Script" uid="uid://cd1fkf7sqykcf" path="res://experiments/audio_organization/audio_list.gd" id="1_3hjkv"]
+[ext_resource type="Theme" uid="uid://d1stc5w463lhk" path="res://themes/battle_ui_theme.tres" id="2_kq6on"]
+[ext_resource type="AudioStream" uid="uid://crf18pfp5260t" path="res://experiments/audio_organization/JDSherbert - Ultimate UI SFX Pack/ogg/JDSherbert - Ultimate UI SFX Pack - Cancel - 1.ogg" id="3_wbslp"]
+[ext_resource type="AudioStream" uid="uid://de0es1byv7fl3" path="res://experiments/audio_organization/JDSherbert - Ultimate UI SFX Pack/ogg/JDSherbert - Ultimate UI SFX Pack - Cancel - 2.ogg" id="4_dmmi4"]
+[ext_resource type="AudioStream" uid="uid://dpg3uy8w0f2fn" path="res://experiments/audio_organization/Fantasy UI SFX/Fantasy/Fantasy_UI (2).wav" id="4_h1ie6"]
+[ext_resource type="AudioStream" uid="uid://db6rn242eqgew" path="res://experiments/audio_organization/JDSherbert - Ultimate UI SFX Pack/ogg/JDSherbert - Ultimate UI SFX Pack - Cursor - 1.ogg" id="5_07gi1"]
+[ext_resource type="AudioStream" uid="uid://dplyy6143f365" path="res://experiments/audio_organization/Fantasy UI SFX/Fantasy/Fantasy_UI (3).wav" id="5_a3tad"]
+[ext_resource type="AudioStream" uid="uid://c6qeox25f5ssu" path="res://experiments/audio_organization/Fantasy UI SFX/Fantasy/Fantasy_UI (4).wav" id="6_a4n0m"]
+[ext_resource type="AudioStream" uid="uid://e0ekv54k6agp" path="res://experiments/audio_organization/JDSherbert - Ultimate UI SFX Pack/ogg/JDSherbert - Ultimate UI SFX Pack - Cursor - 2.ogg" id="6_u6i77"]
+[ext_resource type="AudioStream" uid="uid://brb4tv1ucdbrh" path="res://experiments/audio_organization/JDSherbert - Ultimate UI SFX Pack/ogg/JDSherbert - Ultimate UI SFX Pack - Cursor - 3.ogg" id="7_0byd8"]
+[ext_resource type="AudioStream" uid="uid://byiomw25s0qf2" path="res://experiments/audio_organization/Fantasy UI SFX/Fantasy/Fantasy_UI (5).wav" id="7_p476l"]
+[ext_resource type="AudioStream" uid="uid://c64nfa4iylg7q" path="res://experiments/audio_organization/Fantasy UI SFX/Fantasy/Fantasy_UI (6).wav" id="8_f35fo"]
+[ext_resource type="AudioStream" uid="uid://8yecul3q6djh" path="res://experiments/audio_organization/JDSherbert - Ultimate UI SFX Pack/ogg/JDSherbert - Ultimate UI SFX Pack - Cursor - 4.ogg" id="8_npuly"]
+[ext_resource type="AudioStream" uid="uid://crrx3klfowegj" path="res://experiments/audio_organization/JDSherbert - Ultimate UI SFX Pack/ogg/JDSherbert - Ultimate UI SFX Pack - Cursor - 5.ogg" id="9_0anqx"]
+[ext_resource type="AudioStream" uid="uid://dml8d18ych8kn" path="res://experiments/audio_organization/Fantasy UI SFX/Fantasy/Fantasy_UI (7).wav" id="9_j078h"]
+[ext_resource type="AudioStream" uid="uid://cmbwr8i28iyk3" path="res://experiments/audio_organization/Fantasy UI SFX/Fantasy/Fantasy_UI (8).wav" id="10_1oc0u"]
+[ext_resource type="AudioStream" uid="uid://bo5nnxkowwwkj" path="res://experiments/audio_organization/JDSherbert - Ultimate UI SFX Pack/ogg/JDSherbert - Ultimate UI SFX Pack - Error - 1.ogg" id="10_dmmi4"]
+[ext_resource type="AudioStream" uid="uid://dfyxx6wkqcpbj" path="res://experiments/audio_organization/Fantasy UI SFX/Fantasy/Fantasy_UI (9).wav" id="11_wbslp"]
+[ext_resource type="AudioStream" uid="uid://ct174wlvcufhe" path="res://experiments/audio_organization/JDSherbert - Ultimate UI SFX Pack/ogg/JDSherbert - Ultimate UI SFX Pack - Popup Close - 1.ogg" id="12_dmmi4"]
+[ext_resource type="AudioStream" uid="uid://bdo5ni5pykkvu" path="res://experiments/audio_organization/JDSherbert - Ultimate UI SFX Pack/ogg/JDSherbert - Ultimate UI SFX Pack - Popup Open - 1.ogg" id="13_07gi1"]
+[ext_resource type="AudioStream" uid="uid://d3v5nek4un6k2" path="res://experiments/audio_organization/JDSherbert - Ultimate UI SFX Pack/ogg/JDSherbert - Ultimate UI SFX Pack - Select - 1.ogg" id="14_u6i77"]
+[ext_resource type="AudioStream" uid="uid://cafwix5hlrdhm" path="res://experiments/audio_organization/JDSherbert - Ultimate UI SFX Pack/ogg/JDSherbert - Ultimate UI SFX Pack - Select - 2.ogg" id="15_0byd8"]
+[ext_resource type="AudioStream" uid="uid://d3linnoigu1qn" path="res://experiments/audio_organization/JDSherbert - Ultimate UI SFX Pack/ogg/JDSherbert - Ultimate UI SFX Pack - Swipe - 1.ogg" id="16_npuly"]
+[ext_resource type="AudioStream" uid="uid://bw1q0ic5itcdx" path="res://experiments/audio_organization/JDSherbert - Ultimate UI SFX Pack/ogg/JDSherbert - Ultimate UI SFX Pack - Swipe - 2.ogg" id="17_0anqx"]
+[ext_resource type="AudioStream" uid="uid://c7811dji8bnem" path="res://experiments/audio_organization/Fantasy UI SFX/Fantasy/Fantasy_UI (21).wav" id="37_rebht"]
+[ext_resource type="AudioStream" uid="uid://drdg1sxqkhpkw" path="res://experiments/audio_organization/Fantasy UI SFX/Fantasy/Fantasy_UI (22).wav" id="38_sls0u"]
+[ext_resource type="AudioStream" uid="uid://ditinll62i4j3" path="res://experiments/audio_organization/Fantasy UI SFX/Fantasy/Fantasy_UI (23).wav" id="39_0oplp"]
+[ext_resource type="AudioStream" uid="uid://b24emcglitsl3" path="res://experiments/audio_organization/Fantasy UI SFX/Fantasy/Fantasy_UI (24).wav" id="40_86vfl"]
+[ext_resource type="AudioStream" uid="uid://bl21xnxybpgmp" path="res://experiments/audio_organization/Fantasy UI SFX/Fantasy/Fantasy_UI (25).wav" id="41_5x4c1"]
+[ext_resource type="AudioStream" uid="uid://bhtysj5pkedh1" path="res://experiments/audio_organization/Fantasy UI SFX/Fantasy/Fantasy_UI (26).wav" id="42_ffj30"]
+[ext_resource type="AudioStream" uid="uid://dlxfhf3y18j22" path="res://experiments/audio_organization/Fantasy UI SFX/Fantasy/Fantasy_UI (27).wav" id="43_of2mp"]
+[ext_resource type="AudioStream" uid="uid://cry4lamjmqjau" path="res://experiments/audio_organization/Fantasy UI SFX/Fantasy/Fantasy_UI (28).wav" id="44_5w06o"]
+[ext_resource type="AudioStream" uid="uid://dgych0efv8yj7" path="res://experiments/audio_organization/Fantasy UI SFX/Fantasy/Fantasy_UI (29).wav" id="45_if2io"]
+[ext_resource type="AudioStream" uid="uid://cf6m46yx0uu43" path="res://experiments/audio_organization/Fantasy UI SFX/Fantasy/Fantasy_UI (30).wav" id="46_nh11i"]
+[ext_resource type="AudioStream" uid="uid://bq4yk0lo65ysk" path="res://experiments/audio_organization/Fantasy UI SFX/Fantasy/Fantasy_UI (31).wav" id="47_kgt5m"]
+[ext_resource type="AudioStream" uid="uid://7eb3wt8cpdet" path="res://experiments/audio_organization/Fantasy UI SFX/Fantasy/Fantasy_UI (32).wav" id="48_fyb63"]
+[ext_resource type="AudioStream" uid="uid://dwxa3bdsmupnj" path="res://experiments/audio_organization/Fantasy UI SFX/Fantasy/Fantasy_UI (33).wav" id="49_e6u12"]
+[ext_resource type="AudioStream" uid="uid://cbhxsofdtuyrk" path="res://experiments/audio_organization/Fantasy UI SFX/Fantasy/Fantasy_UI (34).wav" id="50_f5c10"]
+[ext_resource type="AudioStream" uid="uid://bxv34ptvnsop6" path="res://experiments/audio_organization/Fantasy UI SFX/Fantasy/Fantasy_UI (35).wav" id="51_yeunx"]
+[ext_resource type="AudioStream" uid="uid://k2hp3kpwkwlw" path="res://experiments/audio_organization/Fantasy UI SFX/Fantasy/Fantasy_UI (36).wav" id="52_crg2d"]
+[ext_resource type="AudioStream" uid="uid://b1xk4b47l6kgm" path="res://experiments/audio_organization/Fantasy UI SFX/Fantasy/Fantasy_UI (37).wav" id="53_p3t6h"]
+[ext_resource type="AudioStream" uid="uid://du407xrq250h1" path="res://experiments/audio_organization/Fantasy UI SFX/Fantasy/Fantasy_UI (38).wav" id="54_ovrad"]
+[ext_resource type="AudioStream" uid="uid://d3x6buhem5kt2" path="res://experiments/audio_organization/Fantasy UI SFX/Fantasy/Fantasy_UI (39).wav" id="55_5ph6e"]
+[ext_resource type="AudioStream" uid="uid://u53i05lr6m2t" path="res://experiments/audio_organization/Fantasy UI SFX/Fantasy/Fantasy_UI (40).wav" id="56_rn0o4"]
+
+[node name="AudioOrganization" type="Node2D"]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="PlayButton" type="Button" parent="CanvasLayer" node_paths=PackedStringArray("audio_player")]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -244.0
+offset_top = -224.0
+offset_right = 244.0
+offset_bottom = -136.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+theme = ExtResource("2_kq6on")
+theme_override_font_sizes/font_size = 64
+text = "Play Sound"
+script = ExtResource("1_3hjkv")
+audio_player = NodePath("AudioStreamPlayer")
+audio_streams = Array[AudioStream]([ExtResource("3_wbslp"), ExtResource("4_dmmi4"), ExtResource("5_07gi1"), ExtResource("6_u6i77"), ExtResource("7_0byd8"), ExtResource("8_npuly"), ExtResource("9_0anqx"), ExtResource("10_dmmi4"), ExtResource("12_dmmi4"), ExtResource("13_07gi1"), ExtResource("14_u6i77"), ExtResource("15_0byd8"), ExtResource("16_npuly"), ExtResource("17_0anqx")])
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="CanvasLayer/PlayButton"]
+
+[node name="PlayButton2" type="Button" parent="CanvasLayer" node_paths=PackedStringArray("audio_player")]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -244.0
+offset_top = -95.0
+offset_right = 244.0
+offset_bottom = -7.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+theme = ExtResource("2_kq6on")
+theme_override_font_sizes/font_size = 64
+text = "Play Sound"
+script = ExtResource("1_3hjkv")
+play_mode = 2
+audio_player = NodePath("AudioStreamPlayer2")
+audio_streams = Array[AudioStream]([ExtResource("3_wbslp"), ExtResource("4_dmmi4"), ExtResource("5_07gi1"), ExtResource("6_u6i77"), ExtResource("7_0byd8"), ExtResource("8_npuly"), ExtResource("9_0anqx"), ExtResource("10_dmmi4"), ExtResource("12_dmmi4"), ExtResource("13_07gi1"), ExtResource("14_u6i77"), ExtResource("15_0byd8"), ExtResource("16_npuly"), ExtResource("17_0anqx")])
+
+[node name="AudioStreamPlayer2" type="AudioStreamPlayer" parent="CanvasLayer/PlayButton2"]
+
+[node name="PlayButton3" type="Button" parent="CanvasLayer" node_paths=PackedStringArray("audio_player")]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -244.0
+offset_top = 27.0
+offset_right = 244.0
+offset_bottom = 115.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+theme = ExtResource("2_kq6on")
+theme_override_font_sizes/font_size = 64
+text = "Play Sound"
+script = ExtResource("1_3hjkv")
+play_mode = 0
+audio_player = NodePath("AudioStreamPlayer3")
+audio_streams = Array[AudioStream]([ExtResource("37_rebht"), ExtResource("38_sls0u"), ExtResource("39_0oplp"), ExtResource("40_86vfl"), ExtResource("41_5x4c1"), ExtResource("42_ffj30"), ExtResource("43_of2mp"), ExtResource("44_5w06o"), ExtResource("45_if2io"), ExtResource("46_nh11i"), ExtResource("47_kgt5m"), ExtResource("48_fyb63"), ExtResource("49_e6u12"), ExtResource("50_f5c10"), ExtResource("51_yeunx"), ExtResource("52_crg2d"), ExtResource("53_p3t6h"), ExtResource("54_ovrad"), ExtResource("55_5ph6e"), ExtResource("56_rn0o4")])
+
+[node name="AudioStreamPlayer3" type="AudioStreamPlayer" parent="CanvasLayer/PlayButton3"]
+bus = &"Sfx"
+
+[node name="Sounds" type="Node" parent="."]
+
+[node name="Fantasy" type="Node" parent="Sounds"]
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="Sounds/Fantasy"]
+bus = &"Sfx"
+
+[node name="AudioStreamPlayer2" type="AudioStreamPlayer" parent="Sounds/Fantasy"]
+stream = ExtResource("4_h1ie6")
+bus = &"Sfx"
+
+[node name="AudioStreamPlayer3" type="AudioStreamPlayer" parent="Sounds/Fantasy"]
+stream = ExtResource("5_a3tad")
+bus = &"Sfx"
+
+[node name="AudioStreamPlayer4" type="AudioStreamPlayer" parent="Sounds/Fantasy"]
+stream = ExtResource("6_a4n0m")
+bus = &"Sfx"
+
+[node name="AudioStreamPlayer5" type="AudioStreamPlayer" parent="Sounds/Fantasy"]
+stream = ExtResource("7_p476l")
+bus = &"Sfx"
+
+[node name="AudioStreamPlayer6" type="AudioStreamPlayer" parent="Sounds/Fantasy"]
+stream = ExtResource("8_f35fo")
+bus = &"Sfx"
+
+[node name="AudioStreamPlayer7" type="AudioStreamPlayer" parent="Sounds/Fantasy"]
+stream = ExtResource("9_j078h")
+bus = &"Sfx"
+
+[node name="AudioStreamPlayer8" type="AudioStreamPlayer" parent="Sounds/Fantasy"]
+stream = ExtResource("10_1oc0u")
+bus = &"Sfx"
+
+[node name="AudioStreamPlayer9" type="AudioStreamPlayer" parent="Sounds/Fantasy"]
+stream = ExtResource("11_wbslp")
+bus = &"Sfx"
+
+[node name="UI_Sfx" type="Node" parent="Sounds"]
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="Sounds/UI_Sfx"]
+stream = ExtResource("12_dmmi4")
+bus = &"Sfx"
+
+[node name="AudioStreamPlayer2" type="AudioStreamPlayer" parent="Sounds/UI_Sfx"]
+stream = ExtResource("13_07gi1")
+bus = &"Sfx"
+
+[node name="AudioStreamPlayer3" type="AudioStreamPlayer" parent="Sounds/UI_Sfx"]
+stream = ExtResource("14_u6i77")
+bus = &"Sfx"
+
+[node name="AudioStreamPlayer4" type="AudioStreamPlayer" parent="Sounds/UI_Sfx"]
+stream = ExtResource("15_0byd8")
+bus = &"Sfx"
+
+[node name="AudioStreamPlayer5" type="AudioStreamPlayer" parent="Sounds/UI_Sfx"]
+stream = ExtResource("16_npuly")
+bus = &"Sfx"
+
+[node name="AudioStreamPlayer6" type="AudioStreamPlayer" parent="Sounds/UI_Sfx"]
+stream = ExtResource("17_0anqx")
+bus = &"Sfx"

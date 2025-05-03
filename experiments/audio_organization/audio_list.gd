@@ -1,4 +1,4 @@
-extends Button
+extends Node
 class_name AudioList
 
 enum Play_Mode {
@@ -16,9 +16,6 @@ var play_index: int = 0
 var prev_play_index: int = -1
 var prev_audio_stream: AudioStream = null
 
-func _ready():
-	self.pressed.connect(play)
-
 func play():
 	match play_mode:
 		Play_Mode.FORWARD, Play_Mode.BACKWARD:
@@ -28,8 +25,8 @@ func play():
 	
 	
 func play_order():
-	if audio_player.playing:
-		return
+	#if audio_player.playing:
+		#return
 	
 	if play_mode == Play_Mode.FORWARD:
 		play_index = (play_index + 1) % len(audio_streams)
@@ -43,8 +40,8 @@ func play_order():
 
 
 func play_random():
-	if audio_player.playing:
-		return
+	#if audio_player.playing:
+		#return
 		
 	play_index = randi_range(0, len(audio_streams) - 1)
 	var stream: AudioStream = audio_streams[play_index]
@@ -59,19 +56,26 @@ func play_random():
 	prev_audio_stream = stream
 	prev_play_index = play_index
 
+func pause():
+	assert(audio_player.stream != null)
+	audio_player.stream_paused = true
+	
+func resume():
+	assert(audio_player.stream != null)
+	audio_player.stream_paused = false
+
 func _add_back_to_list():
-	if prev_audio_stream != null and prev_play_index > -1:
+	if play_mode == Play_Mode.RANDOM and prev_audio_stream != null and prev_play_index > -1:
 		if prev_play_index >= len(audio_streams):
 			audio_streams.append(prev_audio_stream)
 		else:
 			audio_streams.insert(prev_play_index, prev_audio_stream)
-			
-		var names = audio_streams.map(func(stream): return stream.resource_path)
-		print("NAMES: ", names)
 
 func reset():
 	play_index = 0
-	# move prev player back into the list
+	# move prev player back into the list in the event Play_Mode RANDOM is selected
 	_add_back_to_list()
 	prev_audio_stream = null
 	prev_play_index = -1
+	audio_player.stop()
+	audio_player.set_stream(null)
